@@ -1,0 +1,148 @@
+# ============================================================
+# A. 基础词义信息
+# ============================================================
+id: messy-01
+word: messy
+pos: adjective
+sense_label: 物理空间杂乱无序
+definition: "In a state of disorder; things not in their expected or usual places"
+
+frequency:
+  band: high
+  rank: 3200
+difficulty: basic
+pronunciation:
+  ipa: /ˈmɛsi/
+
+collocations:
+  - messy room
+  - messy desk
+  - messy hair
+  - messy handwriting
+  - messy kitchen
+  - get messy
+
+sentence_patterns:
+  - "[place/thing] is messy"
+  - "a messy [noun]"
+  - "look/get messy"
+  - "so messy that [clause]"
+
+# ============================================================
+# B. 语义类型
+# ============================================================
+semantic_type: attribute
+
+# ============================================================
+# C. 语义骨架
+# ============================================================
+semantic_skeleton:
+  participants:
+    - role: space_or_surface
+      description: 呈现杂乱状态的空间、表面或对象
+    - role: items
+      description: 空间中处于无序状态的物品
+
+  propositions:
+    - 存在一个空间、表面或可被观察的对象
+    - 空间中有多个物品或组成部分
+    - 物品未处于其常规、预期或整齐的位置
+    - 物品之间的排列缺乏可辨识的秩序或规律
+    - 整体状态在视觉上呈现混乱——观察者一眼即可判断
+
+# ============================================================
+# D. 成立条件与排除条件
+# ============================================================
+conditions:
+  required:
+    - 物品的无序状态可被直接观察
+    - 无序是相对于该空间的常规整洁状态而言
+    - 杂乱是当前可见的状态，不是过程
+
+  excluded:
+    - condition: 物品有污渍或不卫生，但排列并不混乱
+      alternative: dirty-01
+    - condition: 空间被蓄意破坏或打砸
+      alternative: wrecked-01
+    - condition: 物品非常多但有秩序地堆放
+      alternative: cluttered-01
+    - condition: 状态达到完全混沌、无法辨识任何物品的程度
+      alternative: chaotic-01
+    - condition: 只是不够整齐，但远未达到杂乱
+      alternative: untidy-01
+
+# ============================================================
+# E. 概念关系
+# ============================================================
+relations:
+  synonyms:
+    - untidy-01
+    - disordered-01
+  antonyms:
+    - neat-01
+    - tidy-01
+    - organized-01
+  hypernyms:
+    - disorderly-01
+  hyponyms: []
+  confusables:
+    - dirty-01
+    - chaotic-01
+    - cluttered-01
+    - untidy-01
+    - sloppy-01
+
+  l1_confusables:
+    zh:
+      - l1_term: 乱
+        covers:
+          - messy-01
+          - chaotic-01
+          - disordered-01
+          - disorganized-01
+        note: >
+          中文"乱"的语义范围远大于 messy。
+          "乱"可用于物理空间（房间很乱=messy）、
+          抽象局面（局势很乱=chaotic）、
+          行为秩序（交通很乱=disorderly）。
+          messy 在日常英语中主要指可见的物理无序。
+      - l1_term: 脏
+        covers:
+          - dirty-01
+          - messy-01
+          - filthy-01
+        note: >
+          中文"脏乱"常连用，导致学习者把 messy 和 dirty 混为一体。
+          messy 核心是位置无序（东西不在该在的地方），
+          dirty 核心是表面不洁（有污渍、灰尘、细菌）。
+          一个房间可以 messy but not dirty（东西乱放但都干净），
+          也可以 dirty but not messy（东西整齐但表面很脏）。
+
+# ============================================================
+# F. 场景要求
+# ============================================================
+scene_requirements:
+  must_show:
+    - 一个有明确边界的空间或表面（桌面、房间、厨房）
+    - 空间中有多个物品散落在非正常位置
+    - 整体视觉呈现"一眼就能看出乱"的效果
+    - 最好同时展示同一空间的整洁对照状态
+
+  must_not:
+    - 不能只展示"脏"而没有位置无序——那是 dirty
+    - 不能展示蓄意破坏的场面——那是 wrecked/trashed
+    - 不能让空间只是物品稍多但摆放整齐——那是 cluttered
+    - 不能只展示一个物品歪了——需要整体性的无序
+
+  externalization:
+    - 衣服散落在地板、椅子上而非衣柜里
+    - 书本、纸张散乱堆放，没有方向一致性
+    - 杯碗放在桌面各处而非归位
+    - 鞋子在门口东一只西一只
+    - 床铺未整理，被子团成一堆
+    - 相同物品出现在不同位置（如笔分散在各处）
+
+  timing: >
+    先展示空间全貌让观众自行感知到"乱"，
+    然后用目标词为这个可见状态命名。
+    可以对比展示整理前后的状态来强化概念边界。

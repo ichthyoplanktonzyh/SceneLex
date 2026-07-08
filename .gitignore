@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# macOS
+.DS_Store
+
+# 编辑器
+.idea/
+.vscode/
+
+# 起草工具的解析失败残留（原文保留供修复，但不入库）
+data/drafts/**/_unparsed-*.yaml

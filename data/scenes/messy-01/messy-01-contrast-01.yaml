@@ -1,0 +1,50 @@
+# 对比场景: messy vs dirty
+# 设计依据: l1_confusables.zh —— 中文"脏乱"连用导致两概念合并,
+# 需要展示 messy but not dirty / dirty but not messy 的正交性
+id: messy-01-contrast-01
+sense_ref: messy-01
+scene_type: contrast
+contrast_target: dirty-01
+title: 乱而不脏, 脏而不乱
+synopsis: >
+  并置两个厨房: 一个物品散乱但一尘不染, 一个物品归位但油污遍布。
+  分别命名, 让学习者把"位置无序"与"表面不洁"拆开。
+
+target_learner:
+  l1: zh
+
+storyboard:
+  - beat: 1
+    visual: >
+      厨房A: 干净的锅碗瓢盆散放在台面各处, 崭新的餐具东一件西一件,
+      调料瓶横七竖八——但每件物品都洁净发亮, 没有任何污渍。
+    audio: null
+    purpose: 呈现"位置无序但表面洁净"——messy 成立、dirty 不成立的纯净样本
+
+  - beat: 2
+    visual: 特写：手指划过厨房A的台面, 指尖干净无灰。镜头拉远展示散乱全貌。
+    audio: "This kitchen is messy... but it's not dirty."
+    purpose: 目标词命名位置无序, 并显式否定 dirty, 直接切开中文"脏乱"的合并
+
+  - beat: 3
+    visual: >
+      厨房B: 所有锅具挂钩排列整齐, 调料瓶按高矮排成直线——
+      但灶台覆盖油渍, 水槽发黄, 墙面有污点。
+    audio: null
+    purpose: 呈现"位置有序但表面不洁"——dirty 成立、messy 不成立的反向样本
+
+  - beat: 4
+    visual: 特写：手指划过厨房B的台面, 指尖沾上油灰。镜头拉远展示整齐但污浊的全貌。
+    audio: "This kitchen is dirty... but it's not messy."
+    purpose: 用对称句式命名反向概念, 完成两词的边界切分
+
+  - beat: 5
+    visual: 分屏并置两个厨房, 左侧A右侧B, 各停留两秒。
+    audio: "Messy. Dirty."
+    purpose: 极简并置+极简声音, 让两个声音-画面映射同时在场并相互定义
+
+learning_tasks:
+  - type: contrast_choice
+    prompt: 逐张展示新的房间/桌面图片, 学习者为每张选择 messy 或 dirty 或 both。
+  - type: transfer_judgment
+    prompt: 展示一张物品散乱但洁净的书桌, 问 "Is it dirty?" 学习者判断是否。

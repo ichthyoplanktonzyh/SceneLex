@@ -1,0 +1,48 @@
+# 反例场景: 这不是 reluctant, 这是 refuse
+# 设计依据: conditions.excluded —— "已明确拒绝并终止行动"是 refuse;
+# reluctant 的必要条件是"行动仍有现实可能", 拒绝+离场使该条件失效
+id: reluctant-01-counter-01
+sense_ref: reluctant-01
+scene_type: counterexample
+contrast_target: refuse-01
+title: 他不是不情愿, 他是拒绝了
+synopsis: >
+  与原型场景同构的设定: 被要求做事。但人物直接说不、转身离开——
+  行动被终止, reluctant 不再成立。
+
+storyboard:
+  - beat: 1
+    visual: 办公室。经理把一叠文件放到员工桌上, 指了指墙上的时钟。
+    audio: "I need this done tonight."
+    purpose: 复用与原型同构的外部压力设定, 使唯一变量落在人物的反应上
+
+  - beat: 2
+    visual: 员工看了一眼文件, 又看了一眼经理, 表情平静而坚决。
+    audio: null
+    purpose: 短暂的静默制造分岔预期——观众此刻无法区分将是 reluctant 还是 refuse
+
+  - beat: 3
+    visual: 员工摇头, 把文件轻轻推回经理面前, 拿起外套。
+    audio: "No. I'm going home."
+    purpose: 分岔揭晓：明确说不+终止行动——不存在"不想做但还是做"的过程
+
+  - beat: 4
+    visual: 员工走出办公室, 门关上。桌上的文件原封未动。
+    audio: null
+    purpose: >
+      "文件原封未动"外化了行动的终止——reluctant 的核心条件已不可能成立
+
+  - beat: 5
+    visual: >
+      画面分屏回放: 左侧是原型场景少年拖着脚步拎垃圾袋出门;
+      右侧是员工推回文件离开。
+    audio: "THIS is reluctant. THAT is not — he refused."
+    purpose: 正反例并置命名：同样不想做, 一个仍在做(reluctant), 一个终止了(refuse)
+
+learning_tasks:
+  - type: transfer_judgment
+    prompt: >
+      连续播放三段短片(叹气后慢慢收拾行李/把邀请函撕掉转身走/
+      笑着立刻答应), 学习者对每段回答 "reluctant or not"。
+  - type: contrast_choice
+    prompt: 对上述判断为 not 的短片, 追问更合适的词是 refuse 还是 eager。

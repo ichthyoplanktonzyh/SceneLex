@@ -1,0 +1,50 @@
+# 对比场景: reluctant vs hesitant
+# 设计依据: conditions.excluded —— "尚未作出决定, 处于权衡中"是 hesitant;
+# reluctant 的方向已定(不想但要做), hesitant 的方向未定(还在选)
+id: reluctant-01-contrast-01
+sense_ref: reluctant-01
+scene_type: contrast
+contrast_target: hesitant-01
+title: 跳水台上的两个人
+synopsis: >
+  同一座跳水台: 一人在犹豫要不要跳(方向未定), 一人被教练要求跳、
+  不想跳但还是跳了(方向已定)。并置切开"没决定"与"不情愿"。
+
+storyboard:
+  - beat: 1
+    visual: >
+      泳池跳台。人物A自己走上跳台, 走到边缘又退半步,
+      探头看水面, 又后退, 咬嘴唇, 目光在水面和梯子之间来回。
+    audio: null
+    purpose: hesitant 的骨架：无外部压力, 决定未做出, 行为在两个选项间摆动
+
+  - beat: 2
+    visual: 人物A仍站在原地, 双手抱肘, 看着水面。
+    audio: "She's hesitant. Jump... or not? She can't decide."
+    purpose: 命名对比词, 并用 "can't decide" 点明其核心——未决状态
+
+  - beat: 3
+    visual: >
+      切换: 人物B坐在池边不想动, 教练指着跳台吹哨。
+      人物B仰头闭眼叹气, 极慢地起身, 磨磨蹭蹭爬上梯子。
+    audio: "(哨声, 然后叹气声)"
+    purpose: reluctant 的骨架：外部压力在场, 意愿缺席, 但行动方向已经确定
+
+  - beat: 4
+    visual: 人物B在跳台边缘皱着脸站定——没有摇摆, 没有回头——然后闭眼跳下。
+    audio: "He's reluctant. He doesn't want to... but he does it."
+    purpose: 命名目标词, "doesn't want to but does it" 点明与 hesitant 的差异轴
+
+  - beat: 5
+    visual: >
+      分屏并置: 左侧A仍在跳台上前后摇摆; 右侧回放B叹气爬梯、直线走向边缘。
+    audio: "Hesitant. Reluctant."
+    purpose: 两种行为轨迹并置——摆动的轨迹 vs 拖慢但笔直的轨迹, 差异可视化
+
+learning_tasks:
+  - type: contrast_choice
+    prompt: >
+      播放新短片(收到邀请后反复查看日历不回复/被要求加班后叹气打开电脑),
+      学习者为每段选择 hesitant 或 reluctant。
+  - type: transfer_judgment
+    prompt: 展示一人站在两份菜单前来回看了很久, 问 "Is he reluctant?"

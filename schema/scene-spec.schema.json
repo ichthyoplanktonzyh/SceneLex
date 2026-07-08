@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "scene-spec.schema.json",
+  "title": "SceneSpec",
+  "description": "场景规格 — 场景编译器的输出，描述一个完整的教学场景",
+  "type": "object",
+  "required": ["id", "sense_ref", "scene_type", "storyboard"],
+  "properties": {
+
+    "id": {
+      "type": "string",
+      "description": "场景ID: {sense_id}-{type_abbr}-{nn}, 如 reluctant-01-proto-01"
+    },
+    "sense_ref": {
+      "type": "string",
+      "description": "本场景教授的义项ID"
+    },
+    "scene_type": {
+      "type": "string",
+      "enum": ["prototype", "contrast", "boundary", "counterexample", "transfer"],
+      "description": "prototype=原型; contrast=对比; boundary=边界; counterexample=反例; transfer=迁移"
+    },
+    "contrast_target": {
+      "type": "string",
+      "description": "对比/边界/反例场景中被对比或被指向的替代义项ID"
+    },
+
+    "title": {
+      "type": "string",
+      "description": "场景标题，简短描述场景"
+    },
+    "synopsis": {
+      "type": "string",
+      "description": "场景概要，一段话描述事件和人物"
+    },
+
+    "target_learner": {
+      "type": "object",
+      "description": "本场景适用的学习者特征",
+      "properties": {
+        "l1": { "type": "string" },
+        "life_context": {
+          "type": "string",
+          "description": "目标生活场景，如 office, campus, home"
+        }
+      }
+    },
+
+    "storyboard": {
+      "type": "array",
+      "minItems": 2,
+      "description": "场景分镜——按时间顺序排列的叙事节拍",
+      "items": {
+        "type": "object",
+        "required": ["beat", "visual", "purpose"],
+        "properties": {
+          "beat": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "节拍序号"
+          },
+          "visual": {
+            "type": "string",
+            "description": "画面描述——观众看到什么"
+          },
+          "audio": {
+            "type": ["string", "null"],
+            "description": "对话、旁白或音效; null 表示静默"
+          },
+          "purpose": {
+            "type": "string",
+            "description": "这个节拍对建立词义理解的作用"
+          }
+        }
+      }
+    },
+
+    "learning_tasks": {
+      "type": "array",
+      "description": "场景结束后的学习任务",
+      "items": {
+        "type": "object",
+        "required": ["type", "prompt"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "scene_recognition",
+              "contrast_choice",
+              "listen_and_match",
+              "produce",
+              "transfer_judgment"
+            ],
+            "description": "scene_recognition=从多场景中选; contrast_choice=辨别近义词; listen_and_match=听音选场景; produce=看场景说表达; transfer_judgment=新场景判断是否适用"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "呈现给学习者的任务指令"
+          }
+        }
+      }
+    }
+  }
+}

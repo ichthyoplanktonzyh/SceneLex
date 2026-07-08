@@ -1,0 +1,227 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "word-sense.schema.json",
+  "title": "WordSense",
+  "description": "SceneLex 词义对象 — 语义内核的基本单位。ID 约定: {word}-{nn}, 如 reluctant-01, run-03",
+  "type": "object",
+  "required": ["id", "word", "pos", "sense_label", "semantic_type", "semantic_skeleton", "conditions"],
+  "properties": {
+
+    "id": {
+      "type": "string",
+      "description": "唯一义项标识符: {word}-{nn}"
+    },
+    "word": {
+      "type": "string"
+    },
+    "pos": {
+      "type": "string",
+      "enum": ["noun", "verb", "adjective", "adverb", "preposition", "conjunction", "determiner", "pronoun", "interjection", "particle"]
+    },
+    "sense_label": {
+      "type": "string",
+      "description": "义项的简短中文标签，供内部使用"
+    },
+    "definition": {
+      "type": "string",
+      "description": "简明英文定义，供内部参考"
+    },
+
+    "frequency": {
+      "type": "object",
+      "properties": {
+        "band": {
+          "type": "string",
+          "enum": ["core", "high", "mid", "low"],
+          "description": "core: 前500; high: 500-1500; mid: 1500-3500; low: 3500+"
+        },
+        "rank": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "在通用词频表(如COCA)中的大致排名"
+        }
+      }
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["basic", "intermediate", "advanced"],
+      "description": "语义习得难度，不等于词频"
+    },
+    "pronunciation": {
+      "type": "object",
+      "properties": {
+        "ipa": { "type": "string" },
+        "audio_ref": { "type": "string" }
+      }
+    },
+    "collocations": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "高频搭配和固定短语"
+    },
+    "sentence_patterns": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "常见句法结构，使用占位符标记: [verb], [noun], [adj]"
+    },
+
+    "semantic_type": {
+      "type": "string",
+      "enum": [
+        "entity",
+        "action",
+        "attribute",
+        "state_change",
+        "spatial_relation",
+        "temporal_relation",
+        "scalar_degree",
+        "mental_state",
+        "intentional_behavior",
+        "causal_logic",
+        "cognitive_change",
+        "discourse_function"
+      ],
+      "description": "按'意义如何被感知'分类，决定场景设计策略"
+    },
+
+    "semantic_skeleton": {
+      "type": "object",
+      "required": ["propositions"],
+      "description": "词义的深层语义结构 — 独立于文化，可被场景渲染",
+      "properties": {
+        "participants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["role", "description"],
+            "properties": {
+              "role": {
+                "type": "string",
+                "description": "语义角色标签，如 agent, experiencer, stimulus"
+              },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "propositions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 2,
+          "description": "有序的语义条件列表，共同定义该义项的成立"
+        }
+      }
+    },
+
+    "conditions": {
+      "type": "object",
+      "required": ["required", "excluded"],
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "该义项成立的必要条件"
+        },
+        "excluded": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["condition"],
+            "properties": {
+              "condition": {
+                "type": "string",
+                "description": "排除该义项的情况"
+              },
+              "alternative": {
+                "type": "string",
+                "description": "此情况下可能适用的其他义项ID"
+              }
+            }
+          },
+          "description": "排除条件及可能的替代义项"
+        }
+      }
+    },
+
+    "relations": {
+      "type": "object",
+      "properties": {
+        "synonyms": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "近义义项ID"
+        },
+        "antonyms": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "hypernyms": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "上位义项ID"
+        },
+        "hyponyms": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "下位义项ID"
+        },
+        "confusables": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "容易与之混淆的义项ID"
+        },
+        "l1_confusables": {
+          "type": "object",
+          "description": "L1 特定的混淆模式，按 ISO 639-1 语言代码索引",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["l1_term", "covers"],
+              "properties": {
+                "l1_term": {
+                  "type": "string",
+                  "description": "导致混淆的L1词汇"
+                },
+                "covers": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "该L1词汇覆盖的L2义项ID列表"
+                },
+                "note": {
+                  "type": "string",
+                  "description": "概念边界差异的说明"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "scene_requirements": {
+      "type": "object",
+      "description": "该义项被场景表达时的约束",
+      "properties": {
+        "must_show": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "场景必须呈现的元素"
+        },
+        "must_not": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "场景必须避免的元素"
+        },
+        "externalization": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "内部/抽象状态的外化手段"
+        },
+        "timing": {
+          "type": "string",
+          "description": "目标表达相对于场景事件的出现时机"
+        }
+      }
+    }
+  }
+}

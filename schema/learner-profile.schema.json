@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "learner-profile.schema.json",
+  "title": "LearnerProfile",
+  "description": "学习者画像 — 个性化引擎用于选择经验入口的依据",
+  "type": "object",
+  "required": ["id", "l1"],
+  "properties": {
+
+    "id": {
+      "type": "string",
+      "description": "学习者标识符"
+    },
+    "l1": {
+      "type": "string",
+      "description": "母语, ISO 639-1 代码"
+    },
+    "age_group": {
+      "type": "string",
+      "enum": ["child", "teen", "adult"]
+    },
+    "life_stage": {
+      "type": "string",
+      "enum": ["student", "early_career", "mid_career", "senior", "retired", "freelance"]
+    },
+    "occupation": {
+      "type": "string"
+    },
+    "interests": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "learning_purpose": {
+      "type": "string",
+      "enum": ["academic", "career", "travel", "immigration", "personal_interest", "exam_prep"]
+    },
+    "familiar_environments": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "学习者日常接触的环境，用于选择场景背景"
+    },
+    "current_level": {
+      "type": "string",
+      "enum": ["beginner", "elementary", "intermediate", "upper_intermediate", "advanced"]
+    },
+
+    "known_senses": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "[动态] 已习得的义项ID列表，由学习运行系统更新"
+    },
+    "confusion_patterns": {
+      "type": "array",
+      "description": "[动态] 观察到的混淆模式",
+      "items": {
+        "type": "object",
+        "required": ["target", "confused_with"],
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "目标义项ID"
+          },
+          "confused_with": {
+            "type": "string",
+            "description": "被混淆的义项ID"
+          },
+          "frequency": {
+            "type": "string",
+            "enum": ["occasional", "frequent", "persistent"]
+          }
+        }
+      }
+    },
+    "scene_history": {
+      "type": "array",
+      "description": "[动态] 场景观看记录和理解表现",
+      "items": {
+        "type": "object",
+        "required": ["scene_id", "viewed_at"],
+        "properties": {
+          "scene_id": { "type": "string" },
+          "viewed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "comprehension": {
+            "type": "string",
+            "enum": ["failed", "partial", "full"]
+          }
+        }
+      }
+    }
+  }
+}

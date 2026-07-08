@@ -1,0 +1,54 @@
+# 对比场景: dirty vs messy
+# 设计依据: l1_confusables.zh "脏乱" —— 中文把两者连用, 学习者当成一体;
+# dirty 核心是表面附着污物, messy 核心是位置无序。用两个房间对称切分
+id: dirty-01-contrast-01
+sense_ref: dirty-01
+scene_type: contrast
+contrast_target: messy-01
+title: 两个房间
+synopsis: >
+  两间卧室并置。A 房间物品摆放整齐, 但地板和桌面满是污渍灰尘;
+  B 房间东西乱堆一地, 但每一件都干干净净。切开"脏"与"乱"。
+target_learner:
+  l1: zh
+  life_context: home
+storyboard:
+  - beat: 1
+    visual: >
+      A 房间。书本、衣物、杯子全部归位摆放整齐——但地板上一层灰、
+      几个黑脚印, 桌面有干涸的咖啡渍, 杯口挂着一圈污垢。
+    audio: null
+    purpose: >
+      建立 dirty 的骨架而抽掉"乱"这一变量——秩序井然, 唯独表面附着污物
+
+  - beat: 2
+    visual: 镜头扫过整齐的书架, 再推近到桌上那圈褐色污垢和地上的脚印。
+    audio: "Everything is in place... but it's dirty."
+    purpose: 命名目标词, 并显式点出"in place"以剥离秩序维度——脏≠乱
+
+  - beat: 3
+    visual: >
+      B 房间。衣服堆在椅背和地上, 书本东倒西歪, 抽屉半开——
+      但每件衣服都洁净, 地板本身干净发亮, 没有任何污渍。
+    audio: null
+    purpose: 建立 messy 的骨架而抽掉"污物"这一变量——东西不在该在的地方, 但表面干净
+
+  - beat: 4
+    visual: 镜头掠过散落一地却干净的衣物, 特写一件皱巴巴但雪白的衬衫。
+    audio: "Nothing is dirty here... it's just messy."
+    purpose: 命名对比词, "just messy"点明核心差异——无序而非不洁
+
+  - beat: 5
+    visual: >
+      分屏并置: 左侧 A 房间整齐但地面有污迹的特写; 右侧 B 房间
+      凌乱但每件都干净的特写。下方两行字幕对齐。
+    audio: "Dirty is about dirt. Messy is about mess."
+    purpose: 把判据从笼统的"脏乱"重新锚定到两条独立的轴——表面污物 vs 位置无序
+
+learning_tasks:
+  - type: contrast_choice
+    prompt: >
+      播放新画面(叠得整齐但沾满油渍的围裙/散落一桌但干净的乐高积木),
+      学习者为每段选择 dirty 或 messy。
+  - type: transfer_judgment
+    prompt: 展示一个厨房——锅碗摆放整齐但灶台油腻发黑, 问 "Is it dirty or messy?"

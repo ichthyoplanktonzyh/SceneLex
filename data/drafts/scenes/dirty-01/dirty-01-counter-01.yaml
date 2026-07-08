@@ -1,0 +1,49 @@
+# 反例场景: 这不是 dirty(物理表面不洁), 这是 dirty-02(言语粗俗下流)
+# 设计依据: l1_confusables.zh "脏话／下流" 与 conditions.excluded ——
+# 中文用"脏"同指物理不洁和言语下流; 本反例划出下界: 没有物理污物就不是 dirty-01
+id: dirty-01-counter-01
+sense_ref: dirty-01
+scene_type: counterexample
+contrast_target: dirty-02
+title: 这个 dirty 不在手上, 在话里
+synopsis: >
+  几个朋友聚会, 有人讲了个下流笑话, 众人惊呼 "So dirty!"。
+  画面反驳: 没有任何污物、任何表面——这里的 dirty 指言语内容,
+  是另一个义项, 不是物理表面不洁。
+target_learner:
+  l1: zh
+  life_context: home
+storyboard:
+  - beat: 1
+    visual: >
+      屏幕先打出一行预设错觉的字幕："听到 dirty = 有污渍?",
+      随即切到干净整洁的客厅, 几个朋友围坐, 桌面一尘不染。
+    audio: null
+    purpose: 先亮出学习者的错误断言(dirty 必有污物), 为随后的反驳设伏
+
+  - beat: 2
+    visual: 一个人压低声音讲了句什么, 其余人先愣一下, 随即爆笑, 有人捂脸。
+    audio: "(一句被哔声盖住的话, 随后哄笑)"
+    purpose: 引入 dirty-02 的触发点——粗俗内容, 而非任何物理表面
+
+  - beat: 3
+    visual: 一位朋友笑着指着讲笑话的人。镜头扫过全场——手、衣服、桌面, 全都干干净净。
+    audio: "That joke was so dirty!"
+    purpose: >
+      用目标词形出现, 却当场用画面反驳——没有污渍、没有被污染的表面,
+      dirty-01 的必要条件"表面附着外来物质"完全缺席
+
+  - beat: 4
+    visual: >
+      屏幕分屏: 左侧回放原型中沾满黑泥的手(有污物); 右侧此刻干净的
+      客厅与那句被哔掉的笑话字幕(无污物)。中间画一条分界线。
+    audio: "THIS dirty is on your hands. THAT dirty is in your words."
+    purpose: 正反并置命名——同一个词, 一个指物理污物(dirty-01), 一个指言语下流(dirty-02)
+
+learning_tasks:
+  - type: transfer_judgment
+    prompt: >
+      连续播放三段短片(有人说了句粗俗的话被同伴瞪/满是油污的抹布/
+      一句正常的问候), 学习者判断哪一段的 dirty 指"表面有污物"。
+  - type: contrast_choice
+    prompt: 对判断为"不是表面污物"的那段, 追问它属于 dirty-01 还是 dirty-02。

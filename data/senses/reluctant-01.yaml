@@ -1,0 +1,141 @@
+# ============================================================
+# A. 基础词义信息
+# ============================================================
+id: reluctant-01
+word: reluctant
+pos: adjective
+sense_label: 不情愿地面对某事
+definition: "Unwilling and hesitant; disinclined to do something while still possibly doing it"
+
+frequency:
+  band: high
+  rank: 2800
+difficulty: intermediate
+pronunciation:
+  ipa: /rɪˈlʌktənt/
+
+collocations:
+  - reluctant to admit
+  - reluctant to leave
+  - reluctant to change
+  - reluctant hero
+  - reluctant agreement
+  - reluctant smile
+
+sentence_patterns:
+  - "be reluctant to [verb]"
+  - "a reluctant [noun]"
+  - "seem/appear reluctant"
+  - "reluctant but [clause]"
+
+# ============================================================
+# B. 语义类型
+# ============================================================
+semantic_type: mental_state
+
+# ============================================================
+# C. 语义骨架
+# ============================================================
+semantic_skeleton:
+  participants:
+    - role: experiencer
+      description: 感受到不情愿的人
+    - role: target_action
+      description: 被期望或需要执行的动作
+    - role: external_pressure
+      description: 推动执行的外部原因、人物或情境
+
+  propositions:
+    - 存在一个人物被期望执行的动作
+    - 人物对该动作缺乏意愿，内心抗拒
+    - 存在外部原因或压力使人物面对该动作
+    - 动作仍然有被执行的现实可能——人物并未完全拒绝
+    - 内心的抵触通过行为外化：迟缓、停顿、表情、身体方向
+
+# ============================================================
+# D. 成立条件与排除条件
+# ============================================================
+conditions:
+  required:
+    - 人物缺乏行动意愿，不是主动选择而是被动面对
+    - 行动仍然具有现实可能性——尚未被终止或取消
+    - 抵触状态可从外部行为中观察到
+
+  excluded:
+    - condition: 人物完全没有执行该动作的机会
+      alternative: unable-01
+    - condition: 人物已经明确拒绝并终止了行动
+      alternative: refuse-01
+    - condition: 人物尚未作出决定，处于权衡中
+      alternative: hesitant-01
+    - condition: 人物动作缓慢但不存在心理抵触
+      alternative: slow-01
+    - condition: 人物对所有事情都消极抵触，而非针对特定动作
+      alternative: apathetic-01
+
+# ============================================================
+# E. 概念关系
+# ============================================================
+relations:
+  synonyms:
+    - unwilling-01
+    - disinclined-01
+  antonyms:
+    - eager-01
+    - willing-01
+  hypernyms:
+    - unwillingness-01
+  confusables:
+    - hesitant-01
+    - resistant-01
+    - refuse-01
+    - unwilling-01
+
+  l1_confusables:
+    zh:
+      - l1_term: 不愿意
+        covers:
+          - reluctant-01
+          - unwilling-01
+          - refuse-01
+        note: >
+          中文"不愿意"覆盖从被动抵触到主动拒绝的整个谱系。
+          reluctant 偏向"虽然不想但可能还是会做"，
+          unwilling 偏向"明确不想做"，
+          refuse 偏向"已决定不做并表达出来"。
+          中文不强制区分这三层。
+      - l1_term: 勉强
+        covers:
+          - reluctant-01
+          - grudging-01
+        note: >
+          "勉强"侧重结果——最终做了但不情愿。
+          reluctant 侧重过程中的心理状态，不要求最终一定执行。
+
+# ============================================================
+# F. 场景要求
+# ============================================================
+scene_requirements:
+  must_show:
+    - 人物面对一个明确需要执行的动作或任务
+    - 人物表现出不想做的外部迹象
+    - 存在推动人物行动的外部力量（他人要求、规则、截止日期等）
+    - 最好展示人物最终开始行动——但带着明显的不情愿
+
+  must_not:
+    - 不能只依赖台词说明心理状态（如让人物直接说"I'm reluctant"）
+    - 不能让人物直接拒绝并离开——那是 refuse
+    - 不能让人物长时间犹豫不决地来回权衡——那是 hesitant
+    - 不能只展示"慢"而没有心理层面的抗拒
+
+  externalization:
+    - 动作速度明显减缓、拖延
+    - 停顿——在行动前有明显的不动
+    - 身体方向——背向任务、侧身、后倾
+    - 面部表情——皱眉、抿嘴、叹气
+    - 语言上的拖延——"Do I have to?"、叹气后才开始
+    - 视线回避——不看任务或发出指令的人
+
+  timing: >
+    先展示外部压力的出现和人物的行为反应（抵触外化），
+    在人物最终开始行动但仍显不情愿的时刻出现目标词。

@@ -1,0 +1,60 @@
+# 原型场景: 首次建立 dirty 概念
+# 设计依据: semantic_skeleton —— 有表面的对象 + 附着不受欢迎的外来物质 + 偏离洁净基准;
+# 全程用可见污物外化, 并以"洁净→变脏→擦净"的前后对照锚定洁净基准
+id: dirty-01-proto-01
+sense_ref: dirty-01
+scene_type: prototype
+title: 踢完球回家的白球衣
+synopsis: >
+  男孩穿着崭新的白色球衣出门, 在泥地上踢球摔倒。回到家时球衣沾满
+  草渍和泥点, 双手一片黑。母亲用湿布一擦, 手背露出干净的皮肤——
+  可见污物, 与洁净基准的对照, 全部在场。
+target_learner:
+  l1: zh
+  life_context: home
+storyboard:
+  - beat: 1
+    visual: >
+      玄关。男孩套上一件雪白的球衣, 在镜子前转身。布料平整洁白,
+      没有一处斑点。母亲满意地点头。
+    audio: "Looks clean and new."
+    purpose: 先建立洁净基准——观众记住这件球衣"本该是什么样", 为随后的偏离作参照
+
+  - beat: 2
+    visual: 泥土球场。男孩奔跑争球, 一个滑铲摔进泥里, 尘土飞扬。
+    audio: "(奔跑声, 摔倒声)"
+    purpose: 交代污物来源——外来物质(泥、草汁)如何附着到表面上
+
+  - beat: 3
+    visual: >
+      家门口特写。原本雪白的球衣前襟糊着大片褐色泥浆和绿色草渍,
+      两只手掌沾满黑泥, 指缝里都是。镜头在污渍上停留数秒。
+    audio: null
+    purpose: >
+      让镜头停在可见污物上, 观众自行感知"这不干净"——污渍与残留的
+      白色布料形成鲜明对比, 满足 must_show 的核心
+
+  - beat: 4
+    visual: 母亲开门, 上下打量他, 又看看自己刚拖过的地板。
+    audio: "Stop! Don't touch anything."
+    purpose: 用他人反应外化"这是需要清除的负面状态", 但暂不给词
+
+  - beat: 5
+    visual: 男孩摊开两只黑乎乎的手, 咧嘴一笑。
+    audio: "Your hands are so dirty! And your shirt too."
+    purpose: 在可见污物已被充分感知后, 用目标词为这个状态命名
+
+  - beat: 6
+    visual: >
+      母亲用湿布擦过他的手背, 布上留下一道黑印, 手背露出一小块
+      干净的皮肤。脏与净在同一只手上并列。
+    audio: "(擦拭声)"
+    purpose: >
+      擦拭动作把污物转移到布上、表面变干净——用"可被清除"这一属性
+      收束概念, 强化"洁净基准被偏离又被恢复"
+
+learning_tasks:
+  - type: scene_recognition
+    prompt: 听 dirty, 从四段画面(沾满泥的手/整齐叠好的衣服/擦得发亮的桌面/装满水的杯子)中选出匹配的一段。
+  - type: listen_and_match
+    prompt: 播放 "The floor is dirty." 在两段画面(布满脚印和污迹的地板/一尘不染的地板)中选择。

@@ -1,0 +1,58 @@
+# 迁移场景: 跨对象、跨人物、跨环境验证抽象
+# 设计依据: 概念不应绑定在"男孩的球衣"上 —— 更换对象(手/袜子/挡风玻璃)、
+# 人物(修车工/幼童/司机)与环境(车库/草地/公路), 骨架"表面+污物+偏离洁净"不变;
+# 覆盖高频搭配 dirty hands / dirty clothes / get dirty
+id: dirty-01-transfer-01
+sense_ref: dirty-01
+scene_type: transfer
+title: 油污的手、草渍的袜子、积灰的玻璃
+synopsis: >
+  三段小片段——修车工满是黑油的双手、幼童踩过草地的白袜、司机
+  积满尘土的挡风玻璃。对象、人物、环境全换, 表面附着污物的骨架不变。
+target_learner:
+  l1: zh
+  life_context: office
+storyboard:
+  - beat: 1
+    visual: >
+      车库。修车工从发动机里抽出手, 十指与手背糊满乌黑发亮的机油,
+      他想擦却只把黑油抹得更开。
+    audio: "My hands are all dirty. Don't shake."
+    purpose: >
+      迁移点一——对象换成手、污物换成机油、人物换成成年工人;
+      骨架(表面+外来物质+偏离洁净)完整, 覆盖搭配 dirty hands
+
+  - beat: 2
+    visual: >
+      草地。幼童蹦跳着跑过草坪和一小片泥, 停下时原本雪白的长袜
+      染上一道道绿色草渍和褐色泥点。
+    audio: "You got your socks dirty again!"
+    purpose: >
+      迁移点二——对象换成袜子、环境换成户外草地、污物换成草汁泥点;
+      用 get ... dirty 覆盖"使某物变脏"的高频搭配
+
+  - beat: 3
+    visual: >
+      公路。挡风玻璃蒙着一层厚灰和撞上的虫渍, 几乎看不清前方。
+      雨刮划过, 刮出一道半透明的干净弧线, 与两旁的脏形成对比。
+    audio: "The windshield is too dirty. I can't see."
+    purpose: >
+      迁移点三——对象换成玻璃、污物换成灰尘虫渍; 雨刮划出洁净弧线,
+      再次用"污/净并列"锚定洁净基准, 表面全新而骨架依旧
+
+  - beat: 4
+    visual: >
+      三画面并置一秒: 沾满机油的手 / 染上草渍的白袜 / 蒙灰的挡风玻璃。
+      三者形态迥异, 却都是"表面附着了不受欢迎的污物"。
+    audio: "Dirty. Dirty. Dirty."
+    purpose: 三个表面完全不同的画面共享同一声音, 逼迫抽象结构"表面附着污物"浮现
+
+learning_tasks:
+  - type: transfer_judgment
+    prompt: >
+      播放从未出现过的新短片(沾满面粉的厨师围裙/摆放凌乱但干净的桌面/
+      落满灰尘的旧书架/清澈见底的泳池), 学习者逐段判断 dirty 是否适用。
+  - type: produce
+    prompt: >
+      播放一段无声短片(孩子在雨里踩水坑, 鞋子和裤脚溅满泥浆),
+      引导学习者说出 "His shoes are dirty." 或 "He got his shoes dirty."

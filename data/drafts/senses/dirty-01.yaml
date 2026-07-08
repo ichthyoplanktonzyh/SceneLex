@@ -1,0 +1,160 @@
+# ============================================================
+# A. 基础词义信息
+# ============================================================
+id: dirty-01
+word: dirty
+pos: adjective
+sense_label: 表面附着污物不洁净
+definition: "Covered or marked with an unwanted substance such as dust, mud, stains, or grime; not clean"
+
+frequency:
+  band: high
+  rank: 1500
+difficulty: basic
+pronunciation:
+  ipa: /ˈdɜːrti/
+
+collocations:
+  - dirty hands
+  - dirty dishes
+  - dirty clothes
+  - dirty floor
+  - dirty water
+  - get dirty
+
+sentence_patterns:
+  - "[thing] is dirty"
+  - "a dirty [noun]"
+  - "get/make [something] dirty"
+  - "so dirty that [clause]"
+
+# ============================================================
+# B. 语义类型
+# ============================================================
+semantic_type: attribute
+
+# ============================================================
+# C. 语义骨架
+# ============================================================
+semantic_skeleton:
+  participants:
+    - role: surface_or_object
+      description: 表面或对象——其表面状态被观察
+    - role: contaminant
+      description: 附着在表面上的不受欢迎的物质（尘土、泥、污渍、油腻等）
+
+  propositions:
+    - 存在一个有表面的对象、身体部位或空间
+    - 该表面上附着了某种外来的、不受欢迎的物质
+    - 该物质使表面偏离了它应有的洁净状态
+    - 这种不洁可被直接感知——看得见污渍、摸得到黏腻、或闻得到气味
+    - 该状态被视为需要清除或清洗的负面状态
+
+# ============================================================
+# D. 成立条件与排除条件
+# ============================================================
+conditions:
+  required:
+    - 表面附着了不受欢迎的外来物质
+    - 不洁状态偏离了该对象应有的洁净基准
+    - 该状态可被直接感知（视觉、触觉或嗅觉）
+
+  excluded:
+    - condition: 物品位置无序、东西乱放，但表面并无污物
+      alternative: messy-01
+    - condition: 污秽程度极重、令人作呕的肮脏
+      alternative: filthy-01
+    - condition: 物品因长期沾染油泥而结成一层黏腻污垢
+      alternative: grimy-01
+    - condition: 表面沾有泥浆或被泥弄脏
+      alternative: muddy-01
+    - condition: 液体或空气因杂质而不再纯净、不宜使用
+      alternative: polluted-01
+    - condition: 内容或言语粗俗下流（脏话）——非物理表面的不洁
+      alternative: dirty-02
+
+# ============================================================
+# E. 概念关系
+# ============================================================
+relations:
+  synonyms:
+    - unclean-01
+    - soiled-01
+  antonyms:
+    - clean-01
+    - spotless-01
+  hypernyms:
+    - unclean-01
+  hyponyms:
+    - muddy-01
+    - grimy-01
+    - dusty-01
+  confusables:
+    - messy-01
+    - filthy-01
+    - grimy-01
+    - muddy-01
+    - polluted-01
+
+  l1_confusables:
+    zh:
+      - l1_term: 脏
+        covers:
+          - dirty-01
+          - filthy-01
+          - grimy-01
+          - polluted-01
+        note: >
+          中文"脏"是一个宽泛的负面表面词，
+          从轻微沾灰（dirty）到极度肮脏（filthy）、
+          到油腻结垢（grimy）、再到水质污染（polluted）都用同一个字。
+          dirty 是这一谱系里最中性、程度最轻的默认词，
+          学习者需要按程度和污物类型进一步分化。
+      - l1_term: 脏乱
+        covers:
+          - dirty-01
+          - messy-01
+        note: >
+          中文"脏乱"常连用，使学习者把 dirty 和 messy 当成一体。
+          dirty 核心是表面附着污物（有污渍、灰尘、油腻），
+          messy 核心是位置无序（东西不在该在的地方）。
+          房间可以 dirty but not messy（物品摆放整齐但地板很脏），
+          也可以 messy but not dirty（东西乱放但每件都干净）。
+      - l1_term: 脏话／下流
+        covers:
+          - dirty-01
+          - dirty-02
+        note: >
+          中文用"脏"同时指物理不洁和言语内容的粗俗下流。
+          英文 dirty 也有此引申（dirty joke／dirty word），
+          但那是另一个义项 dirty-02，与本义项"物理表面不洁"须分开处理。
+
+# ============================================================
+# F. 场景要求
+# ============================================================
+scene_requirements:
+  must_show:
+    - 一个有明确表面的对象、身体部位或空间
+    - 表面上有清晰可见的污物——污渍、泥点、灰尘、油污
+    - 该污物与洁净部分形成明显对比
+    - 最好同时或先后展示同一对象的洁净状态作为对照
+
+  must_not:
+    - 不能只展示物品乱放而表面干净——那是 messy
+    - 不能把污秽推到极端令人作呕的程度——那滑向 filthy
+    - 不能展示液体／空气的杂质污染场景——那是 polluted
+    - 不能只暗示气味而画面上看不见任何污物
+
+  externalization:
+    - 手上、脸上沾着泥土或黑色污渍
+    - 白色衣物上有明显的斑点、油渍、草渍
+    - 餐盘上残留食物油腻、水杯有污垢圈
+    - 地板上有脚印、灰尘或洒落的污迹
+    - 擦拭动作：用抹布一擦，污物转移到抹布上、表面变干净
+    - 洗手／洗涤时污水变浑浊，凸显原先的不洁
+
+  timing: >
+    先让镜头停留在带有可见污物的表面，
+    让观众自行感知到"这不干净"，
+    再用目标词为这个可见状态命名；
+    可通过清洗前后的对比强化"洁净基准被偏离"的概念边界。

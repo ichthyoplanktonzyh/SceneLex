@@ -1,0 +1,52 @@
+# 原型场景: 首次建立 messy 概念
+# 设计依据: messy-01 scene_requirements —— 先让观众自行感知"乱", 再用声音命名
+id: messy-01-proto-01
+sense_ref: messy-01
+scene_type: prototype
+title: 放学后的房间
+synopsis: >
+  清晨整洁的卧室与傍晚被随手丢满东西的同一房间形成对照。
+  室友推门看到满地衣物书本, 说出目标词。
+
+storyboard:
+  - beat: 1
+    visual: >
+      清晨, 阳光照进一间整洁的卧室: 床铺平整, 书在书架上竖放,
+      桌面只有一台合上的笔记本电脑。年轻人背起书包出门。
+    audio: null
+    purpose: 建立该空间的"常规整洁状态"基线, 使后续无序可被对比感知
+
+  - beat: 2
+    visual: >
+      光线变为傍晚。年轻人回来: 外套甩在椅背上滑落到地上,
+      两只鞋踢向不同方向, 书包倒出书本摊在床上, 吃完的薯片袋留在桌面。
+    audio: "(开门声、物品落地声, 无语言)"
+    purpose: 展示无序的形成过程——物品逐一离开常规位置
+
+  - beat: 3
+    visual: >
+      全景镜头缓慢横扫房间: 衣服堆在地板, 被子团成一团,
+      书本方向不一地散在床和地上, 桌面杯子和零食袋混杂。
+    audio: null
+    purpose: 静默全景让观众自行完成"乱"的视觉判断——先有概念体验, 后有声音
+
+  - beat: 4
+    visual: 室友推开门, 停在门口, 目光从地板扫到床再到桌面, 眉毛挑起。
+    audio: null
+    purpose: 借第三者的注视引导观众再次扫描无序细节, 制造命名前的预期
+
+  - beat: 5
+    visual: 室友摊开双手环指整个房间, 摇头。
+    audio: "Wow... this room is SO messy!"
+    purpose: 在概念体验完成的时刻给出目标声音, 完成声音-意义绑定
+
+  - beat: 6
+    visual: 快速闪回清晨整洁状态一秒, 再切回当前状态。
+    audio: "So messy."
+    purpose: 用整洁/杂乱并置强化概念边界, 并重复目标声音
+
+learning_tasks:
+  - type: scene_recognition
+    prompt: 听声音 "messy", 从四张房间图片中选出与之匹配的一张。
+  - type: listen_and_match
+    prompt: 播放 "The room is messy." 从整洁房间与杂乱房间两个画面中选择。

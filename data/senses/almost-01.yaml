@@ -1,0 +1,136 @@
+# ============================================================
+# A. 基础词义信息
+# ============================================================
+id: almost-01
+word: almost
+pos: adverb
+sense_label: 接近但未达到
+definition: "Very nearly but not completely or not quite"
+
+frequency:
+  band: core
+  rank: 280
+difficulty: intermediate
+pronunciation:
+  ipa: /ˈɔːlmoʊst/
+
+collocations:
+  - almost finished
+  - almost there
+  - almost fell
+  - almost impossible
+  - almost everyone
+  - almost forgot
+
+sentence_patterns:
+  - "almost [past tense verb]"
+  - "almost [adjective]"
+  - "almost [quantifier/number]"
+  - "[subject] almost [verb]"
+
+# ============================================================
+# B. 语义类型
+# ============================================================
+# almost 本质是标量/程度词: "接近但未达到阈值"沿任意维度都成立
+# (almost full=容量, almost everyone=数量, almost fell=事件), 不限于时间
+semantic_type: scalar_degree
+
+# ============================================================
+# C. 语义骨架
+# ============================================================
+semantic_skeleton:
+  participants:
+    - role: target_state
+      description: 被接近的目标状态、事件或阈值
+    - role: actual_state
+      description: 实际到达的状态
+
+  propositions:
+    - 存在一个目标状态或事件，有可辨识的达成标准
+    - 实际状态沿某个维度向目标持续接近
+    - 接近程度极高——只差很小的距离、数量、时间或程度
+    - 目标状态最终未完全达成
+    - 这个"差一点"的间隙足以让观察者产生"几乎到了"的感知
+
+# ============================================================
+# D. 成立条件与排除条件
+# ============================================================
+conditions:
+  required:
+    - 目标状态有明确可辨识的达成界限
+    - 实际状态与该界限之间的距离极小
+    - 目标最终未达成——处于"差一点"的状态
+
+  excluded:
+    - condition: 距离目标仍然很远，过程尚在中途
+      alternative: not_yet-01
+    - condition: 目标已经完全达成
+      alternative: already-01
+    - condition: 实际值大约等于某个量，但不强调未达成
+      alternative: about-01
+    - condition: 目标勉强刚好达成
+      alternative: barely-01
+    - condition: 正在接近但过程尚未结束、结果未知
+      alternative: approaching-01
+
+# ============================================================
+# E. 概念关系
+# ============================================================
+relations:
+  synonyms:
+    - nearly-01
+  antonyms:
+    - completely-01
+    - fully-01
+  confusables:
+    - nearly-01
+    - barely-01
+    - about-01
+    - practically-01
+
+  l1_confusables:
+    zh:
+      - l1_term: 几乎
+        covers:
+          - almost-01
+          - nearly-01
+          - practically-01
+        note: >
+          中文"几乎"与 almost 高度对应，但在否定结构中
+          中文用"几乎不"（=hardly/barely），
+          而英文 almost not 罕见，用 hardly/barely 替代。
+          中文学习者容易把"几乎不"直译为 almost not。
+      - l1_term: 差点
+        covers:
+          - almost-01
+          - nearly-01
+        note: >
+          "差点"多用于未发生的负面事件（差点摔倒），
+          语用上偏向"庆幸没发生"。
+          almost 不限于负面事件，也无庆幸含义。
+
+# ============================================================
+# F. 场景要求
+# ============================================================
+scene_requirements:
+  must_show:
+    - 一个有明确终点或达成标准的事件过程
+    - 过程向终点逼近的可视化进展
+    - 在极度接近终点时停止或偏离
+    - 未达成的结果必须清晰可见——不能模糊
+
+  must_not:
+    - 不能只用旁白说"almost"而没有可视化的接近过程
+    - 不能让结果模糊不清——观众必须明确看到"没到"
+    - 不能与 barely（勉强达到）混淆——almost 是没达到
+
+  externalization:
+    - 物理距离：手差一点够到、球差一点进网
+    - 数量：瓶子几乎装满但差一小截
+    - 时间：差一秒赶上电梯但门关了
+    - 动作结果：杯子滑到桌边几乎掉下去但停住了
+    - 状态变化：冰块几乎完全融化但还剩一小块
+
+  timing: >
+    在事件接近临界点、观众产生"要发生了"的预期时，
+    用目标词命名这个"极度接近但未达成"的状态。

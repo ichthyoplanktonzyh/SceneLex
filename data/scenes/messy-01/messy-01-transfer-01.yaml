@@ -1,0 +1,48 @@
+# 迁移场景: 跨领域验证抽象概念
+# 设计依据: 概念不应绑定在"房间"上 —— 换空间类型(厨房)与对象类型(头发),
+# 验证学习者习得的是"可见的位置无序", 而非"那个乱房间"
+id: messy-01-transfer-01
+sense_ref: messy-01
+scene_type: transfer
+title: 厨房与头发
+synopsis: >
+  两段小片段: 做完饭的厨房台面, 与刚睡醒的头发。
+  环境、对象、人物全部更换, 仅"可见无序"这一深层结构保持不变。
+
+storyboard:
+  - beat: 1
+    visual: >
+      厨房, 烹饪刚结束: 台面上面粉撒开, 打蛋碗、量勺、切菜板层叠交错,
+      锅铲横在灶台上, 橱柜门半开。做饭的人擦着手看向台面。
+    audio: null
+    purpose: 迁移点一——空间从卧室换到厨房, 无序由烹饪自然产生而非乱丢
+
+  - beat: 2
+    visual: 做饭的人环视台面, 挽起袖子。
+    audio: "The kitchen is so messy after cooking."
+    purpose: 在新空间中重复声音-意义映射, 搭配也来自 collocations (messy kitchen)
+
+  - beat: 3
+    visual: >
+      切换: 清晨的洗手间镜子前, 一个刚睡醒的人——头发向四面翘起,
+      几缕压平几缕直立, 完全没有方向性。
+    audio: null
+    purpose: 迁移点二——对象从空间换成头发, 测试概念脱离"房间/物品"框架
+
+  - beat: 4
+    visual: 镜中人用手拨了拨头发, 头发弹回原样, 无奈地笑。
+    audio: "Look at my hair... so messy."
+    purpose: 在最远的迁移点上再次命名 (messy hair 为高频搭配), 完成泛化
+
+  - beat: 5
+    visual: 三画面并置一秒：杂乱卧室 / 杂乱厨房 / 乱翘的头发。
+    audio: "Messy. Messy. Messy."
+    purpose: 三个表面完全不同的画面共享同一个声音, 逼迫抽象结构浮现
+
+learning_tasks:
+  - type: transfer_judgment
+    prompt: >
+      展示从未出现过的新场景(散乱的工具棚/风后的庭院/整齐的图书馆),
+      学习者判断 messy 是否适用。
+  - type: produce
+    prompt: 展示一张字迹方向不一、涂改交叠的笔记照片, 引导学习者说出 "messy handwriting"。

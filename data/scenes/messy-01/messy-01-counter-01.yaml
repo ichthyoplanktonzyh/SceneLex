@@ -1,0 +1,39 @@
+# 反例场景: 这不是 messy
+# 设计依据: must_not —— 单个物品歪斜不构成 messy, 需要整体性无序
+id: messy-01-counter-01
+sense_ref: messy-01
+scene_type: counterexample
+contrast_target: neat-01
+title: 一本书不算乱
+synopsis: >
+  哥哥指责妹妹房间乱, 镜头揭示房间整洁如新——只有一本书斜放在桌上。
+  通过否定句式划出 messy 的下界。
+
+storyboard:
+  - beat: 1
+    visual: 哥哥站在妹妹房门口, 手指向房间内, 表情夸张地控诉。
+    audio: "Your room is messy!"
+    purpose: 先给出目标词的(错误)断言, 制造观众核验画面的动机
+
+  - beat: 2
+    visual: >
+      镜头进入房间缓慢扫视: 床铺平整, 衣柜关好, 书架整齐,
+      桌面干净——只有一本书没有对齐, 斜放在桌角。
+    audio: null
+    purpose: 让观众自行发现断言与画面不符——整体秩序完好, 仅一处微小偏离
+
+  - beat: 3
+    visual: 妹妹走到桌前, 用一根手指把那本书摆正, 转身看着哥哥, 摊手。
+    audio: "One book? That's not messy."
+    purpose: 用否定句式明确下界——单点偏离不构成整体无序
+
+  - beat: 4
+    visual: 快速闪切：原型场景中真正杂乱的房间画面一秒, 切回眼前整洁房间。
+    audio: "THAT is messy. This is not."
+    purpose: 正反例并置, 用同一声音的肯定/否定形式固定概念边界
+
+learning_tasks:
+  - type: transfer_judgment
+    prompt: >
+      连续展示五张图片(整体杂乱/仅一件物品歪斜/完全整洁/半数物品错位/空房间),
+      学习者对每张回答 "messy or not messy"。

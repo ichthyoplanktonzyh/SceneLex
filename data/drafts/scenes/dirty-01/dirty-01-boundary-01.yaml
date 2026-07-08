@@ -1,0 +1,56 @@
+# 边界场景: dirty vs filthy
+# 设计依据: l1_confusables.zh "脏" 谱系 + must_not "不能推到令人作呕的程度";
+# dirty 是这一程度谱系里最中性、最轻的默认词, filthy 是越过临界后的极端肮脏。
+# 用同一只盘子随时间加重, 让观众亲眼看到"跨越边界的瞬间"
+id: dirty-01-boundary-01
+sense_ref: dirty-01
+scene_type: boundary
+contrast_target: filthy-01
+title: 一只盘子越过的那条线
+synopsis: >
+  同一只餐盘, 从一顿饭后的油渍残羹(dirty), 到搁置多日、结垢发臭、
+  令人反胃(filthy)。程度在同一表面上连续加重, 边界的跨越被看见。
+target_learner:
+  l1: zh
+  life_context: home
+storyboard:
+  - beat: 1
+    visual: >
+      餐桌。一只白盘子, 刚吃完饭——沾着酱汁、几点油渍、残留几粒米饭。
+      看得出用过, 但只是需要洗一洗。
+    audio: "It's dirty. Just put it in the sink."
+    purpose: 建立 dirty 的典型区间——有可见污物、偏离洁净、但程度轻、语气中性
+
+  - beat: 2
+    visual: >
+      字幕跳到 "三天后"。同一只盘子被遗忘在水槽角落, 酱汁变干发硬,
+      油渍结成一层褐黄的垢, 边缘开始发暗。
+    audio: null
+    purpose: 让污物程度沿时间连续加重, 逼近临界——观众在同一表面上追踪变化
+
+  - beat: 3
+    visual: >
+      字幕跳到 "两周后"。盘子上结着黏腻发黑的厚垢, 泛起霉斑, 有人
+      凑近又猛地捂鼻后退。此刻它越过了 dirty 的上界。
+    audio: "(捂鼻, 干呕一声) Ugh..."
+    purpose: 展示"跨越边界的瞬间"——同一污物一旦到达令人作呕的程度, 词已不再是 dirty
+
+  - beat: 4
+    visual: 那人戴上手套、屏住呼吸才敢去碰, 用镊子似的两指把盘子拎起。
+    audio: "This isn't just dirty anymore. It's filthy."
+    purpose: 命名 filthy——用 "not just dirty anymore" 显式标出临界被越过, 程度轴换了词
+
+  - beat: 5
+    visual: >
+      分屏并置: 左侧第一天的盘子(油渍残羹, 直接下手拿); 右侧两周后的
+      盘子(结垢发霉, 戴手套捏着)。同一只盘, 两个词。
+    audio: "Dirty... you wash it. Filthy... you don't even want to touch it."
+    purpose: 把判据锚定到"程度与反应"这条轴上——轻可径直清洗(dirty), 重到不愿触碰(filthy)
+
+learning_tasks:
+  - type: transfer_judgment
+    prompt: >
+      播放三段画面(踩了几个脚印的地板/沾了点泥的运动鞋/多年无人清扫、
+      霉斑遍布的公厕), 学习者判断每段是 dirty 还是 filthy。
+  - type: contrast_choice
+    prompt: 展示一件洗过多次仍有淡淡汗渍的T恤和一件长年不洗、油腻发臭的外套, 让学习者各配一个词。

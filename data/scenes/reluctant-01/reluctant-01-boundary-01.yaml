@@ -1,0 +1,54 @@
+# 边界场景: reluctant vs slow
+# 设计依据: conditions.excluded —— "动作缓慢但不存在心理抵触"不是 reluctant;
+# "慢"是 reluctant 最常见的外化信号, 也因此是最危险的误读入口——
+# 必须展示"慢而无抗拒"来切断 慢=reluctant 的错误归纳
+id: reluctant-01-boundary-01
+sense_ref: reluctant-01
+scene_type: boundary
+contrast_target: slow-01
+title: 慢, 不等于不情愿
+synopsis: >
+  老人以极慢的速度给花园浇水——哼着歌, 微笑, 没有任何压力在场。
+  动作特征与 reluctant 高度相似, 但心理内核完全相反。
+
+storyboard:
+  - beat: 1
+    visual: >
+      清晨花园。老人缓慢地拧开水龙头, 缓慢地提起喷壶,
+      一步一步挪向花丛——动作速度与原型场景中拖延的少年几乎一致。
+    audio: "(轻松的哼歌声)"
+    purpose: 刻意复制 reluctant 的表层信号(慢), 制造边界试探
+
+  - beat: 2
+    visual: >
+      特写老人的脸: 微笑, 眼神落在花上, 神态松弛。
+      他在一朵花前停下, 俯身闻了闻, 又慢慢直起身。
+    audio: "(继续哼歌)"
+    purpose: 心理层证据：表情与朝向都指向任务本身——没有抗拒, 只有享受
+
+  - beat: 3
+    visual: 镜头环视四周：花园里只有老人一个人, 没有他人, 没有时钟, 没有清单。
+    audio: null
+    purpose: 骨架检查：外部压力这一必要参与者不在场——reluctant 缺少成立条件
+
+  - beat: 4
+    visual: 老人慢悠悠地给最后一盆花浇完水, 满意地拍拍手上的水珠。
+    audio: "Is he reluctant? No... he's just slow. He loves this."
+    purpose: >
+      用疑问句显式触发学习者的误判, 再当场否定——
+      慢是速度, reluctant 是速度背后的"不想"
+
+  - beat: 5
+    visual: >
+      分屏对照: 左侧少年拖步拎垃圾袋(皱眉+回望游戏);
+      右侧老人慢步提喷壶(微笑+注视花朵)。速度相同, 表情与朝向相反。
+    audio: "Same speed. Not the same feeling."
+    purpose: 把判据从"动作速度"重新锚定到"意愿的外化信号"上
+
+learning_tasks:
+  - type: transfer_judgment
+    prompt: >
+      播放三段慢动作短片(慢慢品茶的人/被催交作业后慢慢打开书包的学生/
+      悠闲散步的人), 学习者判断每段是否 reluctant。
+  - type: contrast_choice
+    prompt: 对判断为 reluctant 的片段, 让学习者指出画面中的"外部压力"是什么。

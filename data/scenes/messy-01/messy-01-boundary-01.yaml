@@ -1,0 +1,49 @@
+# 边界场景: messy vs cluttered
+# 设计依据: conditions.excluded —— "物品非常多但有秩序地堆放"是 cluttered 不是 messy;
+# 通过一次"越界事件"让边界被动态跨越, 观众亲眼看到概念切换的瞬间
+id: messy-01-boundary-01
+sense_ref: messy-01
+scene_type: boundary
+contrast_target: cluttered-01
+title: 满而不乱, 直到那一刻
+synopsis: >
+  一张堆满书和文件的书桌——数量极多但摞放整齐, 尚不构成 messy。
+  手肘碰倒一摞后, 秩序崩塌, 概念在观众眼前从"满"跨入"乱"。
+
+storyboard:
+  - beat: 1
+    visual: >
+      书桌全景: 桌面几乎没有空隙——十几摞书和文件占满桌面,
+      但每摞边缘对齐、方向一致, 便签按颜色排成一列。
+    audio: null
+    purpose: 呈现"数量极多但秩序完好"的临界状态, 诱发观众的错误预判
+
+  - beat: 2
+    visual: 主人在书摞间精准地抽出需要的一份文件, 毫不费力。
+    audio: "Full... but not messy. Everything is in its place."
+    purpose: 显式否定 messy——数量多不是判据, 秩序才是; "能立即找到"外化了秩序的存在
+
+  - beat: 3
+    visual: 主人转身接电话, 手肘扫到最高的一摞书。慢镜头：书摞倾倒, 连锁推倒相邻两摞。
+    audio: "(书本倾倒声)"
+    purpose: 制造跨越边界的单一事件, 让"有序→无序"的转变可被逐帧观察
+
+  - beat: 4
+    visual: >
+      同一张桌子: 书本文件方向杂乱地摊开互叠, 便签散落,
+      几本书滑落在地。主人低头看着桌面, 手停在半空。
+    audio: null
+    purpose: 静默展示越界后的状态, 让观众自行完成"现在是乱了"的判断
+
+  - beat: 5
+    visual: 主人叹气, 环视桌面。
+    audio: "NOW it's messy."
+    purpose: 用 now 标记概念切换的时间点——同一桌面、同一批物品, 仅秩序改变
+
+learning_tasks:
+  - type: contrast_choice
+    prompt: >
+      展示三张桌面图片(东西少而散乱/东西多而整齐/东西多而散乱),
+      学习者选出哪些是 messy。
+  - type: transfer_judgment
+    prompt: 展示一个塞满但分类整齐的储物间, 问 "Is it messy?"

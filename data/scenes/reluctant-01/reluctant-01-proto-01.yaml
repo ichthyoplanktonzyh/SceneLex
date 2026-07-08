@@ -1,0 +1,53 @@
+# 原型场景: 首次建立 reluctant 概念
+# 设计依据: semantic_skeleton —— 外部压力 + 内心抗拒 + 行动仍发生;
+# 全部依靠行为外化(拖延/停顿/身体方向/叹气), 禁止台词直述心理
+id: reluctant-01-proto-01
+sense_ref: reluctant-01
+scene_type: prototype
+title: 去倒垃圾
+synopsis: >
+  少年正玩得投入, 母亲要求他立刻去倒垃圾。他叹气、拖延、
+  拎垃圾袋时身体仍朝向游戏——最终还是去了, 每一步都写着不情愿。
+
+storyboard:
+  - beat: 1
+    visual: 少年盘腿坐在沙发上打游戏, 身体前倾, 完全投入, 表情兴奋。
+    audio: "(游戏音效)"
+    purpose: 建立"人物有更想做的事"——为不情愿提供动机基础
+
+  - beat: 2
+    visual: 母亲拎着系好的垃圾袋出现在客厅门口, 把袋子放在少年脚边, 指了指门。
+    audio: "Take out the trash. Now, please."
+    purpose: 外部压力出现——明确、有权威、不可回避的行动要求
+
+  - beat: 3
+    visual: >
+      少年动作停住, 肩膀垮下来, 长叹一口气。他没有立刻动,
+      眼睛仍盯着屏幕, 手指又按了两下手柄。
+    audio: "(长叹气声)"
+    purpose: 抗拒外化第一层：停顿+叹气+视线滞留——想做的事还没放下
+
+  - beat: 4
+    visual: >
+      少年以极慢的速度放下手柄, 慢吞吞起身, 弯腰用两根手指
+      拎起垃圾袋, 手臂伸得远远的, 头还回望屏幕。
+    audio: "Do I HAVE to?"
+    purpose: 抗拒外化第二层：动作迟缓+最小接触+身体朝向背离任务+语言拖延
+
+  - beat: 5
+    visual: 少年拖着脚步挪向门口, 每步都很小, 中途又回头看了一眼游戏画面。
+    audio: null
+    purpose: 抗拒外化第三层：拖步+回望——行动已开始但意愿始终缺席
+
+  - beat: 6
+    visual: 少年终于出门。母亲在他身后摇头轻笑, 对镜头方向耸肩。
+    audio: "He's always so reluctant to leave his game."
+    purpose: >
+      在"最终行动但满身不情愿"的时刻给出目标词——
+      骨架五条命题(要求/抗拒/压力/仍执行/外化)此刻全部在场
+
+learning_tasks:
+  - type: scene_recognition
+    prompt: 听 "reluctant", 从四段短片(兴奋起身/拖延起身/拒绝不动/平静起身)中选择匹配的一段。
+  - type: listen_and_match
+    prompt: 播放 "He is reluctant to go." 在两段画面(蹦跳出门/拖步出门)中选择。
