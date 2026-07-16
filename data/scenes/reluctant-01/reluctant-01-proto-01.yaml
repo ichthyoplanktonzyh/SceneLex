@@ -1,6 +1,10 @@
 # 原型场景: 首次建立 reluctant 概念
-# 设计依据: semantic_skeleton —— 外部压力 + 内心抗拒 + 行动仍发生;
+# 设计依据: semantic_skeleton —— 动作进入考虑范围 + 内心抗拒 + 行为外化;
 # 全部依靠行为外化(拖延/停顿/身体方向/叹气), 禁止台词直述心理
+schema_version: "1.0"
+version: 1
+status: reviewed
+
 id: reluctant-01-proto-01
 sense_ref: reluctant-01
 scene_type: prototype
@@ -43,8 +47,8 @@ storyboard:
     visual: 少年终于出门。母亲在他身后摇头轻笑, 对镜头方向耸肩。
     audio: "He's always so reluctant to leave his game."
     purpose: >
-      在"最终行动但满身不情愿"的时刻给出目标词——
-      骨架五条命题(要求/抗拒/压力/仍执行/外化)此刻全部在场
+      在抗拒已被充分外化且人物开始行动的原型时刻给出目标词；
+      “开始行动”增强样本典型性，但不是该词义在所有语境中的必要结果
 
 learning_tasks:
   - type: scene_recognition

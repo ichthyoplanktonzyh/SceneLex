@@ -1,14 +1,19 @@
-# 反例场景: 这不是 reluctant, 这是 refuse
-# 设计依据: conditions.excluded —— "已明确拒绝并终止行动"是 refuse;
-# reluctant 的必要条件是"行动仍有现实可能", 拒绝+离场使该条件失效
+# 反例场景: refuse 不能单独证明 reluctant
+# 设计依据: refuse 描述可观察的拒绝行为, reluctant 描述意愿状态;
+# 两者可能共现, 但仅看见拒绝结果时不能反推出此前一定有 reluctant 的过程
+schema_version: "1.0"
+version: 1
+status: reviewed
+
 id: reluctant-01-counter-01
 sense_ref: reluctant-01
 scene_type: counterexample
 contrast_target: refuse-01
-title: 他不是不情愿, 他是拒绝了
+contrast_relation: different_dimension
+title: 看得见拒绝, 但不能擅自推断不情愿
 synopsis: >
-  与原型场景同构的设定: 被要求做事。但人物直接说不、转身离开——
-  行动被终止, reluctant 不再成立。
+  与原型场景同构的设定: 被要求做事。但人物直接、平静地说不并离开。
+  画面只能证明发生了 refuse, 没有提供足够线索证明 reluctant；两词并非互斥。
 
 storyboard:
   - beat: 1
@@ -19,30 +24,30 @@ storyboard:
   - beat: 2
     visual: 员工看了一眼文件, 又看了一眼经理, 表情平静而坚决。
     audio: null
-    purpose: 短暂的静默制造分岔预期——观众此刻无法区分将是 reluctant 还是 refuse
+    purpose: 短暂的静默制造分岔预期——观众此刻还不知道人物的意愿状态或后续行为
 
   - beat: 3
     visual: 员工摇头, 把文件轻轻推回经理面前, 拿起外套。
     audio: "No. I'm going home."
-    purpose: 分岔揭晓：明确说不+终止行动——不存在"不想做但还是做"的过程
+    purpose: 明确建立 refuse 的行为证据；平静果断的反应没有提供拖延、回避等 reluctant 线索
 
   - beat: 4
     visual: 员工走出办公室, 门关上。桌上的文件原封未动。
     audio: null
     purpose: >
-      "文件原封未动"外化了行动的终止——reluctant 的核心条件已不可能成立
+      "文件原封未动"只证明任务未执行；它不能单独证明人物此前是否 reluctant
 
   - beat: 5
     visual: >
       画面分屏回放: 左侧是原型场景少年拖着脚步拎垃圾袋出门;
       右侧是员工推回文件离开。
-    audio: "THIS is reluctant. THAT is not — he refused."
-    purpose: 正反例并置命名：同样不想做, 一个仍在做(reluctant), 一个终止了(refuse)
+    audio: "He refused. Was he reluctant? We don't know."
+    purpose: 明确证据边界：行为结果支持 refuse, 但不足以推断内部意愿；两者在其他情境可以共现
 
 learning_tasks:
   - type: transfer_judgment
     prompt: >
-      连续播放三段短片(叹气后慢慢收拾行李/把邀请函撕掉转身走/
-      笑着立刻答应), 学习者对每段回答 "reluctant or not"。
+      连续播放三段短片(叹气后慢慢收拾行李/平静地拒绝邀请/
+      笑着立刻答应), 学习者判断哪些画面有足够证据支持 reluctant。
   - type: contrast_choice
-    prompt: 对上述判断为 not 的短片, 追问更合适的词是 refuse 还是 eager。
+    prompt: 对平静拒绝的短片追问：能确定的是 refuse，还是 reluctant，还是两者都能确定？

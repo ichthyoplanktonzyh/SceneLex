@@ -2,7 +2,8 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "learner-profile.schema.json",
   "title": "LearnerProfile",
-  "description": "学习者画像 — 个性化引擎用于选择经验入口的依据",
+  "$comment": "消费者侧示例，不属于 SceneLex 核心资源契约或身份权威",
+  "description": "学习者画像示例 — 消费者可用它选择 SceneLex 资源，但应自行拥有和版本化学习记录",
   "type": "object",
   "required": ["id", "l1"],
   "properties": {

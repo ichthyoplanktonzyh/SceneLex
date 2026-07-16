@@ -1,6 +1,11 @@
 # ============================================================
 # A. 基础词义信息
 # ============================================================
+schema_version: "1.0"
+language: en
+version: 1
+status: reviewed
+
 id: almost-01
 word: almost
 pos: adverb

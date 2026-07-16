@@ -1,98 +1,170 @@
 # SceneLex
 
-> 为每个词义建立可验证的语义规格，并用最有效的媒介（场景、对比、必要时包括 L1）把它教准。
+> 可验证的词义边界 + 能证明学习迁移的场景证据。
 
-SceneLex 是一套"场景即释义"的语言学习系统的**语义骨架层**。它不生成视频、不绑定任何模型——它定义词义的语义规格与场景的教学规格，下游的生成模型只是可替换的渲染后端。
+SceneLex 是一套可独立发布、版本化和复用的**词义语义资源与教学证据库**。它为每个可教学词义建立机器可验证的语义规格，并用原型、对比、反例、边界和迁移场景提供可观察证据。
 
-理论全文见 [一、先明确系统最终要解决什么问题.md](一、先明确系统最终要解决什么问题.md)。
+SceneLex 不是某个学习 App 的内部素材目录，也不由某个词典、播放器、课程或模型厂商定义。学习产品是资源消费者之一，同时也是验证这些资源是否真的产生理解、区分和迁移效果的重要实验端。
 
-## 已定决策
+理论全文见 [一、先明确系统最终要解决什么问题.md](一、先明确系统最终要解决什么问题.md)。仓库约束见 [AGENT.md](AGENT.md)。
+第一轮实证方案见 [docs/mvp-evaluation.md](docs/mvp-evaluation.md)。
 
-1. **全量覆盖，而非只做"难词"**。系统的差异化价值集中在翻译教不准的词（L1 边界错位词、心理/逻辑词），但 AI 时代材料生成成本低，简单词也纳入——不做全就不成系统。
-2. **个性化后置**。先做通用场景。个性化本身需要分层设计（文化/国别层 vs 个人层），属于后期工作；schema 中的 learner-profile 与 target_learner 字段为其预留位置。
-3. **句法层后置**。当前只做词义接地层（scene → word）；scene → phrase/sentence/dialogue 是验证词义层之后的扩展。
-4. **生成层模型无关**。scene-spec 是纯文本的中间表示（IR），不含任何模型名或生成参数。具体调用哪个大模型/视频模型按需决定，属于适配器层。
-
-## 三层架构
+## 核心产物
 
 ```text
-通用语义骨架 (data/senses)   —— 词义的成立/排除条件, 独立于文化
-个性化经验渲染 (后置)         —— 同一骨架的不同表面
-跨场景概念泛化 (场景组结构)   —— 原型/对比/反例/边界/迁移
+word sense specification
+  ├── 成立条件与真正的排除条件
+  ├── 包含、重叠、程度、正交和多义关系
+  ├── L1 特定混淆
+  └── 可由场景验证的边界判据
+              ↓
+teaching-scene evidence
+  ├── prototype      建立概念
+  ├── contrast       区分相邻概念，也允许明确共现
+  ├── counterexample 证明某些线索不足以支持目标义项
+  ├── boundary       测试临界、包含和用词偏好
+  └── transfer       跨至少两个表面维度验证泛化
+              ↓
+reviewed / published resource bundle
+              ↓
+词典 · 课程 · 播放器 · API · 学习实验 · 研究工具
 ```
+
+五类场景是五种教学证据功能，不是永远固定为“一类一条”的产品限制。当前起草工具仍生成完整五类场景组，便于 MVP 比较；未来发布门应按证据覆盖与实验结果决定所需数量。
+
+## 权威边界
+
+- `schema/word-sense.schema.json`：词义、概念关系、来源与版本契约。
+- `schema/scene-spec.schema.json`：模型无关的场景与学习任务契约。
+- `schema/resource-bundle.schema.json`：给外部消费者的资源包契约。
+- `data/senses/`、`data/scenes/`：已审核资源，是仓库语义权威。
+- `data/drafts/`：待审内容，绝不进入默认导出。
+- `prompts/`：起草辅助，不是权威数据。
+- `examples/consumer/`：消费者侧示例，不属于 SceneLex 核心身份或学习记录模型。
+
+渲染模型、TTS、图片、视频、HTTP 服务和学习者数据都在适配器或消费者侧。它们可以引用稳定的 `sense_id`、`scene_id` 和资源版本，但不能反过来改变核心词义。
 
 ## 目录结构
 
 ```text
-schema/
-  word-sense.schema.json      词义规格: 语义骨架、成立/排除条件、L1 混淆、场景要求
-  scene-spec.schema.json      场景规格: 分镜节拍、声画时序、学习任务 (模型无关 IR)
-  learner-profile.schema.json 学习者画像 (个性化后置, 先行预留)
-data/
-  senses/{word}-{nn}.yaml     词义数据, 文件名 = id
-  scenes/{sense_id}/          每个词义一个目录, 五类场景:
-    {sense_id}-proto-{nn}.yaml      原型: 首次建立概念
-    {sense_id}-contrast-{nn}.yaml   对比: 与近义词切分 (需 contrast_target)
-    {sense_id}-counter-{nn}.yaml    反例: 划出概念下界
-    {sense_id}-boundary-{nn}.yaml   边界: 接近但不成立的临界案例 (需 contrast_target)
-    {sense_id}-transfer-{nn}.yaml   迁移: 跨领域验证抽象
-data/drafts/                  起草待审区，与正式库隔离；审阅后 promote 入库
-prompts/
-  sense-draft.md              词义起草提示词模板
-  scene-draft.md              场景组起草提示词模板
-tools/
-  validate.py                 数据校验器
-  llm.py                      生成层适配器（模型无关，后端可换）
-  draft.py                    内容起草工具（管线第 2、3 阶段）
+schema/                      核心公开数据契约
+data/senses/                 正式词义资源
+data/scenes/{sense_id}/      正式场景证据
+data/drafts/                 隔离草稿
+prompts/                     LLM 起草模板
+tools/draft.py               起草与发布前编排
+tools/llm.py                 多协议 LLM 适配器
+tools/validate.py            正式库发布门
+tools/export.py              面向消费者的确定性 JSON 导出
+examples/consumer/           非权威消费者示例
+tests/                       工具链回归测试
 ```
 
-## 内容生产管线
-
-系统的最简形态就是一条内容生产工作流，学习端是附加层。六阶段：
+## 内容工作流
 
 ```text
-1 选词      backlog / 词频 → 候选词
-2 词义起草  LLM 按 schema+范例起草 → 校验 → 人工定稿
-3 场景组起草 LLM 按词义规格编译五类场景 → 校验 → 人工定稿
-4 渲染      场景规格 → 适配器层(图像/视频/TTS，按需选模型) → 素材
-5 审核      语言/场景/教学三层审核
-6 发布      素材与规格绑定入库
+candidate
+→ sense draft
+→ 人工语义审核
+→ scene evidence draft
+→ 语言 / 场景 / 教学审核
+→ 隔离目录全量校验
+→ reviewed resource
+→ 学习实验与外部反馈
+→ published resource bundle
 ```
 
-阶段 2、3 已由 `tools/draft.py` 自动化，人从"作者"变为"编辑"：
+常用命令：
 
 ```bash
-python3 tools/draft.py backlog          # 选词：输出待建义项清单
-python3 tools/draft.py sense dirty      # 起草词义 → data/drafts/senses/
-python3 tools/draft.py scenes dirty-01  # 起草五场景组 → data/drafts/scenes/
-python3 tools/draft.py list             # 列出待审草稿
-# —— 人工审阅草稿，改到满意 ——
-python3 tools/draft.py promote dirty-01 # 定稿入库并跑全量校验
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements-dev.txt
+
+python3 tools/draft.py backlog
+python3 tools/draft.py sense dirty
+python3 tools/draft.py scenes dirty-01
+python3 tools/draft.py list
+python3 tools/draft.py promote dirty-01
+
+python3 tools/validate.py --backlog
+python3 tools/export.py --version 0.1.0 --output dist/scenelex-0.1.0.json
+python3 -m pytest -q
 ```
 
-生成层模型无关：调用哪个模型由 `tools/llm.py` 决定，通过环境变量切换，与场景规格（纯文本 IR）解耦。
+`promote` 会先把候选资源与整个正式库合并到隔离目录中，通过全量校验后再原子移动；不会再出现“先污染正式库、后发现校验失败”。默认导出包含 `reviewed` 与 `published`，发布消费者可使用 `--published-only`。
+
+## LLM API：按协议兼容，不绑定厂商
+
+所有生成调用只依赖 `tools.llm.generate(prompt)`。模型名、API Key、URL、认证头和协议只存在于适配层，不进入 Schema 或正式资源。
+
+支持的协议：
+
+| `SCENELEX_LLM_PROTOCOL` | 协议 | 典型用途 |
+|---|---|---|
+| `openai-responses` | Responses 风格 | OpenAI 或实现该格式的网关 |
+| `openai-chat` | Chat Completions 风格 | OpenAI-compatible 厂商、网关、本地服务；Gemini 兼容入口也可使用 |
+| `anthropic` | Messages 风格 | Anthropic 或兼容代理 |
+| `command` | stdin/stdout | 任意本地 CLI |
+
+OpenAI Responses 示例：
 
 ```bash
-SCENELEX_LLM_BACKEND=claude-cli|anthropic   # 默认：有 ANTHROPIC_API_KEY 用 anthropic，否则 claude-cli
-SCENELEX_LLM_MODEL=<模型名>                  # 可选，默认 claude-opus-4-8
+export SCENELEX_LLM_PROTOCOL=openai-responses
+export SCENELEX_LLM_MODEL=<model-id>
+export SCENELEX_LLM_API_KEY=<api-key>
+export SCENELEX_LLM_BASE_URL=https://api.openai.com/v1
 ```
 
-## 校验与手写
+任意 OpenAI-compatible Chat Completions 示例：
 
 ```bash
-python3 tools/validate.py            # 校验全部数据 (schema/ID 约定/引用完整性/场景组覆盖)
-python3 tools/validate.py --backlog  # 输出"被引用但未建"的义项清单 = 下一批选词候选
+export SCENELEX_LLM_PROTOCOL=openai-chat
+export SCENELEX_LLM_MODEL=<model-id>
+export SCENELEX_LLM_API_KEY=<api-key>
+export SCENELEX_LLM_BASE_URL=<compatible-v1-base-url>
 ```
 
-手写路径仍可用：复制 `data/senses/` 下任一文件为模板，按 A–F 分区填写，跑校验。
-新增场景：为该词义建目录，五类场景各至少一个；分镜写作规则——
-先让观众完成概念体验，再出现目标声音；心理状态必须行为外化，禁止台词直述（如 "I'm reluctant"）。
+Anthropic Messages 示例：
 
-注意：YAML 无引号标量内不要使用 ASCII `": "`（用中文全角冒号），英文台词一律加双引号。
+```bash
+export SCENELEX_LLM_PROTOCOL=anthropic
+export SCENELEX_LLM_MODEL=<model-id>
+export SCENELEX_LLM_API_KEY=<api-key>
+export SCENELEX_LLM_BASE_URL=https://api.anthropic.com/v1
+```
 
-## 当前状态 (2026-07)
+特殊网关可以使用：
 
-- 词义 3 条：messy-01、reluctant-01、almost-01（覆盖属性/心理状态/标量程度三类）
-- 场景组 2 组完整（messy-01、reluctant-01 各 5 场景）；almost-01 场景组待建
-- 悬空引用 backlog 34 条，高频者（nearly/dirty/chaotic/refuse/unwilling/untidy）为下一批建库优先
-- 下一步：almost-01 场景组 → 按 backlog 扩词义至 30–50 条（MVP 规模）→ 学习流程设计
+- `SCENELEX_LLM_ENDPOINT`：覆盖完整请求地址；
+- `SCENELEX_LLM_API_KEY_HEADER`：修改认证头名；
+- `SCENELEX_LLM_AUTH_SCHEME`：修改或清空 `Bearer` 前缀；
+- `SCENELEX_LLM_HEADERS_JSON`：增加字符串类型的自定义请求头；
+- `SCENELEX_LLM_MAX_TOKENS`、`SCENELEX_LLM_TIMEOUT`：控制输出和超时；
+- `SCENELEX_LLM_COMMAND`：配置本地命令。
+
+`command` 中可使用 `{model}` 占位符，例如
+`SCENELEX_LLM_COMMAND='my-llm --model {model} --print'`。适配器不会假设任意 CLI
+都支持 `--model`，完整参数由调用者控制。
+
+不配置协议时工具会明确报错，不会静默选择某个厂商。供应商特有的工具调用、缓存、推理参数等高级能力应放在新的协议适配器中，不能污染资源契约。
+
+协议实现参考官方文档：[OpenAI Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create)、[Anthropic Messages API](https://platform.claude.com/docs/en/api/messages)、[Gemini 的 OpenAI compatibility](https://ai.google.dev/gemini-api/docs/openai)。兼容层只承诺当前内容起草所需的单轮文本生成；多模态、工具调用和厂商特有能力需要单独的能力测试。
+
+## 当前状态与近期路线
+
+- 正式义项 3 条：`messy-01`、`reluctant-01`、`almost-01`。
+- 正式场景 10 条；前两个义项有完整五类证据，`almost-01` 待建。
+- `dirty-01` 及其五类场景位于草稿区。
+- 当前正式资源状态为 `reviewed`，尚未宣称 `published`。
+
+近期不以扩到 30–50 个义项为第一目标。先选择 6–10 个高价值义项做薄而完整的实验闭环：
+
+```text
+资源规格 → 低成本渲染 → 可评分任务
+→ 翻译/普通图片/场景证据对照
+→ 即时理解、相邻词区分、迁移和延迟保持
+→ 修订资源 → 再扩库
+```
+
+规模化的前提不是“Schema 能通过”，而是资源在新场景中确实产生了可复现的学习迁移。

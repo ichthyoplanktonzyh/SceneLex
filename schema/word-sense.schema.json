@@ -4,11 +4,32 @@
   "title": "WordSense",
   "description": "SceneLex 词义对象 — 语义内核的基本单位。ID 约定: {word}-{nn}, 如 reluctant-01, run-03",
   "type": "object",
-  "required": ["id", "word", "pos", "sense_label", "semantic_type", "semantic_skeleton", "conditions"],
+  "required": ["schema_version", "language", "version", "status", "id", "word", "pos", "sense_label", "semantic_type", "semantic_skeleton", "conditions"],
+  "additionalProperties": false,
   "properties": {
+
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "language": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}$",
+      "description": "本义项所属语言的 ISO 639 代码"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "该稳定义项 ID 下的内容版本"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "reviewed", "published", "deprecated"]
+    },
 
     "id": {
       "type": "string",
+      "pattern": "^[a-z][a-z_]*-[0-9]{2}$",
       "description": "唯一义项标识符: {word}-{nn}"
     },
     "word": {
@@ -29,6 +50,7 @@
 
     "frequency": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "band": {
           "type": "string",
@@ -49,6 +71,7 @@
     },
     "pronunciation": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "ipa": { "type": "string" },
         "audio_ref": { "type": "string" }
@@ -87,13 +110,15 @@
     "semantic_skeleton": {
       "type": "object",
       "required": ["propositions"],
-      "description": "词义的深层语义结构 — 独立于文化，可被场景渲染",
+      "additionalProperties": false,
+      "description": "词义的深层语义假设 — 与具体渲染解耦，可跨场景和跨文化检验",
       "properties": {
         "participants": {
           "type": "array",
           "items": {
             "type": "object",
             "required": ["role", "description"],
+            "additionalProperties": false,
             "properties": {
               "role": {
                 "type": "string",
@@ -115,17 +140,21 @@
     "conditions": {
       "type": "object",
       "required": ["required", "excluded"],
+      "additionalProperties": false,
       "properties": {
         "required": {
           "type": "array",
           "items": { "type": "string" },
+          "minItems": 1,
           "description": "该义项成立的必要条件"
         },
         "excluded": {
           "type": "array",
+          "minItems": 1,
           "items": {
             "type": "object",
             "required": ["condition"],
+            "additionalProperties": false,
             "properties": {
               "condition": {
                 "type": "string",
@@ -144,6 +173,7 @@
 
     "relations": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "synonyms": {
           "type": "array",
@@ -169,6 +199,41 @@
           "items": { "type": "string" },
           "description": "容易与之混淆的义项ID"
         },
+        "boundaries": {
+          "type": "array",
+          "description": "可验证的词义边界；显式表达互斥、包含或重叠，不能把近义词一律当成互斥分类",
+          "items": {
+            "type": "object",
+            "required": ["target", "relation", "distinction", "diagnostic"],
+            "additionalProperties": false,
+            "properties": {
+              "target": {
+                "type": "string",
+                "pattern": "^[a-z][a-z_]*-[0-9]{2}$"
+              },
+              "relation": {
+                "type": "string",
+                "enum": [
+                  "mutually_exclusive",
+                  "overlaps",
+                  "target_more_specific",
+                  "target_more_general",
+                  "degree_neighbor",
+                  "different_dimension",
+                  "different_sense"
+                ]
+              },
+              "distinction": {
+                "type": "string",
+                "description": "两个义项的区别轴及可能重叠关系"
+              },
+              "diagnostic": {
+                "type": "string",
+                "description": "可由场景或语境验证的判据"
+              }
+            }
+          }
+        },
         "l1_confusables": {
           "type": "object",
           "description": "L1 特定的混淆模式，按 ISO 639-1 语言代码索引",
@@ -177,6 +242,7 @@
             "items": {
               "type": "object",
               "required": ["l1_term", "covers"],
+              "additionalProperties": false,
               "properties": {
                 "l1_term": {
                   "type": "string",
@@ -200,6 +266,7 @@
 
     "scene_requirements": {
       "type": "object",
+      "additionalProperties": false,
       "description": "该义项被场景表达时的约束",
       "properties": {
         "must_show": {
@@ -220,6 +287,34 @@
         "timing": {
           "type": "string",
           "description": "目标表达相对于场景事件的出现时机"
+        }
+      }
+    },
+
+    "provenance": {
+      "type": "object",
+      "description": "支持词义分析的可追溯来源；published 资源应填写",
+      "additionalProperties": false,
+      "properties": {
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type", "citation"],
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["dictionary", "corpus", "research", "expert_review", "other"]
+              },
+              "citation": { "type": "string" },
+              "license": { "type": "string" }
+            }
+          }
+        },
+        "reviewed_by": {
+          "type": "array",
+          "items": { "type": "string" }
         }
       }
     }

@@ -1,9 +1,17 @@
 # 迁移场景: 跨领域验证抽象概念
 # 设计依据: 概念不应绑定在"少年倒垃圾"上 —— 更换参与者类型(动物)
 # 与压力类型(社交/自尊), 验证骨架五命题在陌生表面下仍可识别
+schema_version: "1.0"
+version: 1
+status: reviewed
+
 id: reluctant-01-transfer-01
 sense_ref: reluctant-01
 scene_type: transfer
+transfer_dimensions:
+  - participant_type
+  - target_action
+  - pressure_source
 title: 洗澡的狗与道歉的人
 synopsis: >
   两段小片段: 被牵向浴缸、四爪撑地的狗; 在朋友注视下终于承认
@@ -16,8 +24,8 @@ storyboard:
       被一点点拖着滑过地板——但没有挣脱, 也没有咬绳。
     audio: "Bath time! Come on..."
     purpose: >
-      迁移点一——参与者从人换成狗: 压力(主人+绳子)、抗拒(撑地后倾)、
-      仍在移动(未终止), 骨架完整而表面全新
+      迁移点一——参与者从人换成狗: 情境(主人+绳子)、抗拒(撑地后倾)、
+      可观察线索完整而表面全新；移动结果只是本例情节，不作为词义必要条件
 
   - beat: 2
     visual: 狗最终蹭进浴室, 自己慢慢跨进浴缸, 耳朵耷拉, 眼神哀怨地看着主人。

@@ -6,7 +6,7 @@
 
 ## 项目定位
 
-SceneLex 是一个以“场景即释义”为核心的语言学习系统和内容生产系统。
+SceneLex 是一个以“场景即释义”为方法的词义语义资源与教学证据系统。
 它的基本任务不是给单词附加文字翻译，也不是制作孤立的视频素材，而是：
 
 ```text
@@ -14,16 +14,16 @@ L2 声音 → 场景与经验 → 概念
 ```
 
 为每一个可教学的 **词义** 建立可验证的语义规格，并将其编译为一组能建立、
-区分和迁移该概念的教学场景。它的长期能力包括：语义建模、场景设计、
-个性化经验渲染、学习任务、内容审核与学习效果验证。
+区分和迁移该概念的教学场景证据。核心资产是可独立发布、版本化并由词典、
+课程、播放器、API、实验工具等多个消费者复用的资源，而不是某个学习 App 的内部数据。
 
 **资源生成是 SceneLex 的核心定位之一。** 但 SceneLex 当前首先维护的是
 模型无关的语义与场景中间表示（IR）；图片、动画、视频、TTS 或交互素材都是
 可替换渲染后端的产物，而不是项目的语义权威。
 
-下游词典、播放器、课程或 API 是 SceneLex 可以服务的消费端，不定义
-SceneLex 的核心模型。尤其不要为某一个下游项目的当前数据形状、UI 或网络协议
-扭曲义项身份、场景规格或内容生产流程。
+下游词典、播放器、课程、学习实验或 API 都是消费端，不定义 SceneLex 的核心模型。
+学习流程是验证资源是否有效的重要消费者，但不拥有这些资源。尤其不要为某一个
+下游项目的当前数据形状、UI、用户画像或网络协议扭曲义项身份和场景证据。
 
 ## 核心原则
 
@@ -33,14 +33,18 @@ SceneLex 的核心模型。尤其不要为某一个下游项目的当前数据�
    不可替代地支持。
 3. **先经验与声音，后文字。** 通常先让学习者看见语义事件，再在恰当时机出现 L2
    声音；文字和 L1 可以是辅助，不应抢占默认意义通道。
-4. **一个词义需要场景组。** 原型、对比、反例、边界、迁移共同处理指称不确定性；
-   单个“好视频”不能证明词义已经建立。
-5. **语义骨架通用，教学入口可个性化。** 文化无关的成立条件与参与者结构是权威；
-   L1、生活经验和学习阶段只影响场景选择、对比顺序和表面渲染。
+4. **一个词义需要证据组。** 原型、对比、反例、边界、迁移是五种教学功能；
+   当前 MVP 默认各生成一个，但最终数量由证据覆盖和学习实验决定。
+5. **语义骨架与具体渲染解耦。** 词义骨架描述语言共同体中的可检验假设，不绑定某个
+   房间、职业或文化脚本；L1、生活经验和学习阶段影响边界重点、场景选择与表面渲染。
 6. **生成不等于发布。** LLM 或渲染模型可以起草和生成，但不会自动成为正式内容；
    内容必须通过语言、场景和教学三层审核，并最终接受学习效果验证。
 7. **不把翻译绝对化或妖魔化。** L1 可用于澄清抽象概念、纠正边界误解或提高效率，
    但不能替代声音—经验连接。
+8. **相邻概念不必互斥。** 词义可能包含、重叠、处于同一程度轴、属于不同维度或
+   只是同形多义；排除条件只写真正不成立的情况，关系逻辑必须显式记录。
+9. **API 按协议适配。** 模型名、厂商、URL、认证和生成参数只能存在于适配层；
+   正式资源和公开 Schema 不绑定任何模型厂商。
 
 ## 当前架构与权威边界
 
@@ -49,11 +53,11 @@ word sense specification
         ↓
 semantic skeleton + inclusion/exclusion conditions + L1 confusables
         ↓
-five-scene teaching specification (model-neutral IR)
+teaching-scene evidence specification (model-neutral IR)
         ↓
 renderer adapters (image / video / TTS / interactive)
         ↓
-reviewed, versioned teaching resources
+reviewed, versioned semantic resources
         ↓
 learning clients, APIs, or content packages
 ```
@@ -62,6 +66,7 @@ learning clients, APIs, or content packages
 
 - `schema/`：机器可验证的公开数据契约。先改 schema，再改依赖它的数据、提示词、
   校验器与下游编译器。
+- `schema/resource-bundle.schema.json`：面向外部消费者的确定性资源包契约。
 - `data/senses/`：已审核的正式义项库；文件名必须等于义项 ID。
 - `data/scenes/{sense_id}/`：已审核的正式场景规格；一个义项对应一个目录。
 - `data/drafts/`：待审草稿隔离区，绝不可被当作已发布内容或默认词典结果。
@@ -69,23 +74,27 @@ learning clients, APIs, or content packages
 - `tools/draft.py`：词义/场景草稿生产编排。
 - `tools/llm.py`：可替换 LLM 适配器；模型选择不得泄漏到 schema/正式 IR。
 - `tools/validate.py`：正式库的最低一致性校验，不替代语言、场景或教学审核。
+- `tools/export.py`：只从正式库导出消费者资源包；草稿不得进入默认导出。
+- `examples/consumer/`：消费者侧示例，不是 SceneLex 核心身份或学习记录模型。
 
 ## 数据与内容不变量
 
 - 义项 ID 为 `{word}-{nn}`，例如 `reluctant-01`；场景 ID 为
   `{sense_id}-{type}-{nn}`。ID 是稳定引用，重命名或重新编号是兼容性变更。
-- `semantic_skeleton` 描述文化无关的深层条件；不要把某一个房间、职业、人物或
-  渲染方案误写成词义本身。
-- `conditions.required` 说明词义成立的必要条件；`conditions.excluded` 必须说明常见
-  误用边界，并尽量指向更合适的义项。它是概念区分的核心数据，不能敷衍成同义改写。
+- `semantic_skeleton` 描述与具体渲染无关、可跨场景和跨文化检验的深层条件；不要把
+  某一个房间、职业、人物或文化脚本误写成词义本身，也不要把语言惯例冒充文化真理。
+- `conditions.required` 说明词义成立的必要条件；`conditions.excluded` 只写真正不适用
+  的情况。更具体、更强烈或可共现的相邻词不能伪装成排除条件；使用
+  `relations.boundaries` 记录真实关系与可验证判据。
 - `l1_confusables` 记录真实的 L1→L2 概念边界错位，不写成简单双语对照表。通用骨架
   与 L1 特定教学路径必须分离。
 - 心理、意图、逻辑和其他不可直接看见的意义，必须通过可观察的行为、目标、压力、
   结果、视线、时间过程或事件关系外化；不要让角色用解释性台词替代画面。
-- 五类场景各司其职：`prototype` 建立概念，`contrast` 切分相邻概念，
-  `counterexample` 明确不成立，`boundary` 测试临界条件，`transfer` 验证跨表面的泛化。
+- 五类场景各司其职：`prototype` 建立概念，`contrast` 比较相邻概念，
+  `counterexample` 证明某些线索不足，`boundary` 测试临界、包含或偏好，`transfer`
+  验证跨表面的泛化。对比类场景必须声明 `contrast_relation`。
 - 原型场景通常遵循“先概念体验、后目标声音命名”的声画顺序。迁移场景至少改变两个
-  表面维度，避免学习者只记住原始剧情。
+  表面维度并写入 `transfer_dimensions`，避免学习者只记住原始剧情。
 - 悬空义项引用是可接受的 backlog 信号；不要为消除校验器的 backlog 而虚构低质量义项。
 - YAML 标量遵循 README 的格式约束：无引号标量不要包含 ASCII `": "`；含英文台词时
   使用双引号或块标量。
@@ -100,6 +109,8 @@ candidate → sense draft → reviewed sense → scene draft → reviewed scene 
 ```
 
 - 自动生成应明确产物层级：仅义项草稿、场景规格草稿、渲染候选或已审核资源，不能混称。
+- 正式资源必须包含 `schema_version`、资源 `version` 与 `status`。未经学习效果验证的
+  `reviewed` 资源不要冒充 `published`。
 - 每一份渲染资源必须能够追溯到 `sense_id`、`scene_id`、规格版本、渲染器/模型、
   输入版本、版权/许可和审核结论。
 - 先验证语义与教学设计，再优化画面“影视感”。第一版可以是连续图片、动态漫画或
@@ -125,24 +136,29 @@ SceneLex 可向词典、播放器或课程应用提供两类能力：
   提供稳定的外部 `sense_id` 与内容版本作对齐引用，不接管这些用户资产。
 - API 和内容包是适配器层，必须保持模型无关、可版本化且可缓存；不要让 HTTP、某个
   播放器 UI、某家模型 API 或某种视频格式进入 `schema/`。
+- 通用分发优先使用 `tools/export.py` 与资源包 Schema。HTTP 服务、数据库索引和 SDK
+  是稳定包格式之上的消费者适配器。
 - 任何消费端都只能推动新增的适配器、导出格式或元数据；若要求改变核心语义模型，先以
   SceneLex 的教学理论、数据不变量和多消费者价值评审该变化。
 
 ## 工作流程
 
-1. 阅读相关 schema、至少一个同类正式义项和完整场景组，再开始修改。
+1. 阅读相关 schema、至少一个同类正式义项和对应证据组，再开始修改。
 2. 新义项先进入 `data/drafts/senses/`；场景先进入对应 `data/drafts/scenes/`。
-3. 运行 `python3 tools/validate.py`；需要排期时运行
+3. 运行 `python3 tools/validate.py` 和 `python3 -m pytest -q`；需要排期时运行
    `python3 tools/validate.py --backlog`。校验通过只是进入人工审核的前提。
 4. 审核时分别检查：语言准确性、语义条件完整性、视觉/听觉可观察性、相邻词低歧义性、
    声画时序、L1 教学洞察、迁移性和版权/许可。
-5. 只有通过审核的文件才由人工 promote 到 `data/senses/` 与 `data/scenes/`。
+5. 只有通过审核的文件才由人工 promote。promote 必须先在隔离数据根目录执行全量
+   校验，成功后再原子移动，禁止先写正式库再校验。
 6. 修改 schema、ID 规则、发布状态或生产管线时，更新 README、校验器、提示词、范例和
    必要的迁移/兼容说明；避免只改其中一个。
 
 ## 完成前检查
 
 - `python3 tools/validate.py` 通过。
+- `python3 -m pytest -q` 通过。
 - 新增/修改的场景满足义项的 `must_show` / `must_not`，并且五类场景的职责没有互相混淆。
 - 没有把模型名、渲染参数、下游应用专有字段或未审核素材路径写进正式 scene spec。
+- 对比关系没有把包含、重叠、程度差异或不同维度误写成互斥。
 - `git status --short` 已检查，未覆盖无关改动。

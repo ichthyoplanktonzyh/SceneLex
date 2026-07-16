@@ -2,10 +2,15 @@
 # 设计依据: l1_confusables.zh "脏" 谱系 + must_not "不能推到令人作呕的程度";
 # dirty 是这一程度谱系里最中性、最轻的默认词, filthy 是越过临界后的极端肮脏。
 # 用同一只盘子随时间加重, 让观众亲眼看到"跨越边界的瞬间"
+schema_version: "1.0"
+version: 1
+status: draft
+
 id: dirty-01-boundary-01
 sense_ref: dirty-01
 scene_type: boundary
 contrast_target: filthy-01
+contrast_relation: degree_neighbor
 title: 一只盘子越过的那条线
 synopsis: >
   同一只餐盘, 从一顿饭后的油渍残羹(dirty), 到搁置多日、结垢发臭、
@@ -33,12 +38,12 @@ storyboard:
       字幕跳到 "两周后"。盘子上结着黏腻发黑的厚垢, 泛起霉斑, 有人
       凑近又猛地捂鼻后退。此刻它越过了 dirty 的上界。
     audio: "(捂鼻, 干呕一声) Ugh..."
-    purpose: 展示"跨越边界的瞬间"——同一污物一旦到达令人作呕的程度, 词已不再是 dirty
+    purpose: 展示程度升级——filthy 比 dirty 强烈得多, 但并不取消 dirty 这一更宽泛判断
 
   - beat: 4
     visual: 那人戴上手套、屏住呼吸才敢去碰, 用镊子似的两指把盘子拎起。
     audio: "This isn't just dirty anymore. It's filthy."
-    purpose: 命名 filthy——用 "not just dirty anymore" 显式标出临界被越过, 程度轴换了词
+    purpose: 命名 filthy——用 "not just dirty anymore" 表达更具体、更强烈的词成为首选, 而非逻辑互斥
 
   - beat: 5
     visual: >

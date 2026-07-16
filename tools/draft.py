@@ -16,9 +16,12 @@
 
 import argparse
 import json
+import os
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import yaml
@@ -106,13 +109,20 @@ def cmd_sense(args):
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(blocks[0], encoding="utf-8")
         sys.exit(f"YAML 解析失败, 原文已存 {out.relative_to(ROOT)} 供修复:\n{e}")
+    if not isinstance(doc, dict):
+        sys.exit("词义草稿的 YAML 根节点必须是对象")
 
-    out = DRAFTS / "senses" / f"{doc.get('id', word + '-01')}.yaml"
+    # The requested ID determines the path. Model output is untrusted content
+    # and must never be able to choose a filesystem path.
+    expected_id = f"{word}-01"
+    out = DRAFTS / "senses" / f"{expected_id}.yaml"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(blocks[0].rstrip() + "\n", encoding="utf-8")
     print(f"✓ 草稿已写入 {out.relative_to(ROOT)}")
 
     errs = schema_check(doc, load_schema("word-sense.schema.json"), out.name)
+    if doc.get("id") != expected_id:
+        errs.append(f"  ✗ {out.name} id 必须是 '{expected_id}'")
     _report(errs, out)
 
 
@@ -160,13 +170,28 @@ def cmd_scenes(args):
             fname.write_text(block, encoding="utf-8")
             all_errs.append(f"  ✗ 第 {i + 1} 块 YAML 解析失败: {e} (原文存 {fname.name})")
             continue
+        if not isinstance(doc, dict):
+            all_errs.append(f"  ✗ 第 {i + 1} 块 YAML 根节点必须是对象")
+            continue
         scene_type = doc.get("scene_type", "")
-        abbr = SCENE_ABBR.get(scene_type, scene_type or f"blk{i + 1}")
-        sid = doc.get("id") or f"{sense_id}-{abbr}-01"
+        abbr = SCENE_ABBR.get(scene_type, f"blk{i + 1}")
+        expected_id = f"{sense_id}-{abbr}-01"
+        raw_id = doc.get("id")
+        sid = raw_id if isinstance(raw_id, str) and re.fullmatch(
+            r"[a-z][a-z_]*-\d{2}-(?:proto|contrast|counter|boundary|transfer)-\d{2}",
+            raw_id,
+        ) else expected_id
         fname = out_dir / f"{sid}.yaml"
+        if fname in written:
+            all_errs.append(f"  ✗ 第 {i + 1} 块与前一场景使用了重复 id '{sid}'")
+            continue
         fname.write_text(block.rstrip() + "\n", encoding="utf-8")
         written.append(fname)
         all_errs += schema_check(doc, validator, fname.name)
+        if raw_id != expected_id:
+            all_errs.append(
+                f"  ✗ {fname.name} id 必须是 '{expected_id}'"
+            )
 
     print(f"✓ 写入 {len(written)} 个场景草稿 → {out_dir.relative_to(ROOT)}")
     got = {yaml.safe_load(read(p)).get("scene_type") for p in written}
@@ -199,34 +224,76 @@ def cmd_list(args):
 
 def cmd_promote(args):
     ident = args.id.strip()
-    moved = []
-    # 词义草稿?
+    if not SENSE_ID.fullmatch(ident):
+        sys.exit(f"义项 ID '{ident}' 不符合 {{word}}-{{nn}} 约定")
     sense_draft = DRAFTS / "senses" / f"{ident}.yaml"
-    if sense_draft.exists():
-        dest = ROOT / "data" / "senses" / f"{ident}.yaml"
-        dest.write_text(read(sense_draft), encoding="utf-8")
-        sense_draft.unlink()
-        moved.append(dest)
-    # 场景组草稿?
     scene_draft_dir = DRAFTS / "scenes" / ident
-    if scene_draft_dir.exists():
-        dest_dir = ROOT / "data" / "scenes" / ident
-        dest_dir.mkdir(parents=True, exist_ok=True)
-        for p in sorted(scene_draft_dir.glob("*.yaml")):
-            (dest_dir / p.name).write_text(read(p), encoding="utf-8")
-            p.unlink()
-            moved.append(dest_dir / p.name)
-        try:
-            scene_draft_dir.rmdir()
-        except OSError:
-            pass
-    if not moved:
+    has_sense = sense_draft.exists()
+    has_scenes = scene_draft_dir.exists()
+    if not has_sense and not has_scenes:
         sys.exit(f"未找到 '{ident}' 的草稿 (词义或场景组均无)")
-    for m in moved:
-        print(f"✓ 定稿 {m.relative_to(ROOT)}")
-    print("\n→ 运行全量校验 ...\n")
-    r = subprocess.run([sys.executable, str(ROOT / "tools" / "validate.py")])
-    sys.exit(r.returncode)
+
+    sense_dest = ROOT / "data" / "senses" / f"{ident}.yaml"
+    scene_dest_dir = ROOT / "data" / "scenes" / ident
+    if has_sense and sense_dest.exists():
+        sys.exit(f"正式义项已存在: {sense_dest.relative_to(ROOT)}；拒绝静默覆盖")
+    if has_scenes and scene_dest_dir.exists():
+        sys.exit(f"正式场景组已存在: {scene_dest_dir.relative_to(ROOT)}；拒绝静默覆盖")
+
+    # Build a complete candidate repository and validate it before touching
+    # published paths. Temporary files live on the same filesystem so the
+    # final os.replace operations are atomic.
+    with tempfile.TemporaryDirectory(prefix=".promotion-", dir=ROOT / "data") as tmp:
+        staged = Path(tmp)
+        shutil.copytree(ROOT / "data" / "senses", staged / "senses")
+        shutil.copytree(ROOT / "data" / "scenes", staged / "scenes")
+
+        if has_sense:
+            prepared = _mark_reviewed(read(sense_draft))
+            (staged / "senses" / sense_draft.name).write_text(
+                prepared, encoding="utf-8"
+            )
+        if has_scenes:
+            staged_scene_dir = staged / "scenes" / ident
+            staged_scene_dir.mkdir()
+            for path in sorted(scene_draft_dir.glob("*.yaml")):
+                (staged_scene_dir / path.name).write_text(
+                    _mark_reviewed(read(path)), encoding="utf-8"
+                )
+
+        print("→ 在隔离目录运行发布前全量校验 ...\n")
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "tools" / "validate.py"),
+                "--data-root",
+                str(staged),
+            ],
+            check=False,
+        )
+        if result.returncode:
+            sys.exit("发布前校验失败；草稿与正式库均未改动")
+
+        promoted = []
+        if has_sense:
+            os.replace(staged / "senses" / sense_draft.name, sense_dest)
+            promoted.append(sense_dest)
+        if has_scenes:
+            os.replace(staged / "scenes" / ident, scene_dest_dir)
+            promoted.extend(sorted(scene_dest_dir.glob("*.yaml")))
+
+    if has_sense:
+        sense_draft.unlink()
+    if has_scenes:
+        shutil.rmtree(scene_draft_dir)
+    for path in promoted:
+        print(f"✓ 定稿 {path.relative_to(ROOT)}")
+
+    print("\n→ 复核正式库 ...\n")
+    result = subprocess.run(
+        [sys.executable, str(ROOT / "tools" / "validate.py")], check=False
+    )
+    sys.exit(result.returncode)
 
 
 # ---------------------------------------------------------------- backlog
@@ -247,6 +314,16 @@ def _report(errs, out):
     else:
         print("✓ schema 校验通过。审阅后运行: "
               f"python3 tools/draft.py promote <id>")
+
+
+def _mark_reviewed(text):
+    """Change exactly one top-level draft status without reformatting YAML."""
+    updated, count = re.subn(
+        r"(?m)^status:\s*draft\s*$", "status: reviewed", text, count=1
+    )
+    if count != 1:
+        raise ValueError("草稿必须包含顶层 'status: draft'")
+    return updated
 
 
 def main():

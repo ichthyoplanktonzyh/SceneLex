@@ -1,10 +1,15 @@
 # 反例场景: 这不是 dirty(物理表面不洁), 这是 dirty-02(言语粗俗下流)
 # 设计依据: l1_confusables.zh "脏话／下流" 与 conditions.excluded ——
 # 中文用"脏"同指物理不洁和言语下流; 本反例划出下界: 没有物理污物就不是 dirty-01
+schema_version: "1.0"
+version: 1
+status: draft
+
 id: dirty-01-counter-01
 sense_ref: dirty-01
 scene_type: counterexample
 contrast_target: dirty-02
+contrast_relation: different_sense
 title: 这个 dirty 不在手上, 在话里
 synopsis: >
   几个朋友聚会, 有人讲了个下流笑话, 众人惊呼 "So dirty!"。

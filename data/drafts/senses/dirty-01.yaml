@@ -1,6 +1,11 @@
 # ============================================================
 # A. 基础词义信息
 # ============================================================
+schema_version: "1.0"
+language: en
+version: 1
+status: draft
+
 id: dirty-01
 word: dirty
 pos: adjective
@@ -62,14 +67,6 @@ conditions:
   excluded:
     - condition: 物品位置无序、东西乱放，但表面并无污物
       alternative: messy-01
-    - condition: 污秽程度极重、令人作呕的肮脏
-      alternative: filthy-01
-    - condition: 物品因长期沾染油泥而结成一层黏腻污垢
-      alternative: grimy-01
-    - condition: 表面沾有泥浆或被泥弄脏
-      alternative: muddy-01
-    - condition: 液体或空气因杂质而不再纯净、不宜使用
-      alternative: polluted-01
     - condition: 内容或言语粗俗下流（脏话）——非物理表面的不洁
       alternative: dirty-02
 
@@ -95,6 +92,28 @@ relations:
     - grimy-01
     - muddy-01
     - polluted-01
+
+  boundaries:
+    - target: filthy-01
+      relation: degree_neighbor
+      distinction: filthy 通常是更强烈、更令人厌恶的 dirty；它成为更精确选择时并不让 dirty 变成假。
+      diagnostic: 沿污秽程度连续增强，比较词语自然度，而不是把两词设计成互斥开关。
+    - target: muddy-01
+      relation: target_more_specific
+      distinction: muddy 指泥造成的脏，是 dirty 的一种更具体原因。
+      diagnostic: 固定脏污程度，只改变污物是否为泥；非泥污物支持 dirty 但不支持 muddy。
+    - target: grimy-01
+      relation: target_more_specific
+      distinction: grimy 强调积累、嵌入或油腻的污垢，是 dirty 的更具体表面状态。
+      diagnostic: 比较可轻易擦掉的新污点与长期结垢表面，两者都可 dirty，后者更支持 grimy。
+    - target: messy-01
+      relation: different_dimension
+      distinction: dirty 判断表面污物，messy 判断位置秩序；两者可以同时成立。
+      diagnostic: 用整齐但有污物、散乱但洁净、又脏又乱三类样本验证两条独立维度。
+    - target: dirty-02
+      relation: different_sense
+      distinction: dirty-02 描述粗俗内容，不要求物理表面存在污物。
+      diagnostic: 检查被评价对象是物理表面还是言语、笑话等内容。
 
   l1_confusables:
     zh:

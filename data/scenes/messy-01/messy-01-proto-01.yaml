@@ -1,5 +1,9 @@
 # 原型场景: 首次建立 messy 概念
 # 设计依据: messy-01 scene_requirements —— 先让观众自行感知"乱", 再用声音命名
+schema_version: "1.0"
+version: 1
+status: reviewed
+
 id: messy-01-proto-01
 sense_ref: messy-01
 scene_type: prototype

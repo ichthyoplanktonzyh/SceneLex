@@ -2,10 +2,15 @@
 # 设计依据: conditions.excluded —— "动作缓慢但不存在心理抵触"不是 reluctant;
 # "慢"是 reluctant 最常见的外化信号, 也因此是最危险的误读入口——
 # 必须展示"慢而无抗拒"来切断 慢=reluctant 的错误归纳
+schema_version: "1.0"
+version: 1
+status: reviewed
+
 id: reluctant-01-boundary-01
 sense_ref: reluctant-01
 scene_type: boundary
 contrast_target: slow-01
+contrast_relation: different_dimension
 title: 慢, 不等于不情愿
 synopsis: >
   老人以极慢的速度给花园浇水——哼着歌, 微笑, 没有任何压力在场。
@@ -29,7 +34,7 @@ storyboard:
   - beat: 3
     visual: 镜头环视四周：花园里只有老人一个人, 没有他人, 没有时钟, 没有清单。
     audio: null
-    purpose: 骨架检查：外部压力这一必要参与者不在场——reluctant 缺少成立条件
+    purpose: 补充情境证据：没有催促本身不能排除 reluctant，但结合持续享受的正向线索，支持“慢而愿意”
 
   - beat: 4
     visual: 老人慢悠悠地给最后一盆花浇完水, 满意地拍拍手上的水珠。
@@ -51,4 +56,4 @@ learning_tasks:
       播放三段慢动作短片(慢慢品茶的人/被催交作业后慢慢打开书包的学生/
       悠闲散步的人), 学习者判断每段是否 reluctant。
   - type: contrast_choice
-    prompt: 对判断为 reluctant 的片段, 让学习者指出画面中的"外部压力"是什么。
+    prompt: 对每段指出支持“愿意”或“抗拒”的可观察线索，不能只用动作速度作答。

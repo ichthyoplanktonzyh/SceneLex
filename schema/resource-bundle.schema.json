@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "resource-bundle.schema.json",
+  "title": "SceneLexResourceBundle",
+  "description": "供词典、课程、播放器、API 或研究工具消费的模型无关资源包",
+  "type": "object",
+  "required": ["schema_version", "package", "senses", "scenes", "index"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "package": {
+      "type": "object",
+      "required": ["id", "version", "languages", "included_statuses"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "version": { "type": "string" },
+        "languages": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string" }
+        },
+        "included_statuses": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": ["reviewed", "published"]
+          }
+        }
+      }
+    },
+    "senses": {
+      "type": "array",
+      "items": { "$ref": "word-sense.schema.json" }
+    },
+    "scenes": {
+      "type": "array",
+      "items": { "$ref": "scene-spec.schema.json" }
+    },
+    "index": {
+      "type": "object",
+      "required": ["sense_ids_by_word", "scene_ids_by_sense"],
+      "additionalProperties": false,
+      "properties": {
+        "sense_ids_by_word": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "scene_ids_by_sense": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

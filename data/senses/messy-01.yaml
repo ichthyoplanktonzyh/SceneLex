@@ -1,14 +1,19 @@
 # ============================================================
 # A. 基础词义信息
 # ============================================================
+schema_version: "1.0"
+language: en
+version: 1
+status: reviewed
+
 id: messy-01
 word: messy
 pos: adjective
-sense_label: 物理空间杂乱无序
-definition: "In a state of disorder; things not in their expected or usual places"
+sense_label: 可见的杂乱无序
+definition: "Visibly disordered or untidy; lacking an expected arrangement or neat form"
 
 frequency:
-  band: high
+  band: mid
   rank: 3200
 difficulty: basic
 pronunciation:
@@ -38,38 +43,32 @@ semantic_type: attribute
 # ============================================================
 semantic_skeleton:
   participants:
-    - role: space_or_surface
-      description: 呈现杂乱状态的空间、表面或对象
-    - role: items
-      description: 空间中处于无序状态的物品
+    - role: observed_entity
+      description: 呈现杂乱状态的空间、表面、对象或可见产物
+    - role: components
+      description: 构成整体外观的物品、部分、线条或细节
 
   propositions:
-    - 存在一个空间、表面或可被观察的对象
-    - 空间中有多个物品或组成部分
-    - 物品未处于其常规、预期或整齐的位置
-    - 物品之间的排列缺乏可辨识的秩序或规律
-    - 整体状态在视觉上呈现混乱——观察者一眼即可判断
+    - 存在一个可被整体观察的空间、对象或产物
+    - 整体由多个物品、部分、线条或其他可见细节构成
+    - 这些组成部分偏离其常规、预期或整齐的排列与形态
+    - 组成部分之间缺乏足够的秩序、一致方向或整洁形式
+    - 无序达到整体可见的程度，而非只有一个无关紧要的局部偏差
 
 # ============================================================
 # D. 成立条件与排除条件
 # ============================================================
 conditions:
   required:
-    - 物品的无序状态可被直接观察
-    - 无序是相对于该空间的常规整洁状态而言
+    - 组成部分的无序状态可被直接观察
+    - 无序是相对于该对象或产物的常规整洁状态而言
     - 杂乱是当前可见的状态，不是过程
 
   excluded:
     - condition: 物品有污渍或不卫生，但排列并不混乱
       alternative: dirty-01
-    - condition: 空间被蓄意破坏或打砸
+    - condition: 空间只有表面损坏，但物品仍保持整体秩序
       alternative: wrecked-01
-    - condition: 物品非常多但有秩序地堆放
-      alternative: cluttered-01
-    - condition: 状态达到完全混沌、无法辨识任何物品的程度
-      alternative: chaotic-01
-    - condition: 只是不够整齐，但远未达到杂乱
-      alternative: untidy-01
 
 # ============================================================
 # E. 概念关系
@@ -91,6 +90,20 @@ relations:
     - cluttered-01
     - untidy-01
     - sloppy-01
+
+  boundaries:
+    - target: dirty-01
+      relation: different_dimension
+      distinction: messy 判断位置与组织秩序，dirty 判断表面是否有污物；两者可以同时成立。
+      diagnostic: 分别固定清洁度和排列秩序，只改变另一维度，观察目标词是否仍成立。
+    - target: cluttered-01
+      relation: overlaps
+      distinction: cluttered 强调物品过多占据空间，messy 强调排列无序；多且乱时两者可以共现。
+      diagnostic: 物品很多但分类整齐时 cluttered 可成立而 messy 不一定成立。
+    - target: untidy-01
+      relation: overlaps
+      distinction: 两者高度重叠，untidy 通常更轻或更偏未整理，不能建立绝对互斥边界。
+      diagnostic: 使用程度连续变化的样本，测试说话者更自然选择哪个词，而非强迫二选一真值。
 
   l1_confusables:
     zh:
@@ -123,8 +136,8 @@ relations:
 # ============================================================
 scene_requirements:
   must_show:
-    - 一个有明确边界的空间或表面（桌面、房间、厨房）
-    - 空间中有多个物品散落在非正常位置
+    - 一个可被整体观察的空间、对象或产物
+    - 多个组成部分偏离预期位置、方向或整洁形态
     - 整体视觉呈现"一眼就能看出乱"的效果
     - 最好同时展示同一空间的整洁对照状态
 
@@ -141,6 +154,8 @@ scene_requirements:
     - 鞋子在门口东一只西一只
     - 床铺未整理，被子团成一堆
     - 相同物品出现在不同位置（如笔分散在各处）
+    - 头发向多个方向乱翘，缺少整齐轮廓
+    - 字迹方向、间距和涂改线条相互交叠，整体难以辨认
 
   timing: >
     先展示空间全貌让观众自行感知到"乱"，

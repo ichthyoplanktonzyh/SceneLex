@@ -1,14 +1,19 @@
 # 对比场景: reluctant vs hesitant
-# 设计依据: conditions.excluded —— "尚未作出决定, 处于权衡中"是 hesitant;
-# reluctant 的方向已定(不想但要做), hesitant 的方向未定(还在选)
+# 设计依据: hesitant 强调不确定, reluctant 强调缺乏意愿;
+# 两种状态可能分别出现也可能共现, 不能把停顿当成二者的共同充分证据
+schema_version: "1.0"
+version: 1
+status: reviewed
+
 id: reluctant-01-contrast-01
 sense_ref: reluctant-01
 scene_type: contrast
 contrast_target: hesitant-01
+contrast_relation: overlaps
 title: 跳水台上的两个人
 synopsis: >
   同一座跳水台: 一人在犹豫要不要跳(方向未定), 一人被教练要求跳、
-  不想跳但还是跳了(方向已定)。并置切开"没决定"与"不情愿"。
+  不想跳但还是跳了。先并置差异轴，再补充一个同时犹豫且不情愿的共现样本。
 
 storyboard:
   - beat: 1
@@ -16,7 +21,7 @@ storyboard:
       泳池跳台。人物A自己走上跳台, 走到边缘又退半步,
       探头看水面, 又后退, 咬嘴唇, 目光在水面和梯子之间来回。
     audio: null
-    purpose: hesitant 的骨架：无外部压力, 决定未做出, 行为在两个选项间摆动
+    purpose: 建立 hesitant 的不确定证据：行为在跳与不跳两个选项间摆动；此处尚无“不想跳”的充分证据
 
   - beat: 2
     visual: 人物A仍站在原地, 双手抱肘, 看着水面。
@@ -28,7 +33,7 @@ storyboard:
       切换: 人物B坐在池边不想动, 教练指着跳台吹哨。
       人物B仰头闭眼叹气, 极慢地起身, 磨磨蹭蹭爬上梯子。
     audio: "(哨声, 然后叹气声)"
-    purpose: reluctant 的骨架：外部压力在场, 意愿缺席, 但行动方向已经确定
+    purpose: 建立 reluctant 的意愿证据：要求使动作相关，叹气、拖延和身体抗拒共同支持“不想做”
 
   - beat: 4
     visual: 人物B在跳台边缘皱着脸站定——没有摇摆, 没有回头——然后闭眼跳下。
@@ -39,12 +44,19 @@ storyboard:
     visual: >
       分屏并置: 左侧A仍在跳台上前后摇摆; 右侧回放B叹气爬梯、直线走向边缘。
     audio: "Hesitant. Reluctant."
-    purpose: 两种行为轨迹并置——摆动的轨迹 vs 拖慢但笔直的轨迹, 差异可视化
+    purpose: 两种纯化样本并置——选择不确定 vs 意愿抗拒；它们用于理解差异轴，不宣称逻辑互斥
+
+  - beat: 6
+    visual: >
+      第三个人被同伴催上跳台，皱眉后退，既反复看梯子又摇头叹气，
+      很久没有决定跳还是离开。画面角落同时保留“选择摇摆”和“意愿抗拒”两组线索。
+    audio: "He is hesitant — and reluctant. Both."
+    purpose: 用明确共现样本验证 overlaps 关系，防止学习者把前面的对称呈现误学成二选一分类
 
 learning_tasks:
   - type: contrast_choice
     prompt: >
       播放新短片(收到邀请后反复查看日历不回复/被要求加班后叹气打开电脑),
-      学习者为每段选择 hesitant 或 reluctant。
+      学习者为每段选择 hesitant、reluctant 或 both，并指出支持各判断的线索。
   - type: transfer_judgment
     prompt: 展示一人站在两份菜单前来回看了很久, 问 "Is he reluctant?"
