@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any
 
 import yaml
+from collections import Counter
 from jsonschema import Draft202012Validator, FormatChecker
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -40,10 +41,11 @@ class ValidationResult:
     referenced: dict[str, list[str]] = field(
         default_factory=lambda: defaultdict(list)
     )
-    coverage: dict[str, set[str]] = field(
-        default_factory=lambda: defaultdict(set)
+    coverage: dict[str, Counter] = field(
+        default_factory=lambda: defaultdict(Counter)
     )
     errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
 
     @property
     def dangling(self) -> dict[str, list[str]]:
@@ -261,18 +263,65 @@ def validate_repository(data_root: Path | None = None) -> ValidationResult:
                 result.errors.append(
                     f"{label}: transfer 场景至少声明两个 transfer_dimensions"
                 )
-        result.coverage[sense_ref].add(scene_type)
+        result.coverage[sense_ref][scene_type] += 1
 
+    _check_surface_diversity(result, data_root)
     return result
+
+
+def _check_surface_diversity(result: ValidationResult, data_root: Path) -> None:
+    """同一义项、同一类型的多个场景必须在表面特征上有差异。
+
+    多场景的价值在于泛化；surface 三字段全同的两个场景是重复证据。
+    只产生 warning：表面判断最终属于人工审核，机器只负责提示。
+    """
+    grouped: dict[tuple[str, str], list[tuple[str, Any]]] = defaultdict(list)
+    for path, document in result.scenes.items():
+        key = (str(document.get("sense_ref")), str(document.get("scene_type")))
+        grouped[key].append((_location(path, data_root), document.get("surface")))
+
+    for (sense_ref, scene_type), scenes in grouped.items():
+        if len(scenes) < 2:
+            continue
+        for label, surface in scenes:
+            if not isinstance(surface, dict):
+                result.warnings.append(
+                    f"{label}: {sense_ref} 的 {scene_type} 有多个场景, "
+                    "缺少 surface 无法检验泛化多样性"
+                )
+        seen: dict[tuple[str, str, str], str] = {}
+        for label, surface in scenes:
+            if not isinstance(surface, dict):
+                continue
+            triple = (
+                str(surface.get("domain")),
+                str(surface.get("participant_type")),
+                str(surface.get("setting")),
+            )
+            if triple in seen:
+                result.warnings.append(
+                    f"{label}: 与 {seen[triple]} 的 surface 完全相同 "
+                    f"({'/'.join(triple)})——重复证据不构成泛化"
+                )
+            else:
+                seen[triple] = label
 
 
 def print_result(result: ValidationResult, backlog: bool = False) -> None:
     print(f"义项: {len(result.senses)} 个 | 场景: {len(result.scenes)} 个")
     for sense_id in sorted(result.known_sense_ids):
-        types = result.coverage.get(sense_id)
-        if types:
-            functions = ", ".join(sorted(types))
-            print(f"  {sense_id}: {len(types)} 类教学证据 ({functions})")
+        counts = result.coverage.get(sense_id)
+        if counts:
+            missing = [t for t in SCENE_TYPE_ABBR if t not in counts]
+            functions = ", ".join(
+                f"{t}×{counts[t]}" if counts[t] > 1 else t
+                for t in SCENE_TYPE_ABBR if t in counts
+            )
+            line = (f"  {sense_id}: {sum(counts.values())} 个场景, "
+                    f"{len(counts)} 类教学证据 ({functions})")
+            if missing:
+                line += f" | 缺少: {', '.join(missing)}"
+            print(line)
         else:
             print(f"  {sense_id}: 尚无场景证据")
 
@@ -286,6 +335,11 @@ def print_result(result: ValidationResult, backlog: bool = False) -> None:
                 f"  {reference}  ({len(locations)} 处引用: "
                 f"{', '.join(locations)})"
             )
+
+    if result.warnings:
+        print(f"\n⚠ {len(result.warnings)} 个提示 (不阻塞发布):", file=sys.stderr)
+        for validation_warning in result.warnings:
+            print(f"  ⚠ {validation_warning}", file=sys.stderr)
 
     if result.errors:
         print(f"\n发现 {len(result.errors)} 个错误:", file=sys.stderr)

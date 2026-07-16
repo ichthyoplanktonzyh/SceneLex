@@ -18,6 +18,9 @@
 - 场景 ID 命名：{sense_id}-proto-01 / -contrast-01 / -counter-01 / -boundary-01 / -transfer-01，文件内 id 字段必须与之一致；
 - 每个草稿固定填写 `schema_version: "1.0"`、`version: 1`、`status: draft`；
 - transfer 场景填写至少两个 `transfer_dimensions`，说明相对原型改变了什么；
+- 每个场景填写 `surface`（domain / participant_type / setting，小写 kebab-case，
+  如 household / child / indoor-home）；多片段拼贴的 transfer 场景可用 mixed；
+  五个场景之间尽量选取不同的表面组合；
 - YAML 无引号标量内不得出现 ASCII `": "`（用全角冒号"："），以引号开头的标量必须整体加引号或用块标量；
 - 每个场景配 1–2 个 learning_tasks，类型从 schema 枚举中选。
 

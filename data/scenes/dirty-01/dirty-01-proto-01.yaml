@@ -2,12 +2,16 @@
 # 设计依据: semantic_skeleton —— 有表面的对象 + 附着不受欢迎的外来物质 + 偏离洁净基准;
 # 全程用可见污物外化, 并以"洁净→变脏→擦净"的前后对照锚定洁净基准
 schema_version: "1.0"
-version: 1
-status: draft
-
+version: 2
+status: reviewed
 id: dirty-01-proto-01
 sense_ref: dirty-01
 scene_type: prototype
+surface:
+  domain: sports
+  participant_type: child
+  setting: outdoor-field
+
 title: 踢完球回家的白球衣
 synopsis: >
   男孩穿着崭新的白色球衣出门, 在泥地上踢球摔倒。回到家时球衣沾满

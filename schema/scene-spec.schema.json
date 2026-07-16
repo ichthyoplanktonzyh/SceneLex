@@ -84,6 +84,30 @@
       "description": "迁移场景相对原型改变的表面维度；transfer 至少两个"
     },
 
+    "surface": {
+      "type": "object",
+      "required": ["domain", "participant_type", "setting"],
+      "additionalProperties": false,
+      "description": "场景的表面特征，用于检验同义项同类型多场景之间的泛化多样性；小写 kebab-case 短语",
+      "properties": {
+        "domain": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "description": "生活/活动领域，如 household-chores, digital-work, sports"
+        },
+        "participant_type": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "description": "主要参与者类型，如 adult, child, animal, crowd"
+        },
+        "setting": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "description": "空间环境，如 indoor-home, outdoor-street, classroom"
+        }
+      }
+    },
+
     "teaching_evidence": {
       "type": "array",
       "description": "场景中可观察线索对词义命题或边界判断的支持关系",

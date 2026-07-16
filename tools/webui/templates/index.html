@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if drafts %}
+<section class="panel">
+  <h2>待审队列 <span class="count">{{ drafts|length }}</span></h2>
+  <ul class="queue">
+    {% for row in drafts %}
+    <li>
+      <a class="sense-link" href="/senses/{{ row.sense_id }}">{{ row.sense_id }}</a>
+      {% if row.sense_source == 'draft' %}<span class="chip draft">词义草稿</span>{% endif %}
+      {% if row.draft_scenes %}<span class="chip draft">{{ row.draft_scenes }} 个场景草稿</span>{% endif %}
+      {% if row.problems %}<span class="chip problem">{{ row.problems }} 个 schema 问题</span>
+      {% else %}<span class="chip ok">schema 通过</span>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<section class="panel">
+  <h2>词库覆盖看板 <span class="count">{{ board|length }} 义项</span></h2>
+  <table class="board">
+    <thead>
+      <tr>
+        <th>义项</th><th>释义</th>
+        {% for t in SCENE_TYPES %}<th class="num">{{ SCENE_TYPE_LABELS[t] }}</th>{% endfor %}
+        <th class="num">合计</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in board %}
+      <tr>
+        <td>
+          <a class="sense-link" href="/senses/{{ row.sense_id }}">{{ row.sense_id }}</a>
+          {% if row.sense_source == 'draft' %}<span class="chip draft">草稿</span>{% endif %}
+        </td>
+        <td class="definition">{{ row.definition }}</td>
+        {% for t in SCENE_TYPES %}
+        {% set c = row.counts[t] %}
+        <td class="num">
+          {% if c.published %}<span class="badge pub">{{ c.published }}</span>{% endif %}
+          {% if c.draft %}<span class="badge dra">+{{ c.draft }}</span>{% endif %}
+          {% if not c.published and not c.draft %}<span class="badge none">—</span>{% endif %}
+        </td>
+        {% endfor %}
+        <td class="num total">{{ row.total }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="legend">
+    <span class="badge pub">n</span> 正式库
+    <span class="badge dra">+n</span> 待审草稿
+    <span class="badge none">—</span> 缺失
+  </p>
+</section>
+
+{% endblock %}

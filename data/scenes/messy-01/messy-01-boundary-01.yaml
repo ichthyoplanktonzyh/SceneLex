@@ -2,7 +2,7 @@
 # 设计依据: conditions.excluded —— "物品非常多但有秩序地堆放"是 cluttered 不是 messy;
 # 通过一次"越界事件"让边界被动态跨越, 观众亲眼看到概念切换的瞬间
 schema_version: "1.0"
-version: 1
+version: 2
 status: reviewed
 
 id: messy-01-boundary-01
@@ -10,6 +10,11 @@ sense_ref: messy-01
 scene_type: boundary
 contrast_target: cluttered-01
 contrast_relation: overlaps
+surface:
+  domain: study-work
+  participant_type: adult
+  setting: indoor-home
+
 title: 满而不乱, 直到那一刻
 synopsis: >
   一张堆满书和文件的书桌——数量极多但摞放整齐, 此刻不构成 messy。

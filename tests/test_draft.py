@@ -42,3 +42,16 @@ def test_failed_preflight_does_not_move_draft(tmp_path, monkeypatch):
 def test_promote_rejects_path_like_identifier():
     with pytest.raises(SystemExit):
         draft.cmd_promote(Namespace(id="../escape-01"))
+
+
+def test_next_scene_id_spans_published_and_drafts(tmp_path, monkeypatch):
+    published = tmp_path / "data" / "scenes" / "test-01"
+    drafts = tmp_path / "data" / "drafts" / "scenes" / "test-01"
+    published.mkdir(parents=True)
+    drafts.mkdir(parents=True)
+    (published / "test-01-proto-01.yaml").write_text("id: test-01-proto-01\n")
+    (drafts / "test-01-proto-02.yaml").write_text("id: test-01-proto-02\n")
+    monkeypatch.setattr(draft, "ROOT", tmp_path)
+    monkeypatch.setattr(draft, "DRAFTS", tmp_path / "data" / "drafts")
+    assert draft.next_scene_id("test-01", "prototype") == "test-01-proto-03"
+    assert draft.next_scene_id("test-01", "transfer") == "test-01-transfer-01"

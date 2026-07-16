@@ -2,14 +2,18 @@
 # 设计依据: l1_confusables.zh "脏乱" —— 中文把两者连用, 学习者当成一体;
 # dirty 核心是表面附着污物, messy 核心是位置无序。用两个房间对称切分
 schema_version: "1.0"
-version: 1
-status: draft
-
+version: 2
+status: reviewed
 id: dirty-01-contrast-01
 sense_ref: dirty-01
 scene_type: contrast
 contrast_target: messy-01
 contrast_relation: different_dimension
+surface:
+  domain: household
+  participant_type: adult
+  setting: indoor-home
+
 title: 两个房间
 synopsis: >
   两间卧室并置。A 房间物品摆放整齐, 但地板和桌面满是污渍灰尘;

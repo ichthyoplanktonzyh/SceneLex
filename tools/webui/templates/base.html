@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}SceneLex 审核工作台{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><span class="logo">S</span>SceneLex<span class="sub">审核工作台</span></a>
+    <nav>
+      <a href="/">词库总览</a>
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <script>
+    async function promote(senseId, btn) {
+      btn.disabled = true; btn.textContent = '校验并入库中…';
+      const res = await fetch(`/api/promote/${senseId}`, {method: 'POST'});
+      const data = await res.json();
+      const out = document.getElementById('promote-output');
+      if (out) {
+        out.hidden = false;
+        out.querySelector('pre').textContent =
+          data.stdout + (data.stderr ? '\n' + data.stderr : '');
+        out.classList.toggle('ok', data.ok);
+        out.classList.toggle('fail', !data.ok);
+      }
+      btn.textContent = data.ok ? '✓ 已入库' : '✗ 校验失败';
+      if (data.ok) setTimeout(() => location.reload(), 1500);
+      else btn.disabled = false;
+    }
+    function toggleRaw(id, btn) {
+      const el = document.getElementById(id);
+      el.hidden = !el.hidden;
+      btn.textContent = el.hidden ? '查看 YAML' : '收起 YAML';
+    }
+  </script>
+</body>
+</html>

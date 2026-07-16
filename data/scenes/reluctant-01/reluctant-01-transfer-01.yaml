@@ -2,7 +2,7 @@
 # 设计依据: 概念不应绑定在"少年倒垃圾"上 —— 更换参与者类型(动物)
 # 与压力类型(社交/自尊), 验证骨架五命题在陌生表面下仍可识别
 schema_version: "1.0"
-version: 1
+version: 2
 status: reviewed
 
 id: reluctant-01-transfer-01
@@ -12,6 +12,11 @@ transfer_dimensions:
   - participant_type
   - target_action
   - pressure_source
+surface:
+  domain: mixed
+  participant_type: mixed
+  setting: mixed
+
 title: 洗澡的狗与道歉的人
 synopsis: >
   两段小片段: 被牵向浴缸、四爪撑地的狗; 在朋友注视下终于承认

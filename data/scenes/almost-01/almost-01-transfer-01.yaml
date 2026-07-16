@@ -1,0 +1,59 @@
+schema_version: "1.0"
+version: 2
+status: reviewed
+id: almost-01-transfer-01
+sense_ref: almost-01
+scene_type: transfer
+transfer_dimensions:
+  - participant_type
+  - action_type
+  - domain
+surface:
+  domain: mixed
+  participant_type: mixed
+  setting: mixed
+
+title: 几乎所有场合
+synopsis: >
+  三个不同情境：一只鸟几乎飞到笼顶但撞上玻璃；
+  一个程序员几乎写完代码但电脑死机；一个聚会几乎所有人都到了但缺一人。
+  三画面并置后同一声音“almost”，逼迫抽象“极度接近但未达”的结构。
+
+storyboard:
+  - beat: 1
+    visual: >
+      笼中鸟展翅向上，眼看就要碰到笼顶的栖木，却撞上了透明的玻璃隔板——
+      鸟喙距离栖木不到2厘米，但被挡回。
+    audio: "(扑翅声，撞击声)"
+    purpose: 迁移点一：动物 + 空间移动。动作从“够到物品”变成“飞到目标位置”，但骨架相同。
+
+  - beat: 2
+    visual: >
+      程序员在深夜编写代码，进度条显示99%，他敲下最后一行，
+      突然屏幕蓝屏死机，代码未保存。他抱头。
+    audio: "(电脑风扇声，蓝屏提示音)"
+    purpose: 迁移点二：人类 + 数字任务 + 进度指标。目标状态是“代码完成并保存”，实际状态在99%处中断。
+
+  - beat: 3
+    visual: >
+      聚会现场，座位几乎坐满，只有一个空椅子。主人翻看名单，
+      点人数，发现少了一位没来的朋友。他叹气。
+    audio: "Almost everyone is here."
+    purpose: 迁移点三：人数/数量维度 + 社交情境。目标状态是“全部到齐”，实际状态差一人。覆盖高频搭配 almost everyone。
+
+  - beat: 4
+    visual: >
+      三画面并置一秒：鸟撞玻璃 / 蓝屏 / 空椅子。
+      同一画外音重复三次。
+    audio: "Almost. Almost. Almost."
+    purpose: 不同领域、不同主体的画面共享同一个声音，逼迫学习者抽象出“极度接近但未达成”的通用结构。
+
+learning_tasks:
+  - type: transfer_judgment
+    prompt: >
+      播放从未出现过的新短片：一个人几乎按下发送键（手指在按钮上方停住）、
+      雨滴几乎要滴落但停在伞尖、考试成绩差2分及格。
+      请判断是否可用 almost 描述，并说明理由。
+  - type: produce
+    prompt: "看无声短片：一位司机在红灯前急刹，车头停在停车线1厘米内。请用 almost 造句。"
+    expected_answer: "The car almost crossed the stop line. (或类似表达)"

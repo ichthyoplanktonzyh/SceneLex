@@ -2,7 +2,7 @@
 # 设计依据: 概念不应绑定在"房间"上 —— 换空间类型(厨房)与对象类型(头发),
 # 验证学习者习得的是"可见的位置无序", 而非"那个乱房间"
 schema_version: "1.0"
-version: 1
+version: 2
 status: reviewed
 
 id: messy-01-transfer-01
@@ -12,6 +12,11 @@ transfer_dimensions:
   - environment
   - object_type
   - participant
+surface:
+  domain: mixed
+  participant_type: mixed
+  setting: mixed
+
 title: 厨房与头发
 synopsis: >
   两段小片段: 做完饭的厨房台面, 与刚睡醒的头发。

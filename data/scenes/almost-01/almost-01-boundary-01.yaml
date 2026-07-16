@@ -1,0 +1,61 @@
+schema_version: "1.0"
+version: 2
+status: reviewed
+id: almost-01-boundary-01
+sense_ref: almost-01
+scene_type: boundary
+contrast_target: barely-01
+contrast_relation: degree_neighbor
+surface:
+  domain: sports-racing
+  participant_type: adult
+  setting: outdoor-track
+
+title: 临界点：碰到才算
+synopsis: >
+  两个人向同一个终点冲刺，时间相同但一个人的头盔先过线1毫米（barely），
+  另一个人的鼻尖几乎触线但头盔没过（almost）。两条轨迹在极限处同框，
+  验证“是否触线”是 almost 与 barely 的边界。
+
+storyboard:
+  - beat: 1
+    visual: >
+      百米赛跑终点线特写。两个运动员并排冲刺，
+      慢动作：运动员D的头盔前沿刚好压过终点线（barely），
+      运动员E的鼻尖距离线不到1毫米，但头盔前沿在线外（almost）。
+    audio: "(哨声，人群喧哗)"
+    purpose: 展示几乎相同的表象（极度接近），仅因“是否越过边界”区分。
+
+  - beat: 2
+    visual: >
+      裁判查看高速摄影回放。大屏幕上逐帧播放：
+      一帧显示运动员E的鼻尖在线前0.5毫米，下一帧已经过了线但头盔依然没过（实际身体部位过线不算）。
+      运动员D的头盔在某一帧完全压线。
+    audio: null
+    purpose: 细化边界条件：对于比赛，头（或头盔）过线才算达标；其他部位过线不算。暴露临界条件。
+
+  - beat: 3
+    visual: >
+      裁判宣布结果：运动员D通过（barely），运动员E未通过（almost）。
+      运动员E遗憾地抱头。
+    audio: "D barely crossed the line. E almost made it."
+    purpose: 在临界点命名，明确 almost 对应“没达标”，barely 对应“刚好达标”。
+
+  - beat: 4
+    visual: >
+      并排画面：左侧运动员D的过线瞬间（头盔压线），
+      右侧运动员E的未过线瞬间（鼻尖在线前0.5毫米）。
+      画面中间文字：“Almost vs Barely: 1 mm difference”。
+    audio: null
+    purpose: 强化边界认知：即使极其接近，是否达到决定词义不同。
+
+learning_tasks:
+  - type: transfer_judgment
+    prompt: >
+      播放三段剪辑：①一滴水挂在杯口没滴落；②一个人指尖碰到开关但没按下去；
+      ③汽车保险杠几乎贴上墙但没碰到。
+      判断各自适用 almost 还是 barely。
+    expected_answer: ① almost（没掉下）；② almost（没按下）；③ almost（没碰到）。都是未达到，所以 almost。
+    scoring_note: 如果学习者认为某一情况是 barely（如①“水几乎滴落但没滴”是 almost，若说 barely 则错误）。引导学生注意 barely 要求“勉强达到”。
+  - type: produce
+    prompt: "用 almost 或 barely 描述你生活中一次“差一点点就成功/刚好成功”的经历，并说出可观察的证据。"

@@ -1,7 +1,7 @@
 # 反例场景: 这不是 messy
 # 设计依据: must_not —— 单个物品歪斜不构成 messy, 需要整体性无序
 schema_version: "1.0"
-version: 1
+version: 2
 status: reviewed
 
 id: messy-01-counter-01
@@ -9,6 +9,11 @@ sense_ref: messy-01
 scene_type: counterexample
 contrast_target: neat-01
 contrast_relation: mutually_exclusive
+surface:
+  domain: household
+  participant_type: child
+  setting: indoor-home
+
 title: 一本书不算乱
 synopsis: >
   哥哥指责妹妹房间乱, 镜头揭示房间整洁如新——只有一本书斜放在桌上。

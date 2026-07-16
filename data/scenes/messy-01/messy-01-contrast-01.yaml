@@ -2,7 +2,7 @@
 # 设计依据: l1_confusables.zh —— 中文"脏乱"连用导致两概念合并,
 # 需要展示 messy but not dirty / dirty but not messy 的正交性
 schema_version: "1.0"
-version: 1
+version: 2
 status: reviewed
 
 id: messy-01-contrast-01
@@ -10,6 +10,11 @@ sense_ref: messy-01
 scene_type: contrast
 contrast_target: dirty-01
 contrast_relation: different_dimension
+surface:
+  domain: household
+  participant_type: adult
+  setting: indoor-kitchen
+
 title: 乱而不脏, 脏而不乱
 synopsis: >
   并置两个厨房: 一个物品散乱但一尘不染, 一个物品归位但油污遍布。

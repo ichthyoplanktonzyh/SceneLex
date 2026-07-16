@@ -2,7 +2,7 @@
 # 设计依据: hesitant 强调不确定, reluctant 强调缺乏意愿;
 # 两种状态可能分别出现也可能共现, 不能把停顿当成二者的共同充分证据
 schema_version: "1.0"
-version: 1
+version: 2
 status: reviewed
 
 id: reluctant-01-contrast-01
@@ -10,6 +10,11 @@ sense_ref: reluctant-01
 scene_type: contrast
 contrast_target: hesitant-01
 contrast_relation: overlaps
+surface:
+  domain: sports
+  participant_type: adult
+  setting: indoor-pool
+
 title: 跳水台上的两个人
 synopsis: >
   同一座跳水台: 一人在犹豫要不要跳(方向未定), 一人被教练要求跳、

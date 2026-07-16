@@ -4,8 +4,7 @@
 schema_version: "1.0"
 language: en
 version: 1
-status: draft
-
+status: reviewed
 id: dirty-01
 word: dirty
 pos: adjective

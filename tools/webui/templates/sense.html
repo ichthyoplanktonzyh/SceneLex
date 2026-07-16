@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block title %}{{ sense_id }} · SceneLex 审核工作台{% endblock %}
+{% block content %}
+
+<div class="sense-layout">
+
+<aside class="sense-panel panel">
+  <h2>{{ sense_id }}
+    {% if sense and sense.source == 'draft' %}<span class="chip draft">词义草稿</span>{% endif %}
+  </h2>
+  {% if sense and sense.doc %}
+  {% set d = sense.doc %}
+  <p class="word-line"><strong>{{ d.word }}</strong>
+    <em>{{ d.pos }}</em>
+    {% if d.pronunciation %}<span class="ipa">/{{ d.pronunciation.ipa }}/</span>{% endif %}
+    <span class="chip">{{ d.status }}</span>
+  </p>
+  <p class="definition">{{ d.definition }}</p>
+
+  {% if d.semantic_skeleton %}
+  <h3>语义骨架</h3>
+  <dl class="kv">
+    {% for k, v in d.semantic_skeleton.items() %}
+    <dt>{{ k }}</dt>
+    <dd>
+      {% if v is string %}{{ v }}
+      {% elif v is mapping %}
+      <ul class="skel">{% for sk, sv in v.items() %}<li><b>{{ sk }}</b>：{{ sv }}</li>{% endfor %}</ul>
+      {% else %}
+      <ul class="skel">
+        {% for item in v %}
+        <li>{% if item is mapping %}{% if item.role %}<b>{{ item.role }}</b>：{{ item.description or '' }}{% else %}{{ item.values()|join('；') }}{% endif %}{% else %}{{ item }}{% endif %}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </dd>
+    {% endfor %}
+  </dl>
+  {% endif %}
+
+  {% if d.conditions %}
+  {% if d.conditions.required %}
+  <h3>必要条件</h3>
+  <ul class="cond">
+    {% for c in d.conditions.required %}<li>{{ c.condition or c }}</li>{% endfor %}
+  </ul>
+  {% endif %}
+  {% if d.conditions.excluded %}
+  <h3>排除条件</h3>
+  <ul class="cond excluded">
+    {% for c in d.conditions.excluded %}
+    <li>{{ c.condition or c }}{% if c.alternative %}
+      <span class="alt">→ {{ c.alternative }}</span>{% endif %}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endif %}
+
+  {% if d.scene_requirements %}
+  {% if d.scene_requirements.must_show %}
+  <h3>must_show</h3>
+  <ul class="cond">{% for m in d.scene_requirements.must_show %}<li>{{ m }}</li>{% endfor %}</ul>
+  {% endif %}
+  {% if d.scene_requirements.must_not %}
+  <h3>must_not</h3>
+  <ul class="cond excluded">{% for m in d.scene_requirements.must_not %}<li>{{ m }}</li>{% endfor %}</ul>
+  {% endif %}
+  {% endif %}
+
+  {% if sense.errors %}
+  <div class="errors"><h3>schema 问题</h3>
+    <ul>{% for e in sense.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+  {% else %}
+  <p class="muted">该义项尚无词义文档（可能只有场景草稿或悬空引用）。</p>
+  {% endif %}
+
+  {% if has_draft %}
+  <div class="actions">
+    <button class="promote" onclick="promote('{{ sense_id }}', this)">审核通过 → 入库 (promote)</button>
+    <p class="hint">promote 会在隔离目录跑全量校验，通过后才原子入库。</p>
+  </div>
+  {% endif %}
+  <div id="promote-output" class="promote-output" hidden><pre></pre></div>
+</aside>
+
+<section class="scenes">
+  {% for t in SCENE_TYPES %}
+  {% if by_type[t] %}
+  <h2 class="type-head"><span class="type-badge {{ t }}">{{ SCENE_TYPE_LABELS[t] }}</span>
+    <span class="count">{{ by_type[t]|length }}</span></h2>
+  {% for entry in by_type[t] %}
+  {% set s = entry.doc or {} %}
+  <article class="scene-card t-{{ t }} {% if entry.source == 'draft' %}is-draft{% endif %}">
+    <header>
+      <h3>{{ s.title or entry.path }}</h3>
+      <span class="scene-id">{{ s.id }}</span>
+      {% if entry.source == 'draft' %}<span class="chip draft">草稿</span>{% endif %}
+      {% if s.surface %}
+      <span class="surface">{{ s.surface.domain }} · {{ s.surface.participant_type }} · {{ s.surface.setting }}</span>
+      {% endif %}
+      {% if s.contrast_target %}
+      <span class="chip">vs {{ s.contrast_target }}{% if s.contrast_relation %} ({{ s.contrast_relation }}){% endif %}</span>
+      {% endif %}
+      {% if s.transfer_dimensions %}
+      <span class="chip">迁移维度: {{ s.transfer_dimensions|join(', ') }}</span>
+      {% endif %}
+    </header>
+    <p class="synopsis">{{ s.synopsis }}</p>
+
+    <div class="beats">
+      {% for b in s.storyboard or [] %}
+      <div class="beat">
+        <div class="beat-no">{{ b.beat }}</div>
+        <div class="beat-body">
+          <p class="visual">{{ b.visual }}</p>
+          {% if b.audio %}<p class="audio">🔊 {{ b.audio }}</p>
+          {% else %}<p class="audio silent">（静默）</p>{% endif %}
+          <p class="purpose">{{ b.purpose }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if s.learning_tasks %}
+    <details class="tasks">
+      <summary>学习任务 ({{ s.learning_tasks|length }})</summary>
+      <ol>
+        {% for task in s.learning_tasks %}
+        <li><span class="chip">{{ task.type }}</span> {{ task.prompt }}
+          {% if task.choices %}<ul>{% for c in task.choices %}<li>{{ c }}</li>{% endfor %}</ul>{% endif %}
+          {% if task.expected_answer %}<p class="answer">答案：{{ task.expected_answer }}</p>{% endif %}
+        </li>
+        {% endfor %}
+      </ol>
+    </details>
+    {% endif %}
+
+    {% if entry.errors %}
+    <div class="errors">
+      <ul>{% for e in entry.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
+
+    <footer>
+      <span class="path">{{ entry.path }}</span>
+      <button class="ghost" onclick="toggleRaw('raw-{{ loop.index }}-{{ t }}', this)">查看 YAML</button>
+    </footer>
+    <pre class="raw" id="raw-{{ loop.index }}-{{ t }}" hidden>{{ entry.raw }}</pre>
+  </article>
+  {% endfor %}
+  {% endif %}
+  {% endfor %}
+</section>
+
+</div>
+{% endblock %}

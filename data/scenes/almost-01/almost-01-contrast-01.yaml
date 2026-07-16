@@ -1,0 +1,63 @@
+schema_version: "1.0"
+version: 2
+status: reviewed
+id: almost-01-contrast-01
+sense_ref: almost-01
+scene_type: contrast
+contrast_target: barely-01
+contrast_relation: mutually_exclusive
+surface:
+  domain: sports
+  participant_type: adult
+  setting: outdoor-sports-field
+
+title: 几乎 vs 勉强
+synopsis: >
+  两个运动员同时跳远：一个人差1厘米没跳过沙坑边缘（almost），
+  另一个人脚尖刚好擦过边缘勉强落地（barely）。对称结构展示“未达到”与“勉强达到”的差异。
+
+storyboard:
+  - beat: 1
+    visual: >
+      双跑道跳远场地。运动员A和B同时起跳。慢动作：
+      A的身体在空中，落地点距离沙坑边缘大约1厘米——他落在沙坑之外。
+      B的身体也在空中，脚掌前端刚刚擦到沙坑边缘——他跌入沙坑。
+    audio: "(起跳声，落地声)"
+    purpose: 同时建立两个事件：一个差一点没达到（未达），一个刚好达到（勉强达）。
+
+  - beat: 2
+    visual: >
+      侧拍：A的脚印落在沙坑外1厘米处，他摇头。
+      B的脚印前端刚好压在边缘线上，他松了一口气。
+    audio: null
+    purpose: 用可视化痕迹固化“未达”和“达到”的物理边界。
+
+  - beat: 3
+    visual: >
+      分屏并置：左屏A差1厘米没进沙坑，右屏B脚尖在边缘线上。
+      屏幕下方文字叠印："Almost"（左）— "Barely"（右）。
+    audio: "A almost made it. B barely made it."
+    purpose: 用对称结构命名差异轴：almost = 极度接近但未达到；barely = 极度接近且刚好达到。
+
+  - beat: 4
+    visual: >
+      运动员C站上起跳线，他跳得非常远，落在沙坑中央。
+      画面分割显示三种情况：C完全达到，A几乎未达，B勉强达到。
+    audio: "Almost, barely, and fully. Three different results."
+    purpose: 通过加入“完全达到”加强参照系，明确 almost 与 barely 在达成与否上的对立。
+
+learning_tasks:
+  - type: contrast_choice
+    prompt: >
+      播放新短片：一个人差一点抓到飞盘（指尖擦过飞盘边缘但没抓住），
+      学习者选择是 almost 还是 barely，并说明判断依据。
+    choices:
+      - almost
+      - barely
+    expected_answer: almost
+    scoring_note: 学生必须指出指尖擦过但没抓住 = 未达到，故为 almost。
+  - type: transfer_judgment
+    prompt: >
+      展示一段短片：杯子在桌边摇晃，最后停在边缘没掉下去。
+      提问：“It almost fell. 还是 It barely fell？” 并解释。
+    expected_answer: almost fell（因为没掉下去，是未发生的负面事件）

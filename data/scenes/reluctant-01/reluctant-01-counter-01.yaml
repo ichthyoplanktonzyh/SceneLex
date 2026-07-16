@@ -2,7 +2,7 @@
 # 设计依据: refuse 描述可观察的拒绝行为, reluctant 描述意愿状态;
 # 两者可能共现, 但仅看见拒绝结果时不能反推出此前一定有 reluctant 的过程
 schema_version: "1.0"
-version: 1
+version: 2
 status: reviewed
 
 id: reluctant-01-counter-01
@@ -10,6 +10,11 @@ sense_ref: reluctant-01
 scene_type: counterexample
 contrast_target: refuse-01
 contrast_relation: different_dimension
+surface:
+  domain: household
+  participant_type: adult
+  setting: indoor-home
+
 title: 看得见拒绝, 但不能擅自推断不情愿
 synopsis: >
   与原型场景同构的设定: 被要求做事。但人物直接、平静地说不并离开。

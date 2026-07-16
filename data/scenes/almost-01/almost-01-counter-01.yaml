@@ -1,0 +1,56 @@
+schema_version: "1.0"
+version: 2
+status: reviewed
+id: almost-01-counter-01
+sense_ref: almost-01
+scene_type: counterexample
+contrast_target: about-01
+contrast_relation: overlaps
+surface:
+  domain: measurement
+  participant_type: adult
+  setting: indoor-home
+
+title: 说不准"大约"就是"几乎"
+synopsis: >
+  一个人测量绳子长度，用尺子比划说“大约一米”，但绳子实际上只有80厘米，
+  没有向目标“约一米”逼近的过程，也不强调未达成——观众不能因为大致接近就使用 almost。
+
+storyboard:
+  - beat: 1
+    visual: >
+      手工桌，一个人拿起一根绳子，拿尺子粗略比了一下，目测后说“大概一米”。
+      他并没有反复裁剪或逼近某个精确长度，只是模糊估计。
+    audio: "This rope is about one meter."
+    purpose: 建立 about 场景：只有粗略估计，没有逼近过程，也看不到明确的达成边界。
+
+  - beat: 2
+    visual: >
+      同一场景，另一个人接过绳子，用尺子精确量，发现只有80厘米。
+      他皱眉，展示尺子上的刻度。
+    audio: null
+    purpose: 揭露实际值与估计值的差距，表明没有“极度接近”，也没有“接近目标”的进程。
+
+  - beat: 3
+    visual: >
+      画面回放第一人的动作：他只是扫了一眼，没有仔细比对。
+    audio: "He said 'about one meter.' Is that almost a meter?"
+    purpose: 用反问引导学习者思考：about 仅表示近似，不包含“极度接近且未达”的子结构。
+
+  - beat: 4
+    visual: >
+      分屏对照：左边是原型场景（男孩几乎够到罐子），
+      右边是刚才的绳子场景。左侧标注 “almost”（逼近+未达），右侧标注 “about”（近似但不逼近）。
+    audio: "About doesn't mean almost. Almost needs a close approach."
+    purpose: 明确证据不足：仅有数值接近但缺乏逼近过程，不能推断 almost。
+
+learning_tasks:
+  - type: transfer_judgment
+    prompt: >
+      播放三段短片：(1) 水杯差2mm满；(2) 说“大约300人”但实际250人；
+      (3) 一个人几乎跑完马拉松但晕倒在终点前10米。
+      学习者判断哪些可以用来描述 almost。
+    expected_answer: (1)和(3)可以，(2)不可以，因为它只是粗略约数，没有逼近终点被中断的痕迹。
+  - type: contrast_choice
+    prompt: "当别人说『大约十点』而现在是9:58，你能说『almost ten』吗？为什么？"
+    expected_answer: "能，因为9:58极度接近十点且未到；但如果说话者只是随口估计，并没指向精确的10点整，则不能用 almost。关键看是否有明确目标和逼近过程。"

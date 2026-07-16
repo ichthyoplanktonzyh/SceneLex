@@ -93,6 +93,12 @@ learning clients, APIs, or content packages
 - 五类场景各司其职：`prototype` 建立概念，`contrast` 比较相邻概念，
   `counterexample` 证明某些线索不足，`boundary` 测试临界、包含或偏好，`transfer`
   验证跨表面的泛化。对比类场景必须声明 `contrast_relation`。
+- 义项的证据集是扁平、可增长的场景数组：同一类型可以有多个平行场景
+  （ID 序号递增，`draft.py scenes <id> --add <type>` 增补），价值在于泛化。
+  每个场景以 `surface`（domain / participant_type / setting）声明表面特征；
+  同类型场景之间表面必须有差异，surface 完全相同的场景是重复证据而非泛化。
+  "场景组"不是实体，只是覆盖清单被凑齐一遍；将来叙事/课程/实验/受众组
+  一律做成引用 scene ID 的覆盖层，不拥有场景。
 - 原型场景通常遵循“先概念体验、后目标声音命名”的声画顺序。迁移场景至少改变两个
   表面维度并写入 `transfer_dimensions`，避免学习者只记住原始剧情。
 - 悬空义项引用是可接受的 backlog 信号；不要为消除校验器的 backlog 而虚构低质量义项。

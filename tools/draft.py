@@ -79,6 +79,31 @@ def resolve_sense_path(sense_id):
     return None
 
 
+def existing_scenes(sense_id, scene_type=None):
+    """收集正式库与草稿库中该义项的场景文件, 可按类型过滤。"""
+    abbr = SCENE_ABBR.get(scene_type) if scene_type else None
+    pattern = re.compile(
+        rf"^{re.escape(sense_id)}-({abbr or '[a-z]+'})-(\d{{2}})$"
+    )
+    found = []
+    for base in (ROOT / "data" / "scenes" / sense_id,
+                 DRAFTS / "scenes" / sense_id):
+        if not base.exists():
+            continue
+        for p in sorted(base.glob("*.yaml")):
+            if pattern.fullmatch(p.stem):
+                found.append(p)
+    return found
+
+
+def next_scene_id(sense_id, scene_type):
+    """按正式库+草稿库中已占用的序号, 生成该类型的下一个场景 ID。"""
+    abbr = SCENE_ABBR[scene_type]
+    taken = [int(p.stem.rsplit("-", 1)[1])
+             for p in existing_scenes(sense_id, scene_type)]
+    return f"{sense_id}-{abbr}-{max(taken, default=0) + 1:02d}"
+
+
 # ---------------------------------------------------------------- sense
 
 def cmd_sense(args):
@@ -135,6 +160,9 @@ def cmd_scenes(args):
     sense_path = resolve_sense_path(sense_id)
     if not sense_path:
         sys.exit(f"找不到义项 '{sense_id}' (data/senses/ 和 data/drafts/senses/ 均无)")
+
+    if args.add:
+        return _scenes_add(sense_id, sense_path, args.add)
 
     template = read(PROMPTS / "scene-draft.md")
     schema = read(ROOT / "schema" / "scene-spec.schema.json")
@@ -201,6 +229,56 @@ def cmd_scenes(args):
     _report(all_errs, out_dir)
 
 
+def _scenes_add(sense_id, sense_path, scene_type):
+    """为已有义项增补一个指定类型的场景 (泛化扩证据)。"""
+    peers = existing_scenes(sense_id, scene_type)
+    if not peers:
+        print(f"⚠ '{sense_id}' 尚无 {scene_type} 场景, 建议先起草完整五场景组",
+              file=sys.stderr)
+    new_id = next_scene_id(sense_id, scene_type)
+    existing = "\n\n".join(f"```yaml\n{read(p)}```" for p in peers) \
+        or "(该类型暂无已有场景)"
+
+    prompt = (read(PROMPTS / "scene-add.md")
+              .replace("{{SCHEMA}}", read(ROOT / "schema" / "scene-spec.schema.json"))
+              .replace("{{SENSE}}", read(sense_path))
+              .replace("{{EXISTING}}", existing)
+              .replace("{{SENSE_ID}}", sense_id)
+              .replace("{{SCENE_TYPE}}", scene_type)
+              .replace("{{NEW_ID}}", new_id))
+
+    print(f"→ 增补 '{sense_id}' 的 {scene_type} 场景 ({new_id}) ...",
+          file=sys.stderr)
+    raw = llm.generate(prompt)
+    blocks = extract_yaml_blocks(raw)
+    if not blocks:
+        sys.exit("模型未返回任何 YAML 内容")
+
+    out_dir = DRAFTS / "scenes" / sense_id
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out = out_dir / f"{new_id}.yaml"
+    try:
+        doc = yaml.safe_load(blocks[0])
+    except yaml.YAMLError as e:
+        unparsed = out_dir / f"_unparsed-{new_id}.yaml"
+        unparsed.write_text(blocks[0], encoding="utf-8")
+        sys.exit(f"YAML 解析失败, 原文已存 {unparsed.relative_to(ROOT)} 供修复:\n{e}")
+    if not isinstance(doc, dict):
+        sys.exit("场景草稿的 YAML 根节点必须是对象")
+
+    out.write_text(blocks[0].rstrip() + "\n", encoding="utf-8")
+    print(f"✓ 草稿已写入 {out.relative_to(ROOT)}")
+
+    errs = schema_check(doc, load_schema("scene-spec.schema.json"), out.name)
+    if doc.get("id") != new_id:
+        errs.append(f"  ✗ {out.name} id 必须是 '{new_id}'")
+    if doc.get("scene_type") != scene_type:
+        errs.append(f"  ✗ {out.name} scene_type 必须是 '{scene_type}'")
+    if not doc.get("surface"):
+        errs.append(f"  ✗ {out.name} 增补场景必须填写 surface")
+    _report(errs, out)
+
+
 # ---------------------------------------------------------------- list
 
 def cmd_list(args):
@@ -237,8 +315,13 @@ def cmd_promote(args):
     scene_dest_dir = ROOT / "data" / "scenes" / ident
     if has_sense and sense_dest.exists():
         sys.exit(f"正式义项已存在: {sense_dest.relative_to(ROOT)}；拒绝静默覆盖")
-    if has_scenes and scene_dest_dir.exists():
-        sys.exit(f"正式场景组已存在: {scene_dest_dir.relative_to(ROOT)}；拒绝静默覆盖")
+    scene_files = sorted(scene_draft_dir.glob("*.yaml")) if has_scenes else []
+    for path in scene_files:
+        if (scene_dest_dir / path.name).exists():
+            sys.exit(
+                f"正式场景已存在: {(scene_dest_dir / path.name).relative_to(ROOT)}"
+                "；拒绝静默覆盖"
+            )
 
     # Build a complete candidate repository and validate it before touching
     # published paths. Temporary files live on the same filesystem so the
@@ -254,9 +337,11 @@ def cmd_promote(args):
                 prepared, encoding="utf-8"
             )
         if has_scenes:
+            # The staged tree already contains any published scenes for this
+            # sense; additions merge in beside them.
             staged_scene_dir = staged / "scenes" / ident
-            staged_scene_dir.mkdir()
-            for path in sorted(scene_draft_dir.glob("*.yaml")):
+            staged_scene_dir.mkdir(exist_ok=True)
+            for path in scene_files:
                 (staged_scene_dir / path.name).write_text(
                     _mark_reviewed(read(path)), encoding="utf-8"
                 )
@@ -279,8 +364,11 @@ def cmd_promote(args):
             os.replace(staged / "senses" / sense_draft.name, sense_dest)
             promoted.append(sense_dest)
         if has_scenes:
-            os.replace(staged / "scenes" / ident, scene_dest_dir)
-            promoted.extend(sorted(scene_dest_dir.glob("*.yaml")))
+            scene_dest_dir.mkdir(parents=True, exist_ok=True)
+            for path in scene_files:
+                dest = scene_dest_dir / path.name
+                os.replace(staged / "scenes" / ident / path.name, dest)
+                promoted.append(dest)
 
     if has_sense:
         sense_draft.unlink()
@@ -334,8 +422,10 @@ def main():
     p.add_argument("word")
     p.set_defaults(func=cmd_sense)
 
-    p = sub.add_parser("scenes", help="起草五场景组")
+    p = sub.add_parser("scenes", help="起草五场景组, 或用 --add 增补单个场景")
     p.add_argument("sense_id")
+    p.add_argument("--add", choices=SCENE_ORDER, metavar="TYPE",
+                   help="为已有义项增补一个指定类型的场景 (泛化扩证据)")
     p.set_defaults(func=cmd_scenes)
 
     sub.add_parser("list", help="列出待审草稿").set_defaults(func=cmd_list)

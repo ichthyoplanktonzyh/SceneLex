@@ -1,0 +1,55 @@
+schema_version: "1.0"
+version: 2
+status: reviewed
+id: almost-01-proto-01
+sense_ref: almost-01
+scene_type: prototype
+surface:
+  domain: household
+  participant_type: child
+  setting: indoor-home
+
+title: 就差一点点
+synopsis: >
+  一个男孩伸手去拿架子上最后一罐饮料，指尖几乎碰到罐身，
+  却因罐子滚向深处而没能拿到。整个过程清晰地展示了“极度接近但未达到”。
+
+storyboard:
+  - beat: 1
+    visual: >
+      厨房，架子上放着一罐饮料。男孩踮起脚尖，右手尽力伸向罐子，
+      手指距离罐身约 2 厘米，身体绷紧，目光锁定目标。
+    audio: null
+    purpose: 建立目标状态（拿到罐子）和实际状态（手指接近）之间的空间差距，让观众自己感知“差一点”。
+
+  - beat: 2
+    visual: >
+      手指继续前伸，指尖已经触到罐身侧面——罐子轻微晃动，
+      但没有被抓牢，而是向架子深处滚动了约 1 厘米。
+    audio: "(罐子滚动的声音)"
+    purpose: 呈现接触但未掌握的临界时刻，距离缩短到几乎为零，但结果仍未达到。
+
+  - beat: 3
+    visual: >
+      男孩急切地再往前探，可罐子滚到了最里面。他手指悬空，
+      指尖距罐身不到半厘米，但已经够不到了。他叹气放下手。
+    audio: null
+    purpose: 最终状态明确：目标未达成。观众清楚看到“没拿到”，gap 极小。
+
+  - beat: 4
+    visual: 男孩垂着头走出厨房，母亲进来，看到罐子，伸手轻松拿了出来。
+    audio: "You were almost there... Almost."
+    purpose: 在事件结束、差距最明显时给出目标词，命名这个“极度接近但未达成”的状态。
+
+learning_tasks:
+  - type: scene_recognition
+    prompt: 听 "almost"，从四个画面（轻松拿到/差很远/几乎拿到但没到/刚好拿到）中选择匹配的一段。
+    choices:
+      - "A: 轻松拿到饮料"
+      - "B: 手臂伸过去差半米"
+      - "C: 几乎碰到但罐子滚开没拿到"
+      - "D: 手指刚好握住罐子"
+    expected_answer: C
+  - type: listen_and_match
+    prompt: 播放 "He almost got it." 在两段画面（指尖触到罐子但滑开 / 直接握住罐子）中选择。
+    expected_answer: 指尖触到罐子但滑开

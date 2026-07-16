@@ -1,0 +1,53 @@
+schema_version: "1.0"
+version: 1
+status: reviewed
+id: almost-01-proto-02
+sense_ref: almost-01
+scene_type: prototype
+title: Almost a Goal
+synopsis: >
+  一名前锋在足球比赛中射门，足球几乎越过门线，但被守门员指尖扑出，击中门柱弹出。
+  整个过程展示了“极度接近但未达到”的状态。
+surface:
+  domain: sports
+  participant_type: adult
+  setting: outdoor-stadium
+storyboard:
+  - beat: 1
+    visual: >
+      足球场上，前锋快速带球冲向禁区。守门员蹲在球门中央，注意力集中。
+      前锋起脚射门，足球高速飞向球门右下角。
+    audio: null
+    purpose: 建立目标状态（进球：球越过门线）和实际状态（球正高速接近球门），让观众预期可能进球。
+  - beat: 2
+    visual: >
+      球在空中，距离球门线约一臂距离。守门员朝右侧飞扑，手指伸展，触碰到球侧表面。
+      球轻微改变方向。
+    audio: "(球被碰到的闷响)"
+    purpose: 呈现接触但未完全控制的临界时刻——距离极其接近，但球的方向被改变，结果未定。
+  - beat: 3
+    visual: >
+      球擦过门将指尖，继续向前，但角度偏移，击中门柱外侧弹回场内。
+      前锋抱头，守门员落地。
+    audio: "(球击柱的清脆响声)"
+    purpose: 最终状态明确：球未越过门线，没有进球。观众清楚看到“没进”，差距极小（门柱）。
+  - beat: 4
+    visual: >
+      前锋蹲地，双手捂脸。队友跑过来拍拍他的背，指向球门摇头。
+    audio: "You were almost there... Almost scored!"
+    purpose: 在事件结束、差距最明显时给出目标词，命名这个“极度接近但未达成”的状态。
+learning_tasks:
+  - type: scene_recognition
+    prompt: "听 \"almost\"，从四个画面中选择匹配的一段。"
+    choices:
+      - "A: 前锋几乎将球打进但被扑出，击中立柱"
+      - "B: 前锋轻松推射空门"
+      - "C: 前锋远射偏出球门很远"
+      - "D: 守门员稳稳抱住球"
+    expected_answer: "A"
+  - type: listen_and_match
+    prompt: "播放 \"He almost scored.\" 在两段画面中选择匹配的一段。"
+    choices:
+      - "球击中立柱弹出"
+      - "球直接入网"
+    expected_answer: "球击中立柱弹出"

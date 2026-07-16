@@ -3,7 +3,7 @@
 # "慢"是 reluctant 最常见的外化信号, 也因此是最危险的误读入口——
 # 必须展示"慢而无抗拒"来切断 慢=reluctant 的错误归纳
 schema_version: "1.0"
-version: 1
+version: 2
 status: reviewed
 
 id: reluctant-01-boundary-01
@@ -11,6 +11,11 @@ sense_ref: reluctant-01
 scene_type: boundary
 contrast_target: slow-01
 contrast_relation: different_dimension
+surface:
+  domain: gardening
+  participant_type: elderly
+  setting: outdoor-garden
+
 title: 慢, 不等于不情愿
 synopsis: >
   老人以极慢的速度给花园浇水——哼着歌, 微笑, 没有任何压力在场。

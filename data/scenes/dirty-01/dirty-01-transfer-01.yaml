@@ -3,9 +3,8 @@
 # 人物(修车工/幼童/司机)与环境(车库/草地/公路), 骨架"表面+污物+偏离洁净"不变;
 # 覆盖高频搭配 dirty hands / dirty clothes / get dirty
 schema_version: "1.0"
-version: 1
-status: draft
-
+version: 2
+status: reviewed
 id: dirty-01-transfer-01
 sense_ref: dirty-01
 scene_type: transfer
@@ -13,6 +12,11 @@ transfer_dimensions:
   - object_type
   - contaminant_type
   - environment
+surface:
+  domain: mixed
+  participant_type: mixed
+  setting: mixed
+
 title: 油污的手、草渍的袜子、积灰的玻璃
 synopsis: >
   三段小片段——修车工满是黑油的双手、幼童踩过草地的白袜、司机

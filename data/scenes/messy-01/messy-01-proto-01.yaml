@@ -1,12 +1,17 @@
 # 原型场景: 首次建立 messy 概念
 # 设计依据: messy-01 scene_requirements —— 先让观众自行感知"乱", 再用声音命名
 schema_version: "1.0"
-version: 1
+version: 2
 status: reviewed
 
 id: messy-01-proto-01
 sense_ref: messy-01
 scene_type: prototype
+surface:
+  domain: household
+  participant_type: child
+  setting: indoor-home
+
 title: 放学后的房间
 synopsis: >
   清晨整洁的卧室与傍晚被随手丢满东西的同一房间形成对照。

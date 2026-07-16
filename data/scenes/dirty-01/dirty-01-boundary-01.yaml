@@ -3,14 +3,18 @@
 # dirty 是这一程度谱系里最中性、最轻的默认词, filthy 是越过临界后的极端肮脏。
 # 用同一只盘子随时间加重, 让观众亲眼看到"跨越边界的瞬间"
 schema_version: "1.0"
-version: 1
-status: draft
-
+version: 2
+status: reviewed
 id: dirty-01-boundary-01
 sense_ref: dirty-01
 scene_type: boundary
 contrast_target: filthy-01
 contrast_relation: degree_neighbor
+surface:
+  domain: household-chores
+  participant_type: object
+  setting: indoor-kitchen
+
 title: 一只盘子越过的那条线
 synopsis: >
   同一只餐盘, 从一顿饭后的油渍残羹(dirty), 到搁置多日、结垢发臭、

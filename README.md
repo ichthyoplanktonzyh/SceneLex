@@ -84,6 +84,7 @@ python -m pip install -r requirements-dev.txt
 python3 tools/draft.py backlog
 python3 tools/draft.py sense dirty
 python3 tools/draft.py scenes dirty-01
+python3 tools/draft.py scenes dirty-01 --add prototype   # 增补一个新表面的场景
 python3 tools/draft.py list
 python3 tools/draft.py promote dirty-01
 
@@ -134,6 +135,17 @@ export SCENELEX_LLM_API_KEY=<api-key>
 export SCENELEX_LLM_BASE_URL=https://api.anthropic.com/v1
 ```
 
+DeepSeek 示例（OpenAI-compatible Chat Completions）：
+
+```bash
+export SCENELEX_LLM_PROTOCOL=openai-chat
+export SCENELEX_LLM_BASE_URL=https://api.deepseek.com
+export SCENELEX_LLM_API_KEY=<your-deepseek-api-key>
+export SCENELEX_LLM_MODEL=deepseek-v4-pro
+```
+
+> `SCENELEX_LLM_BASE_URL` 填 `https://api.deepseek.com` 即可（不要 `/v1`），适配器会自动拼接 `/chat/completions`。模型名可选 `deepseek-v4-pro`、`deepseek-v4-flash`。
+
 特殊网关可以使用：
 
 - `SCENELEX_LLM_ENDPOINT`：覆盖完整请求地址；
@@ -141,6 +153,8 @@ export SCENELEX_LLM_BASE_URL=https://api.anthropic.com/v1
 - `SCENELEX_LLM_AUTH_SCHEME`：修改或清空 `Bearer` 前缀；
 - `SCENELEX_LLM_HEADERS_JSON`：增加字符串类型的自定义请求头；
 - `SCENELEX_LLM_MAX_TOKENS`、`SCENELEX_LLM_TIMEOUT`：控制输出和超时；
+- `SCENELEX_LLM_STREAM`：`openai-chat` 默认走流式（SSE），长生成不会被网关的
+  空闲超时掐断；设为 `0` 可回退到非流式（仅适合短输出或不支持流式的网关）；
 - `SCENELEX_LLM_COMMAND`：配置本地命令。
 
 `command` 中可使用 `{model}` 占位符，例如
