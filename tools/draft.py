@@ -110,6 +110,7 @@ def cmd_sense(args):
     word = args.word.strip().lower()
     if not re.match(r"^[a-z][a-z_]*$", word):
         sys.exit(f"单词 '{word}' 含非法字符 (只允许小写字母和下划线)")
+    sense_num = getattr(args, "num", "01")
 
     template = read(PROMPTS / "sense-draft.md")
     schema = read(ROOT / "schema" / "word-sense.schema.json")
@@ -123,9 +124,10 @@ def cmd_sense(args):
               .replace("{{EXAMPLE_1}}", ex1)
               .replace("{{EXAMPLE_2}}", ex2)
               .replace("{{DICTIONARY}}", dict_block)
-              .replace("{{WORD}}", word))
+              .replace("{{WORD}}", word)
+              .replace("{{SENSE_NUM}}", sense_num))
 
-    print(f"→ 起草词义 '{word}' ...", file=sys.stderr)
+    print(f"→ 起草词义 '{word}-{sense_num}' ...", file=sys.stderr)
     raw = llm.generate(prompt)
     blocks = extract_yaml_blocks(raw)
     if not blocks:
@@ -134,7 +136,7 @@ def cmd_sense(args):
     try:
         doc = yaml.safe_load(blocks[0])
     except yaml.YAMLError as e:
-        out = DRAFTS / "senses" / f"{word}-01.yaml"
+        out = DRAFTS / "senses" / f"{word}-{sense_num}.yaml"
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(blocks[0], encoding="utf-8")
         sys.exit(f"YAML 解析失败, 原文已存 {out.relative_to(ROOT)} 供修复:\n{e}")
@@ -143,7 +145,7 @@ def cmd_sense(args):
 
     # The requested ID determines the path. Model output is untrusted content
     # and must never be able to choose a filesystem path.
-    expected_id = f"{word}-01"
+    expected_id = f"{word}-{sense_num}"
     out = DRAFTS / "senses" / f"{expected_id}.yaml"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(blocks[0].rstrip() + "\n", encoding="utf-8")
@@ -381,6 +383,39 @@ def cmd_promote(args):
     for path in promoted:
         print(f"✓ 定稿 {path.relative_to(ROOT)}")
 
+    # 同步更新词目条目
+    word = ident.rsplit("-", 1)[0]
+    try:
+        from dict import build_word_entry, write_word_entry
+
+        ranks_path = ROOT / "data" / "wordlists" / "en-top-20000.tsv"
+        ranks: dict[str, int] = {}
+        if ranks_path.exists():
+            for line in ranks_path.read_text(encoding="utf-8").splitlines():
+                if line and not line.startswith("#"):
+                    parts = line.split("\t")
+                    if len(parts) >= 2 and parts[0].isdigit():
+                        ranks[parts[1]] = int(parts[0])
+        entry = build_word_entry(word, ranks)
+        if entry and entry.get("senses"):
+            # 保留词目文件已有的 schema_version, 自增 version
+            existing_path = ROOT / "data" / "words" / f"{word}.yaml"
+            if existing_path.exists():
+                existing = yaml.safe_load(
+                    existing_path.read_text(encoding="utf-8")
+                )
+                if isinstance(existing, dict):
+                    entry["version"] = (existing.get("version") or 1) + 1
+                    if existing.get("schema_version"):
+                        entry["schema_version"] = existing["schema_version"]
+            else:
+                entry["version"] = 1
+            entry.setdefault("schema_version", "1.0")
+            write_word_entry(word, entry)
+            print(f"✓ 词目条目已更新 → data/words/{word}.yaml")
+    except Exception as exc:
+        print(f"  ⚠ 词目条目更新失败: {exc}", file=sys.stderr)
+
     print("\n→ 复核正式库 ...\n")
     result = subprocess.run(
         [sys.executable, str(ROOT / "tools" / "validate.py")], check=False
@@ -447,55 +482,62 @@ def cmd_batch(args):
 
     def process_word(word):
         entry = state.setdefault(word, {})
-        sense_id = f"{word}-01"
-        sense_ok = False
-        scenes_ok = False
+        sense_results: dict[str, bool] = {}
+        scene_results: dict[str, bool] = {}
 
-        # --- sense ---
-        if entry.get("sense") == "done" or resolve_sense_path(sense_id):
-            with state_lock:
-                entry["sense"] = "done"
-            with print_lock:
-                print(f"  ✓ {word}: 词义已存在")
-            sense_ok = True
-        else:
-            ok, msg = _run_stage(["sense", word], args.retries, args.sleep)
-            with state_lock:
-                entry["sense"] = "done" if ok else "failed"
-                entry["sense_note"] = msg
-                _save_batch_state(state)
-            if not ok:
+        for sense_num_int in range(1, args.senses + 1):
+            sense_num = f"{sense_num_int:02d}"
+            sense_id = f"{word}-{sense_num}"
+
+            # --- sense ---
+            sense_entry = entry.setdefault("senses", {})
+            sense_state = sense_entry.get(sense_num)
+            if sense_state == "done" or resolve_sense_path(sense_id):
+                with state_lock:
+                    sense_entry[sense_num] = "done"
                 with print_lock:
-                    print(f"  ✗ {word}: 词义起草失败")
-                return word, sense_ok, scenes_ok
-            with print_lock:
-                print(f"  ✓ {word}: 词义草稿完成")
-            sense_ok = True
+                    print(f"  ✓ {word}: 义项 {sense_num} 已存在")
+                sense_results[sense_num] = True
+            else:
+                ok, msg = _run_stage(["sense", word, "--num", sense_num],
+                                     args.retries, args.sleep)
+                with state_lock:
+                    sense_entry[sense_num] = "done" if ok else "failed"
+                    _save_batch_state(state)
+                if not ok:
+                    with print_lock:
+                        print(f"  ✗ {word}: 义项 {sense_num} 起草失败")
+                    sense_results[sense_num] = False
+                    scene_results[sense_num] = False
+                    continue
+                with print_lock:
+                    print(f"  ✓ {word}: 义项 {sense_num} 草稿完成")
+                sense_results[sense_num] = True
 
-        # --- scenes ---
-        if args.senses_only:
-            with state_lock:
-                entry["scenes"] = "skipped"
-            scenes_ok = True
-        elif entry.get("scenes") == "done":
-            with print_lock:
-                print(f"  ✓ {word}: 场景组已完成")
-            scenes_ok = True
-        else:
+            # --- scenes ---
+            if args.senses_only:
+                scene_results[sense_num] = True
+                continue
+            scene_entry = entry.setdefault("scenes", {})
+            if scene_entry.get(sense_num) == "done":
+                with print_lock:
+                    print(f"  ✓ {word}: {sense_num} 场景组已完成")
+                scene_results[sense_num] = True
+                continue
             ok, msg = _run_stage(["scenes", sense_id], args.retries, args.sleep)
             with state_lock:
-                entry["scenes"] = "done" if ok else "failed"
-                entry["scenes_note"] = msg
+                scene_entry[sense_num] = "done" if ok else "failed"
                 _save_batch_state(state)
             if ok:
                 with print_lock:
-                    print(f"  ✓ {word}: 场景组完成")
-                scenes_ok = True
+                    print(f"  ✓ {word}: {sense_num} 场景组完成")
+                scene_results[sense_num] = True
             else:
                 with print_lock:
-                    print(f"  ✗ {word}: 场景组失败")
+                    print(f"  ✗ {word}: {sense_num} 场景组失败")
+                scene_results[sense_num] = False
 
-        return word, sense_ok, scenes_ok
+        return word, sense_results, scene_results
 
     with ThreadPoolExecutor(max_workers=args.concurrency) as pool:
         futures = {pool.submit(process_word, w): w for w in words}
@@ -505,18 +547,34 @@ def cmd_batch(args):
     print("\n=== 批量汇总 ===")
     for word in words:
         entry = state.get(word, {})
-        print(f"  {word:16} 词义: {entry.get('sense', '-'):7} "
-              f"场景: {entry.get('scenes', '-')}")
-    done = all(
-        state.get(w, {}).get("sense") == "done"
-        and state.get(w, {}).get("scenes") in ("done", "skipped")
+        s = entry.get("senses", {})
+        sc = entry.get("scenes", {})
+        sense_summary = " ".join(
+            f"{k}:{'✓' if v == 'done' else '✗'}" for k, v in sorted(s.items())
+        ) if s else "(无)"
+        scene_summary = " ".join(
+            f"{k}:{'✓' if v == 'done' else '✗'}" for k, v in sorted(sc.items())
+        ) if sc else "(无)"
+        print(f"  {word:16}  义项: {sense_summary} | 场景: {scene_summary}")
+
+    total_senses = sum(
+        sum(1 for v in state.get(w, {}).get("senses", {}).values() if v == "done")
         for w in words
     )
-    if done:
+    total_scenes = sum(
+        sum(1 for v in state.get(w, {}).get("scenes", {}).values() if v == "done")
+        for w in words
+    )
+    target = args.senses * len(words)
+    scenes_target = (target if not args.senses_only else 0)
+    if total_senses == target and total_scenes == scenes_target:
         BATCH_STATE.unlink(missing_ok=True)
-        print("\n✓ 全部完成, 状态文件已清理。运行 draft.py list 查看待审草稿。")
+        print(f"\n✓ 全部 {total_senses} 个义项、{total_scenes} 个场景完成, "
+              f"状态文件已清理。运行 draft.py list 查看待审草稿。")
     else:
-        print(f"\n⚠ 有失败项; 重跑同一命令将从断点续作 (状态: "
+        print(f"\n⚠ 有失败项 (义项 {total_senses}/{target}, "
+              f"场景 {total_scenes}/{scenes_target}); "
+              f"重跑同一命令将从断点续作 (状态: "
               f"{BATCH_STATE.relative_to(ROOT)})")
 
 
@@ -556,6 +614,8 @@ def main():
 
     p = sub.add_parser("sense", help="起草词义")
     p.add_argument("word")
+    p.add_argument("--num", "-n", default="01",
+                   help="义项序号 (默认 01)")
     p.set_defaults(func=cmd_sense)
 
     p = sub.add_parser("scenes", help="起草五场景组, 或用 --add 增补单个场景")
@@ -581,6 +641,8 @@ def main():
     p.add_argument("--sleep", type=int, default=15, help="阶段间隔秒数 (限速)")
     p.add_argument("--concurrency", "-C", type=int, default=1000,
                    help="并行处理词数 (默认 1000)")
+    p.add_argument("--senses", type=int, default=1,
+                   help="每个词生成的义项数 (默认 1; 如 3 则生成 -01 到 -03)")
     p.add_argument("--senses-only", action="store_true", help="只起草词义, 不起草场景")
     p.set_defaults(func=cmd_batch)
 

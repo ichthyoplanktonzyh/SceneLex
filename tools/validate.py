@@ -133,6 +133,7 @@ def validate_repository(data_root: Path | None = None) -> ValidationResult:
 
     result.senses = load_yaml_files(data_root / "senses", result.errors)
     result.scenes = load_yaml_files(data_root / "scenes", result.errors)
+    entry_validator = load_schema("word-entry.schema.json")
 
     seen_sense_ids: dict[str, Path] = {}
     boundary_relations: dict[tuple[str, str], str] = {}
@@ -267,6 +268,7 @@ def validate_repository(data_root: Path | None = None) -> ValidationResult:
 
     _check_surface_diversity(result, data_root)
     _check_dictionary_facts(result, data_root)
+    _check_word_entries(result, data_root, entry_validator)
     return result
 
 
@@ -298,6 +300,68 @@ def _check_dictionary_facts(result: ValidationResult, data_root: Path) -> None:
                 f"{_location(path, data_root)}: pos '{pos}' 不在词典记录的"
                 f"词性中 ({', '.join(sorted(set(facts['pos_senses'])))})"
             )
+
+
+def _check_word_entries(
+    result: ValidationResult, data_root: Path, validator: Draft202012Validator
+) -> None:
+    """校验 data/words/ 下的可选词目条目文件。"""
+    entry_dir = data_root.parent / "words"
+    if not entry_dir.exists():
+        return
+    for path in sorted(entry_dir.glob("*.yaml")):
+        label = _location(path, data_root.parent)
+        try:
+            with open(path, encoding="utf-8") as file:
+                doc = yaml.safe_load(file)
+        except (OSError, yaml.YAMLError) as exc:
+            result.errors.append(f"{label}: YAML 读取失败: {exc}")
+            continue
+        if not isinstance(doc, dict):
+            result.errors.append(f"{label}: YAML 根节点必须是对象")
+            continue
+
+        # Schema 校验
+        result.errors += _schema_errors(doc, validator, label)
+
+        word = doc.get("word", "")
+        if not word:
+            continue
+
+        # 校验每个义项引用
+        for sense in doc.get("senses") or []:
+            sid = sense.get("id", "")
+            if not sid:
+                continue
+            if sid not in result.known_sense_ids:
+                result.errors.append(
+                    f"{label}: 引用的义项 '{sid}' 在正式库中不存在"
+                )
+                continue
+
+            # 校验 scene_count 一致性
+            actual_scenes = [
+                sc
+                for sc in result.scenes.values()
+                if sc.get("sense_ref") == sid
+            ]
+            declared_count = sense.get("scene_count", 0)
+            if declared_count != len(actual_scenes):
+                result.errors.append(
+                    f"{label}/{sid}: 声明的 scene_count={declared_count} "
+                    f"与实际场景数 {len(actual_scenes)} 不一致"
+                )
+
+            # 校验 pos 一致性
+            sense_doc = next(
+                (s for s in result.senses.values() if s.get("id") == sid),
+                None,
+            )
+            if sense_doc and sense.get("pos") != sense_doc.get("pos"):
+                result.errors.append(
+                    f"{label}/{sid}: pos '{sense.get('pos')}' "
+                    f"与义项文件中的 '{sense_doc.get('pos')}' 不一致"
+                )
 
 
 def _check_surface_diversity(result: ValidationResult, data_root: Path) -> None:

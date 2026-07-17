@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}{{ word }} · SceneLex 词典{% endblock %}
+{% block body_attrs %} data-word="{{ word }}"{% endblock %}
+{% block content %}
+
+<div id="word-content">
+  <p class="muted">加载中…</p>
+</div>
+
+<script>
+async function loadWord() {
+  const word = document.body.dataset.word;
+  const res = await fetch(`/api/dict/${word}`);
+  if (!res.ok) {
+    document.getElementById('word-content').innerHTML =
+      `<p class="muted">✗ 未找到词目 '${word}'</p>`;
+    return;
+  }
+  const w = await res.json();
+
+  // 标题
+  const posStr = w.pos.join(', ');
+  let html = '<section class="panel">';
+  html += `<h2>${w.word} <span class="chip">${posStr}</span></h2>`;
+  html += `<p>${w.sense_count} 个义项 · 共 ${w.scene_count} 个场景</p>`;
+  html += '</section>';
+
+  // 义项列表
+  for (const sense of w.senses) {
+    const statusIcon = (sense.status === 'reviewed' || sense.status === 'published') ? '\u2713' : '\u00B7';
+    const sourceLabel = sense.source === 'draft' ? '<span class="chip draft">草稿</span>' : '';
+    const statusLabel = sense.status === 'reviewed' ? '<span class="chip">已审</span>'
+      : sense.status === 'published' ? '<span class="chip">已发布</span>'
+      : sense.status === 'deprecated' ? '<span class="chip problem">弃用</span>'
+      : '<span class="chip draft">起草中</span>';
+
+    html += `<article class="sense-card panel" style="margin-top:1em">`;
+    html += `<h3><a class="sense-link" href="/senses/${sense.id}">${sense.id}</a>`;
+    html += ` ${sourceLabel} ${statusLabel}</h3>`;
+
+    if (sense.sense_label) {
+      html += `<p class="definition">${sense.sense_label}${sense.definition ? ' — ' + sense.definition : ''}</p>`;
+    } else {
+      html += `<p class="muted">（尚无词义文档）</p>`;
+    }
+
+    // 场景摘要
+    if (sense.scenes && sense.scenes.length > 0) {
+      html += '<div style="display:flex;flex-wrap:wrap;gap:0.5em;margin-top:0.5em">';
+      for (const sc of sense.scenes) {
+        const scStatus = sc.source === 'draft' ? ' is-draft' : '';
+        html += `<div class="scene-chip${scStatus}" title="${sc.synopsis || ''}">`;
+        html += `<span class="scene-type ${sc.scene_type}">${sc.scene_type}</span>`;
+        html += ` ${sc.title || sc.id}`;
+        if (sc.errors && sc.errors.length > 0) {
+          html += ` <span class="chip problem">${sc.errors.length} err</span>`;
+        }
+        html += '</div>';
+      }
+      html += '</div>';
+    } else {
+      html += '<p class="muted" style="margin-top:0.5em">（尚无场景）</p>';
+    }
+
+    if (sense.problems > 0) {
+      html += `<p class="chip problem" style="margin-top:0.5em">${sense.problems} 个 schema 问题</p>`;
+    }
+
+    html += '</article>';
+  }
+
+  document.getElementById('word-content').innerHTML = html;
+}
+loadWord();
+</script>
+
+<style>
+.scene-chip {
+  background: var(--bg2, #f0f0f0);
+  border: 1px solid var(--border, #ddd);
+  border-radius: 6px;
+  padding: 0.3em 0.6em;
+  font-size: 0.85em;
+  cursor: default;
+}
+.scene-chip.is-draft {
+  border-style: dashed;
+  opacity: 0.8;
+}
+.scene-type {
+  display: inline-block;
+  font-weight: 600;
+  font-size: 0.8em;
+  padding: 0.1em 0.4em;
+  border-radius: 3px;
+  background: var(--accent, #4a90d9);
+  color: #fff;
+  margin-right: 0.3em;
+}
+.scene-type.contrast { background: #d94a4a; }
+.scene-type.counterexample { background: #d98a4a; }
+.scene-type.boundary { background: #7a4ad9; }
+.scene-type.transfer { background: #4ad98a; }
+</style>
+
+{% endblock %}

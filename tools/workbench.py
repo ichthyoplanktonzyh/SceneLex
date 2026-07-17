@@ -318,6 +318,125 @@ def api_promote(sense_id: str) -> dict[str, Any]:
     }
 
 
+# ------------------------------------------------------------------ Dictionary API
+
+def _build_dict_word(word: str, senses: dict, scenes: dict) -> dict[str, Any] | None:
+    """构建一个词的词典摘要（来自 load_library 的数据）。"""
+    word_senses = []
+    for sense_id, entry in sorted(senses.items()):
+        doc = entry.get("doc") or {}
+        if doc.get("word") != word:
+            continue
+        scene_list = scenes.get(sense_id, [])
+        stypes = {}
+        for sc in scene_list:
+            sc_doc = sc.get("doc") or {}
+            t = sc_doc.get("scene_type", "")
+            if t:
+                stypes.setdefault(t, 0)
+                stypes[t] += 1
+        word_senses.append({
+            "id": sense_id,
+            "sense_label": doc.get("sense_label", ""),
+            "definition": doc.get("definition", ""),
+            "pos": doc.get("pos", ""),
+            "status": doc.get("status", "draft"),
+            "source": entry.get("source"),
+            "scene_count": len(scene_list),
+            "scene_types": stypes,
+            "problems": len(entry.get("errors", []))
+                       + sum(len(s.get("errors", [])) for s in scene_list),
+        })
+    # 可能有场景文件但无词义文档的义项
+    for sense_id, scene_list in sorted(scenes.items()):
+        if any(s["id"] == sense_id for s in word_senses):
+            continue
+        if not sense_id.startswith(f"{word}-"):
+            continue
+        stypes = {}
+        for sc in scene_list:
+            sc_doc = sc.get("doc") or {}
+            t = sc_doc.get("scene_type", "")
+            if t:
+                stypes.setdefault(t, 0)
+                stypes[t] += 1
+        word_senses.append({
+            "id": sense_id,
+            "sense_label": "",
+            "definition": "",
+            "pos": "",
+            "status": "draft",
+            "source": max((s.get("source") for s in scene_list), default="draft"),
+            "scene_count": len(scene_list),
+            "scene_types": stypes,
+            "problems": sum(len(s.get("errors", [])) for s in scene_list),
+        })
+
+    if not word_senses:
+        return None
+
+    # 聚合
+    all_pos = sorted(set(s["pos"] for s in word_senses if s["pos"]))
+    return {
+        "word": word,
+        "pos": all_pos,
+        "sense_count": len(word_senses),
+        "scene_count": sum(s["scene_count"] for s in word_senses),
+        "senses": word_senses,
+    }
+
+
+@app.get("/api/dict")
+def api_dict() -> dict[str, Any]:
+    """按词聚合的词典摘要。"""
+    lib = load_library()
+    senses = lib["senses"]
+    scenes = lib["scenes"]
+
+    words_map: dict[str, dict[str, Any]] = {}
+    for sense_id, entry in senses.items():
+        doc = entry.get("doc") or {}
+        word = doc.get("word", sense_id.rsplit("-", 1)[0])
+        if word not in words_map:
+            words_map[word] = _build_dict_word(word, senses, scenes)
+    # 只有场景没有词义的词
+    for sense_id in scenes:
+        word = sense_id.rsplit("-", 1)[0]
+        if word not in words_map:
+            words_map[word] = _build_dict_word(word, senses, scenes)
+
+    words = sorted(
+        (w for w in words_map.values() if w),
+        key=lambda w: w["word"],
+    )
+    return {"words": words, "total": len(words)}
+
+
+@app.get("/api/dict/{word}")
+def api_dict_word(word: str) -> dict[str, Any]:
+    """单个词的完整词典条目。"""
+    lib = load_library()
+    entry = _build_dict_word(word.strip().lower(), lib["senses"], lib["scenes"])
+    if not entry:
+        raise HTTPException(404, f"'{word}' 尚无义项")
+    # 为 senses 附加场景详情
+    for s in entry["senses"]:
+        s["scenes"] = [
+            {
+                "id": (sc.get("doc") or {}).get("id", ""),
+                "scene_type": (sc.get("doc") or {}).get("scene_type", ""),
+                "title": (sc.get("doc") or {}).get("title", ""),
+                "synopsis": (sc.get("doc") or {}).get("synopsis", ""),
+                "status": (sc.get("doc") or {}).get("status", ""),
+                "source": sc.get("source"),
+                "errors": sc.get("errors", []),
+                "path": sc.get("path", ""),
+            }
+            for sc in lib["scenes"].get(s["id"], [])
+        ]
+    return entry
+
+
 # ------------------------------------------------------------------ Pages
 
 @app.get("/", response_class=HTMLResponse)
@@ -377,6 +496,16 @@ def page_sense(request: Request, sense_id: str,
         ),
         "job": _job_status(sense_id),
     })
+
+
+@app.get("/dictionary", response_class=HTMLResponse)
+def page_dictionary(request: Request):
+    return templates.TemplateResponse(request, "dictionary.html", {})
+
+
+@app.get("/words/{word}", response_class=HTMLResponse)
+def page_word(request: Request, word: str):
+    return templates.TemplateResponse(request, "word.html", {"word": word.strip().lower()})
 
 
 def main() -> None:

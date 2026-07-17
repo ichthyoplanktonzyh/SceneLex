@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "word-entry.schema.json",
+  "title": "WordEntry",
+  "description": "词目条目 — 一个词的完整词典条目，汇总该词所有义项及附带资源。由 promote 自动维护",
+  "type": "object",
+  "required": ["schema_version", "version", "word", "senses"],
+  "additionalProperties": false,
+  "properties": {
+
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "词目条目版本（非义项版本），任何子系统有变更时递增"
+    },
+
+    "word": {
+      "type": "string",
+      "description": "词目（lemma），小写"
+    },
+    "pos": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["noun", "verb", "adjective", "adverb", "preposition", "conjunction", "determiner", "pronoun", "interjection", "particle"]
+      },
+      "description": "该词所有已覆盖义项涉及到的词性"
+    },
+
+    "pronunciation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ipa": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "IPA 音标（来自词典事实，可能有多个变体）"
+        }
+      }
+    },
+
+    "frequency": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rank": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "词频排名（取该词所有义项中的最低排名）"
+        },
+        "band": {
+          "type": "string",
+          "enum": ["core", "high", "mid", "low"],
+          "description": "core: 前500; high: 500-1500; mid: 1500-3500; low: 3500+"
+        }
+      }
+    },
+
+    "senses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "sense_label", "pos", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z_]*-[0-9]{2}$",
+            "description": "义项 ID"
+          },
+          "pos": {
+            "type": "string",
+            "enum": ["noun", "verb", "adjective", "adverb", "preposition", "conjunction", "determiner", "pronoun", "interjection", "particle"]
+          },
+          "sense_label": {
+            "type": "string",
+            "description": "义项的简短中文标签"
+          },
+          "definition": {
+            "type": "string",
+            "description": "简明英文定义"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["draft", "reviewed", "published", "deprecated"]
+          },
+          "scene_count": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "该义项已有场景数"
+          }
+        }
+      },
+      "description": "该词的所有义项清单，按 ID 排序"
+    }
+  }
+}
