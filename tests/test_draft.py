@@ -67,34 +67,38 @@ def _batch_env(tmp_path, monkeypatch):
 
 def test_batch_runs_both_stages_and_cleans_state(tmp_path, monkeypatch):
     _batch_env(tmp_path, monkeypatch)
+    import dictionary
+    monkeypatch.setattr(dictionary, "sense_count", lambda w: 1)
     calls = []
     monkeypatch.setattr(
         draft, "_run_stage",
         lambda stage, retries, sleep: (calls.append(tuple(stage)) or (True, "ok")),
     )
     draft.cmd_batch(Namespace(words=["nearly"], count=1, retries=0,
-                              sleep=0, senses_only=False, concurrency=1,
-                              senses=1))
+                              sleep=0, senses_only=False, concurrency=1))
     assert calls == [("sense", "nearly", "--num", "01"), ("scenes", "nearly-01")]
     assert not draft.BATCH_STATE.exists()
 
 
 def test_batch_failed_sense_skips_scenes_and_keeps_state(tmp_path, monkeypatch):
     _batch_env(tmp_path, monkeypatch)
+    import dictionary
+    monkeypatch.setattr(dictionary, "sense_count", lambda w: 1)
     calls = []
     monkeypatch.setattr(
         draft, "_run_stage",
         lambda stage, retries, sleep: (calls.append(tuple(stage)) or (False, "boom")),
     )
     draft.cmd_batch(Namespace(words=["nearly"], count=1, retries=0,
-                              sleep=0, senses_only=False, concurrency=1,
-                              senses=1))
+                              sleep=0, senses_only=False, concurrency=1))
     assert calls == [("sense", "nearly", "--num", "01")]
     assert draft.BATCH_STATE.exists()
 
 
 def test_batch_resumes_from_recorded_state(tmp_path, monkeypatch):
     _batch_env(tmp_path, monkeypatch)
+    import dictionary
+    monkeypatch.setattr(dictionary, "sense_count", lambda w: 1)
     draft.BATCH_STATE.parent.mkdir(parents=True)
     draft.BATCH_STATE.write_text('{"nearly": {"senses": {"01": "done"}}}')
     calls = []
@@ -103,6 +107,5 @@ def test_batch_resumes_from_recorded_state(tmp_path, monkeypatch):
         lambda stage, retries, sleep: (calls.append(tuple(stage)) or (True, "ok")),
     )
     draft.cmd_batch(Namespace(words=["nearly"], count=1, retries=0,
-                              sleep=0, senses_only=False, concurrency=1,
-                              senses=1))
+                              sleep=0, senses_only=False, concurrency=1))
     assert calls == [("scenes", "nearly-01")]

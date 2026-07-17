@@ -1,0 +1,179 @@
+# ============================================================
+# A. 基础词义信息
+# ============================================================
+schema_version: "1.0"
+language: en
+version: 1
+status: draft
+
+id: hesitant-01
+word: hesitant
+pos: adjective
+sense_label: 犹豫不决的
+definition: "Pausing or showing uncertainty before making a decision or taking action; lacking immediate or confident engagement"
+
+frequency:
+  band: mid
+  rank: 4500
+difficulty: intermediate
+pronunciation:
+  ipa: /ˈhɛzɪtənt/
+
+collocations:
+  - hesitant to speak
+  - hesitant step
+  - hesitant voice
+  - feel hesitant about
+  - hesitant to make a decision
+  - hesitant reply
+
+sentence_patterns:
+  - "be hesitant to [verb]"
+  - "feel hesitant about [noun/gerund]"
+  - "a hesitant [noun]"
+  - "hesitant for a moment"
+
+# ============================================================
+# B. 语义类型
+# ============================================================
+semantic_type: mental_state
+
+# ============================================================
+# C. 语义骨架
+# ============================================================
+semantic_skeleton:
+  participants:
+    - role: experiencer
+      description: 犹豫的人，正在面对一个决定或行动
+    - role: target
+      description: 引发犹豫的决定、行动或表达
+    - role: context
+      description: 促使该决定或行动被考虑的情境
+
+  propositions:
+    - 存在一个人物正面临一个需要做出决定或采取行动的时刻
+    - 人物没有立即、顺畅地进入行动或表达状态
+    - 人物的暂停或延迟源于内在不确定性，而非外部物理障碍
+    - 该不确定性可能涉及选择哪个选项、如何行动或是否应当行动
+    - 最终人物可能行动也可能不行动，但犹豫状态本身由延迟和不确定信号定义
+
+# ============================================================
+# D. 成立条件与排除条件
+# ============================================================
+conditions:
+  required:
+    - 人物的暂停或延迟可被观察或推断
+    - 该暂停与决策或行动相关，而非纯粹的身体迟缓
+    - 人物内部存在不确定性，而非仅仅缺乏知识或信息
+
+  excluded:
+    - condition: 人物因恐惧而不敢行动，表现出回避或退缩
+      alternative: afraid-01
+    - condition: 人物因不愿意而拖延，带有抵触情绪
+      alternative: reluctant-01
+    - condition: 人物立刻果断行动，没有任何可观察的停顿
+      alternative: decisive-01
+    - condition: 人物因身体机能问题（如失语、受伤）而行动缓慢
+      alternative: slow-01
+
+# ============================================================
+# E. 概念关系
+# ============================================================
+relations:
+  synonyms:
+    - uncertain-01
+    - indecisive-01
+    - wavering-01
+  antonyms:
+    - decisive-01
+    - certain-01
+    - resolute-01
+  hypernyms:
+    - uncertain-01
+  hyponyms: []
+  confusables:
+    - reluctant-01
+    - indecisive-01
+    - uncertain-01
+    - cautious-01
+
+  boundaries:
+    - target: reluctant-01
+      relation: overlaps
+      distinction: reluctant 强调缺乏意愿，hesitant 强调不确定导致延迟；两者常同时出现，但概念轴不同。
+      diagnostic: 如果人物对行动本身表现出厌恶（皱眉、叹气、抱怨），则更倾向于 reluctant；如果只是反复掂量、没有明确情绪抗拒，则是 hesitant。
+    - target: uncertain-01
+      relation: target_more_specific
+      distinction: uncertain 是认知状态（不知道正确答案或结果），hesitant 是行为倾向（延迟或暂停），uncertain 可以没有行为表现。
+      diagnostic: 人物可以内心不确定但外表果断（uncertain without hesitant）；若行为上出现暂停，则 hesitant 成立。
+    - target: cautious-01
+      relation: degree_neighbor
+      distinction: cautious 强调为减少风险而小心行事，可以没有暂停；hesitant 强调暂停本身，可以源于谨慎但也可以源于其他原因。
+      diagnostic: 如果人物行动缓慢但连续、不中断，就是 cautious；如果有明显停顿或反复，就是 hesitant。
+    - target: indecisive-01
+      relation: overlaps
+      distinction: indecisive 强调无法做出最终决定，是一种特质倾向；hesitant 是具体情境下的状态。反复无常且最终可能也不选是 indecisive；犹豫后做出决定也是 hesitant。
+      diagnostic: 观察单一事件，若人物最终选择并行动则 indecisive 可能不成立，但 hesitant 可以成立。
+
+  l1_confusables:
+    zh:
+      - l1_term: 犹豫
+        covers:
+          - hesitant-01
+          - indecisive-01
+          - wavering-01
+        note: >
+          中文"犹豫"覆盖从具体情境的暂停到性格上的优柔寡断。
+          hesitant 更侧重当下行为上的停顿和不确定，
+          indecisive 则更常指一贯难以做决定的特质。
+          中文不严格区分这两个层次，常混用"犹豫"。
+      - l1_term: 迟疑
+        covers:
+          - hesitant-01
+          - reluctant-01
+        note: >
+          "迟疑"既可用于因不确定而慢，也可用于因不情愿而慢。
+          教学的难点在于让学习者区分"不知道怎么做"（hesitant）
+          和"不情愿做"（reluctant）这两种不同的内在原因，
+          虽然表面行为（延迟）可能相似。
+      - l1_term: 踌躇
+        covers:
+          - hesitant-01
+          - indecisive-01
+        note: >
+          "踌躇"多用于书面语，与"犹豫"重叠，但更强调在一个选择前停留不前的样子。
+          学习者需注意 hesitant 也可用于表达中的停顿（hesitant voice），
+          而"踌躇"通常不用于描述声音。
+
+# ============================================================
+# F. 场景要求
+# ============================================================
+scene_requirements:
+  must_show:
+    - 人物面临一个需要做出决定或采取行动的情境
+    - 人物出现可观察的暂停、延迟或反复
+    - 场景提供足够的线索表明暂停源于内在不确定，而非外部强制
+    - 可以展示人物最终行动或不行动，但不能将结果当作定义唯一标准
+
+  must_not:
+    - 不能只展示人物因恐惧或反感而产生的回避（那是 afraid 或 reluctant）
+    - 不能展示人物因缺乏信息而静止不动（那是 confused 或不了解情况）
+    - 不能仅通过台词描述内心状态（如"I'm hesitant"）来替代行为外化
+    - 不能将身体机能障碍导致的迟缓混为 hesitancy
+
+  externalization:
+    - 动作开始前有明显的停顿或定格
+    - 手或身体在接近目标时减速或撤回
+    - 说话时出现填充词（um, uh）或重音重复（I... I...）且眼神飘移
+    - 目光在多个选项之间来回快速扫视
+    - 深吸一口气但未立即行动
+    - 将要开口时又合上嘴
+    - 手指在按钮/开关上悬停但未按下
+    - 人物步伐放慢或原地小步来回
+
+  timing: >
+    先通过情境建立人物需要决策或行动的背景，
+    然后让人物表现出至少一个外部化的犹豫信号，
+    待观众已经感知到"这个人正在犹豫"之后，
+    再用目标词为其命名作为总结或他人评价。
+    避免在观众还未确认犹豫行为之前就说出 hesitant。

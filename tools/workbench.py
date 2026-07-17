@@ -409,6 +409,13 @@ def api_dict() -> dict[str, Any]:
         (w for w in words_map.values() if w),
         key=lambda w: w["word"],
     )
+    # 附加可教学义项数
+    for w in words:
+        try:
+            import dictionary
+            w["teachable_sense_count"] = dictionary.sense_count(w["word"])
+        except Exception:
+            w["teachable_sense_count"] = w["sense_count"]
     return {"words": words, "total": len(words)}
 
 
@@ -419,6 +426,12 @@ def api_dict_word(word: str) -> dict[str, Any]:
     entry = _build_dict_word(word.strip().lower(), lib["senses"], lib["scenes"])
     if not entry:
         raise HTTPException(404, f"'{word}' 尚无义项")
+    # 可教学义项数
+    try:
+        import dictionary
+        entry["teachable_sense_count"] = dictionary.sense_count(entry["word"])
+    except Exception:
+        entry["teachable_sense_count"] = entry["sense_count"]
     # 为 senses 附加场景详情
     for s in entry["senses"]:
         s["scenes"] = [
@@ -506,6 +519,23 @@ def page_dictionary(request: Request):
 @app.get("/words/{word}", response_class=HTMLResponse)
 def page_word(request: Request, word: str):
     return templates.TemplateResponse(request, "word.html", {"word": word.strip().lower()})
+
+
+@app.post("/api/dict/{word}/generate")
+async def api_dict_generate(word: str):
+    """触发该词的批量生成。"""
+    import subprocess, sys
+    cmd = [sys.executable, "-m", "tools.draft", "batch", word.strip().lower(),
+           "--concurrency", "4", "--retries", "2", "--sleep", "1"]
+    try:
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+        return {
+            "ok": proc.returncode == 0,
+            "stdout": proc.stdout[-2000:],
+            "stderr": proc.stderr[-2000:],
+        }
+    except subprocess.TimeoutExpired:
+        return {"ok": False, "stdout": "", "stderr": "生成超时（> 10 分钟）"}
 
 
 def main() -> None:

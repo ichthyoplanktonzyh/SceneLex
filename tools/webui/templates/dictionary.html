@@ -50,7 +50,10 @@ async function loadDict() {
     // 义项数
     const tdSenses = document.createElement('td');
     tdSenses.className = 'num';
-    tdSenses.textContent = w.sense_count;
+    const total = w.teachable_sense_count || w.sense_count;
+    const pct = w.sense_count / Math.max(total, 1);
+    const cls = pct >= 1 ? 'badge pub' : (pct > 0 ? 'badge dra' : 'badge none');
+    tdSenses.innerHTML = `<span class="${cls}">${w.sense_count}/${total}</span>`;
     tr.appendChild(tdSenses);
 
     // 场景合计

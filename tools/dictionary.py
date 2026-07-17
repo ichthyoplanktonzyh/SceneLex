@@ -32,6 +32,68 @@ TIMEOUT = 30
 POS_KEEP = {"noun", "verb", "adj", "adjective", "adv", "adverb", "prep",
             "preposition", "conj", "conjunction", "pron", "pronoun",
             "det", "determiner", "intj", "interjection", "num", "particle"}
+# 标记了这些标签的义项不适合核心教学词汇
+EXCLUDE_TAGS = {"obsolete", "archaic", "rare", "dated", "poetic", "dialectal",
+                "nonstandard", "humorous", "slang"}
+# 义项显示优先级（按词性）
+POS_ORDER = {"verb": 0, "noun": 1, "adj": 2, "adjective": 2,
+             "adv": 3, "adverb": 3, "prep": 4, "conj": 5,
+             "det": 6, "pron": 7, "intj": 8, "particle": 9}
+# 核心教学词汇义项上限（超过此数的词取前 N 个最常用义项）
+MAX_TEACHABLE_SENSES = 8
+
+
+def teachable_senses(word: str, refresh: bool = False) -> list[dict]:
+    """返回该词所有值得教学的义项列表，已按优先级编号。
+
+    每条义项包含:
+      - pos: 词性
+      - glosses: 释义列表
+      - tags: 标签列表（语法标记如 transitive，已排除 obsolete 等）
+      - examples: 用例（最多2条）
+      - has_raw: 是否有 raw_glosses（需要人工复核）
+    """
+    entries = fetch(word, refresh)
+    senses: list[dict] = []
+    seen_gloss: set[str] = set()
+
+    sorted_entries = sorted(
+        entries,
+        key=lambda e: POS_ORDER.get(e.get("pos", ""), 99),
+    )
+
+    for entry in sorted_entries:
+        pos = entry.get("pos", "")
+        if pos not in POS_KEEP:
+            continue
+        for raw_sense in entry.get("senses") or []:
+            tags = set(raw_sense.get("tags") or [])
+            if EXCLUDE_TAGS & tags:
+                continue
+            glosses = raw_sense.get("glosses") or []
+            if not glosses:
+                continue
+            key = "; ".join(glosses).strip()
+            if not key or key in seen_gloss:
+                continue
+            seen_gloss.add(key)
+            senses.append({
+                "pos": pos,
+                "glosses": glosses,
+                "tags": sorted(tags - EXCLUDE_TAGS),
+                "examples": (raw_sense.get("examples") or [])[:2],
+                "has_raw": "raw_glosses" in raw_sense,
+            })
+
+    return senses[:MAX_TEACHABLE_SENSES]
+
+
+def sense_count(word: str) -> int:
+    """该词有几个可教学义项。"""
+    try:
+        return len(teachable_senses(word))
+    except (LookupError, requests.RequestException):
+        return 1  # 拿不到数据时保守估计至少 1 个
 
 
 def source_url(word: str) -> str:
@@ -101,9 +163,10 @@ def cached_facts(word: str) -> dict[str, Any] | None:
     return facts(word)
 
 
-def prompt_block(word: str) -> str:
-    """生成注入起草 prompt 的词典事实块; 拿不到数据时明确说明。"""
+def prompt_block(word: str, sense_num: str | None = None) -> str:
+    """生成注入起草 prompt 的词典事实块; 若指定 sense_num 则只展示对应义项。"""
     try:
+        senses = teachable_senses(word)
         f = facts(word)
     except (requests.RequestException, LookupError, json.JSONDecodeError) as exc:
         return (f"(未能获取 '{word}' 的词典事实: {exc}。"
@@ -111,11 +174,20 @@ def prompt_block(word: str) -> str:
     lines = [f"word: {f['word']}"]
     if f["ipa"]:
         lines.append(f"IPA: {', '.join(f['ipa'])}")
-    lines.append("词性与义项清单 (义项划分的参照系, 释义不得照抄):")
-    for pos, glosses in f["pos_senses"].items():
-        lines.append(f"- {pos}:")
-        for i, gloss in enumerate(glosses[:8], 1):
-            lines.append(f"    {i}. {gloss}")
+    if sense_num:
+        idx = int(sense_num) - 1
+        if 0 <= idx < len(senses):
+            lines.append(f"义项 {sense_num}/{len(senses)} (当前起草目标):")
+            s = senses[idx]
+            gloss = "; ".join(s["glosses"][:1])
+            tag_str = f" [{', '.join(s['tags'])}]" if s["tags"] else ""
+            lines.append(f"  [{s['pos']}{tag_str}] {gloss}")
+    else:
+        lines.append(f"义项清单 (共 {len(senses)} 个可教学义项):")
+        for i, s in enumerate(senses, 1):
+            gloss = "; ".join(s["glosses"][:1])
+            tag_str = f" [{', '.join(s['tags'])}]" if s["tags"] else ""
+            lines.append(f"  {i:02d}. [{s['pos']}{tag_str}] {gloss}")
     lines.append(f"来源: {f['source']} ({f['license']})")
     return "\n".join(lines)
 
