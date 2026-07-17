@@ -427,6 +427,9 @@ def _run_stage(stage_args, retries, sleep_seconds):
 
 def cmd_batch(args):
     import time
+    import threading
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
     if args.words:
         words = [w.strip().lower() for w in args.words]
     else:
@@ -437,37 +440,67 @@ def cmd_batch(args):
         sys.exit("候选队列为空")
 
     state = _load_batch_state()
-    print(f"=== 批量起草 {len(words)} 个词: {', '.join(words)} ===\n")
-    for i, word in enumerate(words, 1):
+    state_lock = threading.Lock()
+    print_lock = threading.Lock()
+
+    print(f"=== 批量起草 {len(words)} 个词 (并发 {args.concurrency}) ===\n")
+
+    def process_word(word):
         entry = state.setdefault(word, {})
         sense_id = f"{word}-01"
-        print(f"[{i}/{len(words)}] {word}")
+        sense_ok = False
+        scenes_ok = False
 
+        # --- sense ---
         if entry.get("sense") == "done" or resolve_sense_path(sense_id):
-            entry["sense"] = "done"
-            print("    · 词义已存在, 跳过")
+            with state_lock:
+                entry["sense"] = "done"
+            with print_lock:
+                print(f"  ✓ {word}: 词义已存在")
+            sense_ok = True
         else:
             ok, msg = _run_stage(["sense", word], args.retries, args.sleep)
-            entry["sense"] = "done" if ok else "failed"
-            entry["sense_note"] = msg
-            _save_batch_state(state)
+            with state_lock:
+                entry["sense"] = "done" if ok else "failed"
+                entry["sense_note"] = msg
+                _save_batch_state(state)
             if not ok:
-                print(f"    ✗ 词义起草失败, 跳过该词场景")
-                continue
-            print(f"    ✓ 词义草稿完成")
-            time.sleep(args.sleep)
+                with print_lock:
+                    print(f"  ✗ {word}: 词义起草失败")
+                return word, sense_ok, scenes_ok
+            with print_lock:
+                print(f"  ✓ {word}: 词义草稿完成")
+            sense_ok = True
 
+        # --- scenes ---
         if args.senses_only:
-            entry["scenes"] = "skipped"
+            with state_lock:
+                entry["scenes"] = "skipped"
+            scenes_ok = True
         elif entry.get("scenes") == "done":
-            print("    · 场景组已完成, 跳过")
+            with print_lock:
+                print(f"  ✓ {word}: 场景组已完成")
+            scenes_ok = True
         else:
             ok, msg = _run_stage(["scenes", sense_id], args.retries, args.sleep)
-            entry["scenes"] = "done" if ok else "failed"
-            entry["scenes_note"] = msg
-            print(f"    {'✓ 场景组完成' if ok else '✗ 场景组失败'}")
-            time.sleep(args.sleep)
-        _save_batch_state(state)
+            with state_lock:
+                entry["scenes"] = "done" if ok else "failed"
+                entry["scenes_note"] = msg
+                _save_batch_state(state)
+            if ok:
+                with print_lock:
+                    print(f"  ✓ {word}: 场景组完成")
+                scenes_ok = True
+            else:
+                with print_lock:
+                    print(f"  ✗ {word}: 场景组失败")
+
+        return word, sense_ok, scenes_ok
+
+    with ThreadPoolExecutor(max_workers=args.concurrency) as pool:
+        futures = {pool.submit(process_word, w): w for w in words}
+        for _ in as_completed(futures):
+            pass  # 各 worker 内部已打印进度
 
     print("\n=== 批量汇总 ===")
     for word in words:
@@ -546,6 +579,8 @@ def main():
     p.add_argument("--count", type=int, default=4, help="从队列取的词数 (默认 4)")
     p.add_argument("--retries", type=int, default=1, help="每阶段失败重试次数")
     p.add_argument("--sleep", type=int, default=15, help="阶段间隔秒数 (限速)")
+    p.add_argument("--concurrency", "-C", type=int, default=1000,
+                   help="并行处理词数 (默认 1000)")
     p.add_argument("--senses-only", action="store_true", help="只起草词义, 不起草场景")
     p.set_defaults(func=cmd_batch)
 
