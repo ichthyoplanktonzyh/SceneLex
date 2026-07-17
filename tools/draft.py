@@ -115,10 +115,14 @@ def cmd_sense(args):
     schema = read(ROOT / "schema" / "word-sense.schema.json")
     ex1 = read(ROOT / "data" / "senses" / f"{SENSE_EXAMPLES[0]}.yaml")
     ex2 = read(ROOT / "data" / "senses" / f"{SENSE_EXAMPLES[1]}.yaml")
+    import dictionary
+    print(f"→ 获取 '{word}' 的词典事实 ...", file=sys.stderr)
+    dict_block = dictionary.prompt_block(word)
     prompt = (template
               .replace("{{SCHEMA}}", schema)
               .replace("{{EXAMPLE_1}}", ex1)
               .replace("{{EXAMPLE_2}}", ex2)
+              .replace("{{DICTIONARY}}", dict_block)
               .replace("{{WORD}}", word))
 
     print(f"→ 起草词义 '{word}' ...", file=sys.stderr)
@@ -384,6 +388,105 @@ def cmd_promote(args):
     sys.exit(result.returncode)
 
 
+# ---------------------------------------------------------------- batch
+
+BATCH_STATE = DRAFTS / "batch-state.json"
+
+
+def _load_batch_state():
+    if BATCH_STATE.exists():
+        return json.loads(BATCH_STATE.read_text(encoding="utf-8"))
+    return {}
+
+
+def _save_batch_state(state):
+    BATCH_STATE.parent.mkdir(parents=True, exist_ok=True)
+    BATCH_STATE.write_text(
+        json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8"
+    )
+
+
+def _run_stage(stage_args, retries, sleep_seconds):
+    """在子进程中跑一个起草阶段, 失败时重试。返回 (ok, message)。"""
+    import time
+    last = ""
+    for attempt in range(1, retries + 2):
+        result = subprocess.run(
+            [sys.executable, str(Path(__file__).resolve()), *stage_args],
+            capture_output=True, text=True, timeout=1800,
+        )
+        if result.returncode == 0:
+            return True, (result.stdout.strip().splitlines() or ["ok"])[-1]
+        last = (result.stderr or result.stdout).strip()[-400:]
+        print(f"    ✗ 第 {attempt} 次失败: {last.splitlines()[-1] if last else '?'}",
+              file=sys.stderr)
+        if attempt <= retries:
+            time.sleep(sleep_seconds)
+    return False, last
+
+
+def cmd_batch(args):
+    import time
+    if args.words:
+        words = [w.strip().lower() for w in args.words]
+    else:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import candidates
+        words = [item["word"] for item in candidates.build_queue(args.count)]
+    if not words:
+        sys.exit("候选队列为空")
+
+    state = _load_batch_state()
+    print(f"=== 批量起草 {len(words)} 个词: {', '.join(words)} ===\n")
+    for i, word in enumerate(words, 1):
+        entry = state.setdefault(word, {})
+        sense_id = f"{word}-01"
+        print(f"[{i}/{len(words)}] {word}")
+
+        if entry.get("sense") == "done" or resolve_sense_path(sense_id):
+            entry["sense"] = "done"
+            print("    · 词义已存在, 跳过")
+        else:
+            ok, msg = _run_stage(["sense", word], args.retries, args.sleep)
+            entry["sense"] = "done" if ok else "failed"
+            entry["sense_note"] = msg
+            _save_batch_state(state)
+            if not ok:
+                print(f"    ✗ 词义起草失败, 跳过该词场景")
+                continue
+            print(f"    ✓ 词义草稿完成")
+            time.sleep(args.sleep)
+
+        if args.senses_only:
+            entry["scenes"] = "skipped"
+        elif entry.get("scenes") == "done":
+            print("    · 场景组已完成, 跳过")
+        else:
+            ok, msg = _run_stage(["scenes", sense_id], args.retries, args.sleep)
+            entry["scenes"] = "done" if ok else "failed"
+            entry["scenes_note"] = msg
+            print(f"    {'✓ 场景组完成' if ok else '✗ 场景组失败'}")
+            time.sleep(args.sleep)
+        _save_batch_state(state)
+
+    print("\n=== 批量汇总 ===")
+    for word in words:
+        entry = state.get(word, {})
+        print(f"  {word:16} 词义: {entry.get('sense', '-'):7} "
+              f"场景: {entry.get('scenes', '-')}")
+    done = all(
+        state.get(w, {}).get("sense") == "done"
+        and state.get(w, {}).get("scenes") in ("done", "skipped")
+        for w in words
+    )
+    if done:
+        BATCH_STATE.unlink(missing_ok=True)
+        print("\n✓ 全部完成, 状态文件已清理。运行 draft.py list 查看待审草稿。")
+    else:
+        print(f"\n⚠ 有失败项; 重跑同一命令将从断点续作 (状态: "
+              f"{BATCH_STATE.relative_to(ROOT)})")
+
+
 # ---------------------------------------------------------------- backlog
 
 def cmd_backlog(args):
@@ -436,6 +539,15 @@ def main():
 
     sub.add_parser("backlog", help="输出选词 backlog").set_defaults(
         func=cmd_backlog)
+
+    p = sub.add_parser("batch", help="按候选队列批量起草 (断点可续)")
+    p.add_argument("words", nargs="*",
+                   help="显式词列表; 缺省时取 candidates.py 队列前 N 个")
+    p.add_argument("--count", type=int, default=4, help="从队列取的词数 (默认 4)")
+    p.add_argument("--retries", type=int, default=1, help="每阶段失败重试次数")
+    p.add_argument("--sleep", type=int, default=15, help="阶段间隔秒数 (限速)")
+    p.add_argument("--senses-only", action="store_true", help="只起草词义, 不起草场景")
+    p.set_defaults(func=cmd_batch)
 
     args = parser.parse_args()
     args.func(args)

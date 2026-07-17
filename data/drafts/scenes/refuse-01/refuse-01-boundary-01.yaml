@@ -1,0 +1,42 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: refuse-01-boundary-01
+sense_ref: refuse-01
+scene_type: boundary
+contrast_target: decline-01
+contrast_relation: degree_neighbor
+surface:
+  domain: social-event
+  participant_type: adult
+  setting: outdoor-park
+title: 礼貌回绝 vs 强硬拒绝
+synopsis: 一个人以非常礼貌的方式拒绝邀请（说“I must decline, thank you”），另一个人以强硬方式拒绝（说“No, I won’t go”）。边界测试：当态度介于两者之间（说“I’d rather not”）时，更自然的表达是 decline 还是 refuse？
+storyboard:
+  - beat: 1
+    visual: 公园长椅，朋友递上一张印有婚礼日期的请柬。A 微笑着说：“I must decline, thank you. I have a prior commitment.”
+    audio: "I must decline, thank you. I have a prior commitment."
+    purpose: 展示 decline 典型场景：正式邀请，礼貌措辞。
+  - beat: 2
+    visual: 同样场景，B 被同一朋友邀请，B 皱眉摆手说：“No. I won’t go. That’s final.”
+    audio: "No. I won’t go. That’s final."
+    purpose: 展示 refuse 典型场景：直接强硬。
+  - beat: 3
+    visual: 第三个人 C 被邀请，C 犹豫，低头说：“I’d rather not... I’m sorry.” 表情歉疚，但没有说太强硬的话。
+    audio: null
+    purpose: 制造边界模棱两可。
+  - beat: 4
+    visual: 分屏三组：A 微笑拒绝，B 生气拒绝，C 尴尬拒绝。
+    audio: "Decline... Refuse... And this one? Is it decline or refuse?"
+    purpose: 让学习者判断边界点，引导他们注意用词的强烈程度。
+learning_tasks:
+  - type: transfer_judgment
+    prompt: 播放新短片：D收到开会申请后轻声说“I think I’ll pass this time.”问：这是 refuse 吗？如果不算，用什么词更合适？
+    choices:
+      - refuse
+      - decline
+    expected_answer: decline
+  - type: produce
+    prompt: 给一个场景（老板严肃命令加班，员工深呼吸后说“No, I won’t.”）让学习者说出对应的词。
+    expected_answer: refuse

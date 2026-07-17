@@ -1,0 +1,45 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: refuse-01-proto-01
+sense_ref: refuse-01
+scene_type: prototype
+surface:
+  domain: social
+  participant_type: adult
+  setting: indoor-home
+title: 拒绝派对邀请
+synopsis: 朋友热情邀请去新开业的酒吧，主角明确地拒绝，摇头摆手说“不”，然后解释自己明天要早起。朋友失落，但主角坚持。
+storyboard:
+  - beat: 1
+    visual: 客厅沙发上，朋友A兴奋地靠近主角，双手比划着描述新酒吧。
+    audio: "Hey, there's a new bar opening tonight! Let's go, it'll be awesome!"
+    purpose: 建立明确的外部邀请（target），让观众看到代理人接收到请求。
+  - beat: 2
+    visual: 主角停下手中的书，看着朋友A，眉头微微皱起，然后缓缓摇头，手掌向前推了推。
+    audio: "No. I can't. I have an early start tomorrow."
+    purpose: 展示拒绝行为的两种外化形式：摇头（手势）和口语“No”，以及理由。
+  - beat: 3
+    visual: 朋友A的笑容消失，肩膀微微垮下，低头叹了口气。
+    audio: null
+    purpose: 展现拒绝的后果——对方失望，增强拒绝行为的可观察性。
+  - beat: 4
+    visual: 主角拿起书继续阅读，朋友A转身慢慢走开。
+    audio: "He refused. Plain and simple."
+    purpose: 在拒绝行为完成后立即出现目标词“refuse”，词与行为紧密关联。
+learning_tasks:
+  - type: scene_recognition
+    prompt: 听“refuse”，从四段短片中选出匹配的：A. 点头接受邀请；B. 摇头并说No；C. 犹豫后说Maybe；D. 无回应。
+    choices:
+      - 点头接受邀请
+      - 摇头并说No
+      - 犹豫后说Maybe
+      - 无回应
+    expected_answer: 摇头并说No
+  - type: listen_and_match
+    prompt: 播放“He refused the invitation.” 在两段画面中（接受名片 vs 推开名片）选择对应画面。
+    choices:
+      - 接受名片
+      - 推开名片
+    expected_answer: 推开名片

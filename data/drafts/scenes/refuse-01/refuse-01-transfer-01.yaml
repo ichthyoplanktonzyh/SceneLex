@@ -1,0 +1,40 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: refuse-01-transfer-01
+sense_ref: refuse-01
+scene_type: transfer
+transfer_dimensions:
+  - participant_type
+  - target_action
+  - setting
+surface:
+  domain: mixed
+  participant_type: mixed
+  setting: mixed
+title: 狗、签证与分享
+synopsis: 三个完全不同环境中的拒绝：狗拒绝执行“坐下”指令；签证官拒绝入境请求；小孩拒绝分享玩具。每个场景都包含明确外化的拒绝行为，最后并置同一声音“refuse”。
+storyboard:
+  - beat: 1
+    visual: 宠物训练场。主人高声说“Sit!”，狗站在原地不动，耳朵后垂，尾巴夹住，然后转身走开。
+    audio: "Sit! ... No, stay! ... Won't do it."
+    purpose: 迁移点一：参与者从人变成狗，拒绝执行动作（Sit），外化为不服从和躲避。
+  - beat: 2
+    visual: 机场入境柜台。官员看了一眼护照，摇头，把护照推回给旅客，说“Entry refused.” 旅客失望离开。
+    audio: "Entry refused."
+    purpose: 迁移点二：更换场景（机构），target 为入境许可，拒绝行为是推回护照+口头通知。
+  - beat: 3
+    visual: 儿童游乐区。一个小孩抱着玩具熊，另一个小孩伸手想拿。抱熊的小孩把玩具熊藏在身后，大声说“No! It's mine!”
+    audio: "No! It's mine!"
+    purpose: 迁移点三：参与者年龄变化（儿童），target 是物品共享，外化是躲藏+喊No。
+  - beat: 4
+    visual: 三画面并置：狗转身走开 / 官员推回护照 / 小孩藏玩具熊。
+    audio: "Refuse. Refuse. Refuse."
+    purpose: 多画面并置+同一声音，逼迫抽象结构浮现——所有场景共享“明确拒绝”的骨架。
+learning_tasks:
+  - type: transfer_judgment
+    prompt: 播放新短片：一只猫被抱起来后挣扎着跳下地，并发出不满的叫声。问：这是 refuse 吗？为什么？
+  - type: produce
+    prompt: 给一段无声短片（公司前台被要求交手机，她摇头并用手指敲柜台说No），引导学习者说出“She refuses to hand over her phone.”
+    expected_answer: She refuses to hand over her phone.

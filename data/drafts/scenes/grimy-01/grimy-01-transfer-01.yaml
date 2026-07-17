@@ -1,0 +1,89 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: grimy-01-transfer-01
+sense_ref: grimy-01
+scene_type: transfer
+transfer_dimensions:
+  - participant_type
+  - surface_material
+  - context_goal
+surface:
+  domain: mixed
+  participant_type: mixed
+  setting: mixed
+
+title: 油垢无处不在
+synopsis: >
+  三段完全不同领域的短片：工厂旧机床外壳（金属+机油+铁屑）、
+  老旧窗框缝隙（木材+尘土+油烟）、厨房排烟罩（塑料+陈年油渍）。
+  三画面并置，同一声音逼迫抽象特征“油腻粘附的积累污垢”显现。
+
+storyboard:
+  - beat: 1
+    visual: >
+      片段A：特写一家金属加工厂旧车床的外壳。表面覆盖一层暗灰色油泥，
+      触摸留下油手印，用刮板铲下成团的软泥。
+    audio: "(工厂机器轰鸣声)"
+    purpose: 迁移点一——表面从厨房变为工业金属，污垢成分为机油+金属粉尘+冷却液残留
+
+  - beat: 2
+    visual: >
+      片段A完成：工人用抹布蘸柴油用力擦拭，抹布变黑，外壳露出金属底色，
+      但缝隙里仍有黑线。
+    audio: "The machine was grimy from years of oil and dust."
+    purpose: 在工业语境下给出目标词，强调长时间累积性质
+
+  - beat: 3
+    visual: >
+      片段B：老式木窗框，窗外是街道，窗框下沿有一条黑色的污垢带，
+      用手指擦一下，指尖留下油色混合物，且窗框角落积有黑色软垢。
+    audio: null
+    purpose: 迁移点二——材质变为木框，污垢来源为油烟+空气灰尘+雨水沉积
+
+  - beat: 4
+    visual: >
+      片段B完成：保洁用湿布加洗洁精反复擦拭后才褪去大部分黑垢，
+      木纹恢复但仍有渗入的暗色。
+    audio: "After a decade, the window frames were really grimy."
+    purpose: 在家庭清洁语境下命名，强调清洁困难
+
+  - beat: 5
+    visual: >
+      片段C：餐厅后厨排烟罩塑料外壳，出风口附近覆盖一层深棕色黏稠油渍，
+      甚至滴落。手指触碰即拉丝。
+    audio: "(炒菜声，锅铲声)"
+    purpose: 迁移点三——材质变为塑料，污垢几乎纯油脂+碳化颗粒，黏度最高
+
+  - beat: 6
+    visual: >
+      片段C完成：厨师用除油剂喷雾后，油垢成股流下，需要多次喷洒才能清除。
+    audio: "That greasy hood? Not just greasy – it's grimy. See how it sticks?"
+    purpose: 利用看似greasy的高油脂环境，强调颗粒混入后的黏性差异
+
+  - beat: 7
+    visual: >
+      三画面并置一屏：左车床油泥、中窗框黑线、右排烟罩油滴。
+      每个画面均有一只手在刮污垢并展示油指印。
+    audio: "Grimy. Grimy. Grimy."
+    purpose: 同一声压下，三幅表面迥异的画面迫使学习者提取共同骨架：油腻+黏着+积累性污垢
+
+learning_tasks:
+  - type: transfer_judgment
+    prompt: >
+      播放四段从未出现过的短片：
+        1) 新买的炒锅底部有透明油（刚涂）
+        2) 用了半年的烧烤架铁网上有焦黑油渍
+        3) 儿童彩笔不小心画在墙上（干燥染料）
+        4) 旧自行车链条上的黑色油泥
+      学习者判断哪些可以用grimy描述，哪些不能，并说明理由。
+    expected_answer: "2和4是grimy；1是greasy；3是stained"
+    scoring_note: 正确区分并强调黏着与颗粒得满分
+
+  - type: produce
+    prompt: >
+      无声短片：一台布满油垢的旧打印机（进纸轮上沾满浅黑色油泥）。
+      引导学习者说出完整句子 “The printer is grimy.”
+    expected_answer: "The printer is grimy."
+    scoring_note: 正确发音和语义得满分

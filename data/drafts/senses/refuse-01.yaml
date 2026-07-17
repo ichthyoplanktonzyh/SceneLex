@@ -1,0 +1,161 @@
+# ============================================================
+# A. 基础词义信息
+# ============================================================
+schema_version: "1.0"
+language: en
+version: 1
+status: draft
+
+id: refuse-01
+word: refuse
+pos: verb
+sense_label: 明确拒绝
+definition: "To indicate or show that one is unwilling to do, accept, or allow something; to say no to a request, offer, or instruction."
+
+frequency:
+  band: high
+  rank: 1200
+difficulty: basic
+pronunciation:
+  ipa: /rɪˈfjuːz/
+
+collocations:
+  - refuse to do
+  - refuse permission
+  - refuse entry
+  - refuse a request
+  - refuse an offer
+  - refuse to answer
+  - refuse to comply
+  - refuse service
+
+sentence_patterns:
+  - "[subject] refuse to [verb]"
+  - "[subject] refuse [noun]"
+  - "refuse [noun] to [someone]"
+  - "refuse [someone] [noun]"
+
+# ============================================================
+# B. 语义类型
+# ============================================================
+semantic_type: intentional_behavior
+
+# ============================================================
+# C. 语义骨架
+# ============================================================
+semantic_skeleton:
+  participants:
+    - role: agent
+      description: 做出拒绝决定并表达的人或主体
+    - role: target
+      description: 被拒绝的请求、要求、提议、邀请、指令或物品
+    - role: context
+      description: 产生 target 的情境（提出的条件、场合、社会关系等）
+
+  propositions:
+    - 存在一个明确的请求、要求、提议、邀请、指令或需要处理的对象（target）
+    - 代理人（agent）感知到 target 并对其形成否定意愿
+    - 代理人通过言语、手势或行为明确表示不同意、不愿意或不接受
+    - 拒绝是代理人有意识的自主决策，而非能力不足或外部强迫
+    - 拒绝的直接后果通常是 target 的执行被终止或对象不被接收
+
+# ============================================================
+# D. 成立条件与排除条件
+# ============================================================
+conditions:
+  required:
+    - 代理人主动发出否定回应
+    - 存在一个具体的 target（请求/物品/指令等）作为拒绝的对象
+    - 拒绝基于代理人自身意愿，而非无法执行
+
+  excluded:
+    - condition: 代理人因能力不足或客观障碍无法执行，并非出于意愿选择拒绝
+      alternative: fail-01
+    - condition: 代理人仅推迟决定（如考虑中），未做出否定表态
+      alternative: postpone-01
+    - condition: 代理人先同意后撤销，不是初始拒绝行为
+      alternative: withdraw-01
+
+# ============================================================
+# E. 概念关系
+# ============================================================
+relations:
+  synonyms:
+    - decline-01
+    - reject-01
+  antonyms:
+    - accept-01
+    - agree-01
+  hypernyms:
+    - say_no-01
+  hyponyms: []
+  confusables:
+    - deny-01
+    - reject-01
+    - decline-01
+    - resist-01
+
+  boundaries:
+    - target: reject-01
+      relation: overlaps
+      distinction: reject 更常针对事物本身（如申请、礼物、提案），refuse 更常针对行动或允许；但在很多语境可互换。
+      diagnostic: 用“拒绝某物”场景测试：reject a gift 自然，refuse a gift 稍少用；用“拒绝做某事”测试：refuse to leave 自然，reject to leave 不成立。
+    - target: decline-01
+      relation: degree_neighbor
+      distinction: decline 语气更礼貌、正式，常用于邀请；refuse 更直接、强硬，常用于要求或命令。
+      diagnostic: 在正式邀请场景说“decline the invitation”比“refuse”更得体；在命令场景说“refuse to obey”比“decline”更自然。
+    - target: deny-01
+      relation: different_dimension
+      distinction: deny 是否认事实、指控或权利（否认某事的真实性）；refuse 是拒绝行动或接受。
+      diagnostic: 拒绝做某事用 refuse，否认某事为真用 deny；可构造“He refused to answer”与“He denied the fact”对比。
+
+  l1_confusables:
+    zh:
+      - l1_term: 拒绝
+        covers:
+          - refuse-01
+          - reject-01
+          - decline-01
+        note: >
+          中文“拒绝”不分对象类型和礼貌程度，学习者容易将 refuse 和 reject 
+          混用。教学中需强调 refuse 常跟 to do 或允许类名词，reject 跟直接名词。
+      - l1_term: 否认
+        covers:
+          - deny-01
+          - refuse-01
+        note: >
+          中文“否认”与“拒绝”边界模糊，如“他拒绝承认”既像 refuse to admit 
+          又像 deny。需指出 deny 是对命题真假的反驳，refuse 是对行动或接受的拒绝。
+      - l1_term: 不
+        covers:
+          - refuse-01
+          - not-01
+        note: >
+          中文单字“不”可表达拒绝（“我不去”），但英语 refuse 强调意愿行为，
+          而 not 仅否定事实。教学时需提醒 refuse 是动词，需要宾语结构。
+
+# ============================================================
+# F. 场景要求
+# ============================================================
+scene_requirements:
+  must_show:
+    - 一个明确的请求、邀请、命令、提议或物品被提出给代理人
+    - 代理人随后给出拒绝的言语（如“No”“I won’t”）、手势（摇头、摆手）或行为（转身、推回物品）
+    - 拒绝行为与预期响应的时序关系清晰（拒绝发生在被要求之后）
+    - 最好展现拒绝的后果（如对方失望、物品未被接收、行动未执行）
+
+  must_not:
+    - 不能只展示人物因能力不足而未做（那是 fail）
+    - 不能只展示人物无回应（可能是忽略或默许）
+    - 不能展示人物先接受再反悔（那是 withdraw）
+    - 不能仅凭内心想法而无外化行为（拒绝必须可观察）
+
+  externalization:
+    - 言语拒绝：说“No”“I refuse”“I won’t”“That’s not happening”
+    - 手势：摆手、摇头、手指交叉、手掌前推
+    - 身体语言：后退、偏头、抱臂、转身走开
+    - 面部表情：皱眉、撇嘴、瞪眼
+    - 行为表现：不承接递来的物品、不按指令行动
+
+  timing: >
+    先展示目标（请求/物品）被提出，让观众看到代理人接收信息；然后展示代理人的拒绝外化行为（言语或动作）；在拒绝行为完成后立即出现目标词“refuse”。避免在拒绝行为之前或之后长时间才引入词，确保词与行为紧密关联。

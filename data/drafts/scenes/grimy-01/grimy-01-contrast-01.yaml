@@ -1,0 +1,77 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: grimy-01-contrast-01
+sense_ref: grimy-01
+scene_type: contrast
+contrast_target: dirty-01
+contrast_relation: target_more_specific
+surface:
+  domain: household-kitchen
+  participant_type: adult-cook
+  setting: indoor-kitchen
+
+title: 油垢与灰尘
+synopsis: >
+  同一张厨房台面，左侧溅上一批浅灰色干燥面粉与灰尘（dirty），
+  右侧是抽油烟机滤网上滴落的厚厚油垢（grimy）。
+  用对称展示差异轴：清除方式、黏着性、外观颜色。最后并呈现共现样本——一个同时有灰尘和油垢的角落。
+
+storyboard:
+  - beat: 1
+    visual: >
+      厨房台面全景：左边一堆干燥面粉撒在瓷砖上，旁边有一点灰；
+      右边是拆卸下来的抽油烟机滤网，上面覆盖着棕黑色油腻层。
+    audio: null
+    purpose: 两个污渍样本同时在场，便于比较；通过位置左右并置制造对称
+
+  - beat: 2
+    visual: >
+      特写左侧面粉灰：用手指轻轻一抹，粉末被吹散，留下一道灰痕。
+    audio: "This is just dusty – dry dirt, no grease."
+    purpose: 建立dirty-01的一个子类dusty的典型特征——干、易去除、无油脂
+
+  - beat: 3
+    visual: >
+      特写右侧滤网：指尖触碰油垢表面，指腹留下深色油印，
+      再用指甲刮一下，刮出黑色软泥。
+    audio: "Now this… is grimy. Sticky, greasy dirt that sticks."
+    purpose: 建立grimy的典型特征——油腻、黏着、刮下成泥
+
+  - beat: 4
+    visual: >
+      全景回到台面，厨师拿来一块湿布擦拭左边面粉灰——一次轻擦即净；
+      再用力擦滤网——需反复擦拭并加洗洁精，仍有残留暗色。
+    audio: "(擦拭声对比：左边轻快，右边用力摩擦)"
+    purpose: 用清除难度作为判断轴对比：dirty（子类dusty）容易，grimy困难
+
+  - beat: 5
+    visual: >
+      窗口：厨房窗框角落，既有飘落的灰尘又有油烟凝结的油渍，
+      两层污垢混合在一起。厨师用手指抹过，留下一道混合的深灰色痕。
+    audio: "Here it's both: dusty AND grimy. The dust settles on the grease."
+    purpose: 展示共现样本，防止学习者认为两者是互斥类别；说明grime可以叠在常规dirt上
+
+  - beat: 6
+    visual: >
+      分屏并置：左侧灰尘面粉，右侧油泥滤网，下方混合窗框。
+    audio: "dirty – but not all dirty is grimy. Grimy is the oily kind."
+    purpose: 总结对比轴，明确target_more_specific关系：grimy是dirty的一种特殊（油腻）形式
+
+learning_tasks:
+  - type: contrast_choice
+    prompt: >
+      播放两段新短片：
+        1) 孩子在地上打滚后衣服沾满干土（拍掉即可）；
+        2) 餐厅油烟机滤网滴下的油泥。
+      学习者为每段选择“dirty”“grimy”或“both”，并说出可观察线索。
+    expected_answer: ["1: dirty (no oil), 2: grimy"]
+    scoring_note: 正确区分且能指出油腻/黏着线索得满分
+
+  - type: transfer_judgment
+    prompt: >
+      展示一段厨房灶台边缘的污垢：既有米粒碎屑又有一层薄油。
+      问：这属于grimy吗？为什么？
+    expected_answer: "是，因为油和碎屑混合成黏性污垢"
+    scoring_note: 答“是”并解释黏性得满分；只说“脏”不得分

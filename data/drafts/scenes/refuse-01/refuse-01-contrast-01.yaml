@@ -1,0 +1,46 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: refuse-01-contrast-01
+sense_ref: refuse-01
+scene_type: contrast
+contrast_target: reject-01
+contrast_relation: overlaps
+surface:
+  domain: gift-exchange
+  participant_type: adult
+  setting: indoor-office
+title: 拒绝礼物 vs 拒绝行动
+synopsis: 同事递来一份礼物，A说“我不能接受”表示拒绝（reject）；老板命令B完成额外工作，B说“我不会做”表示拒绝（refuse）。两个场景并置展示差异轴：reject 针对事物，refuse 针对行动。
+storyboard:
+  - beat: 1
+    visual: 左边画面：同事递出一个礼盒给A；右边画面：经理指着报告对B说话。
+    audio: null
+    purpose: 同时引入两个 target：一个物品（礼物）和一个行动指令（做报告）。
+  - beat: 2
+    visual: A看着礼盒，摇头，把手掌向前推，说“I can't accept this.”
+    audio: "I can't accept this."
+    purpose: A的拒绝对象是“礼物”本身（事物），典型 reject。
+  - beat: 3
+    visual: B皱眉，双臂交叉，直视经理说“No. I won't do it.”
+    audio: "No. I won't do it."
+    purpose: B的拒绝对象是“行动”，典型 refuse。
+  - beat: 4
+    visual: 分屏并置：左 A 推回礼盒，右 B 转身离开。
+    audio: "She rejects the gift. He refuses to do the work."
+    purpose: 用对称结构点明差异轴：reject + 名词（事物），refuse + to do（行动）。
+  - beat: 5
+    visual: 第三个画面：C 收到一份奇怪的建议（事物）同时被要求执行（行动），C 摆手说“No, to both.” 
+    audio: "He refuses the request and rejects the suggestion at the same time."
+    purpose: 展示共现可能，强调两词不是互斥，而是不同维度（事物 vs 行动）。
+learning_tasks:
+  - type: contrast_choice
+    prompt: 播放新短片：一人收到蛋糕后说“我不吃蛋糕”（拒绝食物） vs 被要求打扫后说“我不扫”（拒绝行动）。为每个选择对应的词（reject / refuse）并说明判断依据。
+    choices:
+      - reject
+      - refuse
+    expected_answer: 蛋糕场景reject，打扫场景refuse
+  - type: transfer_judgment
+    prompt: 播放：某人收到会议邀请邮件后回复“I will not attend.” 问这是 refuse 还是 reject？
+    expected_answer: refuse（因为拒绝的是行动：参加会议）

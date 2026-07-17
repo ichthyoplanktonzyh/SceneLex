@@ -1,0 +1,43 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: nearly-01-proto-01
+sense_ref: nearly-01
+scene_type: prototype
+title: 水即将满
+synopsis: 厨房里，母亲往透明水壶中倒水，眼睛始终盯着水位。水位快速上升，在离杯口还有一小段距离时她停下。画外音在差距最明显时命名。
+storyboard:
+  - beat: 1
+    visual: 厨房台面。一个透明水壶放在水龙头下，壶身有刻度线和MAX标记。母亲的手握住壶柄，开始注水。
+    audio: (水流声)
+    purpose: 建立目标参照——MAX标记（装满状态），观众知道满的位置。
+  - beat: 2
+    visual: 水位快速上升，从壶底到中间。母亲的目光集中在刻度上。
+    audio: (水流声持续)
+    purpose: 展示过程，让观众意识到目标（满）正在被接近。
+  - beat: 3
+    visual: 水位接近MAX标记，离标记还有约1厘米空隙。水流变慢，母亲微微调整水龙头，目光更专注。
+    audio: (水流声减弱)
+    purpose: 创造“差一点”的视觉证据——空隙清晰可见，观众自行判断“还差一点”。
+  - beat: 4
+    visual: 水位继续上升，在距离MAX标记约2毫米时，母亲迅速关闭水龙头。水面静止，停在标记下方。
+    audio: (水声停止，安静)
+    purpose: 定格在差距最小但未消失的瞬间，强化“接近但未达到”。
+  - beat: 5
+    visual: 特写水面与MAX标记之间的细小空隙，母亲满意地点头。
+    audio: "Nearly full."
+    purpose: 在差距最明显的视觉证据上出现目标词，将音义绑定。
+learning_tasks:
+  - type: scene_recognition
+    prompt: 听"nearly full"，从三段短片（水满溢出/水到一半/水差一点满）中选择匹配的一段。
+    choices:
+      - 水满溢出
+      - 水到一半
+      - 水差一点满
+    expected_answer: 水差一点满
+  - type: listen_and_match
+    prompt: 播放"nearly finished"，在两幅进度条画面（80% vs 99%）中选择对应的一幅。
+surface:
+  domain: household-chores
+  participant_type: adult
+  setting: indoor-kitchen

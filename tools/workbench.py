@@ -13,14 +13,16 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
+import tempfile
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
 import yaml
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import Body, FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -126,6 +128,62 @@ def load_library() -> dict[str, Any]:
     return {"senses": senses, "scenes": scenes, "board": board}
 
 
+def _resolve_draft_path(rel_path: str) -> Path:
+    """把请求路径解析到草稿区内, 拒绝一切越界。
+
+    行内编辑只对 data/drafts/ 开放——正式库的修改必须走 git,
+    工作台不为已发布资源提供写口。
+    """
+    drafts_root = (ROOT / "data" / "drafts").resolve()
+    p = (ROOT / rel_path).resolve()
+    if not p.is_relative_to(drafts_root):
+        raise HTTPException(403, "只允许编辑 data/drafts/ 下的草稿")
+    if p.suffix != ".yaml" or not p.is_file():
+        raise HTTPException(404, f"草稿不存在: {rel_path}")
+    return p
+
+
+def _load_env_file() -> dict[str, str]:
+    """解析仓库 .env (export KEY=VALUE), 供重起草子进程继承 LLM 配置。"""
+    env: dict[str, str] = {}
+    path = ROOT / ".env"
+    if not path.exists():
+        return env
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("export "):
+            line = line[len("export "):]
+        key, sep, value = line.partition("=")
+        if sep:
+            env[key.strip()] = value.strip().strip("'\"")
+    return env
+
+
+# 进行中的重起草任务: sense_id -> {proc, log, args}. 进程内状态,
+# 服务重启即失——产物在文件里, 状态本身不值得持久化。
+JOBS: dict[str, dict[str, Any]] = {}
+
+
+def _job_status(sense_id: str) -> dict[str, Any] | None:
+    job = JOBS.get(sense_id)
+    if not job:
+        return None
+    code = job["proc"].poll()
+    try:
+        tail = Path(job["log"]).read_text(encoding="utf-8")[-800:]
+    except OSError:
+        tail = ""
+    return {
+        "sense_id": sense_id,
+        "args": job["args"],
+        "status": "running" if code is None
+        else ("done" if code == 0 else "failed"),
+        "tail": tail,
+    }
+
+
 # ------------------------------------------------------------------ JSON API
 
 @app.get("/api/library")
@@ -143,6 +201,106 @@ def api_sense(sense_id: str) -> dict[str, Any]:
         "sense": lib["senses"].get(sense_id),
         "scenes": lib["scenes"].get(sense_id, []),
     }
+
+
+@app.get("/api/file")
+def api_file_read(path: str) -> dict[str, Any]:
+    return {"path": path, "content": _resolve_draft_path(path).read_text(encoding="utf-8")}
+
+
+@app.post("/api/file")
+def api_file_save(payload: dict = Body(...)) -> dict[str, Any]:
+    """保存草稿并即时反馈校验结果; schema 问题不阻止保存 (promote 才是门)。"""
+    p = _resolve_draft_path(str(payload.get("path", "")))
+    content = payload.get("content")
+    if not isinstance(content, str) or not content.strip():
+        raise HTTPException(400, "内容不能为空")
+    p.write_text(content if content.endswith("\n") else content + "\n",
+                 encoding="utf-8")
+    issues: list[str] = []
+    try:
+        doc = yaml.safe_load(content)
+    except yaml.YAMLError as exc:
+        return {"ok": True, "issues": [f"YAML 解析失败: {exc}"]}
+    if isinstance(doc, dict):
+        schema = ("word-sense.schema.json" if "senses" in p.parts
+                  else "scene-spec.schema.json")
+        issues = [
+            "[" + ("/".join(str(x) for x in e.absolute_path) or "root") + "] "
+            + e.message
+            for e in _validator(schema).iter_errors(doc)
+        ]
+    else:
+        issues = ["YAML 根节点必须是对象"]
+    return {"ok": True, "issues": issues}
+
+
+@app.post("/api/redraft/{sense_id}")
+def api_redraft(sense_id: str, payload: dict = Body(default={})) -> dict[str, Any]:
+    """后台重起草整组或增补单场景 (LLM 调用可达十几分钟, 不能同步等)。"""
+    status = _job_status(sense_id)
+    if status and status["status"] == "running":
+        raise HTTPException(409, f"{sense_id} 已有生成任务在运行")
+    args = ["scenes", sense_id]
+    add_type = payload.get("add")
+    if add_type:
+        if add_type not in SCENE_TYPES:
+            raise HTTPException(400, f"未知场景类型 {add_type}")
+        args += ["--add", add_type]
+    log = tempfile.NamedTemporaryFile(
+        prefix=f"scenelex-{sense_id}-", suffix=".log", delete=False
+    )
+    env = {**os.environ, **_load_env_file()}
+    proc = subprocess.Popen(
+        [sys.executable, str(ROOT / "tools" / "draft.py"), *args],
+        stdout=log, stderr=subprocess.STDOUT, env=env, cwd=ROOT,
+    )
+    JOBS[sense_id] = {"proc": proc, "log": log.name, "args": args}
+    return {"sense_id": sense_id, "status": "running", "args": args}
+
+
+@app.get("/api/jobs")
+def api_jobs() -> dict[str, Any]:
+    return {
+        "jobs": [s for s in (_job_status(sid) for sid in list(JOBS)) if s]
+    }
+
+
+# 单次生成上限。词典事实锚定已上线, 但"批量全部"仍需人工分批放行——
+# 一个词全场景 ≈ 14 分钟, 50 词 ≈ 12 小时, 误触全选不该烧掉几天的 API 配额。
+GENERATE_MAX = 50
+
+
+@app.post("/api/generate")
+def api_generate(payload: dict = Body(...)) -> dict[str, Any]:
+    """从候选队列选词批量生成 (后台 draft.py batch)。"""
+    words = payload.get("words")
+    if not isinstance(words, list) or not words:
+        raise HTTPException(400, "words 必须是非空列表")
+    if len(words) > GENERATE_MAX:
+        raise HTTPException(
+            400, f"单次最多 {GENERATE_MAX} 个词 (收到 {len(words)})"
+        )
+    import re as _re
+    for w in words:
+        if not isinstance(w, str) or not _re.fullmatch(r"[a-z][a-z_]*", w):
+            raise HTTPException(400, f"非法单词: {w!r}")
+    status = _job_status("_batch")
+    if status and status["status"] == "running":
+        raise HTTPException(409, "已有批量生成任务在运行")
+    args = ["batch", *words]
+    if payload.get("senses_only"):
+        args.append("--senses-only")
+    log = tempfile.NamedTemporaryFile(
+        prefix="scenelex-batch-", suffix=".log", delete=False
+    )
+    env = {**os.environ, **_load_env_file()}
+    proc = subprocess.Popen(
+        [sys.executable, str(ROOT / "tools" / "draft.py"), *args],
+        stdout=log, stderr=subprocess.STDOUT, env=env, cwd=ROOT,
+    )
+    JOBS["_batch"] = {"proc": proc, "log": log.name, "args": args}
+    return {"status": "running", "words": words}
 
 
 @app.post("/api/promote/{sense_id}")
@@ -172,6 +330,29 @@ def page_index(request: Request):
     })
 
 
+CANDIDATES_PER_PAGE = 1000
+
+
+@app.get("/candidates", response_class=HTMLResponse)
+def page_candidates(request: Request, page: int = 1, q: str = ""):
+    import candidates
+    queue = candidates.build_queue(None)
+    query = q.strip().lower()
+    if query:
+        queue = [item for item in queue if query in item["word"]]
+    total = len(queue)
+    pages = max(1, -(-total // CANDIDATES_PER_PAGE))
+    page = min(max(1, page), pages)
+    start = (page - 1) * CANDIDATES_PER_PAGE
+    return templates.TemplateResponse(request, "candidates.html", {
+        "queue": queue[start:start + CANDIDATES_PER_PAGE],
+        "batch_job": _job_status("_batch"),
+        "page": page, "pages": pages, "total": total,
+        "start": start, "q": q,
+        "generate_max": GENERATE_MAX,
+    })
+
+
 @app.get("/senses/{sense_id}", response_class=HTMLResponse)
 def page_sense(request: Request, sense_id: str,
                promoted: str | None = None):
@@ -191,6 +372,10 @@ def page_sense(request: Request, sense_id: str,
         "sense": sense_entry,
         "by_type": by_type,
         "has_draft": has_draft,
+        "has_published_scenes": any(
+            e["source"] == "published" for e in scenes
+        ),
+        "job": _job_status(sense_id),
     })
 
 

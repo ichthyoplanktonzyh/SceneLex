@@ -55,3 +55,51 @@ def test_next_scene_id_spans_published_and_drafts(tmp_path, monkeypatch):
     monkeypatch.setattr(draft, "DRAFTS", tmp_path / "data" / "drafts")
     assert draft.next_scene_id("test-01", "prototype") == "test-01-proto-03"
     assert draft.next_scene_id("test-01", "transfer") == "test-01-transfer-01"
+
+
+def _batch_env(tmp_path, monkeypatch):
+    monkeypatch.setattr(draft, "ROOT", tmp_path)
+    monkeypatch.setattr(draft, "DRAFTS", tmp_path / "data" / "drafts")
+    monkeypatch.setattr(
+        draft, "BATCH_STATE", tmp_path / "data" / "drafts" / "batch-state.json"
+    )
+
+
+def test_batch_runs_both_stages_and_cleans_state(tmp_path, monkeypatch):
+    _batch_env(tmp_path, monkeypatch)
+    calls = []
+    monkeypatch.setattr(
+        draft, "_run_stage",
+        lambda stage, retries, sleep: (calls.append(tuple(stage)) or (True, "ok")),
+    )
+    draft.cmd_batch(Namespace(words=["nearly"], count=1, retries=0,
+                              sleep=0, senses_only=False))
+    assert calls == [("sense", "nearly"), ("scenes", "nearly-01")]
+    assert not draft.BATCH_STATE.exists()
+
+
+def test_batch_failed_sense_skips_scenes_and_keeps_state(tmp_path, monkeypatch):
+    _batch_env(tmp_path, monkeypatch)
+    calls = []
+    monkeypatch.setattr(
+        draft, "_run_stage",
+        lambda stage, retries, sleep: (calls.append(tuple(stage)) or (False, "boom")),
+    )
+    draft.cmd_batch(Namespace(words=["nearly"], count=1, retries=0,
+                              sleep=0, senses_only=False))
+    assert calls == [("sense", "nearly")]
+    assert draft.BATCH_STATE.exists()
+
+
+def test_batch_resumes_from_recorded_state(tmp_path, monkeypatch):
+    _batch_env(tmp_path, monkeypatch)
+    draft.BATCH_STATE.parent.mkdir(parents=True)
+    draft.BATCH_STATE.write_text('{"nearly": {"sense": "done"}}')
+    calls = []
+    monkeypatch.setattr(
+        draft, "_run_stage",
+        lambda stage, retries, sleep: (calls.append(tuple(stage)) or (True, "ok")),
+    )
+    draft.cmd_batch(Namespace(words=["nearly"], count=1, retries=0,
+                              sleep=0, senses_only=False))
+    assert calls == [("scenes", "nearly-01")]

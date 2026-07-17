@@ -1,0 +1,72 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: grimy-01-boundary-01
+sense_ref: grimy-01
+scene_type: boundary
+contrast_target: greasy-01
+contrast_relation: overlaps
+surface:
+  domain: household-cooking
+  participant_type: adult-cook
+  setting: indoor-kitchen
+
+title: 是油，还是油垢？
+synopsis: >
+  同一把锅铲：新涂了一层透明植物油（greasy but clean），
+  另一把旧锅铲上混有焦黑和灰尘的油层（grimy）。
+  展示临界条件——油脂本身不脏，只有混入碳化颗粒才成为grimy。
+
+storyboard:
+  - beat: 1
+    visual: >
+      特写两把锅铲并排放在灶台上。左铲表面光滑，附着一层透明发亮的油膜（新涂的植物油）；
+      右铲表面呈深褐色，布满黑色焦斑和暗色黏腻物。
+    audio: null
+    purpose: 并置greasy与grimy的典型样本，建立初步对比
+
+  - beat: 2
+    visual: >
+      左铲：用手指划过油膜，手指上只有透明油，没有颗粒。用纸巾一擦即净，留下油光。
+    audio: "This is greasy – just oil, no dirt."
+    purpose: 展示greasy的纯净状态——只有油脂，颜色透明，不含灰尘或碳化颗粒
+
+  - beat: 3
+    visual: >
+      右铲：用手指刮一下暗色层，指腹留下一层黑灰色油泥，伴随焦味。
+      用湿布擦拭，需要反复搓才能去掉大部分，残留暗印。
+    audio: "But this… this is grimy. Oil mixed with burnt bits and dust."
+    purpose: 展示grimy的自然组成：油脂+碳化/灰尘颗粒；清洁困难
+
+  - beat: 4
+    visual: >
+      镜头切到左铲，在上面撒少量面粉和灰，搅拌后油脂变浑浊。
+      再次用纸巾擦，留下灰色油痕，不再透明。
+    audio: "Now add dust… even the clean oil becomes grimy-looking."
+    purpose: 临界条件操作：原始greasy在引入固体颗粒后变成grimy，演示从greasy到grimy的连续过渡
+
+  - beat: 5
+    visual: >
+      分屏回放：左铲透明油膜→加灰尘后变浊；右铲原始油泥。
+      同时画外音总结。
+    audio: "Greasy is just the oil. Grimy is oil that has picked up dirt. You can be greasy without being grimy – but if you're grimy, you're always greasy too."
+    purpose: 揭示overlaps关系：greasy是成分之一，grimy包含greasy但多出颗粒；且grimy一定greasy（有油脂感）
+
+learning_tasks:
+  - type: contrast_choice
+    prompt: >
+      播放三段短片：
+        1) 刚涂黄油的煎锅（透明油膜）
+        2) 用了两周的抽油烟机滤网（黑粘油垢）
+        3) 沾了机油又沾灰的扳手（深色油泥）
+      学习者为每段选择“greasy”“grimy”或“both”，并说明理由。
+    expected_answer: "1 greasy, 2 grimy, 3 both (greasy+grimy)"
+    scoring_note: 正确判断且能解释颗粒/黏着得满分
+
+  - type: produce
+    prompt: >
+      无声短片：一只沾满透明植物油的玻璃碗（无灰尘）。
+      引导学习者说出 “It’s greasy, not grimy.”
+    expected_answer: "It's greasy, not grimy."
+    scoring_note: 口语中正确使用否定对比得满分

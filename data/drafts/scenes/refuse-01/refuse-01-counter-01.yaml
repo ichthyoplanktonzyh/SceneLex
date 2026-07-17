@@ -1,0 +1,39 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: refuse-01-counter-01
+sense_ref: refuse-01
+scene_type: counterexample
+contrast_target: deny-01
+contrast_relation: different_dimension
+surface:
+  domain: investigation
+  participant_type: adult
+  setting: indoor-office
+title: 否认不是拒绝
+synopsis: 主管问员工是否删除了文件，员工平静地摇头说“No, I didn't.” 这与拒绝做某事的场景类似（摇头+说No），但实际是在否认一个事实，而非拒绝行动。教“只能凭说No不能推断是refuse”。
+storyboard:
+  - beat: 1
+    visual: 办公室，主管拿着平板，上面显示一个被删除的重要文件，质问员工。
+    audio: "Did you delete this file?"
+    purpose: 建立“事实确认”语境，与 refuse 中的“请求/指令”不同。
+  - beat: 2
+    visual: 员工看着主管，表情平静但确定，缓缓摇头。
+    audio: "No. I didn't."
+    purpose: 外化行为（摇头+说No）与 refusal 表面相似，但实际是对命题的否定。
+  - beat: 3
+    visual: 主管查看日志，显示文件是自动删除的，员工获得清白。
+    audio: null
+    purpose: 后续行为证明员工说的No是客观否认，不是拒绝行动。
+  - beat: 4
+    visual: 另一个场景并置：原型的拒绝场景（被要求加班，摇头说No+离开）。两段并列。
+    audio: "In both, people say No. But only one is a refusal."
+    purpose: 提醒学习者不能仅凭说No就判定为refuse，要看语境（请求vs质问）。
+learning_tasks:
+  - type: transfer_judgment
+    prompt: 播放三段短片：A. 被问“你拿了吗？”答“没有”；B. 被要求“去拿一下”答“不”；C. 被问“你喜欢吗？”答“不”。学习者判断哪些属于 refuse。
+    expected_answer: 仅B是refuse
+  - type: contrast_choice
+    prompt: 对短片A追问：为什么不是refuse？请选择：A. 因为没有外部请求；B. 因为回答的是事实；C. 因为没摇头。
+    expected_answer: B

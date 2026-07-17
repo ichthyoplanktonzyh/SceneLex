@@ -1,0 +1,170 @@
+# ============================================================
+# A. 基础词义信息
+# ============================================================
+schema_version: "1.0"
+language: en
+version: 1
+status: draft
+
+id: filthy-01
+word: filthy
+pos: adjective
+sense_label: 极脏且令人厌恶
+definition: "Extremely dirty to the point of being disgusting; covered or filled with a large amount of dirt, grime, or foul matter"
+
+frequency:
+  band: mid
+  rank: 3500
+difficulty: intermediate
+pronunciation:
+  ipa: /ˈfɪlθi/
+
+collocations:
+  - filthy clothes
+  - filthy streets
+  - filthy kitchen
+  - filthy language
+  - filthy rich (idiomatic, a separate sense)
+  - filthy habit
+
+sentence_patterns:
+  - "[place/object] is filthy"
+  - "a filthy [noun]"
+  - "look/get filthy"
+  - "so filthy that [clause]"
+
+# ============================================================
+# B. 语义类型
+# ============================================================
+semantic_type: attribute
+
+# ============================================================
+# C. 语义骨架
+# ============================================================
+semantic_skeleton:
+  participants:
+    - role: observed_entity
+      description: 被观察的对象、表面或空间
+    - role: filth
+      description: 大量附着或浸染的污物、污垢或令人反感的物质
+
+  propositions:
+    - 存在一个可被整体观察的对象、表面或空间
+    - 该对象或表面附着、浸染或堆积了大量污物
+    - 污物的程度显著超出社会普遍接受的日常脏标准
+    - 这种肮脏状态在视觉、触觉或嗅觉上引起强烈的反感或厌恶
+    - 污物覆盖面积大、厚度明显，或呈现为令人恶心的物质（如污泥、油脂、排泄物、腐烂物）
+
+# ============================================================
+# D. 成立条件与排除条件
+# ============================================================
+conditions:
+  required:
+    - 对象表面存在大量污物
+    - 肮脏程度远超日常可接受的 dirty 状态
+    - 肮脏可直接通过视觉或触觉感知
+    - 观察者对该状态普遍感到厌恶
+
+  excluded:
+    - condition: 对象只有少量污渍或灰尘，未达到大量覆盖或令人厌恶的程度
+      alternative: dirty-01
+    - condition: 对象只有损坏变旧但没有大量污物（如褪色、磨损但干净）
+      alternative: shabby-01
+    - condition: 对象是整体破败、不卫生且伴随贫困场景，但污垢并非核心特征
+      alternative: squalid-01
+
+# ============================================================
+# E. 概念关系
+# ============================================================
+relations:
+  synonyms:
+    - grimy-01
+    - squalid-01
+  antonyms:
+    - spotless-01
+    - immaculate-01
+  hypernyms:
+    - dirty-01
+  hyponyms: []
+  confusables:
+    - dirty-01
+    - grubby-01
+    - grimy-01
+    - squalid-01
+    - foul-01
+
+  boundaries:
+    - target: dirty-01
+      relation: degree_neighbor
+      distinction: filthy 是 dirty 的程度加强版，强调量多、令人厌恶；dirty 可指任何程度的脏。
+      diagnostic: >-
+        展示两个场景：一为日常脏（如地板上有脚印），二为极脏（如堆积油污、泥浆覆盖）。
+        filthy 仅适用于后者；若用 filthy 描述前者会显得过度。
+    - target: grimy-01
+      relation: overlaps
+      distinction: grimy 强调污垢嵌入表面或形成薄层（如手上擦不掉的油垢），filthy 不限于嵌入；两者可重叠。
+      diagnostic: >-
+        表面干净但纹理中嵌有黑垢时更可能用 grimy；
+        表面被大量污渍覆盖但并非嵌入时更可能用 filthy。
+    - target: squalid-01
+      relation: overlaps
+      distinction: squalid 通常关联破败、贫困、不体面的生活环境（脏 + 破 + 失修），filthy 只强调肮脏程度。
+      diagnostic: >-
+        一个豪华别墅的地板如果堆满污物，可以 filthy 但不能 squalid；
+        一个贫民窟的破旧房间可以同时是 squalid 和 filthy。
+    - target: foul-01
+      relation: different_dimension
+      distinction: foul 强调难闻或令人作呕的气味、味道；filthy 主要针对可见污垢，但可连带气味。
+      diagnostic: >-
+        一样东西可以 foul-smelling but not visibly filthy（如腐臭的牛奶），
+        也可以 visibly filthy but odorless（如干结的泥块）。
+
+  l1_confusables:
+    zh:
+      - l1_term: 脏
+        covers:
+          - filthy-01
+          - dirty-01
+          - grimy-01
+        note: >-
+          中文"脏"覆盖从轻微到极重的所有程度，没有默认的强度标记。
+          学习者常将 filthy 等同于"很脏"，但英语中 filthy 有明确的极强程度，
+          并自带"令人作呕"的情感评价。中文需要加"极了""不堪"才能匹配。
+      - l1_term: 肮脏
+        covers:
+          - filthy-01
+          - dirty-01
+          - squalid-01
+        note: >-
+          "肮脏"在中文中比"脏"更正式，但同样缺乏程度分层。
+          学习者可能混淆 filthy 与 squalid，因为"肮脏"也用来描写贫民窟。
+          实际 filthy 重在污物量，squalid 重在环境恶劣贫困。
+
+# ============================================================
+# F. 场景要求
+# ============================================================
+scene_requirements:
+  must_show:
+    - 一个对象、表面或空间被大量污物覆盖（如厚油污、泥浆、垃圾堆积、排泄物等）
+    - 污物覆盖面积大，或厚度明显，或呈现为令人恶心的物质
+    - 整体视觉应传递出"远超普通脏"的信息
+    - 最好有正常干净状态的对照（如前日对比）
+
+  must_not:
+    - 不能只展示少量灰尘或污渍——那是 dirty
+    - 不能只展示破旧但没有大量污物——那是 shabby / worn
+    - 不能只展示难闻气味但没有可见污垢——那是 foul / stinky
+    - 不能展示人物主动制造混乱（那是 messy 或 trashed）——filthy 是污垢状态而非秩序状态
+
+  externalization:
+    - 物体表面被油脂、泥土、墨水、颜料等物质大面积覆盖
+    - 衣物、布料上可见顽固污渍，颜色漂染不均
+    - 地面或墙面有明显污物堆积（如厨房灶台油垢、厕所污渍）
+    - 接触者显示厌恶表情（皱眉、捂鼻、退缩）
+    - 手指触摸后留下明显污迹
+    - 场景中可能散发异味（但不可仅依赖嗅觉）
+
+  timing: >-
+    先展示脏物堆积的全景或特写，让观众自行获取"极度肮脏"的直观感受，
+    再在画面中或旁白中使用目标词命名这一状态。若有人物交互，
+    可在人物表现出厌恶后使用该词。

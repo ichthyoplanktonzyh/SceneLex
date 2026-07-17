@@ -1,0 +1,81 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: grimy-01-proto-01
+sense_ref: grimy-01
+scene_type: prototype
+surface:
+  domain: auto-repair
+  participant_type: adult-worker
+  setting: indoor-garage
+
+title: 修车工的手
+synopsis: >
+  一位修车师傅在检修发动机后，双手沾满黑色油垢，指甲缝和掌纹里嵌着混合机油与金属屑的黏腻污垢，
+  他用肥皂和刷子反复清洗才去掉，最后一位同事评论他的手多么grimy。
+
+storyboard:
+  - beat: 1
+    visual: >
+      特写修车师傅的手掌：指关节和指纹线条里嵌着深褐色、发黏的油泥，
+      指甲盖边缘有一圈黑垢，皮肤表面泛着油光。
+    audio: "(金属工具碰撞声，远处发动机怠速声)"
+    purpose: 以极致特写展示grimy的核心特征——油腻、嵌在纹理中的黏附污垢
+
+  - beat: 2
+    visual: >
+      镜头拉开，露出上半身：师傅穿着沾满油污的工作服，手举到面前，
+      皱着眉看着自己的手，用另一只手指尖蹭了一下手背，留下一道油印。
+    audio: null
+    purpose: 建立油腻黏着的可观察证据（手指蹭过留下油痕），同时展示被污垢覆盖的完整手部
+
+  - beat: 3
+    visual: >
+      师傅走到水池边，挤上绿色肥皂液，用刷子用力刷掌心、指缝，
+      泡沫变成灰色，反复冲水后手的颜色开始恢复，但指甲缝里仍有残余黑线。
+    audio: "(水龙头声，刷子摩擦声，叹气声)"
+    purpose: >
+      展示清洁过程：需用清洁剂和机械力才能去除，强调污垢的牢固附着性；
+      清洁前后对比强化grimy状态与clean状态的差异
+
+  - beat: 4
+    visual: >
+      水龙头关闭，师傅举起洗净的手检查，露出满意的表情。
+      此时同事探过头来看了一眼他的手，又瞥了一眼刚刚放下的脏毛巾。
+    audio: "Man, your hands were really grimy. Even the soap barely got them clean."
+    purpose: 在清洁完成后回指之前的状态，用“were grimy”定位原型时刻；同时“soap barely got them clean”强化附着难度
+
+  - beat: 5
+    visual: >
+      分屏回放：左侧特写油垢手指，右侧特写洗净后手指，中间闪过擦手毛巾上的暗色污渍。
+    audio: "grimy – clean – grimy – clean"
+    purpose: 在同一声音驱动下压缩对比，逼迫学习者将词与“油腻嵌着洗不掉”的表征绑定
+
+learning_tasks:
+  - type: scene_recognition
+    prompt: >
+      听“grimy”，从以下四段短片中选出匹配的一段：
+        A) 人手沾满面粉（可吹掉）
+        B) 人手沾满黑色油垢且需刷子刷
+        C) 人手沾满红色油漆（块状）
+        D) 人手沾满水珠
+    choices:
+      - "A"
+      - "B"
+      - "C"
+      - "D"
+    expected_answer: "B"
+    scoring_note: 选B得1分，其他0分
+
+  - type: listen_and_match
+    prompt: >
+      播放学生制作的两段无声视频：
+        1) 小孩用手挖泥后双手沾满干土，拍掉后干净；
+        2) 工人用沾满机油的手拧螺丝，留下油印。
+      听完音频 “His hands are grimy” 后选择匹配的视频。
+    choices:
+      - "视频1"
+      - "视频2"
+    expected_answer: "视频2"
+    scoring_note: 选对得1分

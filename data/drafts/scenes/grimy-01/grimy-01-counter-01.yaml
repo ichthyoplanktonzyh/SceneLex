@@ -1,0 +1,73 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: grimy-01-counter-01
+sense_ref: grimy-01
+scene_type: counterexample
+contrast_target: dusty-01
+contrast_relation: different_dimension
+surface:
+  domain: outdoor-play
+  participant_type: child
+  setting: outdoor-playground
+
+title: 脏不等于油腻
+synopsis: >
+  一个小男孩在沙坑里玩完后，双手和脸上沾满干燥的细沙和灰土，
+  看起来很脏，但轻轻一拍就掉落，没有油脂附着。有人误以为是grimy，
+  但实际只是dusty。用此反例纠正“看见脏物就判定grimy”的错误归纳。
+
+storyboard:
+  - beat: 1
+    visual: >
+      沙坑边，小男孩双手捧沙，往空中扬，细沙落在他脸上和头发上。
+      他笑得开心，手舞足蹈。
+    audio: "(笑声，风声)"
+    purpose: 建立常见但不符合grimy条件的表面状态——干燥沙土、无油脂
+
+  - beat: 2
+    visual: >
+      特写小男孩的手：手掌沾满浅棕色干沙和灰，指甲里也是。
+      他随意拍了拍手，大量沙粒掉落，手上只留下淡淡的灰印。
+    audio: null
+    purpose: 展示dusty的核心特征——松散、易脱落、无黏着
+
+  - beat: 3
+    visual: >
+      妈妈走过来，看了看他的手，轻轻吹了两口气，沙粒全部飞走了。
+      小手掌几乎恢复了本色，只有少量痕迹。
+    audio: "Oh, you are so dusty! Let's get you washed."
+    purpose: 用“dusty”明确命名，并展示干燥污垢的消除方式（吹气即可）
+
+  - beat: 4
+    visual: >
+      画面切回原型场景（修车工的手特写）作为对照。
+      同时画外音开始疑问。
+    audio: "Would you call his hands grimy?"
+    purpose: 引发对比，让学习者意识到抓到的表面脏证据（存在颗粒）不足以支持grimy
+
+  - beat: 5
+    visual: >
+      分屏：左侧男孩拍打双手沙粒掉落，右侧师傅手指蹭油留下油印。
+      屏幕下方文字：“Not all visible dirt is grimy – need grease + stickiness.”
+    audio: "You see dirt? Yes. But grimy needs grease. The sand is dusty, not grimy."
+    purpose: 明确否定误判，并给出反例的关键区分维度：油腻+黏着
+
+learning_tasks:
+  - type: transfer_judgment
+    prompt: >
+      播放三段新短片：
+        1) 粉笔灰沾满黑板擦（拍一拍灰飞散）
+        2) 旧空调滤网上的黑色油泥（刮下黏糊）
+        3) 淋雨后泥泞的鞋底（泥块易脱落）
+      学习者判断哪些画面有足够证据支持grimy，哪些只支持dusty。
+    expected_answer: "1 dusty, 2 grimy, 3 dusty"
+    scoring_note: 正确判断3个得满分；能指出油腻证据加1分
+
+  - type: contrast_choice
+    prompt: >
+      展示一张厨房灶台上的污垢照片（既有干面粉又有油渍），
+      问：哪些部分可以用grimy描述？哪些不能？为什么？
+    expected_answer: "油渍部分grimy，面粉部分dusty"
+    scoring_note: 正确区分并说明油渍黏着得满分

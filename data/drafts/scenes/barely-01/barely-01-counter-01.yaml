@@ -1,0 +1,54 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: barely-01-counter-01
+sense_ref: barely-01
+scene_type: counterexample
+contrast_target: merely-01
+contrast_relation: different_dimension
+surface:
+  domain: household
+  participant_type: child
+  setting: indoor-kitchen
+title: 盘子里的一小块
+synopsis: >
+  两个孩子分甜点。一个分到极小块（仅剩碎屑），另一个分到正常小份（仅仅一小块）。
+  观众容易用“仅仅”翻译两者，但 barelly 需要量值逼近零而非仅有数量少。
+storyboard:
+  - beat: 1
+    visual: >
+      厨房，双胞胎兄妹面对最后一块蛋糕。母亲切下一小块（约占整块的1/8）放在碟子里递给儿子。
+      儿子高兴地接过来，开始吃。
+    audio: "（母亲平静地）This is just a small piece. It’s merely a taste."
+    purpose: 展示 merely 的典型场景——分量少但正常，不逼近零。母亲用 just 和 merely 提示维度。
+  - beat: 2
+    visual: >
+      女儿看着哥哥手里那1/8块，又看向母亲。母亲叹了口气，用刀刮下碟中残余的一层蛋糕屑和奶油，
+      凑成几乎看不到的一点，放在另一个碟子上。女儿盯着那几乎空白的碟子。
+    audio: null
+    purpose: 展示量值逼近零的场景——差一点就没有。此为 barely 的候选。
+  - beat: 3
+    visual: >
+      特写两个碟子并排：左边1/8块（正常小份），右边几乎只有碎屑。儿子已经吃完他的那一份，
+      女儿用指尖捏起碎屑，犹豫地放进嘴里，表情仿佛尝到了味道，又仿佛没有。
+    audio: "（非常轻柔地）I can barely taste it. There’s barely anything there."
+    purpose: 用角色话语命名 barely，并强调量值逼近零（几乎没有东西）。与 beat 1 的 merely 形成对比。
+  - beat: 4
+    visual: >
+      母亲看着两个碟子，对镜头说话手拿两个碟子对比。
+    audio: "One is merely a small piece. The other is barely a piece at all. Don’t mix them up."
+    purpose: 以教学口吻指出 merely 和 barely 的维度不同：merely 关注数量少，barely 关注程度逼近零。
+  - beat: 5
+    visual: >
+      回放两个画面：哥哥吃1/8块（表情满足），妹妹吃碎屑（表情微妙）。画面定格在妹妹的碟子上，
+      碟底几乎空无一物。
+    audio: "仅仅一小块 ≠ 勉强有一点。从仅仅到勉强，还需要更靠近零。"
+    purpose: 中文提示，直接点明中文学习者常犯的混淆：merely（仅仅）不自动蕴含 barely。
+learning_tasks:
+  - type: transfer_judgment
+    prompt: 展示三幅图（半杯水 / 杯底一滴水 / 空杯），判断哪一幅可以用“barely any water”描述。
+    choices:
+      - 半杯水
+      - 杯底一滴水
+      - 空杯
+    expected_answer: 杯底一滴水

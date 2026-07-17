@@ -71,8 +71,15 @@ learning clients, APIs, or content packages
 - `data/scenes/{sense_id}/`：已审核的正式场景规格；一个义项对应一个目录。
 - `data/drafts/`：待审草稿隔离区，绝不可被当作已发布内容或默认词典结果。
 - `prompts/`：起草辅助，不是数据权威；修改后要检查其是否仍与 schema 和范例一致。
-- `tools/draft.py`：词义/场景草稿生产编排。
+- `tools/draft.py`：词义/场景草稿生产编排（含 batch 批量与 --add 增补）。
 - `tools/llm.py`：可替换 LLM 适配器；模型选择不得泄漏到 schema/正式 IR。
+- `tools/dictionary.py`：Wiktionary 词典事实源（kaikki.org，CC-BY-SA）。词典事实
+  是起草与审核的事实锚点（pos/IPA/义项划分参照），不是内容来源；释义与语义
+  骨架必须自行撰写。缓存于 `data/dictionary/`。
+- `tools/candidates.py`：扩产候选队列（悬空引用优先 + 词频排序）。注意不可
+  命名为 queue.py（遮蔽标准库）。
+- `tools/workbench.py` + `tools/webui/`：本地审核工作台；文件库之上的无状态壳，
+  promote 一律经由 draft.py，不为正式库提供写口。
 - `tools/validate.py`：正式库的最低一致性校验，不替代语言、场景或教学审核。
 - `tools/export.py`：只从正式库导出消费者资源包；草稿不得进入默认导出。
 - `examples/consumer/`：消费者侧示例，不是 SceneLex 核心身份或学习记录模型。

@@ -1,0 +1,50 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: nearly-01-transfer-01
+sense_ref: nearly-01
+scene_type: transfer
+transfer_dimensions:
+  - target_value_type
+  - participant_type
+  - domain
+title: 时钟、苹果与赛场
+synopsis: 三段片段：时钟秒针快到12点（时间接近）；篮子里几乎拿完所有苹果（数量接近）；赛车手距终点不到1米（空间接近）。最后三画面并置同一声音，逼迫抽象结构。
+storyboard:
+  - beat: 1
+    visual: 墙上的时钟，秒针从11点方向快速转动，接近12点整。镜头特写秒针与12点刻度之间的角度差。
+    audio: (滴答声)
+    purpose: 迁移点一：从液体体积转移到时间接近，目标参照是12点。观众可感知差距。
+  - beat: 2
+    visual: 秒针几乎碰到12，但仍有约2度空隙。画外音命名。
+    audio: "It's nearly twelve o'clock."
+    purpose: 使用高频搭配“nearly [时间]”，抽象维度变为时间。
+  - beat: 3
+    visual: 水果篮里有10个苹果。一只手拿出9个，篮子里只剩1个。镜头展示空篮子和计数。
+    audio: (数数声)
+    purpose: 迁移点二：目标参照是“所有苹果”，实际取走9个，剩余1个——量化接近但未达到“全部”。
+  - beat: 4
+    visual: 手拿着第9个苹果，篮子空。画外音给出。
+    audio: "Nearly all the apples are taken."
+    purpose: 使用collocation“nearly all”，覆盖高频搭配。
+  - beat: 5
+    visual: 赛车场。一辆赛车飞驰，镜头俯拍：车头距终点线白线约半米。终点线清晰可见。
+    audio: (引擎轰鸣)
+    purpose: 迁移点三：从静物到动态运动，target_value是终点线，空间接近。
+  - beat: 6
+    visual: 赛车冲线前瞬间（距终点线0.3米），画外音给出。
+    audio: "Nearly there!"
+    purpose: 使用collocation“nearly there”，结合典型场景。
+  - beat: 7
+    visual: 三画面并置一秒：左格时钟秒针接近12，中格篮子几乎空，右格赛车接近终点线。
+    audio: "Nearly. Nearly. Nearly."
+    purpose: 三个不同表面（时间/数量/空间）共享同一声音，逼迫抽象结构“接近目标但未达”浮现。
+learning_tasks:
+  - type: transfer_judgment
+    prompt: 播放三部新短片（煮水温度95°C/论文还剩两段/人几乎摔倒但没倒），判断哪些适用nearly。解释“几乎”是否在所有场景都成立。
+  - type: produce
+    prompt: 展示一幅无声画面（沙漏上半部近乎空），引导学习者说出“The sand is nearly all gone.”
+surface:
+  domain: mixed
+  participant_type: mixed
+  setting: mixed

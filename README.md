@@ -85,8 +85,12 @@ python3 tools/draft.py backlog
 python3 tools/draft.py sense dirty
 python3 tools/draft.py scenes dirty-01
 python3 tools/draft.py scenes dirty-01 --add prototype   # 增补一个新表面的场景
+python3 tools/candidates.py --count 20                   # 扩产候选队列 (悬空引用+词频)
+python3 tools/dictionary.py nearly                       # Wiktionary 词典事实 (起草锚点)
+python3 tools/draft.py batch --count 4                   # 批量起草, 断点可续
 python3 tools/draft.py list
 python3 tools/draft.py promote dirty-01
+python3 tools/workbench.py                               # 审核工作台 http://127.0.0.1:8321
 
 python3 tools/validate.py --backlog
 python3 tools/export.py --version 0.1.0 --output dist/scenelex-0.1.0.json

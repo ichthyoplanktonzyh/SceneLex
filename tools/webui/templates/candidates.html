@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% from "_macros.html" import job_bar, reason_chip, pagination %}
+{% block title %}候选队列 · SceneLex 审核工作台{% endblock %}
+{% block content %}
+
+{{ job_bar(batch_job, '批量生成中…') }}
+
+<section class="panel">
+  <h2>扩产候选队列
+    <span class="count">共 {{ total }} 词 · 悬空引用优先，其后按词频 · 第 {{ page }}/{{ pages }} 页</span>
+  </h2>
+
+  <div class="gen-controls">
+    <form class="search" method="get" action="/candidates">
+      <input type="search" name="q" value="{{ q }}" placeholder="搜索单词…">
+      <button class="ghost" type="submit">搜索</button>
+      {% if q %}<a class="ghost-link" href="/candidates">清除</a>{% endif %}
+    </form>
+    <label class="hint-inline"><input type="checkbox" id="check-page"
+      onchange="togglePage(this.checked)"> 全选本页</label>
+    <label class="hint-inline"><input type="checkbox" id="senses-only"> 只起草词义</label>
+    <button class="promote small" onclick="generateSelected()">
+      生成选中词 (<span id="sel-count">0</span>)
+    </button>
+    <span class="save-status" id="gen-status"></span>
+    <span class="hint-inline muted">单次上限 {{ generate_max }} 词；换页不保留勾选</span>
+  </div>
+
+  <table class="board">
+    <thead>
+      <tr><th></th><th>#</th><th>单词</th><th>入队原因</th><th class="num">被引用</th><th class="num">词频排名</th></tr>
+    </thead>
+    <tbody>
+      {% for item in queue %}
+      <tr>
+        <td><input type="checkbox" class="cand" value="{{ item.word }}"
+                   onchange="updateCount()"></td>
+        <td class="muted">{{ start + loop.index }}</td>
+        <td><span class="sense-link">{{ item.word }}</span></td>
+        <td>{{ reason_chip(item) }}</td>
+        <td class="num">{{ item.refs or '—' }}</td>
+        <td class="num">{{ item.rank or '—' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {{ pagination(page, pages, q) }}
+</section>
+
+<script>
+  const GENERATE_MAX = {{ generate_max }};
+  function updateCount() {
+    document.getElementById('sel-count').textContent =
+      document.querySelectorAll('input.cand:checked').length;
+  }
+  function togglePage(checked) {
+    document.querySelectorAll('input.cand').forEach(c => c.checked = checked);
+    updateCount();
+  }
+  async function generateSelected() {
+    const words = [...document.querySelectorAll('input.cand:checked')].map(c => c.value);
+    const status = document.getElementById('gen-status');
+    status.className = 'save-status';
+    if (!words.length) { status.textContent = '请先勾选单词'; status.classList.add('warn'); return; }
+    if (words.length > GENERATE_MAX) {
+      status.textContent = `选中 ${words.length} 词, 超过单次上限 ${GENERATE_MAX}`;
+      status.classList.add('bad'); return;
+    }
+    if (!confirm(`将生成 ${words.length} 个词 (全场景约每词 14 分钟), 确认启动?`)) return;
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({words, senses_only: document.getElementById('senses-only').checked}),
+    });
+    if (!res.ok) { status.textContent = '✗ ' + (await res.json()).detail; status.classList.add('bad'); return; }
+    status.textContent = '✓ 已启动: ' + words.length + ' 词';
+    status.classList.add('good');
+    showJob('running', '批量生成中… (' + words.join(' ') + ')');
+    pollBatch();
+  }
+  let batchTimer = null;
+  function pollBatch() {
+    if (batchTimer) return;
+    batchTimer = setInterval(async () => {
+      const data = await (await fetch('/api/jobs')).json();
+      const job = data.jobs.find(j => j.sense_id === '_batch');
+      if (!job) return;
+      if (job.status === 'running') {
+        const lines = job.tail.trim().split('\n');
+        showJob('running', '批量生成中… ' + lines[lines.length - 1]);
+      } else {
+        clearInterval(batchTimer); batchTimer = null;
+        showJob(job.status, job.status === 'done'
+          ? '✓ 批量完成, 刷新查看待审队列' : '✗ 批量失败, 详见服务日志');
+        if (job.status === 'done') setTimeout(() => location.reload(), 1500);
+      }
+    }, 8000);
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    const bar = document.getElementById('job-bar');
+    if (bar && bar.dataset.active === 'running') pollBatch();
+  });
+</script>
+
+{% endblock %}

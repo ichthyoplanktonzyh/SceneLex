@@ -1,0 +1,180 @@
+# ============================================================
+# A. 基础词义信息
+# ============================================================
+schema_version: "1.0"
+language: en
+version: 1
+status: draft
+
+id: grimy-01
+word: grimy
+pos: adjective
+sense_label: 油腻污垢覆盖
+definition: "Covered or stained with a layer of greasy, sooty, or ingrained dirt that is difficult to wipe off"
+
+frequency:
+  band: low
+  rank: 8500
+difficulty: intermediate
+pronunciation:
+  ipa: /ˈɡɹaɪmi/
+
+collocations:
+  - grimy hands
+  - grimy windows
+  - grimy kitchen
+  - grimy machinery
+  - grimy face
+
+sentence_patterns:
+  - "[noun] is grimy"
+  - "a grimy [noun]"
+  - "look/get grimy"
+  - "covered in grimy [noun]"
+
+# ============================================================
+# B. 语义类型
+# ============================================================
+semantic_type: attribute
+
+# ============================================================
+# C. 语义骨架
+# ============================================================
+semantic_skeleton:
+  participants:
+    - role: observed_entity
+      description: 被污垢覆盖的物体、表面或部位
+    - role: grime_layer
+      description: 粘附的油腻、碳化或嵌入的污垢层
+
+  propositions:
+    - 存在一个可被观察的物体或表面
+    - 该物体或表面被一层粘附的、油腻的或碳化的细小颗粒（污垢）覆盖
+    - 污垢是累积性的，通常由日常接触、油烟、灰尘或环境暴露造成
+    - 污垢明显改变了该物体或表面原本的颜色、质地或清洁状态
+    - 污垢难以用简单擦拭去除，需要清洁剂或用力清洗
+
+# ============================================================
+# D. 成立条件与排除条件
+# ============================================================
+conditions:
+  required:
+    - 物体表面存在一层附着的污垢
+    - 污垢包含油脂、烟灰、灰尘等细微颗粒，具有粘附性
+    - 污垢不是新鲜液体或松散灰尘，而是嵌在表面或黏着
+    - 污垢程度已达到视觉上明显不干净
+
+  excluded:
+    - condition: 表面仅沾水或新鲜液体，无固体附着
+      alternative: wet-01
+    - condition: 表面仅有一层松散干燥灰尘，未与油脂混合
+      alternative: dusty-01
+    - condition: 表面有颜色鲜明的污渍（如墨水、果汁）但无油腻感
+      alternative: stained-01
+    - condition: 表面因生物污物（粪便、腐烂物质）严重污染，强调卫生威胁
+      alternative: filthy-01
+
+# ============================================================
+# E. 概念关系
+# ============================================================
+relations:
+  synonyms: []
+  antonyms:
+    - clean-01
+    - pristine-01
+  hypernyms:
+    - dirty-01
+  hyponyms:
+    - greasy-01
+  confusables:
+    - dirty-01
+    - dusty-01
+    - stained-01
+    - filthy-01
+    - greasy-01
+
+  boundaries:
+    - target: dirty-01
+      relation: target_more_specific
+      distinction: grimy 特指被油腻、烟灰等粘附性污垢覆盖的状态，是 dirty 的一种具体形式。
+      diagnostic: 一个物体可以 dirty 但因缺乏油腻附着而不被形容为 grimy（如刚沾上泥浆）。反之，grimy 一定 dirty。
+    - target: dusty-01
+      relation: different_dimension
+      distinction: dusty 指表面有干燥灰尘，无油脂；grimy 的污垢包含油脂、碳化颗粒，有黏性。
+      diagnostic: 用手指擦过表面，灰尘轻易吹走为 dusty；留下油痕或擦不掉为 grimy。
+    - target: stained-01
+      relation: different_dimension
+      distinction: stained 指局部颜色改变（如墨水、咖啡渍），面积通常较小且非整体覆盖；grimy 强调大面积、连续性的油腻污垢层。
+      diagnostic: 将污物集中在一个小点可认定为 stained；若整个表面均匀覆盖暗色黏着物则为 grimy。
+    - target: filthy-01
+      relation: degree_neighbor
+      distinction: filthy 强调脏到令人厌恶、不卫生的程度，通常与排泄物、腐败物相关；grimy 侧重油腻附着，不一定达到健康威胁级别。
+      diagnostic: 若污垢主要来自油烟、灰尘且不散发恶臭，用 grimy 更自然；若明显有生物污染、腐烂风险则用 filthy。
+    - target: greasy-01
+      relation: overlaps
+      distinction: greasy 特指表面有油脂， grimy 包含 greasy 成分但也含碳化颗粒；greasy 不一定视觉上脏（如新涂的食用油），而 grimy 必然视觉脏。
+      diagnostic: 表面透明油膜但无灰尘为 greasy；油膜混入灰尘变暗为 grimy。
+
+  l1_confusables:
+    zh:
+      - l1_term: 脏
+        covers:
+          - dirty-01
+          - grimy-01
+          - filthy-01
+          - stained-01
+        note: >
+          中文"脏"是一个高度概括的词，覆盖所有不干净的状态。
+          grimy 对应的"油腻脏""油污"在中文中虽然存在，但日常交流中
+          人们更倾向于说"脏"而忽略油腻附着的特异性。
+          学习者在判断 grimy 时容易将其与一般的 dirty 混淆，
+          无法区分油腻附着与普通灰尘、污渍的区别。
+      - l1_term: 油污
+        covers:
+          - grimy-01
+          - greasy-01
+        note: >
+          "油污"特指油性污垢，与 grimy 的油腻成分吻合，但 grimy
+          还包含碳化烟灰等非油性颗粒，而"油污"偏重油脂本身。
+          机器上的黑色油泥更适合 grimy，而锅铲上的透明食用油
+          用 greasy 更准确。
+
+# ============================================================
+# F. 场景要求
+# ============================================================
+scene_requirements:
+  must_show:
+    - 一个可被整体观察的物体或表面
+    - 该表面覆盖有黑色、褐色或深色的粘附性污垢
+    - 污垢呈现不均匀分布，尤其在缝隙、纹理或角落处更厚
+    - 可以展示污垢的黏着特性（如手指触碰留下油印）
+    - 最好同时展示同一表面在清洁前后的对比
+
+  must_not:
+    - 不能只展示松散灰尘浮于表面（那是 dusty）
+    - 不能只展示水渍或新鲜液体痕迹（那是 wet）
+    - 不能展示腐败食物、粪便等生物污物（那是 filthy）
+    - 不能展示单一、鲜明的染料污渍（那是 stained）
+    - 不能让人物用轻而易举的方式擦除污垢（削弱油腻附着感）
+
+  externalization:
+    - 厨房抽油烟机滤网和表面堆积的棕色油垢
+    - 修车工人手指甲缝和掌纹中嵌入的黑色油灰
+    - 长时间未清洁的窗框缝隙中发黑的污垢
+    - 老旧机器外壳上混合机油和灰尘形成的黏腻层
+    - 儿童玩耍后双手沾满泥土和草汁但无油腻感时不宜用 grimy
+    - 清洁时需要用湿布加清洁剂用力擦拭才能去除污垢
+
+  timing: >
+    先以特写镜头展示污垢的附着状态（观察者能清晰看到油腻的质地），
+    再让画面中出现完整的物体，最后用目标词命名该状态。
+    如果场景包含清洁过程，应在清洁前呈现 grimy 状态，清洁后呈现 clean。
+
+# ============================================================
+# G. 资源元数据
+# ============================================================
+provenance:
+  sources:
+    - type: dictionary
+      citation: https://kaikki.org/dictionary/English/meaning/g/gr/grimy.jsonl
+      license: CC-BY-SA

@@ -1,0 +1,61 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: filthy-01-contrast-01
+sense_ref: filthy-01
+scene_type: contrast
+contrast_target: dirty-01
+contrast_relation: degree_neighbor
+surface:
+  domain: office
+  participant_type: adult
+  setting: indoor-office
+
+title: 两种脏的办公室
+synopsis: >
+  同一间办公室，同一张桌子。第一天，桌上有一些咖啡渍和面包屑（dirty）；
+  一周后，桌面上积了厚厚的灰尘和干掉的咖啡泼溅物（filthy）。用诊断句点明差异。
+
+storyboard:
+  - beat: 1
+    visual: >
+      周一早晨。办公桌上散落着一些面包屑，一个马克杯底部有干掉的咖啡渍。
+      整体上物品摆放还算齐整。同事A经过，看了一眼。
+    audio: null
+    purpose: 建立 “dirty” 的基线场景：有污迹，但未达到令人厌恶的程度。
+
+  - beat: 2
+    visual: >
+      同事A拿起杯子，用湿纸巾擦了擦杯底，拍了拍桌上的面包屑，然后坐下工作。
+    audio: null
+    purpose: 展示日常“可接受的清洁方式”，强化 dirty 的“日常和轻微”属性。
+
+  - beat: 3
+    visual: >
+      (画面字幕：一周后) 同一张桌子。桌面覆盖着一层灰色的厚灰尘，
+      键盘里卡满了碎屑。泼洒的咖啡渍已经干结成褐色的硬块。
+      空气中有轻微霉味（通过人物反应外化）。
+    audio: null
+    purpose: 引入 filthy 场景。通过“时间累积”和“污物堆积到令人不适”来呈现程度的剧变。
+
+  - beat: 4
+    visual: >
+      同事A再次经过，他/她停住，皱紧眉头，伸出手指在灰尘上划了一道，
+      留下深深的手指印。他/她缩回手，表情明显厌恶。
+    audio: "This isn't just dirty. It's filthy."
+    purpose: >
+      直接对比两个状态。通过人物台词强调 dirty 和 filthy 是程度上的邻居（degree_neighbor），
+      并明确 filthy 的成立条件：令人厌恶的、大量的污物。
+
+learning_tasks:
+  - type: contrast_choice
+    prompt: 展示两张图片：图A为沾有少量泥土的鞋子；图B为沾满厚泥泞、几乎看不清原色的鞋子。问：“以下哪种情况用 filthy 来描述更合适？”
+    choices:
+      - 图A
+      - 图B
+    expected_answer: 图B
+  - type: transfer_judgment
+    prompt: 播放一段视频：工人手上沾满了机油和尘土，但他正笑得开心。问：“可以说他的脸是 filthy 吗？为什么？”
+    expected_answer: 可以，因为脸被大量油污覆盖，达到了令人厌恶的程度，尽管人物情绪是正的（外部行为不矛盾）。
+    scoring_note: 重点考察学习者是否根据污物量级而非人物情绪来判断

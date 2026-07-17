@@ -1,0 +1,62 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: filthy-01-proto-01
+sense_ref: filthy-01
+scene_type: prototype
+surface:
+  domain: household-chores
+  participant_type: adult
+  setting: indoor-kitchen
+
+title: 一周未洗的厨房
+synopsis: >
+  一个人走进厨房，看到灶台和灶台上堆积了一周的油污、食物残渣和
+  发霉的碗碟。他/她屏住呼吸，后退一步，脱口而出一个词。
+
+storyboard:
+  - beat: 1
+    visual: >
+      镜头从门口缓慢推向厨房：灶台台面上覆盖着一层厚厚的、半凝固的
+      油污，上面混杂着干燥的饭粒、菜叶和不知名的褐色污渍。
+      水池里堆满了泡着霉斑的碗碟，水面上浮着油花。
+    audio: "(轻微的苍蝇嗡嗡声)"
+    purpose: 直接呈现“大量污物覆盖”和“令人厌恶”的视觉证据，让观众先行获得感性认知。
+
+  - beat: 2
+    visual: >
+      镜头切至人物（成人）走进厨房，他/她的视线从灶台扫到水槽，
+      身体明显顿住，然后向后倾斜，眉头紧皱，一只手不自觉地捂住了鼻子。
+    audio: null
+    purpose: 通过人物的生理反应（后退、皱眉、捂鼻）来外化“厌恶”这一核心情感命题。
+
+  - beat: 3
+    visual: >
+      特写：人物的目光聚焦在灶台上一块尤其显眼的、已经干结的褐色污渍上。
+      他/她的手指犹豫地伸出，没有触摸，只是在空中比划了一下。
+    audio: null
+    purpose: 进一步强调污物的“可见”和“可感知”特性，诱导观众将注意力集中在“肮脏”的量级上。
+
+  - beat: 4
+    visual: 人物放下手，深吸一口气，但随即又呼出，摇了摇头。
+    audio: "This kitchen is filthy."
+    purpose: >
+      在视觉和情绪铺垫充分后，使用旁白或人物自语的方式说出目标词“filthy”，
+      将该词与观众刚刚体验到的“极脏且令人厌恶”的整体感官印象进行精确绑定。
+
+learning_tasks:
+  - type: scene_recognition
+    prompt: 听到 “filthy” 后，从以下四个厨房场景（有小块污渍的、沾有面粉的、堆满油污的、完全干净的）中选择匹配的厨房。
+    choices:
+      - 有小块污渍的厨房
+      - 沾有面粉的厨房
+      - 堆满厚油污和残渣的厨房
+      - 完全干净的厨房
+    expected_answer: 堆满厚油污和残渣的厨房
+  - type: listen_and_match
+    prompt: 播放音频 "The whole street is filthy." 从两段画面（一条有少量落叶的整洁街道/一条堆满垃圾和泥浆的街道）中选择匹配的画面。
+    choices:
+      - 一条有少量落叶的整洁街道
+      - 一条堆满垃圾和泥浆的街道
+    expected_answer: 一条堆满垃圾和泥浆的街道

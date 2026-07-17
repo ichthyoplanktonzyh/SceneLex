@@ -1,0 +1,152 @@
+# ============================================================
+# A. 基础词义信息
+# ============================================================
+schema_version: "1.0"
+language: en
+version: 1
+status: draft
+
+id: nearly-01
+word: nearly
+pos: adverb
+sense_label: 几乎
+definition: "Almost but not quite; close to a particular state or amount but slightly less"
+
+frequency:
+  band: high
+  rank: 800
+difficulty: basic
+pronunciation:
+  ipa: /ˈnɪrli/
+
+collocations:
+  - nearly all
+  - nearly every
+  - nearly finished
+  - nearly died
+  - nearly perfect
+  - nearly impossible
+  - nearly there
+
+sentence_patterns:
+  - "nearly [verb]"
+  - "nearly [adj]"
+  - "nearly [num] [noun]"
+  - "nearly as [adj] as"
+  - "be nearly [noun]"
+
+# ============================================================
+# B. 语义类型
+# ============================================================
+semantic_type: scalar_degree
+
+# ============================================================
+# C. 语义骨架
+# ============================================================
+semantic_skeleton:
+  participants:
+    - role: target_value
+      description: 被接近的目标数值、状态或程度
+    - role: actual_value
+      description: 实际达到的数值、状态或程度
+
+  propositions:
+    - 存在一个明确或隐含的目标值/状态/程度
+    - 实际值/状态/程度与目标值接近
+    - 实际值与目标值之间存在可感知的差距，差距未完全消除
+    - 差距相对于目标值来说是小的
+
+# ============================================================
+# D. 成立条件与排除条件
+# ============================================================
+conditions:
+  required:
+    - 实际值与目标值接近但不是完全等同
+    - 差距是可通过感知或测量确定的
+    - 比较是沿着同一尺度进行的
+
+  excluded:
+    - condition: 实际值与目标值完全相等或已达到目标状态
+      alternative: completely-01
+    - condition: 实际值远未接近目标值，差距巨大
+      alternative: far-01
+
+# ============================================================
+# E. 概念关系
+# ============================================================
+relations:
+  synonyms:
+    - almost-01
+    - virtually-01
+  antonyms:
+    - completely-01
+  hypernyms:
+    - approximately-01
+  hyponyms: []
+  confusables:
+    - almost-01
+    - approximately-01
+    - about-01
+    - around-01
+    - practically-01
+
+  boundaries:
+    - target: almost-01
+      relation: overlaps
+      distinction: nearly 和 almost 在大多数语境可互换，但 nearly 更常用于数量或可测量程度，almost 可用于更抽象或时间；两者不能严格互斥。
+      diagnostic: 对于数值或可量化场景，两者都自然；对于“险些发生” (I nearly died) 两者都可用；对于“几乎完成”可互换。不需要强制区分。
+    - target: approximately-01
+      relation: different_dimension
+      distinction: approximately 侧重于近似值，隐含估算，不强调接近程度的大小；nearly 强调接近但未达，更精确。
+      diagnostic: 如果说“The time is approximately 3:00”，可接受误差范围更大；“The time is nearly 3:00”暗示马上就到3点。
+    - target: about-01
+      relation: different_dimension
+      distinction: about 常用于不确定的近似，近乎不强调精确；nearly 更强调接近且未达。
+      diagnostic: “about 10” 可能指 9-11；“nearly 10” 通常指 9.8-9.9。
+    - target: practically-01
+      relation: overlaps
+      distinction: practically 有时可互换，但更常强调实际上几乎等同于，可能忽略微小差距；nearly 明确保留差距。
+      diagnostic: “practically the same” 强调功能等价；“nearly the same” 强调数值接近但不同。
+
+  l1_confusables:
+    zh:
+      - l1_term: 几乎
+        covers:
+          - nearly-01
+          - almost-01
+        note: >
+          中文“几乎”与 nearly/almost 高度对应，但“几乎”可用于假设和修辞（几乎=差点），
+          nearly 更常用于事实性接近。另外“几乎”有时也可表示“差不多”，覆盖范围略广。
+      - l1_term: 差不多
+        covers:
+          - nearly-01
+          - approximately-01
+          - about-01
+        note: >
+          “差不多”更侧重“大致相等”，不严格强调“差一点”，
+          而 nearly 必须未达到目标。“差不多完成了”可能是 80%，
+          而“nearly finished”通常是 90%+。
+
+# ============================================================
+# F. 场景要求
+# ============================================================
+scene_requirements:
+  must_show:
+    - 一个明确的目标参照（刻度、终点、完全状态等）
+    - 实际状态或数值接近目标参照但留有可见差距
+    - 观众能够自行判断“还差一点”
+
+  must_not:
+    - 不能只显示达到目标后的状态（那是 completely）
+    - 不能显示差距过大以至于“离得远”（那是 far from）
+    - 不能使用数字或精确对比来替代感知（但可辅助）
+
+  externalization:
+    - 物理接近：液体接近容器顶部、车辆接近终点线、物体接近边缘但未过
+    - 量度标尺：温度计指针接近某个刻度、进度条接近100%但未满
+    - 时间接近：秒针接近整点、沙漏上端沙子几乎流完
+    - 状态接近：衣服晾晒几乎干透但仍有湿气、画画几乎完成但有一笔未画
+
+  timing: >
+    先展示目标参照和当前状态，让观众看到“差一点”的视觉证据，
+    然后在差距最明显时（如指针离刻度还有一小格）出现目标词。

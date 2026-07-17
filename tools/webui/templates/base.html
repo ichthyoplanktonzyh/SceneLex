@@ -6,11 +6,12 @@
   <title>{% block title %}SceneLex 审核工作台{% endblock %}</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
-<body>
+<body{% block body_attrs %}{% endblock %}>
   <header class="topbar">
     <a class="brand" href="/"><span class="logo">S</span>SceneLex<span class="sub">审核工作台</span></a>
     <nav>
       <a href="/">词库总览</a>
+      <a href="/candidates">候选队列</a>
     </nav>
   </header>
   <main>
@@ -38,6 +39,75 @@
       el.hidden = !el.hidden;
       btn.textContent = el.hidden ? '查看 YAML' : '收起 YAML';
     }
+    function toggleEdit(id) {
+      const el = document.getElementById(id);
+      el.hidden = !el.hidden;
+    }
+    async function saveDraft(path, taId, statusId) {
+      const status = document.getElementById(statusId);
+      status.textContent = '保存中…'; status.className = 'save-status';
+      const res = await fetch('/api/file', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({path, content: document.getElementById(taId).value}),
+      });
+      if (!res.ok) {
+        status.textContent = '✗ ' + (await res.json()).detail;
+        status.classList.add('bad');
+        return;
+      }
+      const data = await res.json();
+      if (data.issues.length) {
+        status.textContent = '已保存, 但有 ' + data.issues.length + ' 个校验问题: '
+          + data.issues.join(' | ');
+        status.classList.add('warn');
+      } else {
+        status.textContent = '✓ 已保存, 校验通过';
+        status.classList.add('good');
+        setTimeout(() => location.reload(), 900);
+      }
+    }
+    async function redraft(senseId, addType) {
+      const body = addType ? {add: addType} : {};
+      const res = await fetch(`/api/redraft/${senseId}`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) { alert((await res.json()).detail); return; }
+      showJob('running', addType ? `增补 ${addType} 场景生成中…` : '整组重起草生成中…');
+      pollJobs();
+    }
+    function showJob(status, text) {
+      const bar = document.getElementById('job-bar');
+      if (!bar) return;
+      bar.hidden = false;
+      bar.className = 'job-bar ' + status;
+      bar.querySelector('span').textContent = text;
+    }
+    let jobTimer = null;
+    function pollJobs() {
+      const senseId = document.body.dataset.sense;
+      if (!senseId || jobTimer) return;
+      jobTimer = setInterval(async () => {
+        const data = await (await fetch('/api/jobs')).json();
+        const job = data.jobs.find(j => j.sense_id === senseId);
+        if (!job) return;
+        if (job.status === 'running') {
+          showJob('running', '生成中… (' + job.args.join(' ') + ')');
+        } else {
+          clearInterval(jobTimer); jobTimer = null;
+          showJob(job.status,
+            (job.status === 'done' ? '✓ 生成完成, 刷新载入' : '✗ 生成失败: ')
+            + (job.status === 'done' ? '' : job.tail.split('\n').pop()));
+          if (job.status === 'done') setTimeout(() => location.reload(), 1200);
+        }
+      }, 5000);
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const bar = document.getElementById('job-bar');
+      if (bar && bar.dataset.active === 'running') { showJob('running', '生成中…'); pollJobs(); }
+    });
   </script>
 </body>
 </html>

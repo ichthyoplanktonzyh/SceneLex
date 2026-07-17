@@ -1,0 +1,33 @@
+{# 共用组件 (Jinja macro)。页面通过
+   {% from "_macros.html" import job_bar %} 引入。 #}
+
+{% macro job_bar(job, label='生成中…') %}
+<div id="job-bar" class="job-bar"
+     {% if job and job.status == 'running' %}data-active="running"{% else %}hidden{% endif %}>
+  <span>{% if job %}{{ label }} ({{ job.args|join(' ') }}){% endif %}</span>
+</div>
+{% endmacro %}
+
+{% macro reason_chip(item) %}
+{% if item.reason == 'dangling_reference' %}
+<span class="chip problem">悬空引用</span>
+{% else %}
+<span class="chip ok">高频词</span>
+{% endif %}
+{% endmacro %}
+
+{% macro pagination(page, pages, q) %}
+{% if pages > 1 %}
+<nav class="pager">
+  {% if page > 1 %}<a href="?page={{ page - 1 }}&q={{ q }}">‹ 上一页</a>{% endif %}
+  {% for p in range(1, pages + 1) %}
+    {% if p == page %}<span class="cur">{{ p }}</span>
+    {% elif p <= 2 or p > pages - 2 or (p - page)|abs <= 2 %}
+    <a href="?page={{ p }}&q={{ q }}">{{ p }}</a>
+    {% elif p == 3 or p == pages - 2 %}<span class="gap">…</span>
+    {% endif %}
+  {% endfor %}
+  {% if page < pages %}<a href="?page={{ page + 1 }}&q={{ q }}">下一页 ›</a>{% endif %}
+</nav>
+{% endif %}
+{% endmacro %}

@@ -22,7 +22,9 @@
   如 household / child / indoor-home）；多片段拼贴的 transfer 场景可用 mixed；
   五个场景之间尽量选取不同的表面组合；
 - YAML 无引号标量内不得出现 ASCII `": "`（用全角冒号"："），以引号开头的标量必须整体加引号或用块标量；
-- 每个场景配 1–2 个 learning_tasks，类型从 schema 枚举中选。
+- 每个场景配 1–2 个 learning_tasks，类型从 schema 枚举中选；`choices` 只在
+  确有选项时填写（每项一个字符串，含 "A: xxx" 形式时整体加引号），没有选项
+  就完全省略该字段，禁止写空数组 `[]`。
 
 # 场景 JSON Schema（每个场景必须通过此校验）
 

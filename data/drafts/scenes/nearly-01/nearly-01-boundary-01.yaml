@@ -1,0 +1,40 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: nearly-01-boundary-01
+sense_ref: nearly-01
+scene_type: boundary
+contrast_target: completely-01
+contrast_relation: degree_neighbor
+title: 最后一格与零差距
+synopsis: 加热炉上的温度计从低于30度逐渐升温，指针几乎碰到30度刻度线但未重合（可以称nearly 30）；当指针完全对齐刻度时，状态变为completely。
+storyboard:
+  - beat: 1
+    visual: 实验室。一个带指针的圆盘温度计固定在加热炉上方，指针当前指向28°C。刻度30°C有明显标记。
+    audio: (加热炉低鸣声)
+    purpose: 建立目标参照（30°C刻度）和当前状态（远未达到），让观众理解尺度。
+  - beat: 2
+    visual: 指针缓慢向右移动，从28°C到29°C，再接近30°C。指针尖端离刻度线越来越近。
+    audio: (轻轻的嗡鸣)
+    purpose: 展现接近过程，积累感知。
+  - beat: 3
+    visual: 指针尖端停在距30°C刻度线约1毫米处。指针与刻度之间可见一小段空隙。
+    audio: "Nearly thirty degrees."
+    purpose: 在差距极小（但存在）的临界点出现目标词，检验边界条件。
+  - beat: 4
+    visual: 温度继续微升，指针尖端终于与30°C刻度线重合，完全对齐，没有任何空隙。
+    audio: "Now it's exactly thirty – not nearly anymore, but completely."
+    purpose: 展示零差距状态，对比指出此时应用 completely（或 exactly），nearly不再适用。
+  - beat: 5
+    visual: 分屏并置：左侧指针离刻度还有1毫米（nearly），右侧指针与刻度对齐（completely）。
+    audio: "That tiny gap is the boundary between nearly and completely."
+    purpose: 明确边界——只要有可视间隙，nearly成立；一旦消失，强制切换为completely。
+learning_tasks:
+  - type: transfer_judgment
+    prompt: 播放三幅画面（沙漏上端还有一粒沙/体重秤显示69.9kg目标是70kg/竞赛选手距终点0.5米），判断哪一幅处于“nearly”与“completely”的边界附近。
+  - type: produce
+    prompt: 展示一个进度条在99%状态（有1%空白），引导学习者说出“It's nearly finished.”对比100%时说出“It's completely finished.”
+surface:
+  domain: scientific-experiment
+  participant_type: adult
+  setting: indoor-lab

@@ -1,6 +1,10 @@
 {% extends "base.html" %}
+{% from "_macros.html" import job_bar %}
 {% block title %}{{ sense_id }} · SceneLex 审核工作台{% endblock %}
+{% block body_attrs %} data-sense="{{ sense_id }}"{% endblock %}
 {% block content %}
+
+{{ job_bar(job) }}
 
 <div class="sense-layout">
 
@@ -72,6 +76,18 @@
     <ul>{% for e in sense.errors %}<li>{{ e }}</li>{% endfor %}</ul>
   </div>
   {% endif %}
+
+  {% if sense.source == 'draft' %}
+  <button class="ghost" onclick="toggleEdit('edit-sense')">编辑词义草稿</button>
+  <div class="editor" id="edit-sense" hidden>
+    <textarea id="ta-sense" spellcheck="false">{{ sense.raw }}</textarea>
+    <div class="editor-bar">
+      <button class="promote small"
+        onclick="saveDraft('{{ sense.path }}', 'ta-sense', 'st-sense')">保存</button>
+      <span class="save-status" id="st-sense"></span>
+    </div>
+  </div>
+  {% endif %}
   {% else %}
   <p class="muted">该义项尚无词义文档（可能只有场景草稿或悬空引用）。</p>
   {% endif %}
@@ -80,6 +96,24 @@
   <div class="actions">
     <button class="promote" onclick="promote('{{ sense_id }}', this)">审核通过 → 入库 (promote)</button>
     <p class="hint">promote 会在隔离目录跑全量校验，通过后才原子入库。</p>
+  </div>
+  {% endif %}
+
+  {% if sense %}
+  <div class="actions gen">
+    <h3>生成动作</h3>
+    <div class="gen-row">
+      <select id="add-type">
+        {% for t in SCENE_TYPES %}
+        <option value="{{ t }}">{{ SCENE_TYPE_LABELS[t] }}</option>
+        {% endfor %}
+      </select>
+      <button class="ghost" onclick="redraft('{{ sense_id }}', document.getElementById('add-type').value)">增补场景</button>
+    </div>
+    {% if not has_published_scenes %}
+    <button class="ghost danger" onclick="if(confirm('整组重起草会覆盖同名草稿, 确认?')) redraft('{{ sense_id }}', null)">整组重起草</button>
+    {% endif %}
+    <p class="hint">生成在后台运行 (可能十几分钟)，完成后自动刷新。</p>
   </div>
   {% endif %}
   <div id="promote-output" class="promote-output" hidden><pre></pre></div>
@@ -145,9 +179,24 @@
 
     <footer>
       <span class="path">{{ entry.path }}</span>
-      <button class="ghost" onclick="toggleRaw('raw-{{ loop.index }}-{{ t }}', this)">查看 YAML</button>
+      <span>
+        {% if entry.source == 'draft' %}
+        <button class="ghost" onclick="toggleEdit('edit-{{ loop.index }}-{{ t }}')">编辑</button>
+        {% endif %}
+        <button class="ghost" onclick="toggleRaw('raw-{{ loop.index }}-{{ t }}', this)">查看 YAML</button>
+      </span>
     </footer>
     <pre class="raw" id="raw-{{ loop.index }}-{{ t }}" hidden>{{ entry.raw }}</pre>
+    {% if entry.source == 'draft' %}
+    <div class="editor" id="edit-{{ loop.index }}-{{ t }}" hidden>
+      <textarea id="ta-{{ loop.index }}-{{ t }}" spellcheck="false">{{ entry.raw }}</textarea>
+      <div class="editor-bar">
+        <button class="promote small"
+          onclick="saveDraft('{{ entry.path }}', 'ta-{{ loop.index }}-{{ t }}', 'st-{{ loop.index }}-{{ t }}')">保存</button>
+        <span class="save-status" id="st-{{ loop.index }}-{{ t }}"></span>
+      </div>
+    </div>
+    {% endif %}
   </article>
   {% endfor %}
   {% endif %}

@@ -1,0 +1,63 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: filthy-01-counter-01
+sense_ref: filthy-01
+scene_type: counterexample
+contrast_target: squalid-01
+contrast_relation: overlaps
+surface:
+  domain: wilderness
+  participant_type: adult
+  setting: outdoor-forest
+
+title: 破败不等于肮脏
+synopsis: >
+  一座被废弃的林间木屋，屋顶漏水，墙壁破损。它看起来破旧不堪（squalid），
+  但内部相对干净，没有大量污物堆积。结论：不能仅凭“破败”推断“污秽”。
+
+storyboard:
+  - beat: 1
+    visual: >
+      远景：茂密森林中一座木屋，屋顶有明显破洞，木板墙体腐朽歪斜。
+      看起来很破败。
+    audio: "(风吹过树叶的声音，乌鸦叫声)"
+    purpose: 建立 “squalid”（破败）的典型视觉特征：失修、贫困、破旧。
+
+  - beat: 2
+    visual: >
+      镜头推进木屋内部。屋内家具简陋且破损，但桌子上只有一层薄灰，
+      地面是干净的泥地，没有垃圾、油污或排泄物。
+    audio: null
+    purpose: 揭示内部真相：虽然整体环境破败，但核心条件“大量、令人厌恶的污物”并不满足。
+
+  - beat: 3
+    visual: >
+      人物（调查员）走进屋内，环视四周。他/她看了看墙壁的裂缝，
+      摸了摸满是灰尘的桌面（手上几乎没有沾上什么），然后咳嗽了一声。
+    audio: null
+    purpose: 通过人物的探查动作，进一步证实该环境“污物不足”。
+
+  - beat: 4
+    visual: 调查员转向窗外的阳光，拍了拍手，下结论。
+    audio: "It's squalid, sure. But it's not filthy. There's no grime, no muck."
+    purpose: >
+      明确区分 squalid（破败/贫困）和 filthy（极脏）。指出一个常见的错误推理：
+      看见破败就自动认为肮脏。此处人物通过指出“没有污垢”来切断此推理。
+
+learning_tasks:
+  - type: transfer_judgment
+    prompt: >
+      展示一张图片：一个被完全淤泥覆盖的崭新豪华浴缸。
+      问：“这个浴缸是 filthy 吗？它是 squalid 吗？为什么？”
+    expected_answer: 它是 filthy（大量令人厌恶的污泥），但不是 squalid（浴缸本身并不破败/贫困）。
+    scoring_note: 考察对 overlaps 关系的理解：两个词可以同时成立，但针对不同属性。
+  - type: contrast_choice
+    prompt: 播放一段视频：一个流浪汉在公园长椅上睡觉，衣服破旧但干净。问：“以下哪个词最适合描述他的状态？”
+    choices:
+      - Filthy
+      - Squalid
+      - Both
+      - Neither
+    expected_answer: Neither (或者 Squalid 勉强可以，但不能是 Filthy；此处倾向于 Neither，因为破旧不一定脏，且环境并非绝对贫困)

@@ -1,0 +1,66 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: filthy-01-boundary-01
+sense_ref: filthy-01
+scene_type: boundary
+contrast_target: grimy-01
+contrast_relation: overlaps
+surface:
+  domain: household-repair
+  participant_type: adult
+  setting: indoor-garage
+
+title: 油腻的扳手与干结的泥土
+synopsis: >
+  一把扳手上嵌满了擦不掉的黑色油垢（grimy），一块毛巾上沾满了干结的厚泥浆（filthy）。
+  展示同一个物体可以同时成为两者的边界案例。
+
+storyboard:
+  - beat: 1
+    visual: >
+      特写：一只手里拿着一把老旧的金属扳手。扳手表面不是平滑的，而是布满了
+      嵌入纹理缝隙的黑色油垢。用破布擦拭，擦掉后纹理里仍有黑线。
+    audio: "(摩擦声)"
+    purpose: 建立 “grimy” 的典型特征：污垢是“嵌入表面”或“形成薄层”，难以被简单擦除。
+
+  - beat: 2
+    visual: >
+      另一只手拿起一块旧毛巾。毛巾上沾满了干结的褐色泥土，
+      厚到改变了毛巾的质地，看起来像块硬板。
+    audio: null
+    purpose: 建立 “filthy” 的典型边界附近案例：污物是“堆积的、整体覆盖的”，而非嵌入的。
+
+  - beat: 3
+    visual: >
+      分屏：左边是放大的扳手纹理，右边是毛巾上的泥块。
+      字幕打出词：Grimy / Filthy
+    audio: null
+    purpose: 并置两者，让学习者直观感受到“嵌入式薄层”与“堆积式块状”的差异。
+
+  - beat: 4
+    visual: >
+      切换镜头：那把沾满油垢的扳手，又被放进一堆油腻的零件箱里，
+      整体看起来又脏又破。镜头拉远，显示一个非常肮脏的、长满厚重油垢和
+      铁锈的机械部件。
+    audio: "Is that part filthy, or is it grimy?"
+    purpose: 提出边界问题，引入真值判断的灰色地带。
+
+  - beat: 5
+    visual: > 
+      特写：那堆机械零件上，既有嵌入纹理的油垢（grimy），又有堆积的厚油泥（filthy）。
+      镜头在一个零件前停下，该零件表面一半被厚油泥覆盖（filthy），
+      一半裸露出嵌着油垢的金属（grimy）。
+    audio: "It can be both. The grime is inside the metal. The filth is caked on top."
+    purpose: >
+      揭示两者可以共现，并给出一个诊断性区分框架：“嵌入 vs. 堆积”。
+      从而定义 filthy 在这个边界案例中的适用范围。
+
+learning_tasks:
+  - type: transfer_judgment
+    prompt: 展示一张图片：一个被雨水冲刷过的石阶，表面很滑，但只有薄薄一层青苔和泥土。问：“这个石阶是 grimy 还是 filthy？”
+    expected_answer: 更接近于 grimy（污垢呈薄层嵌入，未形成令人厌恶的堆积）。
+  - type: produce
+    prompt: 展示一段无声短片：一个孩子的手上沾满了五颜六色的颜料和泥巴，厚厚一层。引导学习者说出：“His hands are filthy.”
+    scoring_note: 只要说出与 “filthy” 相关的表达即可，鼓励主动产出。

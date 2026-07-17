@@ -1,0 +1,81 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: filthy-01-transfer-01
+sense_ref: filthy-01
+scene_type: transfer
+transfer_dimensions:
+  - participant_type
+  - setting
+  - source_of_filth
+surface:
+  domain: mixed
+  participant_type: mixed
+  setting: mixed
+
+title: 污秽的形态
+synopsis: >
+  两个表面完全不同的情境（废弃工厂与宠物店），
+  但都共享“被大量污物覆盖且令人厌恶”的核心。最终并置，强迫抽象。
+
+storyboard:
+  - beat: 1
+    visual: >
+      废弃工厂内部。地面上覆盖着厚厚的黑色油泥和污水，墙壁上挂满了
+      蜘蛛网和尘土板结物。空气中弥漫着刺鼻的气味。
+      （通过人物的干呕动作外化气味。）
+    audio: "(滴水声，工业低频噪音)"
+    purpose: 迁移点一：环境（factory）、污物来源（industrial waste）。验证概念在非居家环境下的通用性。
+
+  - beat: 2
+    visual: >
+      一个工人（穿着防护服）走进来，他小心地迈过一滩黑水，
+      靴子上沾满了粘稠的油泥。他皱着眉头，检查设备上的油垢层。
+    audio: null
+    purpose: 参与者和动作改变。强调“肉眼可见的大量污物”仍然是核心证据。
+
+  - beat: 3
+    visual: >
+      工人用戴着手套的手摸了一下管道上的油垢，结果手套上沾了一大块。
+      他把手套重重地拍在旁边的垃圾桶上。
+    audio: "This place is filthy. We need a hazmat team."
+    purpose: 在新场景中正式命名，使用高频搭配 “filthy” 来描述地方。
+
+  - beat: 4
+    visual: >
+      （切换）明亮的宠物店一角。一个狗笼底部堆满了没有清理的报纸和排泄物。
+      小狗就趴在旁边，身上也沾到了粪便。
+    audio: "(小狗低低的呜咽声)"
+    purpose: 迁移点二：参与者（动物+笼具）、污物来源（排泄物）。概念进一步剥离环境。
+
+  - beat: 5
+    visual: >
+      顾客（人物）过来，看到这个笼子和里面的小狗，先是一愣，
+      然后立刻捂着鼻子后退，露出厌恶的表情。
+    audio: null
+    purpose: 通过外部的厌恶反应（而非直接评价）来再次确认 filthy 的核心情感。
+
+  - beat: 6
+    visual: >
+      顾客对店员说话，语气严肃。
+    audio: "This cage is filthy. You need to clean it immediately."
+    purpose: 在新领域（宠物店）使用目标词，覆盖了 “filthy + (place/object)” 的句法。
+
+  - beat: 7
+    visual: >
+      快速并置三个画面：a) 油污覆盖的厨房灶台，b) 充满油泥的工厂地板，c) 脏污的狗笼。
+      每个画面停留0.5秒，同时重复播放音频。
+    audio: "Filthy. Filthy. Filthy."
+    purpose: 多画面并置+统一声音，逼迫学习者抽象出“大量令人厌恶的污物”这一核心结构。
+
+learning_tasks:
+  - type: transfer_judgment
+    prompt: >
+      播放三段新短片：1）喷泉池底有很多落叶和水渍；2）一头河马在泥浆里打滚，看起来很快乐；
+      3）一个病人的床单上有大片血迹和污渍。问：“哪段短片中描述的环境/对象最符合 ‘filthy’？”
+    expected_answer: 第三段（血迹和污渍）。
+    scoring_note: 考察学习者是否能排除“少量污渍”和“快乐情绪”的干扰。
+  - type: produce
+    prompt: 播放一段无声短片：一个孩子在雨后的泥坑里跳，弄得满身都是湿泥巴，然后得意地朝妈妈笑。引导学习者说出：“He looks filthy / His clothes are filthy / He is filthy.”
+    scoring_note: 只要产出包含 “filthy” 的合理句子即可。

@@ -1,0 +1,49 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: nearly-01-contrast-01
+sense_ref: nearly-01
+scene_type: contrast
+contrast_target: almost-01
+contrast_relation: overlaps
+title: 数值接近与心理修辞
+synopsis: 两段并置：跑道上选手离终点线1米（可测量接近）；客厅里朋友说“almost ready”但仍在穿鞋（抽象状态）。随后展示一个可同时使用nearly/almost的共现场景。
+storyboard:
+  - beat: 1
+    visual: 田径场。选手A冲刺，离终点线白线还有约1米。镜头特写他的脚与线的距离。
+    audio: (喘气声，观众欢呼)
+    purpose: 建立可测量的接近——距离明确，观众能目测差1米。
+  - beat: 2
+    visual: 选手A跨过终点线后，慢放定格在脚离线1米那一刻。画外音给出。
+    audio: "He is nearly there – just one meter to go."
+    purpose: 用“nearly”命名量化接近，强调数值差。
+  - beat: 3
+    visual: 切换。客厅里，人物B站在镜子前系领带，已经穿好裤子衬衫，手里拿着外套，低头看手机时间。
+    audio: "Almost ready... just need my jacket."
+    purpose: 建立抽象的接近——准备状态不可量化，但同样表示“接近完成”。
+  - beat: 4
+    visual: 人物B穿上外套，拉上拉链，微笑。
+    audio: "Now I'm ready. That was almost ready before."
+    purpose: 用“almost”命名抽象接近，强调其适用于非数值语境。
+  - beat: 5
+    visual: 分屏并置：左侧选手离终点1米（量化接近），右侧人物B在镜前系领带（抽象接近）。
+    audio: "Nearly... Almost... Both mean close, but nearly leans on numbers."
+    purpose: 对称呈现差异轴——nearly更常用在可测量，almost更灵活。
+  - beat: 6
+    visual: 一个水壶注水到离杯口2毫米处（与原型相同）。同一个画面下出现文字气泡“nearly full”和“almost full”。
+    audio: "When the gap is tiny, you can say nearly or almost. They overlap."
+    purpose: 展示共现场景，防止学习者误以为二选一；验证overlaps关系。
+learning_tasks:
+  - type: contrast_choice
+    prompt: 播放两段新短片（货架剩下最后一件商品/演讲者说“I’m almost done”但还有5页PPT），判断更适合用nearly还是almost。
+    choices:
+      - nearly
+      - almost
+      - both
+    expected_answer: 货架场景可用nearly或almost，演讲场景更倾向almost（抽象）
+  - type: transfer_judgment
+    prompt: 一个温度计显示29.9°C，问“Is it nearly or almost 30°C?”解释原因。
+surface:
+  domain: sports
+  participant_type: mixed
+  setting: mixed

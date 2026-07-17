@@ -266,7 +266,38 @@ def validate_repository(data_root: Path | None = None) -> ValidationResult:
         result.coverage[sense_ref][scene_type] += 1
 
     _check_surface_diversity(result, data_root)
+    _check_dictionary_facts(result, data_root)
     return result
+
+
+def _check_dictionary_facts(result: ValidationResult, data_root: Path) -> None:
+    """与本地词典缓存交叉核对 pos (软校验; 无缓存则跳过, 不触网)。"""
+    try:
+        import dictionary
+    except ImportError:
+        return
+    # 词典 pos 标签与本库 pos 的对应
+    pos_aliases = {
+        "adj": {"adjective"}, "adv": {"adverb"}, "prep": {"preposition"},
+        "conj": {"conjunction"}, "pron": {"pronoun"}, "det": {"determiner"},
+        "intj": {"interjection"},
+    }
+    for path, document in result.senses.items():
+        word, pos = document.get("word"), document.get("pos")
+        if not word or not pos:
+            continue
+        facts = dictionary.cached_facts(str(word))
+        if not facts or not facts["pos_senses"]:
+            continue
+        dict_pos = set(facts["pos_senses"])
+        for abbr, fulls in pos_aliases.items():
+            if abbr in dict_pos:
+                dict_pos |= fulls
+        if str(pos) not in dict_pos:
+            result.warnings.append(
+                f"{_location(path, data_root)}: pos '{pos}' 不在词典记录的"
+                f"词性中 ({', '.join(sorted(set(facts['pos_senses'])))})"
+            )
 
 
 def _check_surface_diversity(result: ValidationResult, data_root: Path) -> None:

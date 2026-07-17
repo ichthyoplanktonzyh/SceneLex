@@ -1,0 +1,40 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: nearly-01-counter-01
+sense_ref: nearly-01
+scene_type: counterexample
+contrast_target: completely-01
+contrast_relation: different_dimension
+title: 满的 ≠ nearly 满
+synopsis: 一人往杯里倒水直到水与杯口齐平，声称“nearly full”；画外音纠正“那是completely full”。再展示一个真正nearly full的对照，说明“水满”的证据不足以支持nearly。
+storyboard:
+  - beat: 1
+    visual: 厨房。一个人站在水槽前，拿着水壶往玻璃杯里倒水。杯壁透明，有满杯标记线。
+    audio: (水流声)
+    purpose: 建立目标参照——满杯位置。
+  - beat: 2
+    visual: 水快速上升，一直倒到水面与杯口完全齐平，没有空隙。人物放下水壶。
+    audio: "There, it's nearly full."
+    purpose: 制造错误判断：观察者以为“接近满”但实际已满，为反例提供错误证据。
+  - beat: 3
+    visual: 画面定格，画外音出现。镜头推近水面与杯口的接触线。
+    audio: "No, that's not nearly full – it's completely full. Nearly means close but not there."
+    purpose: 明确否定，指出差距为零时用 completely，而非 nearly。
+  - beat: 4
+    visual: 同一个杯子被倒掉一半水，然后重新倒水。这次在离杯口5毫米处停下。水面与杯口之间有明显空隙。
+    audio: "This is nearly full – see the gap?"
+    purpose: 提供正面对照，展示真正的nearly full，强调“空隙”是关键证据。
+  - beat: 5
+    visual: 分屏并置：左侧错误示例（水面齐杯口），右侧正确示例（水面有间隙）。
+    audio: "Can't tell if it's nearly by just looking at the top – you need to check if there's a gap."
+    purpose: 总结反例教学：不能仅凭“杯口附近”推断nearly，必须确认gap存在。
+learning_tasks:
+  - type: transfer_judgment
+    prompt: 播放三段短片（沙子堆到桶口/颜料刷到画纸边缘/进度条99.9%），判断哪段不能称为nearly full。
+  - type: contrast_choice
+    prompt: 对每段短片，选择是nearly还是completely。
+surface:
+  domain: household-chores
+  participant_type: adult
+  setting: indoor-kitchen
