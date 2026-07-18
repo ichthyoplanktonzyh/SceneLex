@@ -1,0 +1,77 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: hesitant-01-proto-01
+sense_ref: hesitant-01
+scene_type: prototype
+surface:
+  domain: dining
+  participant_type: adult
+  setting: indoor-restaurant
+
+title: 菜单前的犹豫
+synopsis: >
+  年轻人在餐厅仔细翻阅菜单，在两道菜之间反复比较，手指悬停、目光游移，
+  迟迟无法决定，最后同伴点破他的犹豫。
+
+storyboard:
+  - beat: 1
+    visual: >
+      两人座餐厅。年轻人翻开菜单，快速浏览各页，表情松弛但认真。
+      菜单上的菜品图片色彩鲜艳。
+    audio: "(轻柔的背景音乐)"
+    purpose: 建立决策情境：人物面临点餐选择；一开始没有犹豫信号，为后续对比铺垫。
+
+  - beat: 2
+    visual: >
+      特写菜单页面。年轻人的食指在两道菜（意面与沙拉）之间来回移动，
+      先指向左又滑向右，再倒回左边。他嘴唇微张，发出“Uhm…”
+      目光交替注视两道菜的图片和价格。
+    audio: "Uhm…"
+    purpose: 外化犹豫第一层：手指悬停+来回扫视+填充词——明确显示选择不确定
+
+  - beat: 3
+    visual: >
+      服务员走近桌边。年轻人抬头看了服务员一眼，又低头看菜单，
+      深吸一口气但没有说出话来，嘴巴闭合又张开。
+    audio: "Are you ready to order?"
+    purpose: 外部压力介入，人物暂停进一步加深——深吸气后仍不出声，强化不确定信号
+
+  - beat: 4
+    visual: >
+      同伴侧头看着年轻人，微笑着对服务员摇摇头，然后转向年轻人：
+    audio: "He‘s hesitant. Give him another minute."
+    purpose: 在观众已确认犹豫行为后，用目标词命名；同伴说出“hesitant”为总结，而非内心直述
+
+  - beat: 5
+    visual: >
+      年轻人最终合上菜单，对服务员说了一句，表情放松。
+    audio: "I‘ll go with the pasta."
+    purpose: 人物做出决定，但行动本身不是定义的一部分；犹豫状态已在此之前建立
+
+teaching_evidence:
+  - claim: 人物面临点餐选择（决策情境）
+    beats: [1]
+  - claim: 出现可观察的暂停（手指悬停、目光来回、填充词、深吸气不出声）
+    beats: [2, 3]
+  - claim: 暂停源于内在不确定（而非外部障碍或身体问题）
+    beats: [2, 3]
+  - claim: 目标词被用于命名该状态
+    beats: [4]
+
+learning_tasks:
+  - type: scene_recognition
+    prompt: Listen to "hesitant" and choose the matching scene from four short clips.
+    choices:
+      - "A: A person quickly orders without pause"
+      - "B: A person looks at menu with finger hovering and uhs"
+      - "C: A person pushes menu away and refuses to order"
+      - "D: A person slowly considers but then changes mind multiple times"
+    expected_answer: B
+  - type: listen_and_match
+    prompt: 'Play audio "He is hesitant to pick a dish." Select which video matches.'
+    choices:
+      - "A: A person points decisively and says 'this'"
+      - "B: A person stares at two dishes, fingers moving back and forth"
+    expected_answer: B

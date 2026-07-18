@@ -1,0 +1,10 @@
+# 全库统一的渲染风格（内容/风格分离）
+# 计划 (render-plan) 里的 prompt 只写内容；渲染与 show 预览时把本文件追加到
+# 每个 beat 的提示词末尾。修改本文件无需重编译计划，下次渲染即生效。
+positive: >-
+  flat illustration style, storybook art, clean bold outlines, soft warm
+  lighting, clear readable facial expressions and body language, simple
+  uncluttered composition
+negative: >-
+  photorealistic, text, watermark, caption, speech bubble, subtitles,
+  letters, extra limbs, deformed hands, blurry, cluttered background

@@ -161,13 +161,13 @@ def _load_env_file() -> dict[str, str]:
     return env
 
 
-# 进行中的重起草任务: sense_id -> {proc, log, args}. 进程内状态,
-# 服务重启即失——产物在文件里, 状态本身不值得持久化。
+# 进行中的后台任务 (重起草/批量/审核): job_key -> {proc, log, args, sense_id}.
+# 进程内状态, 服务重启即失——产物在文件里, 状态本身不值得持久化。
 JOBS: dict[str, dict[str, Any]] = {}
 
 
-def _job_status(sense_id: str) -> dict[str, Any] | None:
-    job = JOBS.get(sense_id)
+def _job_status(job_key: str) -> dict[str, Any] | None:
+    job = JOBS.get(job_key)
     if not job:
         return None
     code = job["proc"].poll()
@@ -176,12 +176,53 @@ def _job_status(sense_id: str) -> dict[str, Any] | None:
     except OSError:
         tail = ""
     return {
-        "sense_id": sense_id,
+        "sense_id": job.get("sense_id", job_key),
         "args": job["args"],
         "status": "running" if code is None
         else ("done" if code == 0 else "failed"),
         "tail": tail,
     }
+
+
+def _sense_busy(sense_id: str) -> bool:
+    """同一义项的生成与审核任务互斥, 避免审核到一半的文件被改写。"""
+    for key in (sense_id, f"review:{sense_id}"):
+        status = _job_status(key)
+        if status and status["status"] == "running":
+            return True
+    return False
+
+
+def _draft_review_files(sense_id: str) -> list[Path]:
+    """与 review.py 的审核对象一致: 词义草稿 + 场景草稿 (忽略 _unparsed)。"""
+    files = []
+    sense = ROOT / "data" / "drafts" / "senses" / f"{sense_id}.yaml"
+    if sense.exists():
+        files.append(sense)
+    scene_dir = ROOT / "data" / "drafts" / "scenes" / sense_id
+    if scene_dir.exists():
+        files += [p for p in sorted(scene_dir.glob("*.yaml"))
+                  if not p.name.startswith("_")]
+    return files
+
+
+def _load_review(sense_id: str) -> dict[str, Any] | None:
+    """读取审核记录并标注时效性。审核是可选参考, 不参与门禁。"""
+    import review
+    path = review.record_path(sense_id)
+    if not path.exists():
+        return None
+    try:
+        record = yaml.safe_load(path.read_text(encoding="utf-8"))
+    except yaml.YAMLError:
+        return None
+    if not isinstance(record, dict):
+        return None
+    files = _draft_review_files(sense_id)
+    record["fresh"] = bool(files) and \
+        record.get("content_digest") == review.content_digest(files)
+    record["path"] = str(path.relative_to(ROOT))
+    return record
 
 
 # ------------------------------------------------------------------ JSON API
@@ -238,9 +279,8 @@ def api_file_save(payload: dict = Body(...)) -> dict[str, Any]:
 @app.post("/api/redraft/{sense_id}")
 def api_redraft(sense_id: str, payload: dict = Body(default={})) -> dict[str, Any]:
     """后台重起草整组或增补单场景 (LLM 调用可达十几分钟, 不能同步等)。"""
-    status = _job_status(sense_id)
-    if status and status["status"] == "running":
-        raise HTTPException(409, f"{sense_id} 已有生成任务在运行")
+    if _sense_busy(sense_id):
+        raise HTTPException(409, f"{sense_id} 已有任务在运行")
     args = ["scenes", sense_id]
     add_type = payload.get("add")
     if add_type:
@@ -301,6 +341,112 @@ def api_generate(payload: dict = Body(...)) -> dict[str, Any]:
     )
     JOBS["_batch"] = {"proc": proc, "log": log.name, "args": args}
     return {"status": "running", "words": words}
+
+
+def _load_batch_state() -> dict[str, Any]:
+    """draft.py batch 的断点状态 (每阶段完成即落盘, 全部成功后自清理)。"""
+    path = ROOT / "data" / "drafts" / "batch-state.json"
+    if not path.exists():
+        return {}
+    try:
+        state = json.loads(path.read_text(encoding="utf-8"))
+        return state if isinstance(state, dict) else {}
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def _teachable_total(word: str, entry: dict[str, Any]) -> int:
+    """离线取该词义项总数: 词典缓存优先, 无缓存时用状态里已枚举的键。"""
+    try:
+        import dictionary
+        if dictionary._cache_path(word).exists():
+            n = len(dictionary.teachable_senses(word))
+            if n:
+                return n
+    except Exception:
+        pass
+    keys = set(entry.get("senses", {})) | set(entry.get("scenes", {}))
+    return max(len(keys), 1)
+
+
+@app.get("/api/batch/progress")
+def api_batch_progress() -> dict[str, Any]:
+    """批量生成进度: 任务状态 + batch-state.json 的逐义项阶段结果。"""
+    job = _job_status("_batch")
+    state = _load_batch_state()
+    running = bool(job and job["status"] == "running")
+    senses_only = bool(job and "--senses-only" in job["args"])
+
+    words: list[str] = []
+    if job:
+        words = [a for a in job["args"][1:] if not a.startswith("--")]
+    for w in state:
+        if w not in words:
+            words.append(w)
+
+    rows = []
+    done_stages = total_stages = 0
+    stages_per_sense = 1 if senses_only else 2
+    for word in words:
+        entry = state.get(word, {})
+        senses = entry.get("senses", {})
+        scenes = entry.get("scenes", {})
+        nums = [f"{i:02d}" for i in range(1, _teachable_total(word, entry) + 1)]
+        srow = []
+        for num in nums:
+            s, sc = senses.get(num), scenes.get(num)
+            if s == "failed" or sc == "failed":
+                status = "failed"
+            elif s == "done" and (sc == "done" or senses_only):
+                status = "done"
+            elif s == "done":
+                status = "scenes"
+            else:
+                status = "sense"
+            srow.append({"num": num, "status": status})
+            total_stages += stages_per_sense
+            done_stages += (1 if s == "done" else 0) \
+                + (0 if senses_only else (1 if sc == "done" else 0))
+        rows.append({"word": word, "senses": srow})
+
+    return {
+        "job": job, "running": running, "senses_only": senses_only,
+        "words": rows, "done_stages": done_stages,
+        "total_stages": total_stages,
+        "percent": round(100 * done_stages / total_stages)
+        if total_stages else 0,
+    }
+
+
+@app.get("/api/review/{sense_id}")
+def api_review_get(sense_id: str) -> dict[str, Any]:
+    """已有审核记录 (含时效性标注); 无记录时 record 为 null。"""
+    return {"sense_id": sense_id, "record": _load_review(sense_id)}
+
+
+@app.post("/api/review/{sense_id}")
+def api_review_run(sense_id: str) -> dict[str, Any]:
+    """后台运行模型审核 (可选质量参考, 不阻塞 promote)。"""
+    import re as _re
+    if not _re.fullmatch(r"[a-z][a-z_]*-\d{2}", sense_id):
+        raise HTTPException(400, f"非法义项 ID: {sense_id}")
+    if _sense_busy(sense_id):
+        raise HTTPException(409, f"{sense_id} 已有任务在运行")
+    if not _draft_review_files(sense_id):
+        raise HTTPException(400, f"{sense_id} 没有待审草稿")
+    log = tempfile.NamedTemporaryFile(
+        prefix=f"scenelex-review-{sense_id}-", suffix=".log", delete=False
+    )
+    env = {**os.environ, **_load_env_file()}
+    proc = subprocess.Popen(
+        [sys.executable, str(ROOT / "tools" / "review.py"), sense_id],
+        stdout=log, stderr=subprocess.STDOUT, env=env, cwd=ROOT,
+    )
+    JOBS[f"review:{sense_id}"] = {
+        "proc": proc, "log": log.name,
+        "args": ["review", sense_id], "sense_id": sense_id,
+    }
+    return {"sense_id": sense_id, "status": "running"}
 
 
 @app.post("/api/promote/{sense_id}")
@@ -457,6 +603,12 @@ def page_index(request: Request):
     lib = load_library()
     drafts = [row for row in lib["board"]
               if row["draft_scenes"] or (row["sense_source"] == "draft")]
+    for row in drafts:
+        record = _load_review(row["sense_id"])
+        row["review"] = None if not record else {
+            "verdict": record.get("verdict"),
+            "fresh": record.get("fresh"),
+        }
     return templates.TemplateResponse(request, "index.html", {
         "board": lib["board"], "drafts": drafts,
     })
@@ -499,6 +651,9 @@ def page_sense(request: Request, sense_id: str,
     sense_entry = lib["senses"].get(sense_id)
     if sense_entry and sense_entry["source"] == "draft":
         has_draft = True
+    jobs = [_job_status(sense_id), _job_status(f"review:{sense_id}")]
+    job = next((j for j in jobs if j and j["status"] == "running"), None) \
+        or next((j for j in jobs if j), None)
     return templates.TemplateResponse(request, "sense.html", {
         "sense_id": sense_id,
         "sense": sense_entry,
@@ -507,7 +662,8 @@ def page_sense(request: Request, sense_id: str,
         "has_published_scenes": any(
             e["source"] == "published" for e in scenes
         ),
-        "job": _job_status(sense_id),
+        "job": job,
+        "review": _load_review(sense_id) if has_draft else None,
     })
 
 

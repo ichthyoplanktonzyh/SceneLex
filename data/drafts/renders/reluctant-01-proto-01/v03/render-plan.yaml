@@ -1,0 +1,67 @@
+schema_version: '1.0'
+scene_ref: reluctant-01-proto-01
+spec_version: 2
+version: 3
+status: draft
+characters:
+- id: boy
+  description: a 14-year-old boy with short black hair, medium build, wearing a gray
+    T-shirt and jeans
+- id: mother
+  description: a 40-year-old woman with shoulder-length brown hair, average build,
+    wearing a simple blouse and pants
+setting:
+  description: a cozy living room with a sofa, a TV, and a game console
+beats:
+- beat: 1
+  prompt: close-up shot, {char:boy} sitting cross-legged on sofa, leaning forward,
+    holding game controller, excited expression, eyes locked on screen
+  negative: sad expression, bored, looking away, sighing, hesitation
+  audio:
+    type: sfx
+    text: video game sound effects
+  duration: 3
+- beat: 2
+  prompt: medium shot, {char:mother} standing at doorway, holding a tied trash bag,
+    placing it beside {char:boy}'s feet, pointing towards door with a firm expression
+  negative: boy smiling, boy jumping up, cheerful reaction
+  audio:
+    type: tts
+    text: Take out the trash. Now, please.
+    voice_hint: mother, firm but calm tone
+  duration: 4
+- beat: 3
+  prompt: close-up on {char:boy}, hands stop moving mid-game, shoulders slump, long
+    sigh with eyes still fixed on screen, fingers pressing controller buttons again
+  negative: smiling, cheerful, instantly dropping controller, getting up quickly
+  audio:
+    type: sfx
+    text: long sigh sound
+  duration: 3
+- beat: 4
+  prompt: wide shot, {char:boy} slowly putting down controller, getting up reluctantly,
+    bending to pick up trash bag with only two fingers, arm stretched far away, head
+    turned back to look at game screen
+  negative: fast movements, eager expression, picking bag normally, facing task directly
+  audio:
+    type: tts
+    text: Do I HAVE to?
+    voice_hint: teen boy, whiny reluctant tone
+  duration: 5
+- beat: 5
+  prompt: wide shot from behind, {char:boy} dragging feet towards door with tiny steps,
+    pausing mid-way to look back at game screen
+  negative: walking briskly, skipping, facing forward, looking ahead happily
+  audio:
+    type: silence
+  duration: 4
+- beat: 6
+  prompt: medium shot, {char:mother} shaking head with a slight smile, shrugging towards
+    camera as boy exits through doorway
+  negative: boy visible in frame smiling, mother frowning angrily, boy returning
+  audio:
+    type: tts
+    text: He's always so reluctant to leave his game.
+    voice_hint: mother, amused tone
+    contains_target_word: true
+  duration: 4

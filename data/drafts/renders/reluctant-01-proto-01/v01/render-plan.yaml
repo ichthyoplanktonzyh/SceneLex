@@ -1,0 +1,82 @@
+schema_version: '1.0'
+scene_ref: reluctant-01-proto-01
+spec_version: 2
+version: 1
+status: draft
+characters:
+- id: teen
+  description: A 14-year-old boy with short brown hair, medium build, wearing a blue
+    T-shirt and gray sweatpants. He is slouched on a couch playing video games.
+- id: mother
+  description: A woman in her 40s with long brown hair tied in a low ponytail, medium
+    build, wearing a white blouse and dark jeans. She has a firm but amused expression.
+setting:
+  description: A cozy living room with a beige sofa, a coffee table, a TV with a game
+    console, a wooden floor, and a front door visible in the background. A tied trash
+    bag sits on the floor near the entrance.
+beats:
+- beat: 1
+  prompt: '"{char:teen} sitting cross-legged on the couch in {setting}, leaning forward,
+    fully absorbed in playing a video game, excited expression, eyes fixed on the
+    screen. Medium shot."'
+  negative: showing reluctance or hesitation, looking away from game, sighing, slouching
+    in boredom
+  audio:
+    type: sfx
+    text: 'game sound effects: beeps and action sounds'
+  duration: 3
+- beat: 2
+  prompt: '"{char:mother} appears at the living room doorway holding a tied trash
+    bag, places it on the floor next to {char:teen}''s feet, points towards the door.
+    {char:teen} continues gaming, unaware or ignoring. Wide shot including both characters
+    and doorway."'
+  negative: teen immediately complying happily, smiling at mother, eager expression,
+    mother speaking gently
+  audio:
+    type: tts
+    text: Take out the trash. Now, please.
+    voice_hint: mother, firm and authoritative tone
+    contains_target_word: false
+  duration: 4
+- beat: 3
+  prompt: '"{char:teen} freezes mid-motion, shoulders slump, lets out a long sigh.
+    He remains still, eyes still glued to the screen, fingers pressing game controller
+    buttons twice. Close-up on upper body, showing facial expression and slump."'
+  negative: instant movement, cheerful expression, smiling, eager body language
+  audio:
+    type: sfx
+    text: long sigh of exasperation
+  duration: 3
+- beat: 4
+  prompt: '"{char:teen} slowly puts down the game controller, rises sluggishly, bends
+    down and picks up the trash bag with just two fingers, arm stretched out as far
+    as possible, head turned back to look at the TV screen. Medium shot capturing
+    full body motion and reluctance."'
+  negative: quick motions, full grip on bag, walking briskly, facing forward without
+    looking back, happy tone
+  audio:
+    type: tts
+    text: Do I HAVE to?
+    voice_hint: teen boy, whiny reluctant tone
+    contains_target_word: false
+  duration: 4
+- beat: 5
+  prompt: '"{char:teen} dragging his feet towards the door, taking very small steps,
+    halfway there he looks back over his shoulder at the game screen. Wide shot from
+    behind or side showing slow movement and backward glance."'
+  negative: fast walking, no backward glance, cheerful skipping, upright posture
+  audio:
+    type: silence
+  duration: 3
+- beat: 6
+  prompt: '"{char:teen} exits through the front door. {char:mother} behind him shakes
+    her head with a slight smile, then shrugs towards the camera. Medium shot on mother,
+    door slightly open."'
+  negative: mother angry or scolding, teen skipping out happily, teen showing no reluctance,
+    mother stern expression
+  audio:
+    type: tts
+    text: He's always so reluctant to leave his game.
+    voice_hint: mother, amused tone
+    contains_target_word: true
+  duration: 5

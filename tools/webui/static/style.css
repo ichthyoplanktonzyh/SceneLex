@@ -213,3 +213,24 @@ input.cand { width: 15px; height: 15px; }
 .pager .cur { padding: 4px 10px; border-radius: 6px; background: var(--accent);
   color: #fff; font-weight: 600; }
 .pager .gap { color: var(--muted); }
+
+/* review panel */
+.chip.warn { background: #fef3c7; color: #b45309; }
+.review-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 8px 0 4px; }
+.review-meta { font-size: 12px; color: var(--muted); }
+.fail-dims { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0; }
+.fail-dims:empty { display: none; }
+.review-issues { list-style: none; padding: 0; margin: 8px 0; }
+.review-issues li { border-left: 3px solid var(--line); padding: 4px 10px;
+  margin-bottom: 8px; font-size: 13px; }
+.review-issues li p { margin: 4px 0; }
+.review-issues .suggestion { color: var(--muted); }
+.review-summary { font-size: 13px; color: var(--muted); margin: 8px 0 4px; }
+
+/* batch progress panel */
+.bp-bar { height: 8px; border-radius: 4px; background: var(--line);
+  overflow: hidden; margin: 10px 0 14px; }
+.bp-fill { height: 100%; width: 0; background: var(--accent);
+  border-radius: 4px; transition: width .6s ease; }
+.bp-table td { vertical-align: top; }
+.bp-chips { display: flex; gap: 6px; flex-wrap: wrap; }

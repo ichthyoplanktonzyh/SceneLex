@@ -93,9 +93,42 @@
   {% endif %}
 
   {% if has_draft %}
+  <div class="actions review-box">
+    <h3>模型审核 <span class="hint-inline">可选参考，不阻塞入库</span></h3>
+    {% if review %}
+    <p class="review-head">
+      {% if not review.fresh %}<span class="chip warn">已过期（草稿在审核后被修改）</span>
+      {% elif review.verdict == 'pass' %}<span class="chip ok">✓ 通过</span>
+      {% else %}<span class="chip problem">✗ 未通过</span>{% endif %}
+      <span class="review-meta">{{ review.reviewed_at }} · {{ review.review_model }}</span>
+    </p>
+    <p class="fail-dims">
+      {% for k, v in (review.dimensions or {}).items() %}
+      {% if v != 'pass' %}<span class="chip problem">{{ k }}</span>{% endif %}
+      {% endfor %}
+    </p>
+    {% if review.issues %}
+    <ul class="review-issues">
+      {% for i in review.issues %}
+      <li>
+        <span class="chip {{ 'problem' if i.severity == 'major' else 'warn' }}">{{ i.severity }}</span>
+        <b>{{ i.file }}</b> <em>{{ i.dimension }}</em>
+        <p>{{ i.note }}</p>
+        {% if i.suggestion %}<p class="suggestion">→ {{ i.suggestion }}</p>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    <p class="review-summary">{{ review.summary }}</p>
+    {% endif %}
+    <button class="ghost" onclick="runReview('{{ sense_id }}', this)">
+      {{ '重新审核' if review else '运行模型审核' }}</button>
+    <p class="hint">审核在后台运行（几分钟），完成后自动刷新。</p>
+  </div>
+
   <div class="actions">
-    <button class="promote" onclick="promote('{{ sense_id }}', this)">审核通过 → 入库 (promote)</button>
-    <p class="hint">promote 会在隔离目录跑全量校验，通过后才原子入库。</p>
+    <button class="promote" onclick="promote('{{ sense_id }}', this)">入库 (promote)</button>
+    <p class="hint">promote 会在隔离目录跑全量校验，通过后才原子入库；模型审核为可选参考。</p>
   </div>
   {% endif %}
 

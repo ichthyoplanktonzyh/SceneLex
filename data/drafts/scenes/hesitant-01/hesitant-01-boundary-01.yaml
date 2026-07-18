@@ -1,0 +1,69 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: hesitant-01-boundary-01
+sense_ref: hesitant-01
+scene_type: boundary
+contrast_target: reluctant-01
+contrast_relation: overlaps
+surface:
+  domain: household
+  participant_type: child
+  setting: indoor-room
+
+title: 收玩具的不情愿，不是犹豫
+synopsis: >
+  孩子被要求收拾满地的玩具。他明显不情愿——皱眉、叹气、慢慢捡起一个又摔下。
+  动作虽慢，但并没有在“捡与不捡”之间摇摆，原因是“不想做”而非“不确定怎么做”。
+
+storyboard:
+  - beat: 1
+    visual: >
+      房间地板上散落着积木和玩偶。母亲站在门口，手指向地面。
+    audio: "Time to clean up. Now."
+    purpose: 建立行动要求——和孩子个人意愿冲突
+
+  - beat: 2
+    visual: >
+      孩子坐在地上，嘴巴撇成弯形，眉头紧锁，极慢地伸手拿起一只玩偶，
+      看了一眼又丢到旁边，没有用眼睛比较其它选择。
+    audio: "(重重的叹气声)"
+    purpose: 外化：动作慢但不伴探索性目光；皱眉和叹气表明情绪抗拒，而非认知不确定
+
+  - beat: 3
+    visual: >
+      孩子拿起一块积木，手指收紧又松开，就是不放回箱子里，
+      身体向后躺倒，眼神朝向天花板。
+    audio: "But whyyy..."
+    purpose: 进一步外化：拒绝行动，拖延，抱怨——典型的 reluctant 信号，没有犹豫性试探
+
+  - beat: 4
+    visual: >
+      静态画面：孩子的动作定格在“拿着积木但不动”的状态。
+      旁边浮现文字提示：这是 hesitate 吗？
+    audio: null
+    purpose: 触发学习者判断；此时暂停是“拖延”，不是“不确定”导致
+
+  - beat: 5
+    visual: >
+      分屏对照：左侧是本例孩子躺倒抱怨；右侧是原型场景中年轻人手指悬停菜单。
+      底部文字：He is reluctant. He knows what to do, but doesn‘t want to.
+    audio: "Same slow… different reason."
+    purpose: 明确边界：延缓行为的共同外化不足以判断 hesitant；必须看是否存在“方向不确定”的证据
+
+teaching_evidence:
+  - claim: 孩子表现慢、拖延、抱怨 —— 属于 reluctant 的证据
+    beats: [2, 3]
+  - claim: 没有犹豫特有的“在选项间来回比较”或“填充词”
+    beats: [2, 3]
+  - claim: 边界测试：慢≠hesitant；需要检查是否因不确定而暂停
+    beats: [4, 5]
+
+learning_tasks:
+  - type: transfer_judgment
+    prompt: >
+      Show a dog standing at a bath door, stops, looks back at the owner, then walks in.
+      Is the dog“s pause hesitant or reluctant? Point to clues.
+  - type: contrast_choice
+    prompt: 'Which of these scenes has enough evidence for hesitant? (A) child holds toy but looks around for where to put it; (B) child holds toy, frowns, drops it on floor.'

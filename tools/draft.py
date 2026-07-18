@@ -22,6 +22,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 import yaml
@@ -33,10 +34,6 @@ ROOT = Path(__file__).resolve().parent.parent
 PROMPTS = ROOT / "tools" / ".." / "prompts"
 DRAFTS = ROOT / "data" / "drafts"
 SENSE_ID = re.compile(r"^[a-z][a-z_]*-\d{2}$")
-
-# 用作 few-shot 的现有范例
-SENSE_EXAMPLES = ["messy-01", "reluctant-01"]
-SCENE_EXAMPLE_SENSE = "reluctant-01"
 
 SCENE_ORDER = ["prototype", "contrast", "counterexample", "boundary", "transfer"]
 SCENE_ABBR = {"prototype": "proto", "contrast": "contrast",
@@ -79,6 +76,28 @@ def resolve_sense_path(sense_id):
     return None
 
 
+def type_strategy(sense_path):
+    """按义项的 semantic_type 读取对应的场景表达策略片段。
+
+    起草不使用具体范例 few-shot (避免锚定表面选择);
+    类型策略是"语义—场景设计手册"在提示词中的落地。
+    """
+    try:
+        semantic_type = yaml.safe_load(read(sense_path)).get("semantic_type")
+    except yaml.YAMLError:
+        semantic_type = None
+    if not semantic_type:
+        print("⚠ 词义规格缺少 semantic_type, 无类型策略可注入", file=sys.stderr)
+        return "（该义项未声明 semantic_type，按五类职责的通用要求构造场景。）"
+    strategy = PROMPTS / "scene-strategies" / f"{semantic_type}.md"
+    if not strategy.exists():
+        print(f"⚠ 缺少策略片段 prompts/scene-strategies/{semantic_type}.md",
+              file=sys.stderr)
+        return (f"（semantic_type 为 {semantic_type}，策略片段尚未编写，"
+                "按五类职责的通用要求构造场景。）")
+    return read(strategy).strip()
+
+
 def existing_scenes(sense_id, scene_type=None):
     """收集正式库与草稿库中该义项的场景文件, 可按类型过滤。"""
     abbr = SCENE_ABBR.get(scene_type) if scene_type else None
@@ -114,16 +133,12 @@ def cmd_sense(args):
 
     template = read(PROMPTS / "sense-draft.md")
     schema = read(ROOT / "schema" / "word-sense.schema.json")
-    ex1 = read(ROOT / "data" / "senses" / f"{SENSE_EXAMPLES[0]}.yaml")
-    ex2 = read(ROOT / "data" / "senses" / f"{SENSE_EXAMPLES[1]}.yaml")
     import dictionary
     print(f"→ 获取 '{word}' 的词典事实 ...", file=sys.stderr)
     dict_block = dictionary.prompt_block(word, sense_num)
     total = dictionary.sense_count(word)
     prompt = (template
               .replace("{{SCHEMA}}", schema)
-              .replace("{{EXAMPLE_1}}", ex1)
-              .replace("{{EXAMPLE_2}}", ex2)
               .replace("{{DICTIONARY}}", dict_block)
               .replace("{{WORD}}", word)
               .replace("{{SENSE_NUM}}", sense_num)
@@ -176,15 +191,10 @@ def cmd_scenes(args):
     schema = read(ROOT / "schema" / "scene-spec.schema.json")
     sense_yaml = read(sense_path)
 
-    ex_dir = ROOT / "data" / "scenes" / SCENE_EXAMPLE_SENSE
-    examples = "\n\n".join(
-        f"```yaml\n{read(p)}```"
-        for p in sorted(ex_dir.glob("*.yaml"))) if ex_dir.exists() else ""
-
     prompt = (template
               .replace("{{SCHEMA}}", schema)
               .replace("{{SENSE}}", sense_yaml)
-              .replace("{{EXAMPLES}}", examples)
+              .replace("{{TYPE_STRATEGY}}", type_strategy(sense_path))
               .replace("{{SENSE_ID}}", sense_id))
 
     print(f"→ 起草 '{sense_id}' 五场景组 ...", file=sys.stderr)
@@ -250,6 +260,7 @@ def _scenes_add(sense_id, sense_path, scene_type):
     prompt = (read(PROMPTS / "scene-add.md")
               .replace("{{SCHEMA}}", read(ROOT / "schema" / "scene-spec.schema.json"))
               .replace("{{SENSE}}", read(sense_path))
+              .replace("{{TYPE_STRATEGY}}", type_strategy(sense_path))
               .replace("{{EXISTING}}", existing)
               .replace("{{SENSE_ID}}", sense_id)
               .replace("{{SCENE_TYPE}}", scene_type)
@@ -308,6 +319,39 @@ def cmd_list(args):
 
 # ---------------------------------------------------------------- promote
 
+def _review_advisory(ident, reviewed_files):
+    """模型审核是可选参考, 不阻塞 promote。
+
+    返回可归档的记录路径: 记录存在且内容指纹与当前草稿匹配时 (无论 verdict),
+    promote 后随资源归档以便追溯; 缺失、过期或损坏只提示。
+    """
+    import review
+    record_file = review.record_path(ident)
+    if not record_file.exists():
+        print(f"⚠ 未经模型审核 (可选): python3 tools/review.py {ident}",
+              file=sys.stderr)
+        return None
+    try:
+        record = yaml.safe_load(read(record_file))
+    except yaml.YAMLError as e:
+        print(f"⚠ 审核记录无法解析, 忽略: {e}", file=sys.stderr)
+        return None
+    if not isinstance(record, dict):
+        print("⚠ 审核记录格式异常, 忽略", file=sys.stderr)
+        return None
+    if record.get("content_digest") != review.content_digest(reviewed_files):
+        print("⚠ 审核记录已过期 (草稿在审核后被修改), 不随资源归档",
+              file=sys.stderr)
+        return None
+    verdict = record.get("verdict")
+    if verdict == "pass":
+        print("✓ 模型审核通过")
+    else:
+        print(f"⚠ 模型审核 verdict={verdict}; 审核不阻塞 promote, 请自行判断",
+              file=sys.stderr)
+    return record_file
+
+
 def cmd_promote(args):
     ident = args.id.strip()
     if not SENSE_ID.fullmatch(ident):
@@ -324,12 +368,20 @@ def cmd_promote(args):
     if has_sense and sense_dest.exists():
         sys.exit(f"正式义项已存在: {sense_dest.relative_to(ROOT)}；拒绝静默覆盖")
     scene_files = sorted(scene_draft_dir.glob("*.yaml")) if has_scenes else []
+    leftovers = [p for p in scene_files if p.name.startswith("_")]
+    if leftovers:
+        names = ", ".join(p.name for p in leftovers)
+        sys.exit(f"场景草稿目录存在未解析残骸: {names}；修复或删除后重试")
     for path in scene_files:
         if (scene_dest_dir / path.name).exists():
             sys.exit(
                 f"正式场景已存在: {(scene_dest_dir / path.name).relative_to(ROOT)}"
                 "；拒绝静默覆盖"
             )
+
+    # 模型审核是可选参考, 只提示不阻塞
+    reviewed_files = ([sense_draft] if has_sense else []) + scene_files
+    record_file = _review_advisory(ident, reviewed_files)
 
     # Build a complete candidate repository and validate it before touching
     # published paths. Temporary files live on the same filesystem so the
@@ -385,10 +437,18 @@ def cmd_promote(args):
     for path in promoted:
         print(f"✓ 定稿 {path.relative_to(ROOT)}")
 
+    if record_file is not None:
+        archive_dir = ROOT / "data" / "reviews"
+        archive_dir.mkdir(parents=True, exist_ok=True)
+        stamp = time.strftime("%Y%m%d%H%M%S", time.gmtime())
+        archived = archive_dir / f"{ident}-{stamp}.yaml"
+        os.replace(record_file, archived)
+        print(f"✓ 审核记录归档 → {archived.relative_to(ROOT)}")
+
     # 同步更新词目条目
     word = ident.rsplit("-", 1)[0]
     try:
-        from dict import build_word_entry, write_word_entry
+        from wordbook import build_word_entry, write_word_entry
 
         ranks_path = ROOT / "data" / "wordlists" / "en-top-20000.tsv"
         ranks: dict[str, int] = {}
@@ -635,7 +695,7 @@ def main():
 
     sub.add_parser("list", help="列出待审草稿").set_defaults(func=cmd_list)
 
-    p = sub.add_parser("promote", help="草稿定稿并校验")
+    p = sub.add_parser("promote", help="草稿定稿并校验 (模型审核可选, 不阻塞)")
     p.add_argument("id")
     p.set_defaults(func=cmd_promote)
 

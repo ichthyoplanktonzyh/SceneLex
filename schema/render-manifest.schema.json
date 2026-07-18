@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scenelex.org/schema/render-manifest.schema.json",
+  "title": "SceneLex Render Manifest",
+  "description": "渲染版本的可追溯清单：每个渲染版本目录 (data/.../renders/{scene_id}/v{NN}/) 一份，记录该版本由哪个规格版本、哪个计划、哪个渲染后端产出，包含哪些资产、哪些被选定，以及许可与审核结论引用。这是 AGENT.md 渲染追溯要求（sense/scene/规格版本/渲染器与模型/输入版本/许可/审核结论）的落地；模型名只允许出现在这里，不得进入场景规格。",
+  "type": "object",
+  "required": ["schema_version", "scene_ref", "sense_ref", "spec_version", "plan_version", "version", "status", "created_at", "renderer", "license", "beats"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "scene_ref": {
+      "type": "string",
+      "pattern": "^[a-z][a-z_]*-[0-9]{2}-(proto|contrast|counter|boundary|transfer)-[0-9]{2}$"
+    },
+    "sense_ref": { "type": "string", "pattern": "^[a-z][a-z_]*-[0-9]{2}$" },
+    "spec_version": { "type": "integer", "minimum": 1 },
+    "plan_version": { "type": "integer", "minimum": 1 },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "渲染版本，与目录 v{NN} 一致；重渲即新版本，永不覆盖"
+    },
+    "status": {
+      "enum": ["candidate", "selected"],
+      "description": "candidate = 渲染候选；selected = 每 beat 已选定资产、可进入组装/发布"
+    },
+    "created_at": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T" },
+    "renderer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "image": { "$ref": "#/$defs/backend" },
+        "tts": { "$ref": "#/$defs/backend" },
+        "video": { "$ref": "#/$defs/backend" }
+      }
+    },
+    "license": { "type": "string" },
+    "beats": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["beat"],
+        "additionalProperties": false,
+        "properties": {
+          "beat": { "type": "integer", "minimum": 1 },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["file"],
+              "additionalProperties": false,
+              "properties": {
+                "file": { "type": "string" },
+                "seed": { "type": "integer" },
+                "selected": { "type": "boolean" },
+                "params": { "type": "object" }
+              }
+            }
+          },
+          "audio": {
+            "type": "object",
+            "required": ["type"],
+            "additionalProperties": false,
+            "properties": {
+              "type": { "enum": ["tts", "sfx", "silence"] },
+              "file": { "type": "string" },
+              "voice": { "type": "string" }
+            }
+          },
+          "clip": {
+            "type": "object",
+            "required": ["file"],
+            "additionalProperties": false,
+            "description": "可选的图生视频动态片段，替换静帧参与组装",
+            "properties": {
+              "file": { "type": "string" },
+              "source_image": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "review_ref": {
+      "type": "string",
+      "description": "渲染审核记录文件名（可选参考，不阻塞）"
+    }
+  },
+  "$defs": {
+    "backend": {
+      "type": "object",
+      "required": ["protocol"],
+      "additionalProperties": true,
+      "properties": {
+        "protocol": { "type": "string", "description": "适配器协议名，如 comfyui / openai-images / command" },
+        "model": { "type": "string" },
+        "workflow": { "type": "string", "description": "ComfyUI 工作流标识（如有）" },
+        "voice": { "type": "string" }
+      }
+    }
+  }
+}

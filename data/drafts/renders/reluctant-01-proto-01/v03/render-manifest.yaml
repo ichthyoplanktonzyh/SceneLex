@@ -1,0 +1,57 @@
+schema_version: '1.0'
+scene_ref: reluctant-01-proto-01
+sense_ref: reluctant-01
+spec_version: 2
+plan_version: 3
+version: 3
+status: candidate
+created_at: '2026-07-17T15:33:23Z'
+renderer:
+  image:
+    protocol: comfyui
+    model: DreamShaper_8_pruned.safetensors
+    workflow: comfyui-text2image.json
+license: unreviewed-local-model
+beats:
+- beat: 1
+  images:
+  - file: beat-01-a.png
+    seed: 48197249240812
+    selected: false
+  audio:
+    type: sfx
+- beat: 2
+  images:
+  - file: beat-02-a.png
+    seed: 197100688667841
+    selected: false
+  audio:
+    type: tts
+- beat: 3
+  images:
+  - file: beat-03-a.png
+    seed: 38192803636954
+    selected: false
+  audio:
+    type: sfx
+- beat: 4
+  images:
+  - file: beat-04-a.png
+    seed: 134774753905803
+    selected: false
+  audio:
+    type: tts
+- beat: 5
+  images:
+  - file: beat-05-a.png
+    seed: 252062445958532
+    selected: false
+  audio:
+    type: silence
+- beat: 6
+  images:
+  - file: beat-06-a.png
+    seed: 184288996907670
+    selected: false
+  audio:
+    type: tts

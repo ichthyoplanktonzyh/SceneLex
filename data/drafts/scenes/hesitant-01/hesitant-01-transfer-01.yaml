@@ -1,0 +1,81 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: hesitant-01-transfer-01
+sense_ref: hesitant-01
+scene_type: transfer
+transfer_dimensions:
+  - participant_type
+  - target_action
+  - pressure_source
+surface:
+  domain: mixed
+  participant_type: mixed
+  setting: mixed
+
+title: 发言的同事与过马路的狗
+synopsis: >
+  两段小片段：会议室里想发言却反复张嘴又闭嘴的同事；
+  路口前停下脚步、左右张望迟迟不走的狗。表面不同，骨架一致。
+
+storyboard:
+  - beat: 1
+    visual: >
+      会议室。讨论正进行，一个人举起手又放下，嘴巴张开但没说话，
+      目光在与会人员之间快速扫视。手在半空停顿。
+    audio: "Does anyone have any thoughts?"
+    purpose: 迁移点一：参与者从日常消费者换成职场成人；行动从点菜变为口头发言
+
+  - beat: 2
+    visual: >
+      特写他的嘴唇：嘴唇张开又闭合，两秒后再次张开，发出一个音节又吞回去了。
+      眼神飘移不敢直视主持人。
+    audio: "I… I…"
+    purpose: 外化犹豫：填充词+重复起始+视线回避，明确 hesitancy 在言语表达上的表现
+
+  - beat: 3
+    visual: >
+      主持人看向他，他深吸一口气，终于说出完整句子。
+    audio: "Well, actually… I think we should wait."
+    purpose: 行动发生（发言），但之前已经充分展示犹豫；action 不是必要结果
+
+  - beat: 4
+    visual: >
+      切换至城市街道斑马线前。一只狗被主人牵着走到路口，
+      停下，前腿伸出又缩回，头左右转动看车流方向，尾巴垂下。
+    audio: "(车流声)"
+    purpose: 迁移点二：参与者换成非人类动物；行动从发言变为过马路；骨架中“面临决策”依然成立
+
+  - beat: 5
+    visual: >
+      狗几次抬腿又放下，犹豫了约5秒后慢慢迈出第一步。
+    audio: "He‘s hesitant to cross…"
+    purpose: 用目标词命名狗的状态，覆盖搭配“hesitant step/hesitant to cross”
+
+  - beat: 6
+    visual: >
+      三画面并置：犹豫的职场发言人 / 犹豫的狗 / 原型场景中犹豫的点餐人。
+      每个画面持续1秒，同时播放统一音频。
+    audio: "Hesitant. Hesitant. Hesitant."
+    purpose: 不同领域、不同主体的表面被同一声音绑定，逼迫抽象化“暂停+不确定”的结构
+
+teaching_evidence:
+  - claim: 迁移点一：职场发言情境，行动为非必须口头表达
+    beats: [1, 2, 3]
+  - claim: 迁移点二：动物过马路情境，参与者由人变狗
+    beats: [4, 5]
+  - claim: 并置后抽象出共同骨架：面临行动、出现暂停、原因是不确定
+    beats: [6]
+
+learning_tasks:
+  - type: transfer_judgment
+    prompt: >
+      Play three new short clips: (1) a student raises hand then lowers it repeatedly;
+      (2) a cat sits in front of two food bowls, sniffs each, then eats from the first;
+      (3) a robot arm reaches toward a button, stops mid-air, then retracts.
+      For each, judge if hesitant applies and point to the evidence.
+  - type: produce
+    prompt: >
+      Show a silent short: an old man at a crosswalk, steps forward, stops, looks both ways,
+      steps back, then finally walks. Learner says a sentence using "hesitant".

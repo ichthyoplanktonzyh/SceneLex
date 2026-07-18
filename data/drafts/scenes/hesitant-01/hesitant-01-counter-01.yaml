@@ -1,0 +1,70 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: hesitant-01-counter-01
+sense_ref: hesitant-01
+scene_type: counterexample
+contrast_target: uncertain-01
+contrast_relation: different_dimension
+surface:
+  domain: quiz-show
+  participant_type: adult
+  setting: indoor-studio
+
+title: 知道不确定不等于犹豫
+synopsis: >
+  一位参赛者被问了一个难题，内心完全不确定正确答案，但他迅速按铃作答，
+  没有任何可观察的暂停或延迟。观众不能仅凭“内心不确定”推断犹豫。
+
+storyboard:
+  - beat: 1
+    visual: >
+      电视问答节目现场。参赛者站在抢答台后面，主持人念出问题：
+      “第三任联合国秘书长是谁？”
+    audio: "For 500 points: who was the third Secretary-General of the United Nations?"
+    purpose: 建立知识决策情境——人物需要做出回答选择，但此处核心是认知不确定性
+
+  - beat: 2
+    visual: >
+      参赛者表情短暂空白（不到0.5秒），但随即果断按铃，
+      没有任何手部悬停、目光游移或填充犹豫词。
+    audio: "(铃声)"
+    purpose: 外化：人物内心不确定但外表无暂停；观众无法从行为上看到犹豫
+
+  - beat: 3
+    visual: >
+      参赛者挺直后背，直视主持人，用确定的语气说：
+    audio: "I think it’s U Thant, from Burma."
+    purpose: 完整呈现：行为果断、说话流畅，没有 hesitancy 的外化信号
+
+  - beat: 4
+    visual: >
+      赛后采访。记者问：“刚才你回答时确定吗？”
+      参赛者耸肩，微微摇头：
+    audio: "Not really. I had no idea. I just guessed."
+    purpose: 揭示内心认知状态 uncertain，但行为层面从未 hesitant
+
+  - beat: 5
+    visual: >
+      分屏：左侧回放参赛者果断按铃答题；右侧是原型场景中手指悬停的犹豫者。
+    audio: "He was uncertain… but not hesitant."
+    purpose: 明确反驳“有不确定=有犹豫”；强调 hesitant 需要可观察的暂停或延迟
+
+teaching_evidence:
+  - claim: 人物存在认知不确定（内心不知道答案）
+    beats: [4]
+  - claim: 但行为上没有暂停、悬停、填充词等犹豫外化信号
+    beats: [2, 3]
+  - claim: 因此不能仅凭 uncertainty 推断 hesitancy
+    beats: [5]
+
+learning_tasks:
+  - type: transfer_judgment
+    prompt: >
+      Play three short clips: (1) person pauses before answering a question with “uh…”;
+      (2) person quickly presses buzzer after brief thought;
+      (3) person stares at multiple options for 5 seconds. 
+      For each, decide whether there is enough evidence for hesitant.
+  - type: contrast_choice
+    prompt: 'A learner says "I was uncertain so I must have been hesitant." Is this correct? Give a counterexample from the lesson.'

@@ -57,6 +57,33 @@ def test_next_scene_id_spans_published_and_drafts(tmp_path, monkeypatch):
     assert draft.next_scene_id("test-01", "transfer") == "test-01-transfer-01"
 
 
+def test_type_strategy_reads_matching_fragment(tmp_path, monkeypatch):
+    strategies = tmp_path / "prompts" / "scene-strategies"
+    strategies.mkdir(parents=True)
+    (strategies / "attribute.md").write_text("attribute 策略\n", encoding="utf-8")
+    sense = tmp_path / "test-01.yaml"
+    sense.write_text("semantic_type: attribute\n", encoding="utf-8")
+    monkeypatch.setattr(draft, "PROMPTS", tmp_path / "prompts")
+    assert draft.type_strategy(sense) == "attribute 策略"
+
+
+def test_type_strategy_falls_back_when_fragment_missing(tmp_path, monkeypatch):
+    monkeypatch.setattr(draft, "PROMPTS", tmp_path / "prompts")
+    sense = tmp_path / "test-01.yaml"
+    sense.write_text("semantic_type: causal_logic\n", encoding="utf-8")
+    assert "causal_logic" in draft.type_strategy(sense)
+
+
+def test_every_semantic_type_has_strategy_fragment():
+    import json
+    schema = json.loads(
+        (draft.ROOT / "schema" / "word-sense.schema.json").read_text("utf-8")
+    )
+    for t in schema["properties"]["semantic_type"]["enum"]:
+        path = draft.ROOT / "prompts" / "scene-strategies" / f"{t}.md"
+        assert path.exists(), f"semantic_type '{t}' 缺少场景表达策略片段"
+
+
 def _batch_env(tmp_path, monkeypatch):
     monkeypatch.setattr(draft, "ROOT", tmp_path)
     monkeypatch.setattr(draft, "DRAFTS", tmp_path / "data" / "drafts")

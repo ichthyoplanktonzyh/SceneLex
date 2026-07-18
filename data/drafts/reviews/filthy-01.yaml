@@ -1,0 +1,31 @@
+sense_id: filthy-01
+reviewed_at: '2026-07-17T08:19:20Z'
+review_model: deepseek-v4-flash
+files:
+- filthy-01.yaml
+- filthy-01-boundary-01.yaml
+- filthy-01-contrast-01.yaml
+- filthy-01-counter-01.yaml
+- filthy-01-proto-01.yaml
+- filthy-01-transfer-01.yaml
+content_digest: 2bcb8e83b41655eaac335d07a3bb110a6e876d13671363413932c0df1f0685b1
+verdict: pass
+dimensions:
+  language_accuracy: pass
+  semantic_conditions: pass
+  observability: pass
+  neighbor_discrimination: pass
+  audio_visual_timing: pass
+  l1_insight: pass
+  transferability: pass
+  licensing: pass
+issues:
+- file: filthy-01-transfer-01.yaml
+  dimension: transferability
+  severity: minor
+  note: transfer_dimensions 声明了 participant_type, setting, source_of_filth 三个维度发生变化，但两个场景（工厂和宠物店）的
+    participant_type 均为 adult（顾客和工人），未实际改变。只有 setting 和 source_of_filth 发生了变化。
+  suggestion: 修改 transfer_dimensions 为实际变化的两个维度（setting, source_of_filth），或将其中一个场景的参与者类型改为
+    child 或非人类（如动物），以确保声明与真实变化一致。
+summary: 所有场景组在语言准确性、语义条件、可观察性、相邻词区分、声画时序、L1教学洞察和版权方面均符合要求。transferability 存在一个 minor
+  问题（声明的迁移维度多于实际变化），不影响发布，建议修正。整体质量良好，可进入正式库。

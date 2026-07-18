@@ -1,0 +1,84 @@
+schema_version: '1.0'
+scene_ref: reluctant-01-proto-01
+spec_version: 2
+version: 2
+status: draft
+notes: ''
+characters:
+- id: boy
+  description: a 14-year-old boy with short messy brown hair, medium build, wearing
+    a gray hoodie and blue jeans
+- id: mother
+  description: a middle-aged woman with shoulder-length brown hair, average height,
+    wearing a blue blouse and dark pants
+setting:
+  description: a living room with a sofa, a TV on a low cabinet, a coffee table, a
+    carpet, and a doorway leading to a hallway
+beats:
+- beat: 1
+  prompt: '{char:boy} sitting cross-legged on the sofa, leaning forward, focused on
+    a video game on the TV, excited expression, eyes locked on screen, hands gripping
+    a game controller'
+  negative: bored look, slumped posture, turning away from screen, uninterested expression
+  audio:
+    type: sfx
+    text: 'video game sound effects: fast-paced electronic beeps and action sounds'
+    voice_hint: null
+    contains_target_word: false
+  duration: 4.0
+- beat: 2
+  prompt: '{char:mother} appears at the living room doorway holding a tied trash bag,
+    she places it on the floor next to {char:boy}’s feet, points toward the door,
+    firm but calm face'
+  negative: angry expression, shouting, throwing the bag, aggressive gestures
+  audio:
+    type: tts
+    text: Take out the trash. Now, please.
+    voice_hint: middle-aged woman, authoritative but not harsh
+    contains_target_word: false
+  duration: 3.0
+- beat: 3
+  prompt: '{char:boy} freezes mid-motion, shoulders slump, lets out a long sigh, eyes
+    still fixed on the TV screen, fingers twitch and press the controller buttons
+    twice more, not moving from the sofa'
+  negative: immediately getting up, smiling, showing eagerness, looking at the trash
+    bag
+  audio:
+    type: sfx
+    text: a long, heavy sigh, breathy, deflating sound
+    voice_hint: null
+    contains_target_word: false
+  duration: 4.0
+- beat: 4
+  prompt: '{char:boy} slowly putting down the controller, standing up in a sluggish
+    manner, bending down to pick up the trash bag with two fingers, arm fully extended
+    away from body, head turned back looking at the TV screen'
+  negative: quick movement, grabbing the bag with full hand, facing the door, enthusiastic
+    posture
+  audio:
+    type: tts
+    text: Do I HAVE to?
+    voice_hint: teen boy, whiny reluctant tone
+    contains_target_word: false
+  duration: 3.5
+- beat: 5
+  prompt: '{char:boy} walking toward the doorway with dragging feet, very short steps,
+    pausing mid-walk to glance back at the TV screen over his shoulder'
+  negative: brisk walking, looking forward, no hesitation, smiling
+  audio:
+    type: silence
+    text: ''
+    voice_hint: null
+    contains_target_word: false
+  duration: 5.0
+- beat: 6
+  prompt: '{char:boy} finally steps out of the doorway; {char:mother} standing behind
+    him shakes her head with a gentle smile and shrugs toward the camera direction'
+  negative: '{char:boy} looking happy, skipping, rushing out; {char:mother} frowning,
+    angry'
+  audio:
+    type: tts
+    text: He's always so reluctant to leave his game.
+    voice_hint: middle-aged woman, fond exasperated tone
+    contains_target_word: true
+  duration: 4.0

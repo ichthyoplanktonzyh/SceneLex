@@ -2,9 +2,9 @@
 """SceneLex 词典查看/导出工具 — 以词为中心聚合义项、场景与元信息。
 
 用法:
-    python3 tools/dict.py view <word>         # 终端查看词典页
-    python3 tools/dict.py export <word>       # 导出单个词完整 JSON
-    python3 tools/dict.py export              # 导出整本词典 JSON
+    python3 tools/wordbook.py view <word>         # 终端查看词典页
+    python3 tools/wordbook.py export <word>       # 导出单个词完整 JSON
+    python3 tools/wordbook.py export              # 导出整本词典 JSON
 """
 
 from __future__ import annotations

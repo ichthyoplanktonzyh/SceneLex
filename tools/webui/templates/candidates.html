@@ -5,6 +5,24 @@
 
 {{ job_bar(batch_job, '批量生成中…') }}
 
+<section class="panel" id="batch-panel" hidden>
+  <h2>批量生成进度 <span class="count" id="bp-summary"></span></h2>
+  <div class="bp-bar"><div class="bp-fill" id="bp-fill"></div></div>
+  <table class="board bp-table">
+    <thead>
+      <tr><th>单词</th><th>义项进度（每格 = 一个义项：词义草稿 + 五场景组）</th></tr>
+    </thead>
+    <tbody id="bp-body"></tbody>
+  </table>
+  <p class="legend">
+    <span class="chip ok">✓</span> 完成
+    <span class="chip warn">场景…</span> 词义已成、场景未完成
+    <span class="chip">义项…</span> 词义未完成/排队
+    <span class="chip problem">✗</span> 失败（重跑同批可断点续作）
+  </p>
+  <p class="hint" id="bp-hint"></p>
+</section>
+
 <section class="panel">
   <h2>扩产候选队列
     <span class="count">共 {{ total }} 词 · 悬空引用优先，其后按词频 · 第 {{ page }}/{{ pages }} 页</span>
@@ -77,12 +95,37 @@
     status.textContent = '✓ 已启动: ' + words.length + ' 词';
     status.classList.add('good');
     showJob('running', '批量生成中… (' + words.join(' ') + ')');
+    refreshBatchPanel();
     pollBatch();
+  }
+  const BP_LABEL = {done: '✓', failed: '✗', scenes: '场景…', sense: '义项…'};
+  const BP_CLASS = {done: 'ok', failed: 'problem', scenes: 'warn', sense: ''};
+  async function refreshBatchPanel() {
+    const data = await (await fetch('/api/batch/progress')).json();
+    const panel = document.getElementById('batch-panel');
+    if (!data.words.length) { panel.hidden = true; return false; }
+    panel.hidden = false;
+    const stateText = data.running ? '运行中'
+      : (data.job && data.job.status === 'failed' ? '已停止（有失败）' : '未在运行（断点状态）');
+    document.getElementById('bp-summary').textContent =
+      `${data.done_stages}/${data.total_stages} 阶段 · ${data.percent}% · ${stateText}`;
+    document.getElementById('bp-fill').style.width = data.percent + '%';
+    document.getElementById('bp-body').innerHTML = data.words.map(w => {
+      const chips = w.senses.map(s =>
+        `<span class="chip ${BP_CLASS[s.status] || ''}">${s.num} ${BP_LABEL[s.status] || s.status}</span>`
+      ).join(' ');
+      return `<tr><td>${w.word}</td><td class="bp-chips">${chips}</td></tr>`;
+    }).join('');
+    document.getElementById('bp-hint').textContent = data.running
+      ? '运行中每 8 秒自动刷新。'
+      : '存在断点状态：重新发起相同批量将从失败处续跑；全部成功后此面板自动消失。';
+    return data.running;
   }
   let batchTimer = null;
   function pollBatch() {
     if (batchTimer) return;
     batchTimer = setInterval(async () => {
+      refreshBatchPanel();
       const data = await (await fetch('/api/jobs')).json();
       const job = data.jobs.find(j => j.sense_id === '_batch');
       if (!job) return;
@@ -92,14 +135,16 @@
       } else {
         clearInterval(batchTimer); batchTimer = null;
         showJob(job.status, job.status === 'done'
-          ? '✓ 批量完成, 刷新查看待审队列' : '✗ 批量失败, 详见服务日志');
+          ? '✓ 批量完成, 刷新查看待审队列' : '✗ 批量失败, 详见下方进度与服务日志');
+        refreshBatchPanel();
         if (job.status === 'done') setTimeout(() => location.reload(), 1500);
       }
     }, 8000);
   }
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
+    const running = await refreshBatchPanel();
     const bar = document.getElementById('job-bar');
-    if (bar && bar.dataset.active === 'running') pollBatch();
+    if (running || (bar && bar.dataset.active === 'running')) pollBatch();
   });
 </script>
 

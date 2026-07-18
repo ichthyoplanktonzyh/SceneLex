@@ -4,10 +4,10 @@
 
 SceneLex 是一套可独立发布、版本化和复用的**词义语义资源与教学证据库**。它为每个可教学词义建立机器可验证的语义规格，并用原型、对比、反例、边界和迁移场景提供可观察证据。
 
-SceneLex 不是某个学习 App 的内部素材目录，也不由某个词典、播放器、课程或模型厂商定义。学习产品是资源消费者之一，同时也是验证这些资源是否真的产生理解、区分和迁移效果的重要实验端。
+SceneLex 不是某个学习 App 的内部素材目录，也不由某个词典、播放器、课程或模型厂商定义。“场景即释义”是本产品已确立的核心方法与卖点，不是待验证的研究假设；学习产品是资源消费者之一。
 
 理论全文见 [一、先明确系统最终要解决什么问题.md](一、先明确系统最终要解决什么问题.md)。仓库约束见 [AGENT.md](AGENT.md)。
-第一轮实证方案见 [docs/mvp-evaluation.md](docs/mvp-evaluation.md)。
+历史效果评估方案（已归档，非发布前提）见 [docs/mvp-evaluation.md](docs/mvp-evaluation.md)。
 
 ## 核心产物
 
@@ -30,7 +30,7 @@ reviewed / published resource bundle
 词典 · 课程 · 播放器 · API · 学习实验 · 研究工具
 ```
 
-五类场景是五种教学证据功能，不是永远固定为“一类一条”的产品限制。当前起草工具仍生成完整五类场景组，便于 MVP 比较；未来发布门应按证据覆盖与实验结果决定所需数量。
+五类场景是五种教学证据功能，不是永远固定为“一类一条”的产品限制。当前起草工具默认生成完整五类场景组；发布门按证据覆盖决定所需数量。
 
 ## 权威边界
 
@@ -47,12 +47,14 @@ reviewed / published resource bundle
 ## 目录结构
 
 ```text
-schema/                      核心公开数据契约
+schema/                      核心公开数据契约 (词义/场景/资源包/渲染计划/渲染清单)
 data/senses/                 正式词义资源
 data/scenes/{sense_id}/      正式场景证据
-data/drafts/                 隔离草稿
-prompts/                     LLM 起草模板
+data/drafts/                 隔离草稿 (含 renders/{scene_id}/v{NN}/ 渲染版本)
+prompts/                     LLM 起草/审核/渲染计划模板与风格配置
 tools/draft.py               起草与发布前编排
+tools/review.py              模型审核 (可选质量参考)
+tools/render.py              渲染层编排 (plan / show / render / assemble)
 tools/llm.py                 多协议 LLM 适配器
 tools/validate.py            正式库发布门
 tools/export.py              面向消费者的确定性 JSON 导出
@@ -65,12 +67,11 @@ tests/                       工具链回归测试
 ```text
 candidate
 → sense draft
-→ 人工语义审核
 → scene evidence draft
-→ 语言 / 场景 / 教学审核
-→ 隔离目录全量校验
+→ 模型审核（可选质量参考, 不阻塞）
+→ 隔离目录全量校验 + 人工 promote
 → reviewed resource
-→ 学习实验与外部反馈
+→ 渲染与消费端反馈
 → published resource bundle
 ```
 
@@ -89,7 +90,13 @@ python3 tools/candidates.py --count 20                   # 扩产候选队列 (�
 python3 tools/dictionary.py nearly                       # Wiktionary 词典事实 (起草锚点)
 python3 tools/draft.py batch --count 4                   # 批量起草, 断点可续
 python3 tools/draft.py list
-python3 tools/draft.py promote dirty-01
+python3 tools/review.py dirty-01                         # 模型审核 (可选参考, 写审核记录)
+python3 tools/review.py --all                            # 审核草稿区全部义项
+python3 tools/draft.py promote dirty-01                  # 隔离校验后原子入库; 审核可选不阻塞
+python3 tools/render.py plan reluctant-01-proto-01       # 场景规格 → 渲染计划 (新版本目录)
+python3 tools/render.py show reluctant-01-proto-01       # 预览展开后的图像提示词与音频指令
+python3 tools/render.py render reluctant-01-proto-01     # 经 ComfyUI 渲染图像候选 + manifest
+python3 tools/render.py render reluctant-01-proto-01 -b 3 -n 2   # 只补渲 beat 3, 出 2 张候选
 python3 tools/workbench.py                               # 审核工作台 http://127.0.0.1:8321
 
 python3 tools/validate.py --backlog
@@ -161,6 +168,16 @@ export SCENELEX_LLM_MODEL=deepseek-v4-pro
   空闲超时掐断；设为 `0` 可回退到非流式（仅适合短输出或不支持流式的网关）；
 - `SCENELEX_LLM_COMMAND`：配置本地命令。
 
+模型审核（`tools/review.py`，可选质量参考）可用 `SCENELEX_REVIEW_LLM_*` 前缀
+单独配置审核模型（逐项覆盖同名 `SCENELEX_LLM_*` 配置）。建议审核模型与起草
+模型不同，避免模型自我确认；未配置时回退到起草模型并给出警告。
+
+图像渲染（`tools/imagegen.py`，comfyui 协议）：`SCENELEX_IMG_ENDPOINT`（默认
+`http://127.0.0.1:8188`）、`SCENELEX_IMG_WORKFLOW`（工作流 API JSON，默认
+`tools/workflows/comfyui-text2image.json`）、`SCENELEX_IMG_TIMEOUT`、
+`SCENELEX_IMG_LICENSE`。适配器跟随采样器连线自动定位提示词节点，特殊工作流
+用 `SCENELEX_IMG_SAMPLER_NODE` 等显式指定。
+
 `command` 中可使用 `{model}` 占位符，例如
 `SCENELEX_LLM_COMMAND='my-llm --model {model} --print'`。适配器不会假设任意 CLI
 都支持 `--model`，完整参数由调用者控制。
@@ -171,18 +188,15 @@ export SCENELEX_LLM_MODEL=deepseek-v4-pro
 
 ## 当前状态与近期路线
 
-- 正式义项 3 条：`messy-01`、`reluctant-01`、`almost-01`。
-- 正式场景 10 条；前两个义项有完整五类证据，`almost-01` 待建。
-- `dirty-01` 及其五类场景位于草稿区。
+- 正式义项 4 条：`messy-01`、`reluctant-01`、`almost-01`、`dirty-01`，共 21 个场景。
+- 草稿区 6 个义项（filthy / nearly / barely / refuse / grimy / hesitant）及其场景组待审。
 - 当前正式资源状态为 `reviewed`，尚未宣称 `published`。
 
-近期不以扩到 30–50 个义项为第一目标。先选择 6–10 个高价值义项做薄而完整的实验闭环：
+“场景即释义”方法已确立为产品前提，学习实验不再是规模化的前置条件。近期路线：
 
 ```text
-资源规格 → 低成本渲染 → 可评分任务
-→ 翻译/普通图片/场景证据对照
-→ 即时理解、相邻词区分、迁移和延迟保持
-→ 修订资源 → 再扩库
+渲染适配器层（场景规格 → 图片序列 / TTS → 可播放资源）
+→ 模型审核（可选质量参考，工作台一键运行）
+→ 批量扩产（candidates 队列 + batch 起草）
+→ 资源包导出与最小消费端 demo
 ```
-
-规模化的前提不是“Schema 能通过”，而是资源在新场景中确实产生了可复现的学习迁移。

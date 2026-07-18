@@ -12,6 +12,11 @@
       {% if row.draft_scenes %}<span class="chip draft">{{ row.draft_scenes }} 个场景草稿</span>{% endif %}
       {% if row.problems %}<span class="chip problem">{{ row.problems }} 个 schema 问题</span>
       {% else %}<span class="chip ok">schema 通过</span>{% endif %}
+      {% if row.review %}
+        {% if not row.review.fresh %}<span class="chip warn">审核已过期</span>
+        {% elif row.review.verdict == 'pass' %}<span class="chip ok">审核通过</span>
+        {% else %}<span class="chip problem">审核未通过</span>{% endif %}
+      {% else %}<span class="chip">未审核</span>{% endif %}
     </li>
     {% endfor %}
   </ul>

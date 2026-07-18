@@ -7,6 +7,7 @@
 ## 项目定位
 
 SceneLex 是一个以“场景即释义”为方法的词义语义资源与教学证据系统。
+该方法是已确立的产品前提，不再作为研究假设做学习实验验证。
 它的基本任务不是给单词附加文字翻译，也不是制作孤立的视频素材，而是：
 
 ```text
@@ -22,7 +23,7 @@ L2 声音 → 场景与经验 → 概念
 可替换渲染后端的产物，而不是项目的语义权威。
 
 下游词典、播放器、课程、学习实验或 API 都是消费端，不定义 SceneLex 的核心模型。
-学习流程是验证资源是否有效的重要消费者，但不拥有这些资源。尤其不要为某一个
+学习流程是重要消费者，但不拥有这些资源。尤其不要为某一个
 下游项目的当前数据形状、UI、用户画像或网络协议扭曲义项身份和场景证据。
 
 ## 核心原则
@@ -34,11 +35,13 @@ L2 声音 → 场景与经验 → 概念
 3. **先经验与声音，后文字。** 通常先让学习者看见语义事件，再在恰当时机出现 L2
    声音；文字和 L1 可以是辅助，不应抢占默认意义通道。
 4. **一个词义需要证据组。** 原型、对比、反例、边界、迁移是五种教学功能；
-   当前 MVP 默认各生成一个，但最终数量由证据覆盖和学习实验决定。
+   当前默认各生成一个，最终数量由证据覆盖决定。
 5. **语义骨架与具体渲染解耦。** 词义骨架描述语言共同体中的可检验假设，不绑定某个
    房间、职业或文化脚本；L1、生活经验和学习阶段影响边界重点、场景选择与表面渲染。
 6. **生成不等于发布。** LLM 或渲染模型可以起草和生成，但不会自动成为正式内容；
-   内容必须通过语言、场景和教学三层审核，并最终接受学习效果验证。
+   入库由人工 promote 决定。模型三层审核（语言、场景、教学）是推荐的质量参考
+   而非强制门：promote 不要求审核记录，与当前内容匹配的记录会随资源归档。
+   审核模型宜与起草模型不同（避免自我确认）。
 7. **不把翻译绝对化或妖魔化。** L1 可用于澄清抽象概念、纠正边界误解或提高效率，
    但不能替代声音—经验连接。
 8. **相邻概念不必互斥。** 词义可能包含、重叠、处于同一程度轴、属于不同维度或
@@ -70,14 +73,38 @@ learning clients, APIs, or content packages
 - `data/senses/`：已审核的正式义项库；文件名必须等于义项 ID。
 - `data/scenes/{sense_id}/`：已审核的正式场景规格；一个义项对应一个目录。
 - `data/drafts/`：待审草稿隔离区，绝不可被当作已发布内容或默认词典结果。
-- `prompts/`：起草辅助，不是数据权威；修改后要检查其是否仍与 schema 和范例一致。
+- `prompts/`：起草辅助，不是数据权威；修改后要检查其是否仍与 schema 一致。
+  起草不注入正式库范例做 few-shot（避免锚定表面选择），格式靠规则与校验兜底。
+- `prompts/scene-strategies/`：按 `semantic_type` 分化的场景表达策略片段
+  （"语义—场景设计手册"的落地）；场景起草与增补时按义项类型注入，schema 的
+  semantic_type 枚举每个值必须有对应片段（有测试守护）。
 - `tools/draft.py`：词义/场景草稿生产编排（含 batch 批量与 --add 增补）。
+- `tools/review.py`：模型审核（可选质量参考，不是强制门）——语言/场景/教学三层
+  审核的执行器，输出结构化审核记录 `data/drafts/reviews/{id}.yaml`（八维度结论 +
+  逐条问题 + 内容指纹）。promote 不要求审核；记录与当前内容匹配时随资源归档到
+  `data/reviews/`，缺失或过期只提示不阻塞。审核模型经 `SCENELEX_REVIEW_LLM_*`
+  单独配置，宜与起草模型不同（避免自我确认）。
 - `tools/llm.py`：可替换 LLM 适配器；模型选择不得泄漏到 schema/正式 IR。
 - `tools/dictionary.py`：Wiktionary 词典事实源（kaikki.org，CC-BY-SA）。词典事实
   是起草与审核的事实锚点（pos/IPA/义项划分参照），不是内容来源；释义与语义
   骨架必须自行撰写。缓存于 `data/dictionary/`。
 - `tools/candidates.py`：扩产候选队列（悬空引用优先 + 词频排序）。注意不可
   命名为 queue.py（遮蔽标准库）。
+- `tools/wordbook.py`：内部词目聚合视图（按词聚合本库义项与场景，view/export；
+  promote 时同步词目条目）。与外部事实源 dictionary.py 职责不同，勿混淆。
+- `tools/render.py`：渲染层编排——场景规格 → 渲染计划（plan）→ 图像候选
+  （render，经 imagegen 适配器）→ playback 组装（待建）。版本目录
+  `data/drafts/renders/{scene_id}/v{NN}/` 永不覆盖；候选文件按字母递增，
+  manifest 随渲染增量更新。
+- `tools/imagegen.py`：图像生成适配器（comfyui 协议）——加载
+  `tools/workflows/` 下的工作流 API JSON，跟随采样器连线自动定位正负提示词
+  节点后注入，`SCENELEX_IMG_*` 配置。模型与工作流名只进 manifest。
+- `schema/render-plan.schema.json`：渲染计划（渲染层内部 IR）。内容/风格分离：
+  beat prompt 只写内容，外观集中在 characters/setting 卡片、以 `{char:id}` 与
+  `{setting}` 占位符引用（展开是机械替换，保证跨 beat 一致）；全局风格在
+  `prompts/render-style.yaml`，渲染时追加，改风格无需重编译计划。
+- `schema/render-manifest.schema.json`：渲染版本的可追溯清单（渲染器/模型/
+  seed/许可/选定资产/审核引用）。模型名只允许出现在 manifest，不得进场景规格。
 - `tools/workbench.py` + `tools/webui/`：本地审核工作台；文件库之上的无状态壳，
   promote 一律经由 draft.py，不为正式库提供写口。
 - `tools/validate.py`：正式库的最低一致性校验，不替代语言、场景或教学审核。
@@ -122,8 +149,9 @@ candidate → sense draft → reviewed sense → scene draft → reviewed scene 
 ```
 
 - 自动生成应明确产物层级：仅义项草稿、场景规格草稿、渲染候选或已审核资源，不能混称。
-- 正式资源必须包含 `schema_version`、资源 `version` 与 `status`。未经学习效果验证的
-  `reviewed` 资源不要冒充 `published`。
+- 正式资源必须包含 `schema_version`、资源 `version` 与 `status`。`published` 要求
+  渲染资产齐备、来源可追溯、学习任务可评分；仅有规格的 `reviewed` 资源不要冒充
+  `published`。
 - 每一份渲染资源必须能够追溯到 `sense_id`、`scene_id`、规格版本、渲染器/模型、
   输入版本、版权/许可和审核结论。
 - 先验证语义与教学设计，再优化画面“影视感”。第一版可以是连续图片、动态漫画或
@@ -159,10 +187,11 @@ SceneLex 可向词典、播放器或课程应用提供两类能力：
 1. 阅读相关 schema、至少一个同类正式义项和对应证据组，再开始修改。
 2. 新义项先进入 `data/drafts/senses/`；场景先进入对应 `data/drafts/scenes/`。
 3. 运行 `python3 tools/validate.py` 和 `python3 -m pytest -q`；需要排期时运行
-   `python3 tools/validate.py --backlog`。校验通过只是进入人工审核的前提。
-4. 审核时分别检查：语言准确性、语义条件完整性、视觉/听觉可观察性、相邻词低歧义性、
-   声画时序、L1 教学洞察、迁移性和版权/许可。
-5. 只有通过审核的文件才由人工 promote。promote 必须先在隔离数据根目录执行全量
+   `python3 tools/validate.py --backlog`。
+4. 可选：用 `python3 tools/review.py <id>` 或工作台"模型审核"按钮生成审核参考，
+   检查：语言准确性、语义条件完整性、视觉/听觉可观察性、相邻词低歧义性、
+   声画时序、L1 教学洞察、迁移性和版权/许可。审核不阻塞 promote。
+5. promote 由人工决定。promote 必须先在隔离数据根目录执行全量
    校验，成功后再原子移动，禁止先写正式库再校验。
 6. 修改 schema、ID 规则、发布状态或生产管线时，更新 README、校验器、提示词、范例和
    必要的迁移/兼容说明；避免只改其中一个。

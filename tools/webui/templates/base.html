@@ -68,6 +68,13 @@
         setTimeout(() => location.reload(), 900);
       }
     }
+    async function runReview(senseId, btn) {
+      btn.disabled = true;
+      const res = await fetch(`/api/review/${senseId}`, {method: 'POST'});
+      if (!res.ok) { alert((await res.json()).detail); btn.disabled = false; return; }
+      showJob('running', '模型审核中… (review ' + senseId + ')');
+      pollJobs();
+    }
     async function redraft(senseId, addType) {
       const body = addType ? {add: addType} : {};
       const res = await fetch(`/api/redraft/${senseId}`, {
@@ -94,12 +101,13 @@
         const data = await (await fetch('/api/jobs')).json();
         const job = data.jobs.find(j => j.sense_id === senseId);
         if (!job) return;
+        const verb = job.args[0] === 'review' ? '审核' : '生成';
         if (job.status === 'running') {
-          showJob('running', '生成中… (' + job.args.join(' ') + ')');
+          showJob('running', verb + '中… (' + job.args.join(' ') + ')');
         } else {
           clearInterval(jobTimer); jobTimer = null;
           showJob(job.status,
-            (job.status === 'done' ? '✓ 生成完成, 刷新载入' : '✗ 生成失败: ')
+            (job.status === 'done' ? '✓ ' + verb + '完成, 刷新载入' : '✗ ' + verb + '失败: ')
             + (job.status === 'done' ? '' : job.tail.split('\n').pop()));
           if (job.status === 'done') setTimeout(() => location.reload(), 1200);
         }

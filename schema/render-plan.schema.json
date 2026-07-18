@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scenelex.org/schema/render-plan.schema.json",
+  "title": "SceneLex Render Plan",
+  "description": "渲染计划：场景规格到图像/TTS 渲染指令的编译产物（渲染层内部 IR，非对外契约）。内容与风格分离：prompt 只描述内容，全局风格由 prompts/render-style.yaml 在渲染时追加；角色/场景外观集中在卡片，beat prompt 用 {char:id} 与 {setting} 占位符引用，保证跨 beat 一致性。",
+  "type": "object",
+  "required": ["schema_version", "scene_ref", "spec_version", "version", "status", "characters", "setting", "beats"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "scene_ref": {
+      "type": "string",
+      "pattern": "^[a-z][a-z_]*-[0-9]{2}-(proto|contrast|counter|boundary|transfer)-[0-9]{2}$"
+    },
+    "spec_version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "所编译的场景规格的 version 字段值"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "渲染计划版本，必须与所在目录 v{NN} 一致；版本永不覆盖"
+    },
+    "status": { "enum": ["draft", "reviewed"] },
+    "notes": { "type": "string" },
+    "characters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "description"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+          "description": {
+            "type": "string",
+            "minLength": 10,
+            "description": "英文、具体可画且跨 beat 稳定的外观描述（年龄/发型/衣着颜色/体型）"
+          }
+        }
+      }
+    },
+    "setting": {
+      "type": "object",
+      "required": ["description"],
+      "additionalProperties": false,
+      "properties": {
+        "description": { "type": "string", "minLength": 10 }
+      }
+    },
+    "beats": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["beat", "prompt", "negative", "audio", "duration"],
+        "additionalProperties": false,
+        "properties": {
+          "beat": { "type": "integer", "minimum": 1 },
+          "prompt": {
+            "type": "string",
+            "minLength": 10,
+            "description": "英文内容提示词：构图/动作/表情/视线/景别；外观用 {char:id}、场景用 {setting} 引用卡片，不写风格词"
+          },
+          "negative": {
+            "type": "string",
+            "description": "内容负面提示（从词义 must_not 与易混表现派生）；通用质量负面在风格配置中"
+          },
+          "audio": {
+            "type": "object",
+            "required": ["type"],
+            "additionalProperties": false,
+            "properties": {
+              "type": { "enum": ["tts", "sfx", "silence"] },
+              "text": { "type": "string", "description": "tts 为台词原文；sfx 为音效英文描述" },
+              "voice_hint": { "type": "string", "description": "说话人音色提示，如 teen boy, whiny" },
+              "contains_target_word": {
+                "type": "boolean",
+                "description": "该台词是否含目标词（声画时序的组装与审核锚点）"
+              }
+            },
+            "allOf": [
+              {
+                "if": { "properties": { "type": { "const": "tts" } } },
+                "then": { "required": ["text"] }
+              }
+            ]
+          },
+          "duration": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 15,
+            "description": "建议时长（秒），组装 playback 用；对白 beat 按语速留足"
+          }
+        }
+      }
+    }
+  }
+}

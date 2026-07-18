@@ -1,0 +1,74 @@
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: hesitant-01-contrast-01
+sense_ref: hesitant-01
+scene_type: contrast
+contrast_target: reluctant-01
+contrast_relation: overlaps
+surface:
+  domain: cooking
+  participant_type: adult
+  setting: indoor-kitchen
+
+title: 试吃新菜的两兄弟
+synopsis: >
+  两道新菜：一道口味未知，一道含有兄弟讨厌的食材。两人各自面对一道菜，
+  一人因不确定而犹豫，一人因不情愿而拖延；最后展示一人同时拥有两种状态。
+
+storyboard:
+  - beat: 1
+    visual: >
+      厨房台面上放着两盘新菜：左边是深绿色糊状物（不知什么菜），
+      右边是撒满芝麻的豆腐（弟弟厌恶的食物）。两个人各站一盘前。
+    audio: "Mom made two new dishes. Try them."
+    purpose: 建立两个平行的决策情境，为对比做铺垫
+
+  - beat: 2
+    visual: >
+      哥哥站在左边绿糊前，歪头观察，勺子靠近又缩回，反复三次。
+      他皱眉头不是因为厌恶，而是因为搞不清这是什么。
+    audio: "What is this…?"
+    purpose: 外化 hesitant——不确定驱动的不停试探和悬停，没有情绪抗拒
+
+  - beat: 3
+    visual: >
+      弟弟站在右边豆腐前，勺子已经举起，但表情严重地皱眉噘嘴，
+      他不看盘子，而是看向窗外，慢慢放下勺子又拿起，叹气。
+    audio: "(叹气声)"
+    purpose: 外化 reluctant——动作虽慢却无试探，情绪明显是反感而非未知
+
+  - beat: 4
+    visual: >
+      分屏并列：左边哥哥勺子在食物前伸缩；右边弟弟勺子做动作但厌恶表情。
+    audio: "Hesitant … Reluctant."
+    purpose: 清晰对照差异轴：左侧“不确定方向”vs右侧“不愿做”，同时命名
+
+  - beat: 5
+    visual: >
+      第三个人出现，面前是一盘绿糊豆腐混合物。
+      他皱眉看了很久，鼻子凑近又远离，勺子反复触碰边缘，长叹一口气。
+    audio: "He is hesitant — and reluctant. Both."
+    purpose: 明确展示共现，防止学习者误以为两个状态互斥；音频指出两者可共存
+
+teaching_evidence:
+  - claim: 哥哥因未知而试探犹豫（hesitant）
+    beats: [2]
+  - claim: 弟弟因厌恶而拖延不情愿（reluctant）
+    beats: [3]
+  - claim: 差异轴为“不确定 vs 不愿意”
+    beats: [4]
+  - claim: 共现样本展示同时存在两种状态
+    beats: [5]
+
+learning_tasks:
+  - type: contrast_choice
+    prompt: 'Play a new clip: a person stares at a stack of forms, sighs, picks up pen but puts it down, looks away. Choose: hesitant, reluctant, or both.'
+    choices:
+      - "A: hesitant"
+      - "B: reluctant"
+      - "C: both"
+    expected_answer: "C: both"
+  - type: transfer_judgment
+    prompt: 'Show a person who slowly walks to a podium repeatedly stopping to look back. Is he reluctant or hesitant? Explain using observable clues.'
