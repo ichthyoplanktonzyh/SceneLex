@@ -95,12 +95,14 @@ learning clients, APIs, or content packages
 - `tools/wordbook.py`：内部词目聚合视图（按词聚合本库义项与场景，view/export；
   promote 时同步词目条目）。与外部事实源 dictionary.py 职责不同，勿混淆。
 - `docs/production-workflow.md`：Phase 1.3 的 Director 权威说明。Director 负责把模型无关
-  的词义与教学场景翻译为适合当前视频能力的高质量提示词；参考图、首尾帧、拆片和
-  animatic 是遇到实际控制问题时按需调用的工具。
+  的词义与教学场景翻译为适合当前视频能力的高质量提示词。生产默认工序是关键图先行
+  （文生图 → 图片语义门 → 图生视频）；尾帧、animatic 等更多控制是遇到实际问题时
+  按需调用的工具。
 - `tools/director.py`：Director 编排——读取 WordSense + SceneSpec + capability profile，
   生成版本化 `data/drafts/director/{scene_id}/v{NN}/director-prompt.yaml`。
-- `schema/director-prompt.schema.json`：轻量内部契约，记录生成策略、一个或少量视频提示词、
-  可选关键图提示词和简短语义 guardrails；不属于公开语义资源。
+- `schema/director-prompt.schema.json`：轻量内部契约，记录生成策略、一个或多个视频提示词
+  （clip 数量由语义场景与 Director 决定，不设固定上限）、关键图提示词和简短语义
+  guardrails；不属于公开语义资源。
 - `tools/render.py`：当前早期渲染原型——场景规格 → beat 级渲染计划（plan）→ 图像候选
   （render，经 imagegen 适配器）→ playback 组装（待建）。它尚未实现权威生产工作流。版本目录
   `data/drafts/renders/{scene_id}/v{NN}/` 永不覆盖；候选文件按字母递增，
@@ -168,11 +170,14 @@ candidate → sense draft → reviewed sense → scene draft → reviewed scene 
 - 先验证语义与教学设计，再优化画面“影视感”。第一版可以是连续图片、动态漫画或
   简单动画；不要为了视频质量牺牲场景可观察性和概念边界。
 - `SceneSpec.storyboard` 是语义节拍，不是模型 prompt。Director 可以把多个 beat 写进一个
-  连续事件，也可以在模型确实无法承载时拆成少量 clip；禁止机械一对一转换。
+  连续事件，也可以拆成多个 clip；clip 数量由语义场景与 Director 决定，禁止机械一对一
+  转换，也禁止为凑数增删 clip。
 - 现有WordSense与SceneSpec是Director的完整内容输入。Director不得重新设计故事、增加所谓
   记忆点、替换人物动机或修改语义外化；只把已有场景忠实翻译为模型可执行的视觉语言。
 - 媒体形态、时长和镜头数由语义证据决定，不默认所有词义都是固定长度的 3D 短片。
-  优先直接生成；只有结果暴露出构图、身份、终点或连续性问题时才增加相应控制。
+  生产默认关键图先行：先文生图并通过图片语义门（人物/道具/姿态/视线/构图），再图生
+  视频；`direct_t2v` 只在目标能力可靠承载单一连续事件且无跨 clip 一致性需求时使用。
+  尾帧、animatic 等更多控制只在结果暴露出相应问题时才增加。
 - Director 是第一版唯一核心智能中间层：写 prompt、查看结果、指出主要语义偏差并修正。
   不预先拆成 Reviewer、Decision Policy 或复杂生产状态机；重复失败模式出现后再抽象。
 - 生成本身也是探索手段。不要因为预设视频昂贵而延迟生成，优先快速取得候选和反馈。

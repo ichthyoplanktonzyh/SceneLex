@@ -45,8 +45,9 @@ reviewed / published resource bundle
 渲染模型、TTS、图片、视频、HTTP 服务和学习者数据都在适配器或消费者侧。它们可以引用稳定的 `sense_id`、`scene_id` 和资源版本，但不能反过来改变核心词义。
 
 `storyboard` 是语义节拍，不要求与视频 clip 一一对应。进入渲染前，Director Agent
-理解词义证据和相邻概念边界，再根据当前视频能力把场景翻译为一个或少量可直接提交的
-高质量提示词。参考图、首尾帧、拆片和 animatic 都是按需工具，不是固定流程。权威说明见
+理解词义证据和相邻概念边界，再根据当前视频能力把场景翻译为可直接提交的高质量
+提示词；clip 数量由语义场景与 Director 决定。生产默认工序是关键图先行：先文生图
+并通过图片语义门，再图生视频；尾帧、animatic 等更多控制是按需工具。权威说明见
 [docs/production-workflow.md](docs/production-workflow.md)。
 
 当前渲染层统一使用`Pixar-style 3D animated film`作为全局视觉方向。该风格只进入Director

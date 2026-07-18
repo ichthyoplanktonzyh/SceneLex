@@ -38,7 +38,7 @@
     },
     "strategy": {
       "enum": ["direct_t2v", "image_guided_i2v", "split_clips"],
-      "description": "优先选择最简单的可行生成方式"
+      "description": "生产默认关键图先行（image_guided_i2v；多 clip 时 split_clips 并逐 clip 提供关键图）；direct_t2v 是强模型单一连续事件的特例"
     },
     "director_note": {
       "type": "string",
@@ -83,7 +83,7 @@
           "image_prompt": {
             "type": "string",
             "minLength": 20,
-            "description": "仅当策略需要先生成关键图时提供"
+            "description": "关键图先行工序下每个 clip 都应提供；仅 direct_t2v 可省略"
           },
           "prompt": {
             "type": "string",
