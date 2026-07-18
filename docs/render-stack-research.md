@@ -3,6 +3,14 @@
 > **状态：技术选型调研稿（2026-07-18）。** 本文记录模型与 ComfyUI 能力，不再定义生产架构。
 > 权威生产流程见 `docs/production-workflow.md`。文中“逐 beat”“20–25 秒”和具体模型组合是
 > 当时的验证假设，不是当前生产不变量。凡标注“未证实”处均为查不到一手依据，勿当结论用。
+>
+> **2026-07-19 追记：部分结论已过时。** 关键图底模已从 SDXL 切换为 Z-Image Turbo /
+> FLUX.2 Klein 4B（见 `.planning/STATE.md`），因此第 2.1、2.2、3.1、3.3 节围绕
+> SDXL + IPAdapter PLUS/Full-Face + ControlNet 的角色一致性方案**已作废**——IPAdapter
+> 权重属于 SDXL/FLUX.1 生态，不适用新底模。当前一致性机制是"角色设定图 + FLUX.2
+> Klein Edit/Reference"，见 `docs/production-workflow.md`。本地图生视频（Wan2.2 5B
+> on MPS）也已判定不可用，图生视频改走云端 API；第 2.3、3.2 节的本地 i2v 结论仅作
+> 历史参考。
 
 ## 一句话结论
 
