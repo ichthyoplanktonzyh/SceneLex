@@ -58,12 +58,76 @@ stored in `../../../director/reluctant-01-proto-01/v01/director-prompt.yaml`.
 
 `wan-workflow-api.json` contains Attempt C, the final isolation workflow.
 
-## Conclusion
+### Attempt D — fp16 text encoder isolation (2026-07-18/19)
 
-These runs do not support further prompt iteration as the next action. The same
-failure signature appears across compound versus minimal motion, I2V versus T2V,
-square versus landscape output, and with versus without an SDXL start image.
-The current bottleneck is therefore the local Wan 2.2 5B / ComfyUI / Apple MPS
-inference path (or its installed model/runtime combination), not the Director
-translation alone. The Director prompt remains a valid model-independent input
-for rerunning against a working local video backend or a stronger model later.
+- Output: `reluctant_v06_clip02_t2v_fp16test_00001_.mp4` / `_00002_.mp4`
+- Same T2V config as Attempt C, only the CLIP loader swapped from
+  `umt5_xxl_fp8_e4m3fn_scaled.safetensors` to `umt5_xxl_fp16.safetensors`
+  (`wan-workflow-api.json`).
+- Hypothesis: Apple MPS does not support Float8_e4m3fn (documented ComfyUI
+  issues #9255/#9263), so the fp8 text encoder was silently producing bad
+  conditioning.
+- Result: rejected. Identical failure signature to Attempt C (frame sizes
+  byte-identical on a same-seed rerun, confirming determinism, not a fluke).
+  707s and 601s across two runs. **Hypothesis disproved.**
+
+### Attempt E — GGUF quantization isolation
+
+- Output: `reluctant_v06_clip02_t2v_ggufQ8test_00001_.mp4`
+- Installed `city96/ComfyUI-GGUF`; swapped both the UNET
+  (`Wan2.2-TI2V-5B-Q8_0.gguf`, QuantStack) and the text encoder
+  (`umt5-xxl-encoder-Q8_0.gguf`, city96) to GGUF Q8_0
+  (`wan-workflow-api-gguf.json`). VAE unchanged
+  (`wan2.2_vae.safetensors`, correct for TI2V-5B — the 14B A14B variants
+  reuse the Wan2.1 VAE, TI2V-5B has its own; a separate community workflow
+  using `wan2.2_i2v_*_14B` confirmed this pairing convention independently).
+- Rationale: an external report (M1 Max 64GB, GGUF Q4_K_S/Q8_0) produced a
+  working Wan2.2 video via ComfyUI-GGUF, avoiding the standard safetensors
+  MPS path entirely.
+- Result: rejected. Same failure signature (blur, color separation, banding).
+  732s. **Hypothesis disproved — the GGUF code path does not avoid the bug
+  on this ComfyUI 0.28.0 / macOS 26.5.1 / M1 Max combination.**
+
+### Attempt F — VAE decode isolation (`--cpu-vae`)
+
+- Output: `reluctant_v06_clip02_t2v_cpuvaetest_00001_.mp4`
+- Restarted ComfyUI with `--cpu-vae` (VAE decode fully on CPU, bypassing MPS,
+  bfloat16, and the "split attention in VAE" fallback all at once). Same
+  fp16 T2V workflow as Attempt D, same seed.
+- Rationale: across Attempts C/D/E, the VAE was the only component held
+  constant (same file, same 1344.09 MB footprint, same
+  `Using split attention in VAE` / `dtype: torch.bfloat16` log lines every
+  run) while UNET/CLIP precision varied three times with no change in
+  output — process of elimination pointed at VAE decode as the last
+  untested stage.
+- Result: rejected. Output pixel-identical in character to Attempts C/D/E.
+  **Hypothesis disproved — VAE decode location/precision is not the cause.**
+
+## Conclusion (revised 2026-07-19)
+
+Five independent variables have now been tested and eliminated one at a time,
+each holding all other components fixed:
+
+1. Text encoder precision — fp8 vs fp16 vs GGUF Q8_0 (Attempts C/D/E)
+2. UNET quantization — fp16 safetensors vs GGUF Q8_0 (Attempts C/E)
+3. VAE decode device/precision — MPS bfloat16 (split attention) vs CPU
+   fp32 (Attempts C–E vs F)
+4. Motion amount — compound vs minimal (Attempts A/B)
+5. Generation mode / aspect ratio — I2V square vs T2V landscape, with and
+   without an SDXL start image (Attempts A–C)
+
+All five produced the same failure signature: severe blur, color
+separation/channel bleeding, and horizontal banding, present from the first
+frame onward. Since varying every model file and every axis of the pipeline
+independently produced no change, the corruption is not attributable to any
+single swappable component. It most likely originates in the UNET diffusion/
+sampling loop itself on this specific `ComfyUI 0.28.0 + PyTorch (nightly,
+2.12.0.dev20260313) + Apple MPS` combination — plausibly a numerical or
+attention-kernel bug specific to how Wan2.2's architecture (3D/temporal
+attention, RoPE) is executed on MPS — rather than any configuration choice
+documented here. Confirming the exact operator responsible would require
+kernel-level debugging, which was judged not worth the investment once the
+project's video-generation strategy moved to cloud APIs (see
+`.planning/STATE.md`). The Director prompt remains a valid model-independent
+input for resubmission against a cloud video backend or any future working
+local backend.

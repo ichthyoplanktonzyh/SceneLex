@@ -3,68 +3,165 @@ gsd_state_version: 1.0
 milestone: m1
 milestone_name: 语义资源与 Director 纵向切片
 status: active
-last_updated: "2026-07-18T21:30:00.000+08:00"
+last_updated: "2026-07-19T08:00:00.000+08:00"
 ---
 
 # SceneLex — 项目活记忆
 
-> 最后更新：2026-07-18 CST
-> 更新原因：生产默认策略改为关键图先行（文生图→图片语义门→图生视频）；明确 clip 数量由语义场景与 Director 决定，文档不设限。
+> 最后更新：2026-07-19 CST
+> 更新原因：本地图生视频（Wan 2.2 5B）经五轮独立变量排除法测试全部失败，判定为
+> ComfyUI/PyTorch-MPS 底层问题，非配置可修；图生视频改为云端 API，本地专注关键帧
+> 生产。关键图底模从 SDXL 换成 Z-Image Turbo + FLUX.2 Klein 4B，均已验证通过；
+> 新增关键帧画幅转换（方形→横向）验证通过。
 
-## 当前主线
+## 当前主线（已调整为本地+云端分工）
 
 ```text
 WordSense + SceneSpec
 → Director Agent
-→ 当前视频能力的高质量 prompt
-→ 视频模型
+→ 关键图 prompt（本地 Z-Image Turbo / FLUX.2 Klein 4B 生成）
+→ 图片语义门（人物/道具/姿态/视线/构图）
+→ 画幅转换（方形关键图 → 视频目标画幅，FLUX.2 Klein Edit/Reference 能力）
+→ 图生视频（云端 API，ComfyUI Partner Node 或直连服务商）
 → 可播放视频产物
 ```
 
-Director 是核心中间层，不模拟完整动画制片厂。它负责理解词义必须怎样被看见、排除哪些相邻概念，再写成模型可以执行的英文导演提示词。当前阶段不建设独立审核模块；先跑通稳定的视频生成后端。
-
-现有WordSense与SceneSpec已经能正确表达词义。Director不得重新设计场景或增加记忆点，只做忠实渲染翻译；渲染层全局风格确定为Pixar-style 3D动画。
+Director 仍是核心中间层，负责把词义翻译成模型可执行的提示词；渲染层全局风格
+仍是 Pixar-style 3D 动画。**关键变化**：图生视频不再默认走本地 ComfyUI + Wan2.2，
+因为本地推理链已被判定不可用（见下方"本地视频推理诊断结论"）。关键帧生产仍然
+本地完成，效果已验证良好。
 
 ## 已完成
 
-- 新增 `schema/director-prompt.schema.json`。
-- 新增 `prompts/director.md`。
+- 新增 `schema/director-prompt.schema.json`、`prompts/director.md`。
 - 新增 `generic-video` 与 `wan2.2-ti2v-5b` capability profiles。
 - 新增 `tools/director.py generate/show/list`，产物版本化写入 `data/drafts/director/`。
-- 新增 Director 测试，当前6项通过。
-- 权威说明：`docs/production-workflow.md`。
-- 已为 `reluctant-01-proto-01` 生成完整 Director Prompt，三段视频提示覆盖 SceneSpec 的1–6号语义节拍。
-- 已通过本地 ComfyUI 实际运行SDXL关键图与三轮Wan 2.2生成，工作流、关键图、MP4和运行记录保存在 `data/drafts/renders/reluctant-01-proto-01/v06/`。
-- 已验证Director Prompt符合Schema；实验MP4均为合法H.264文件，生成链路可以执行并落盘。
+- 已为 `reluctant-01-proto-01` 生成完整 Director Prompt，三段视频提示覆盖 SceneSpec
+  的1–6号语义节拍。
+- **本地视频推理诊断已完结**（五轮独立变量排除法，详见
+  `data/drafts/renders/reluctant-01-proto-01/v06/RUN-NOTES.md`）：
+  文本编码器精度（fp8/fp16/GGUF Q8）、UNET 量化方式（fp16 safetensors/GGUF Q8）、
+  VAE 解码位置与精度（MPS bfloat16/CPU fp32）、动作幅度、生成模式与画幅
+  （I2V方形/T2V横向）——五个维度逐一变量隔离测试，全部复现同一种损坏特征
+  （模糊、色彩分离、条纹）。**结论：问题出在 ComfyUI 0.28.0 + PyTorch nightly
+  + Apple MPS 处理 Wan2.2 架构（很可能是3D/时序注意力或RoPE算子）这个组合本身，
+  不是任何单一可替换组件；本地不再投入排查，图生视频改走云端 API。**
+- **关键图底模验证：SDXL → Z-Image Turbo / FLUX.2 Klein 4B（均通过）**。用
+  v06 中 SDXL 曾经失败的 prompt（"少年+黑色垃圾袋"，SDXL 曾把少年画成背包女孩且
+  漏画垃圾袋）做直接对比测试：
+  - Z-Image Turbo：人物性别/服装/道具/表情全部正确，Pixar 质感良好。
+  - FLUX.2 Klein 4B：同样全部正确，且更精确地还原了"身体朝门、回头看电视"这种
+    复合空间指令，指令遵循略强于 Z-Image。
+  - 两者共用同一个 Qwen3-4B 文本编码器（原生 bf16，无需 fp8，不会重蹈 Wan2.2 的
+    精度坑）。
+  - 测试文件：`data/drafts/renders/reluctant-01-proto-01/v06/test-z-image-turbo.json`、
+    `test-flux2-klein4b.json`。
+- **关键帧画幅转换验证通过**：用 FLUX.2 Klein 4B 的 Edit/Reference 能力
+  （`ReferenceLatent` + `VAEEncode` 参考图约束），把 1024×1024 方形关键图转成
+  832×480 横向（视频目标画幅），角色/服装/道具一致性保持良好，场景做了合理扩展
+  （不是硬拉伸裁切）。132秒完成。测试文件：
+  `data/drafts/renders/reluctant-01-proto-01/v06/test-flux2-klein-reframe.json`。
 
 ## 当前能力
 
 - 正式资源：4个义项、21个场景；草稿区6个义项。
-- 本地 ComfyUI 0.28.0，MPS/32GB，已安装SDXL、IPAdapter和Wan 2.2 TI2V 5B。
-- `reluctant` 实验已覆盖I2V复合动作、I2V微动作、无首帧横向T2V三种条件。
+- 本地 ComfyUI 0.28.0，MPS/32GB M1 Max，已安装：
+  - 图像：SDXL（`disneyrealcartoonmix_v10`，逐步淘汰中）、**Z-Image Turbo**
+    （`z_image_turbo_bf16.safetensors`）、**FLUX.2 Klein 4B**
+    （`flux-2-klein-4b.safetensors`，含 Edit/Reference 能力）、IPAdapter。
+  - 视频：Wan 2.2 TI2V 5B（fp16 + GGUF Q8_0 两种精度均已测试，均判定本地不可用）。
+  - 自定义节点：`city96/ComfyUI-GGUF`（用于 Wan2.2 诊断，图像侧未依赖）。
+- ComfyUI 官方 Partner Nodes 已安装，可走云端 API：`Wan2TextToVideoApi`/
+  `Wan2ImageToVideoApi`、Kling 全系列、Luma、Runway、Flux2Pro/Max、Recraft、
+  OpenAI（含Sora2）、Gemini、Seedream 等，默认通过 comfy.org 账户额度计费
+  （`extra_data.api_key_comfy_org`），未配置真实 key，尚未实际调用。
+- `reluctant` 视频实验已覆盖 I2V复合动作、I2V微动作、无首帧横向T2V、fp16文本编码器、
+  GGUF全量化、VAE-on-CPU 六种条件，全部同一种失败特征。
 - 旧 `render-plan` / `render.py` 仍是逐 beat 文生图原型，与新 Director 并存，尚未迁移。
 
 ## 关键决策
 
 1. `SceneSpec.storyboard` 是语义节拍，不与视频clip一一对应。
-2. 生产默认关键图先行：文生图 → 图片语义门（人物/道具/姿态/视线/构图，便宜可检）→ 图生视频；`direct_t2v` 降级为强模型可靠承载单一连续事件且无跨clip一致性需求时的特例。理由：fail-fast（静态语义占验收大头，图片阶段拦截省视频成本）、跨clip一致性靠关键图结构保证、静态/时序语义分工清晰。v06实践（关键图拒稿拦截语义错误）是实证。
+2. 生产默认关键图先行：文生图 → 图片语义门 → 图生视频；`direct_t2v` 降级为特例。
 3. 模型无关指词义理解稳定；最终prompt应主动适配具体模型能力。
 4. 生成应尽早发生，不能因为预设视频昂贵而增加不必要流程。
-5. 第一版由同一个Director写prompt并查看结果，不预先拆独立Reviewer、Decision Policy或复杂Memory。
-6. clip数量不由文档或schema限制，由语义场景需要的可分离动作阶段与目标能力单次承载力共同决定；禁止机械按beat一对一拆分，也禁止为凑数增删clip。角色设定、尾帧、animatic、连续状态仍是可选工具，不是强制前置。
+5. 第一版由同一个Director写prompt并查看结果，不预先拆独立Reviewer、Decision Policy
+   或复杂Memory。
+6. clip数量由语义场景与目标能力共同决定，禁止机械按beat拆分或凑数增删。
 7. Pixar-style 3D是渲染层统一风格锚点，只进入Director/Renderer，不进入语义资源。
-8. 当前不建设独立Reviewer或审核循环；稳定生成视频是优先事项。
-9. 一次真实运行不能只记录“生成成功”，还要区分采样完成、VAE解码完成与视觉可用。
-10. `reluctant` 三轮实验在动作幅度、I2V/T2V和方形/横向画幅变化后仍出现同类条纹、色彩分离、人体断裂和漂移；不再把继续改prompt作为下一动作。
+8. 当前不建设独立Reviewer或审核循环。
+9. 一次真实运行需区分采样完成、VAE解码完成与视觉可用。
+10. `reluctant` 三轮初始实验在动作幅度、I2V/T2V和方形/横向画幅变化后仍出现同类
+    损坏；不再把继续改prompt作为下一动作。
+11. **（2026-07-19新增）图生视频改为云端 API，本地不再投入排查**。理由：五轮独立
+    变量排除法测试（文本编码器精度×3、UNET量化×2、VAE位置精度×2）均未能改变损坏
+    结果，判定为 ComfyUI/PyTorch-MPS 底层问题，继续排查性价比过低。
+12. **（2026-07-19新增）关键图底模从 SDXL 换成 Z-Image Turbo + FLUX.2 Klein 4B**。
+    理由：SDXL 指令遵循偏弱是v06关键图失败（少年→女孩、漏画道具）的根本原因；
+    两个新模型均验证通过，且共用文本编码器、原生 bf16、Apache 2.0 可商用，同时
+    绕开了 Wan2.2 踩过的 fp8-on-MPS 坑。
+13. **（2026-07-19新增）关键帧统一按方形生成，画幅转换作为独立后处理步骤**，用
+    FLUX.2 Klein 的参考图编辑能力做，不在文生图阶段直接生成目标画幅（避免生成
+    阶段和转换阶段职责混淆，也便于关键图先复用同一角色设定再按场景需要转不同
+    画幅）。
+14. **（2026-07-19新增）云端视频 API 降本策略以"减少迭代次数"为核心**，不是单纯
+    比价：关键图先行的语义门本身就是最大的省钱机制（免费本地环节拦截语义错误，
+    避免烧钱在注定失败的视频生成上）；Director 的 pass/retry 循环应分级（探索用
+    便宜档位，定稿才用贵档位）；按 scene_id+version+seed 去重缓存；不为凑时长/凑
+    clip 数扩大计费量。
 
 ## 下一步
 
-1. 使用已保存的同一份Director Prompt，在一个已知正常的视频推理后端上做对照运行，优先验证CUDA环境、可用的其他本地视频模型或更强模型。
-2. 检查当前Wan 2.2 5B权重、VAE、ComfyUI版本和Apple MPS数值兼容性，确认画面损坏来自模型权重还是本地运行时组合。
-3. 后端稳定后，重新生成 `reluctant` 的核心clip-02，并以“停顿/叹气/最小接触/缓慢行动/回望”作为语义验收标准。
-4. clip-02稳定后，再按现有Director Prompt补齐clip-01和clip-03，验证完整自动化渲染路径。
-5. 完成首个可用纵向切片后，再决定是否扩展批量调度；当前不增加审核模块。
+1. **云端视频 API 接入**：确认走 ComfyUI Partner Node（comfy.org 账户额度）还是
+   直连服务商 API（如阿里 DashScope），对比两者是否有代理加价；配置真实 API key；
+   用已保存的 Director Prompt 对 `reluctant-01-proto-01` 的 clip-02 做云端对照渲染，
+   验证同一份语义规格在正常后端上能否被正确执行。
+2. **关键图产线定稿**：Z-Image Turbo 与 FLUX.2 Klein 4B 已各自验证通过，需在更多
+   语义类型（`messy`、`almost` 等）上补测，确认不是只对"reluctant"这一个 case 生效；
+   决定两者是主备关系还是按场景类型分工。
+3. **画幅转换步骤正式纳入 Director/渲染流程**：目前是手工验证的独立 workflow，需
+   决定由 `tools/director.py` 还是新的适配器工具串起来，并补上失败重试逻辑。
+4. **成片剪辑/拼接层设计**（此前发现的空白，尚未处理）：多个 clip 生成出来后如何
+   合成一个连贯成片——转场、时长/帧率对齐、导出格式，目前没有 schema 或工具骨架，
+   仅在旧 `render.py` 路径下有"playback 组装（待建）"的占位。clip-02 云端验证通过后
+   会立刻撞上这个问题，建议提前设计最简方案（如 ffmpeg 硬切拼接，不做转场）。
+5. **云端 API 成本控制机制**：给渲染工具加显式的每场景最大重试次数/每日花费上限，
+   避免失败循环无意识烧钱；Director 的 pass/retry 循环加分级（草稿档→定稿档）。
+6. 完成首个可用纵向切片（clip-02 云端验证通过）后，再决定是否扩展批量调度；当前
+   不增加审核模块。
 
-## 当前阻塞
+## 可参考的候选模型（已评估，暂不采用）
 
-Director Prompt已经实际提交给本地视频后端，ComfyUI能够完成采样、解码和MP4封装，但三轮输出均视觉不可用。相同损坏同时出现在I2V大动作、I2V微动作和原生横向T2V，当前阻塞定位为本地 `Wan 2.2 TI2V 5B + ComfyUI 0.28.0 + Apple MPS` 推理链（或其权重/运行时组合），而不是词义场景缺失或尚未编写提示词。详见 `data/drafts/renders/reluctant-01-proto-01/v06/RUN-NOTES.md`。
+供以后需要时查阅，避免重复调研：
+
+**文生图**：
+- FLUX.2 Klein 9B（指令遵循更强，但非商用许可，仅限内部实验，不进入 `published` 产物）
+- FLUX.1 dev（12B，指令遵循强但许可非商用友好、比 Klein 4B 慢很多）
+- HiDream-O1（8B，MIT许可干净，但无 Mac/MPS 实测数据，风险未知）
+- Boogu-Image-0.1（10B，Apache 2.0，独立团队，同样无 Mac 实测，黑马备选）
+- Krea 2（12.9B，官方要求24GB+显存，对32GB机器偏重，许可需另核实）
+- Qwen-Image（20B）、HunyuanImage 3.0（80B MoE）——体量过大，32GB机器跑不动
+- SD3.5、Kolors——中等水平，无差异化优势，不如已验证的两个候选
+- Seedream 4.0（ByteDance）——ComfyUI里是云端API节点，非本地权重，跟本地选型不是一回事
+
+**图生视频**（本地，均不建议在此机器投入）：
+- Wan2.2 14B（GGUF量化）——同架构问题预期复现，且实测82分钟/2秒clip，不现实
+- LTX-2——19B，官方要求32GB+显存+CUDA 11.8+，MPS上有已知NaN问题，比Wan2.2更重更依赖CUDA
+- HunyuanVideo / Mochi / CogVideoX——CUDA-first项目，无可信MPS实测
+- `mlx-video`（Blaizzy，MLX原生非PyTorch路径）——唯一在架构上有机会绕开我们已确诊的
+  PyTorch-MPS问题的方向，因为完全不走同一条底层链路；仍是experimental阶段，值得
+  以后单独试，不是当前优先级
+
+**关键帧生成的订阅制备选通道**：
+- Codex CLI 内置 `image_gen`（调用 gpt-image-2）——ChatGPT Plus 登录即可用、不计入
+  单独API账单，但图像生成消耗配额速度是纯文本操作的3-5倍，配额按5小时窗口+每周
+  滚动；且把个人订阅用于持续产出可发布资源的生产管线存在使用条款灰色地带（非明确
+  禁止，但性质更接近企业场景）。建议只用于小规模验证/救急，不作主力生产通道。
+
+## 语言无关性理论基础（补充）
+
+**语言是附着在生活经验/语义内容上的标签，不是语义本身**——场景外化出来的语义内容
+（如"不情愿"场景里的犹豫、拖延、勉强顺从）独立于用哪种语言标注它，任何语言背景的
+使用者都能从场景本身感知这份语义。这是"场景优先于词头"方法论成立的理论根基，判断
+场景规格是否合格的标准是"换一个完全不同语言背景的人能否感知到同一份语义"，而不是
+"是否精准图解了某个 L2 单词"。详见项目记忆 `project-scenelex-mission`。

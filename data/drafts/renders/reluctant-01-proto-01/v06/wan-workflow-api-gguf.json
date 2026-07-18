@@ -1,17 +1,15 @@
 {
   "1": {
-    "class_type": "UNETLoader",
+    "class_type": "UnetLoaderGGUF",
     "inputs": {
-      "unet_name": "wan2.2_ti2v_5B_fp16.safetensors",
-      "weight_dtype": "default"
+      "unet_name": "Wan2.2-TI2V-5B-Q8_0.gguf"
     }
   },
   "2": {
-    "class_type": "CLIPLoader",
+    "class_type": "CLIPLoaderGGUF",
     "inputs": {
-      "clip_name": "umt5_xxl_fp16.safetensors",
-      "type": "wan",
-      "device": "default"
+      "clip_name": "umt5-xxl-encoder-Q8_0.gguf",
+      "type": "wan"
     }
   },
   "3": {
@@ -85,7 +83,7 @@
     "class_type": "SaveVideo",
     "inputs": {
       "video": ["11", 0],
-      "filename_prefix": "scenelex/reluctant_v06_clip02_t2v_fp16test",
+      "filename_prefix": "scenelex/reluctant_v06_clip02_t2v_ggufQ8test",
       "format": "mp4",
       "codec": "h264"
     }
