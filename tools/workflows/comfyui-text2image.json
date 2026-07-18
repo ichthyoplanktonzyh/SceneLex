@@ -1,10 +1,65 @@
 {
+  "4": {
+    "inputs": {
+      "ckpt_name": "animagine-xl-4.0.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Checkpoint加载器（简易）"
+    }
+  },
+  "10": {
+    "inputs": {
+      "vae_name": "sdxl_vae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "VAE加载器（fp16-fix, 防 MPS 黑图）"
+    }
+  },
+  "5": {
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "空Latent图像 (SDXL 原生 1024)"
+    }
+  },
+  "6": {
+    "inputs": {
+      "text": "masterpiece, high score, great score, absurdres, 1boy, teenage, short black hair, blue t-shirt, sitting on sofa, playing video game, excited, indoor living room",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Positive Prompt)"
+    }
+  },
+  "7": {
+    "inputs": {
+      "text": "lowres, bad anatomy, bad hands, text, error, missing finger, extra digits, fewer digits, cropped, worst quality, low quality, low score, bad score, average score, signature, watermark, username, blurry",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Negative Prompt)"
+    }
+  },
   "3": {
     "inputs": {
       "seed": 254472282383242,
-      "steps": 20,
-      "cfg": 8,
-      "sampler_name": "euler",
+      "steps": 28,
+      "cfg": 5,
+      "sampler_name": "euler_ancestral",
       "scheduler": "normal",
       "denoise": 1,
       "model": [
@@ -26,64 +81,64 @@
     },
     "class_type": "KSampler",
     "_meta": {
-      "title": "K采样器"
+      "title": "K采样器 (base 1024)"
     }
   },
-  "4": {
+  "11": {
     "inputs": {
-      "ckpt_name": "DreamShaper_8_pruned.safetensors"
-    },
-    "class_type": "CheckpointLoaderSimple",
-    "_meta": {
-      "title": "Checkpoint加载器（简易）"
-    }
-  },
-  "5": {
-    "inputs": {
-      "width": 512,
-      "height": 512,
-      "batch_size": 1
-    },
-    "class_type": "EmptyLatentImage",
-    "_meta": {
-      "title": "空Latent图像"
-    }
-  },
-  "6": {
-    "inputs": {
-      "text": "masterpiece, best quality, ultra-detailed, 8k, photorealistic oil painting, cinematic lighting, soft focus,\n1girl, solo, blonde wavy short hair, messy hair, floating hair, looking up, blue eyes, soft gaze, parted lips, pale skin, delicate facial features, **simple white long-sleeve top, fully covered shoulders, high neckline, modest clothing**, gold necklace with green gem pendant, upper body shot,\nbackground of cosmic space, giant glowing planet with clouds, bright light beam from planet, starry sky, bokeh, dreamy atmosphere, soft light, ethereal, fantasy aesthetic, depth of field, painterly details, smooth skin texture",
-      "clip": [
-        "4",
-        1
+      "upscale_method": "nearest-exact",
+      "width": 1536,
+      "height": 1536,
+      "crop": "disabled",
+      "samples": [
+        "3",
+        0
       ]
     },
-    "class_type": "CLIPTextEncode",
+    "class_type": "LatentUpscale",
     "_meta": {
-      "title": "CLIP Text Encode (Positive Prompt)"
+      "title": "Latent放大 → 1536 (hires)"
     }
   },
-  "7": {
+  "12": {
     "inputs": {
-      "text": "lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, artist name, deformed, disfigured, ugly, extra limbs, missing limbs, poorly drawn face, mutated, mutated hands, extra fingers, bad proportions, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, long neck, text, signature, watermark, cartoon, anime, 3d render, realistic (non-painting style)",
-      "clip": [
+      "seed": 12345,
+      "steps": 20,
+      "cfg": 5,
+      "sampler_name": "euler_ancestral",
+      "scheduler": "normal",
+      "denoise": 0.45,
+      "model": [
         "4",
-        1
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "11",
+        0
       ]
     },
-    "class_type": "CLIPTextEncode",
+    "class_type": "KSampler",
     "_meta": {
-      "title": "CLIP Text Encode (Negative Prompt)"
+      "title": "K采样器 (hires detailer, denoise 0.45)"
     }
   },
   "8": {
     "inputs": {
       "samples": [
-        "3",
+        "12",
         0
       ],
       "vae": [
-        "4",
-        2
+        "10",
+        0
       ]
     },
     "class_type": "VAEDecode",
@@ -93,7 +148,7 @@
   },
   "9": {
     "inputs": {
-      "filename_prefix": "ComfyUI",
+      "filename_prefix": "SceneLex",
       "images": [
         "8",
         0

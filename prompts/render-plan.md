@@ -11,6 +11,7 @@
 7. **beat 序列必须与场景规格完全一致**：一个不多、一个不少、编号相同。
 8. 元数据固定填 `schema_version: "1.0"`、`status: draft`；`scene_ref`、`spec_version`、`version` 照抄规格即可（工具会覆写核对）。
 9. YAML 格式：含冒号或以特殊字符开头的英文字符串整体加双引号；无引号标量内不得出现 ASCII `": "`；**可选字段没有值就完全省略，禁止写 `null`**（如 `voice_hint` 只在 tts 时提供，sfx/silence 不写该字段）。
+10. **目标是动漫向 SDXL 模型（Animagine XL），用 danbooru 标签式英文，不用完整散文句**：短标签逗号分隔，优先用 booru 已知词汇——人数标签放句首（`1boy` / `1girl` / `2girls` / `1boy, 1girl`）；表情用 booru 词（`sighing, half-closed eyes, frowning, slumped shoulders, gritted teeth`）；姿态用 booru 词（`sitting, standing, walking, leaning forward, arm outstretched, looking back, looking to the side`）；景别用 booru 词（`wide shot, cowboy shot, upper body, close-up, from side, from above`）。角色卡与环境卡也写成标签短语（如 `1boy, teenage, short black hair, medium build, blue t-shirt`），仍只写静态外观、仍是名词短语、仍禁句号。质量标签与画风词不要写进 beat（由渲染配置统一追加）。
 
 # 渲染计划 JSON Schema（输出必须通过此校验）
 

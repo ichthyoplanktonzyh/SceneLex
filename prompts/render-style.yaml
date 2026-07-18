@@ -1,10 +1,15 @@
 # 全库统一的渲染风格（内容/风格分离）
 # 计划 (render-plan) 里的 prompt 只写内容；渲染与 show 预览时把本文件追加到
 # 每个 beat 的提示词末尾。修改本文件无需重编译计划，下次渲染即生效。
+#
+# 目标模型: Animagine XL 4.0 (动漫向 SDXL)。用 danbooru 质量标签体系。
+# 换模型时同步改这里，无需重编译计划。
 positive: >-
-  flat illustration style, storybook art, clean bold outlines, soft warm
-  lighting, clear readable facial expressions and body language, simple
-  uncluttered composition
+  anime illustration, clean lineart, cel shading, soft lighting,
+  expressive readable face, clear body language, simple background,
+  masterpiece, high score, great score, absurdres
 negative: >-
-  photorealistic, text, watermark, caption, speech bubble, subtitles,
-  letters, extra limbs, deformed hands, blurry, cluttered background
+  photorealistic, realistic, 3d, text, english text, speech bubble, caption,
+  subtitles, letters, watermark, signature, username, lowres, worst quality,
+  low quality, low score, bad score, average score, bad anatomy, bad hands,
+  extra digits, fewer digits, jpeg artifacts, blurry, cluttered background
