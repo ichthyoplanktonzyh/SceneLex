@@ -1,7 +1,8 @@
 # SceneLex — 架构骨架
 
-> 最后更新：2026-07-16
+> 最后更新：2026-07-18
 > 帮助新会话快速建立对系统结构、数据流和边界的全局理解
+> 2026-07 新增：渲染管线（场景 → 皮克斯短视频）作为适配器层落地，见「渲染管线」节
 
 ## 系统身份
 
@@ -110,9 +111,32 @@ SceneLex/
 
 ### 渲染边界
 
-- SceneLex 当前只维护模型无关的语义与场景中间表示（IR）。
-- 图片、动画、视频、TTS 或交互素材都是可替换渲染后端的产物。
-- 渲染器是外部适配器，不进入 `schema/` 或正式数据目录。
+- 正式**语义资源**（`schema/`、`data/senses`、`data/scenes`）保持模型无关，绝不含厂商/模型名。
+- 图片、动画、视频、TTS 都是可替换渲染后端的产物；渲染产物落 `data/drafts/renders/`，不污染正式库。
+- 渲染器是**适配器层**：虽在本仓库内实现，但与语义层严格解耦，换模型不动语义资源。
+
+## 渲染管线（适配器层，2026-07 起）
+
+把场景规格渲染成**皮克斯 3D 风短视频（~20-25s）**。五级、模型无关、本地(M1/ComfyUI)先跑通：
+
+```text
+场景规格 + 语义骨架 + skills
+  → [0] 导演 Agent    渲染计划 IR（角色卡 + 每beat{关键帧提示词, 运动提示词, negative, 音频, 时长}）
+  → [1] 角色设定稿    皮克斯风参考图（一致性锚点）
+  → [2] 逐beat关键帧  一致皮克斯静图（Disney SDXL + IPAdapter PLUS）
+  → [3] 逐beat i2v    ~5s 会动视频（Wan2.2 TI2V-5B）
+  → [4] 拼接+音频     成片（ffmpeg + F5-TTS）
+```
+
+**相关文件**：
+- `tools/render.py`（plan/show/render 编排）、`tools/imagegen.py`（ComfyUI 图像适配器，协议无关）。
+- `prompts/render-plan.md`（导演编译）、`render-style.yaml`（统一风格）、
+  `director-skills/emotion-to-visual.md`（FACS 表情外化 skill）。
+- `schema/render-plan.schema.json`、`schema/render-manifest.schema.json`。
+- `tools/workflows/`（ComfyUI 工作流 JSON）。
+- 技术调研：`docs/render-stack-research.md`。
+
+**当前进度与设计**：见 `.planning/phases/1.3-render-pipeline/`。
 
 ## 数据不变量（见 DATA-MODEL.md）
 
