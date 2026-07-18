@@ -1,6 +1,6 @@
 # SceneLex — 约定与规范
 
-> 最后更新：2026-07-16
+> 最后更新：2026-07-18
 > 命名、格式、工作流和代码风格的权威约定
 
 ## 命名约定
@@ -55,6 +55,19 @@ audio: Come on, let's go!  # 撇号可能被特殊解析
 ```
 
 ## 工作流约定
+
+### 媒体生产约定
+
+- `SceneSpec.storyboard` 一律称为“语义节拍”，不直接称为影视镜头。
+- beat 与视频clip不要求一一对应，不以beat数推导成片时长。
+- Director输出适配当前视频能力的prompt；词义理解模型无关，prompt表达主动适配模型。
+- Director必须忠实翻译SceneSpec，不增加新情节、记忆点或替代性语义外化。
+- 默认优先`direct_t2v`；关键图I2V与拆片必须有实际控制理由。
+- 角色参考、首尾帧、animatic和连续性说明是按需工具，不是固定审批流程。
+- Director生成后先判断语义是否正确；审美不能抵消must-avoid违规。
+- 渲染层使用`Pixar-style 3D animated film`作为全局风格锚点，并同时写明可观察属性；
+  checkpoint名和模型触发词只允许出现在适配层配置或技术记录。
+- Director Prompt按版本保存，历史版本不覆盖。
 
 ### 起草流程
 

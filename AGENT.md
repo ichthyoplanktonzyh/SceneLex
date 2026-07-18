@@ -58,6 +58,8 @@ semantic skeleton + inclusion/exclusion conditions + L1 confusables
         ↓
 teaching-scene evidence specification (model-neutral IR)
         ↓
+Director Agent (semantic scene → model-adapted video prompt)
+        ↓
 renderer adapters (image / video / TTS / interactive)
         ↓
 reviewed, versioned semantic resources
@@ -92,17 +94,26 @@ learning clients, APIs, or content packages
   命名为 queue.py（遮蔽标准库）。
 - `tools/wordbook.py`：内部词目聚合视图（按词聚合本库义项与场景，view/export；
   promote 时同步词目条目）。与外部事实源 dictionary.py 职责不同，勿混淆。
-- `tools/render.py`：渲染层编排——场景规格 → 渲染计划（plan）→ 图像候选
-  （render，经 imagegen 适配器）→ playback 组装（待建）。版本目录
+- `docs/production-workflow.md`：Phase 1.3 的 Director 权威说明。Director 负责把模型无关
+  的词义与教学场景翻译为适合当前视频能力的高质量提示词；参考图、首尾帧、拆片和
+  animatic 是遇到实际控制问题时按需调用的工具。
+- `tools/director.py`：Director 编排——读取 WordSense + SceneSpec + capability profile，
+  生成版本化 `data/drafts/director/{scene_id}/v{NN}/director-prompt.yaml`。
+- `schema/director-prompt.schema.json`：轻量内部契约，记录生成策略、一个或少量视频提示词、
+  可选关键图提示词和简短语义 guardrails；不属于公开语义资源。
+- `tools/render.py`：当前早期渲染原型——场景规格 → beat 级渲染计划（plan）→ 图像候选
+  （render，经 imagegen 适配器）→ playback 组装（待建）。它尚未实现权威生产工作流。版本目录
   `data/drafts/renders/{scene_id}/v{NN}/` 永不覆盖；候选文件按字母递增，
   manifest 随渲染增量更新。
 - `tools/imagegen.py`：图像生成适配器（comfyui 协议）——加载
   `tools/workflows/` 下的工作流 API JSON，跟随采样器连线自动定位正负提示词
   节点后注入，`SCENELEX_IMG_*` 配置。模型与工作流名只进 manifest。
-- `schema/render-plan.schema.json`：渲染计划（渲染层内部 IR）。内容/风格分离：
+- `schema/render-plan.schema.json`：早期 beat 级渲染计划（现状内部 IR，不是未来 Production
+  Package 契约）。内容/风格分离：
   beat prompt 只写内容，外观集中在 characters/setting 卡片、以 `{char:id}` 与
   `{setting}` 占位符引用（展开是机械替换，保证跨 beat 一致）；全局风格在
-  `prompts/render-style.yaml`，渲染时追加，改风格无需重编译计划。
+  `prompts/render-style.yaml`，渲染时追加。后续不得直接把该 Schema 扩成供应商 prompt
+  大杂烩；先按生产工作流设计独立契约和迁移方式。
 - `schema/render-manifest.schema.json`：渲染版本的可追溯清单（渲染器/模型/
   seed/许可/选定资产/审核引用）。模型名只允许出现在 manifest，不得进场景规格。
 - `tools/workbench.py` + `tools/webui/`：本地审核工作台；文件库之上的无状态壳，
@@ -156,6 +167,18 @@ candidate → sense draft → reviewed sense → scene draft → reviewed scene 
   输入版本、版权/许可和审核结论。
 - 先验证语义与教学设计，再优化画面“影视感”。第一版可以是连续图片、动态漫画或
   简单动画；不要为了视频质量牺牲场景可观察性和概念边界。
+- `SceneSpec.storyboard` 是语义节拍，不是模型 prompt。Director 可以把多个 beat 写进一个
+  连续事件，也可以在模型确实无法承载时拆成少量 clip；禁止机械一对一转换。
+- 现有WordSense与SceneSpec是Director的完整内容输入。Director不得重新设计故事、增加所谓
+  记忆点、替换人物动机或修改语义外化；只把已有场景忠实翻译为模型可执行的视觉语言。
+- 媒体形态、时长和镜头数由语义证据决定，不默认所有词义都是固定长度的 3D 短片。
+  优先直接生成；只有结果暴露出构图、身份、终点或连续性问题时才增加相应控制。
+- Director 是第一版唯一核心智能中间层：写 prompt、查看结果、指出主要语义偏差并修正。
+  不预先拆成 Reviewer、Decision Policy 或复杂生产状态机；重复失败模式出现后再抽象。
+- 生成本身也是探索手段。不要因为预设视频昂贵而延迟生成，优先快速取得候选和反馈。
+- 渲染层全局视觉方向是`Pixar-style 3D animated film`。该高层标签与具体造型、材质、
+  灯光、色彩和表演属性共同写入`prompts/render-style.yaml`和Director Prompt，但不得进入
+  WordSense或SceneSpec。具体checkpoint、工作流和供应商能力仍只属于适配层。
 - 个性化只改变表面经验、入口和教学顺序；不得改变通用语义骨架、偷换对比词，或让
   个体化样本成为唯一概念证据。
 - 任何 API、内容包或下游导出都应区分 `draft`、`reviewed`、`published` 等发布状态，

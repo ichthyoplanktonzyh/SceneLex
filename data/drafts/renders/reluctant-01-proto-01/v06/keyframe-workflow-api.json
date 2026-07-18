@@ -1,0 +1,59 @@
+{
+  "1": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "disneyrealcartoonmix_v10.safetensors"
+    }
+  },
+  "2": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": ["1", 1],
+      "text": "modisn disney, Pixar 3D animation style, 3D animated movie still, full body shot of one teenage boy, masculine boy, short messy black hair, blue T-shirt, gray jeans, white sneakers, walking very slowly toward a front door inside a cozy living room, the boy carries one large tied black plastic garbage bag in his right hand, clearly visible garbage bag hanging beside his leg, his shoulders slump, unhappy reluctant expression, his torso faces the door but he turns his head back toward a glowing television behind him, readable reluctant body language, cinematic soft lighting, simple composition, high quality 3D render"
+    }
+  },
+  "3": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": ["1", 1],
+      "text": "girl, female, woman, long hair, backpack, school bag, handbag, empty hands, no garbage bag, 2D anime, illustration, photorealistic, live action, smiling, eager, running, anger, crying, extra people, duplicate person, extra arms, extra legs, malformed hands, fused fingers, distorted face, bad anatomy, blurry, watermark, subtitles, logo, text"
+    }
+  },
+  "4": {
+    "class_type": "EmptyLatentImage",
+    "inputs": {
+      "width": 768,
+      "height": 768,
+      "batch_size": 1
+    }
+  },
+  "5": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": ["1", 0],
+      "positive": ["2", 0],
+      "negative": ["3", 0],
+      "latent_image": ["4", 0],
+      "seed": 2026071803,
+      "steps": 30,
+      "cfg": 6.5,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1.0
+    }
+  },
+  "6": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": ["5", 0],
+      "vae": ["1", 2]
+    }
+  },
+  "7": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": ["6", 0],
+      "filename_prefix": "scenelex/reluctant_v06_clip02_keyframe_b"
+    }
+  }
+}

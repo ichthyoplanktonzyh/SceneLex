@@ -1,6 +1,6 @@
 # SceneLex — 文档体系维护规则
 
-> 最后更新：2026-07-16
+> 最后更新：2026-07-18
 > 参考 LLPlayerNext 的 GSD 文件结构体系，按 SceneLex 当前规模精简制定
 
 ---
@@ -31,7 +31,9 @@
 
 | 目录 | 存放内容 | 规则 |
 |---|---|---|
-| `docs/mvp-evaluation.md` | MVP 实验方案。 | 实验设计变化时更新 |
+| `docs/production-workflow.md` | Director中间层权威说明。 | Director职责或提示词契约变化时更新 |
+| `docs/render-stack-research.md` | 模型与 ComfyUI 技术选型记录。 | 能力事实变化时更新；不定义生产架构 |
+| `docs/mvp-evaluation.md` | 已归档的效果评估方案。 | 仅在重新启动效果研究时更新 |
 
 ## 三、Phase 生命周期
 

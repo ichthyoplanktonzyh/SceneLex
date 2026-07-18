@@ -1,43 +1,42 @@
-# Phase 1.3 上下文 — 从哪来、关键决策
+# Phase 1.3 上下文 — Director 中间层
 
 > 创建：2026-07-18
+> 简化校准：2026-07-18
 
-## 由来
+## 问题
 
-2026-07 语义基础设施成型后，用户判断渲染是下一阶段重点（决策7）。本 phase
-承接一连串产品方向决策，把渲染从"低成本实验材料"升级为"皮克斯风运动视频成片"，
-并**退役了原 MVP 学习实验**作为发布/规模化前置（决策5）。
+现有`render-plan`把SceneSpec的semantic beats直接编译为逐beat图片提示词，再尝试逐beat i2v。仓库样片质量较差；桌面Updream素材虽然审美更好，也出现少年开心出门、母亲服装变化、道具断续等问题。
 
-## 关键决策（2026-07-17 / 07-18，用户确认）
+最重要的问题不是先复制传统影视生产流程，而是：视频模型没有收到足够准确的语义导演语言。通用模型容易把`reluctant`画成sad、slow、hesitant、refuse或最后开心行动。
 
-1. **核心命题不做实验验证**（07-17）——"场景即释义"是已确立的产品前提，不是研究假设。
-   `docs/mvp-evaluation.md` 归档；学习实验不再是发布/规模化前置。→ 原 ROADMAP 1.3-1.5 退役。
-2. **人工三层审核由模型审核替代**（07-17）——审核模型宜与起草模型不同。
-3. **渲染层目标是运动视频，不是静图幻灯片**（07-18）——动作/过程/程度类词的词义活在运动里。
-4. **已验证的渲染方法（模型无关）**（07-18，用户用 B 站 updream 的 SeeDream4.5+Wan2.2 素材演示）：
-   角色设定稿 → 逐 beat 一致关键帧 → 逐 beat i2v → 拼接+音频。
-   - 跨镜头一致性靠"先出角色设定稿再逐镜头锚定"，不靠一镜到底；
-   - i2v 运动偏温和，语义主要活在关键帧的表情/姿态里——**钱砸关键帧**；
-   - 单词视频 ≈ 4-5 beat × 5s ≈ 20-25s（仍属短视频）。
-5. **全项目统一风格 = 皮克斯/迪士尼 3D 动画风**（07-18）。
-6. **导演 Agent = 语义骨架驱动的 LLM + 可插拔 skill 库**（07-18）——纯模型弱的领域用
-   沉淀好的 skill 显式指导。命门在关键帧的表情语义正确性——通用 Agent（如 updream）在此画偏，
-   这是 SceneLex 差异化价值落点。
+## 核心决策
 
-## 本会话已验证/产出（去风险）
+1. Director Agent是SceneLex当前最重要的媒体能力。
+2. 它读取WordSense + SceneSpec，把已设计语义场景翻译为当前视频能力可执行的高质量prompt。
+3. `storyboard`是semantic beats，不和clip一一对应。
+4. 默认直接T2V；关键图I2V、参考图、首尾帧、拆片和animatic按实际失败使用。
+5. 模型无关指语义理解稳定；prompt本身应适配具体模型能力。
+6. 生成要尽早发生，视频候选本身就是Director的反馈。
+7. 第一版由Director自己查看结果并修正，不预建复杂Production Package、独立Reviewer或状态机。
+8. 现有词义场景已经能正确表达词义；Director只做渲染翻译，不重新设计内容或添加记忆点。
+9. 渲染层统一采用Pixar-style 3D动画方向，该标签与可观察风格属性一起注入prompt。
 
-- ✅ **皮克斯风格**：DisneyRealCartoonMix 直出即目标质感。
-- ✅ **卡通脸跨镜头一致性成立**：IPAdapter PLUS（CLIP-vision，非 InsightFace）能锁住卡通角色。
-  推翻了"用 FaceID/InstantID/PuLID"的常见做法（对卡通脸失效，PuLID 官方明确不支持）。
-- ✅ **Wan2.2-5B 在 M1 Max 32GB 可行**：文本编码器+主模型全量载入（~16GB），
-  512²/25帧/15步约 254s（含一次性加载）；有真实运动。
-- ✅ **命门 skill v1**：`prompts/director-skills/emotion-to-visual.md`（FACS AU + 动画原理 + must-not）。
-- ⚠️ **暴露的头号问题**：IPAdapter 高权重+全身参考图会把**姿势/构图**一起搬过来，压掉提示词的
-  动作/表情。修法=降权重 / 脸部特写参考 / +ControlNet(pose)，即"身份与姿势解耦"。
+## 当前本地能力
 
-## 上游参考
+- ComfyUI 0.28.0，MPS/32GB。
+- 图像：DisneyRealCartoonMix、Animagine XL、DreamShaper。
+- 参考一致性：CLIP-ViT-H + IPAdapter Plus。
+- 视频：Wan 2.2 TI2V 5B + UMT5 + Wan VAE。
 
-- 技术调研（一手来源）：`docs/render-stack-research.md`
-- 渲染工具与提示词：`tools/render.py`、`tools/imagegen.py`、`tools/workflows/`、
-  `prompts/render-plan.md`、`prompts/render-style.yaml`、`prompts/director-skills/`
-- schema：`schema/render-plan.schema.json`、`schema/render-manifest.schema.json`
+Wan profile应指导Director缩小单clip动作；更强视频模型profile可以允许一个prompt描述完整连续事件。
+
+## 已实现
+
+- `schema/director-prompt.schema.json`
+- `prompts/director.md`
+- `prompts/video-model-profiles/generic-video.md`
+- `prompts/video-model-profiles/wan2.2-ti2v-5b.md`
+- `tools/director.py`
+- `tests/test_director.py`
+
+权威说明：`docs/production-workflow.md`。

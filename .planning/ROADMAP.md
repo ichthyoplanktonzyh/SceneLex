@@ -1,85 +1,59 @@
 # SceneLex — 路线图
 
 > 最后更新：2026-07-18
-> 当前里程碑：M1 语义资源与渲染管线纵向切片
-> 变更：原 M1「可验证的纵向实验切片」中的学习实验部分已退役（决策 2026-07-17），
-> 纵向切片终点由"对照实验"改为"渲染成皮克斯短视频"。
+> 当前里程碑：M1 语义资源与 Director 纵向切片
 
 ## 路线概览
 
 ```text
-M0 核心基础设施（已完成）
+M0 核心语义基础设施（已完成）
   ↓
-M1 语义资源与渲染管线纵向切片（← 当前位置）
+M1 Director：语义场景 → 视频提示词 → 样片（当前）
   ↓
-M2 规模化与自动化（gate：渲染管线成熟 + 语义资源基座足够）
+M2 多语义类型与自动修正
+  ↓
+M3 规模化生产与消费者集成
 ```
 
-## M0：核心基础设施 ✅
+## M0：核心语义基础设施 ✅
 
-**状态**：已完成。
+Schema、LLM 起草、多协议适配、校验、原子 promote、导出、候选队列和审核工作台已建立。正式库现有4个义项、21个场景。
 
-**交付物**：Schema 三件套 v1.0；LLM 起草管线（draft.py + llm.py，四协议）；正式库校验与原子
-promote（validate.py）；确定性导出（export.py）；扩产工具（词频表 / candidates 队列 / batch
-断点续跑 / 审核工作台）；仓库工作约束（AGENT.md）。
+## M1：Director 纵向切片 ⏳
 
-**首轮义项**：`messy-01`、`reluctant-01`、`almost-01`、`dirty-01`。
-
-## M1：语义资源与渲染管线纵向切片 ⏳
-
-**状态**：进行中。
-
-**目标**：以少数高价值义项，打通"**语义规格 → 场景证据 → 皮克斯 3D 短视频**"的完整纵向切片，
-并磨出一条模型无关的成熟渲染工作流。
-
-### Phase 1.1：补齐当前义项的场景证据 ✅（基本完成）
-
-- [x] `almost-01`、`dirty-01` 场景证据入库（现正式库 4 义项 / 21 场景）。
+目标：打通“WordSense + SceneSpec → Director Prompt → 视频模型 → 查看与修正”，证明SceneLex能把精确词义翻译成当前模型能够执行的视频语言。
 
 ### Phase 1.2：扩展义项覆盖 ⏳
 
-- 草稿区在产 6 义项：`barely / filthy / grimy / hesitant / nearly / refuse`
-  （覆盖属性、标量/程度、心理状态，含中文母语者易混词对）。
-- [ ] 审核并 promote 为正式资源（**模型审核**，决策 2026-07-17）。
+- [ ] 审核并人工决定是否 promote `barely / filthy / grimy / hesitant / nearly / refuse`。
 
-### Phase 1.3：渲染管线（场景 → 皮克斯短视频）⏳ ← 当前焦点
+### Phase 1.3：Director 中间层 ⏳ ← 当前焦点
 
-打通并磨熟五级流水线：`导演Agent → 角色设定稿 → 逐beat一致关键帧 → 逐beat i2v → 拼接+音频`。
-详见 `.planning/phases/1.3-render-pipeline/PLAN.md`。
-
-- [ ] [2] 关键帧身份/姿势解耦（头号阻塞）。
-- [ ] [0] 导演 IR 契约（扩 render-plan schema + 接 skill 库）。
-- [ ] [3] Wan i2v 运动提示词规范。
-- [ ] [4] ffmpeg 拼接 + F5-TTS 旁白组装。
-- [ ] 端到端第一条 reluctant 皮克斯短片（收口样片）。
-
-### ~~Phase 1.4 对照实验 / 1.5 修订资源~~ — 已退役
-
-按决策 2026-07-17「核心命题不做实验验证」，学习对照实验不再是发布/规模化前置；
-`docs/mvp-evaluation.md` 归档保留为历史参考。
+- [x] 定义轻量 `director-prompt` Schema。
+- [x] 建立 Director Prompt 模板和 `generic-video` / `wan2.2-ti2v-5b` capability profiles。
+- [x] 建立版本化 `tools/director.py generate/show/list`。
+- [x] 将Pixar-style 3D全局风格接入Director和旧图像渲染配置。
+- [ ] 用实际 LLM 为 `reluctant-01-proto-01` 生成第一版 Director Prompt。
+- [ ] 把 prompt 提交给本地 Wan 或可用强视频模型并查看结果。
+- [ ] 让 Director 根据结果修正 prompt，跑通最小循环。
+- [ ] 记录真实失败模式，再决定是否需要参考图、独立Reviewer或更多自动化。
 
 ### M1 退出条件
 
-- 一条端到端皮克斯短片：角色跨 beat 一致、表情语义正确（reluctant 不被画成 annoyed/energetic）、
-  运动连贯、音频对齐。
-- 渲染工作流每一级都是可替换适配器（本地/云端可切换），导演 IR 契约成文。
-- 语义资源基座扩至可支撑批量渲染（若干义项 + 场景组）。
+- `reluctant` 至少有一个语义正确的视频候选：明确任务、可见抗拒、可能仍执行，不误画为 eager / hesitant / refuse。
+- Director Prompt 可针对不同 capability profile 改写，但不改变 WordSense / SceneSpec。
+- Director忠实翻译现有场景，不增加新故事；所有输出保持统一Pixar-style 3D方向。
+- 直接生成、关键图 I2V、拆片是按需策略，不成为固定管线。
 
-## M2：规模化与自动化 🔒
+## M2：多语义类型与自动修正 🔒
 
-**进入条件**：渲染管线成熟（成片工作流可复用）+ 语义资源基座足够。
-（**不再**以学习实验通过为 gate。）
+- 用 `messy`、`almost` 验证不同语义类型的提示词写法。
+- 让 Director 读取生成结果并输出简短 `pass/retry + problem + revision`。
+- 仅把稳定重复的失败模式沉淀为 skill 或独立Reviewer，不预先机械拆层。
 
-**候选方向**：扩展义项规模；语义场景编译器（起草→模型审核→渲染全自动化）；批量出片；
-个性化渲染路径。
+## M3：规模化生产与消费者集成 🔒
 
-**明确不在 M2 承诺内**：完整自适应学习产品；商业化、多用户、云同步。
-
-## 依赖关系
-
-```text
-Phase 1.1(补齐,✅) ─┬─→ Phase 1.2(扩展义项, 模型审核)
-                    └─→ Phase 1.3(渲染管线) ──→ M1 收口(端到端样片) ──→ M2 gate
-```
-
-Phase 1.2 与 1.3 并行：语义扩产与渲染管线打通同时推进。
+- 批量 Director Prompt 与媒体生成；
+- 可追溯版本、选择与许可；
+- 资源包、播放器或 API 的最小消费者集成；
+- 可选个性化场景表面和效果评估。

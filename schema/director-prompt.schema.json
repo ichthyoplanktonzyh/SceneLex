@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scenelex.org/schema/director-prompt.schema.json",
+  "title": "SceneLex Director Prompt",
+  "description": "导演中间层输出：把语义场景翻译为适合目标视频能力的高质量提示词。内部草稿契约，不属于公开语义资源。",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "scene_ref",
+    "spec_version",
+    "version",
+    "status",
+    "profile",
+    "style",
+    "strategy",
+    "semantic_guardrails",
+    "video_prompts"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "scene_ref": {
+      "type": "string",
+      "pattern": "^[a-z][a-z_]*-[0-9]{2}-(proto|contrast|counter|boundary|transfer)-[0-9]{2}$"
+    },
+    "spec_version": { "type": "integer", "minimum": 1 },
+    "version": { "type": "integer", "minimum": 1 },
+    "status": { "const": "draft" },
+    "profile": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]*$",
+      "description": "用于编译提示词的视频能力配置标识；不是语义资源字段"
+    },
+    "style": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]*$",
+      "description": "渲染层全局风格配置标识；不得写入语义资源"
+    },
+    "strategy": {
+      "enum": ["direct_t2v", "image_guided_i2v", "split_clips"],
+      "description": "优先选择最简单的可行生成方式"
+    },
+    "director_note": {
+      "type": "string",
+      "description": "简短说明为何选择该策略；不写冗长制片分析"
+    },
+    "semantic_guardrails": {
+      "type": "object",
+      "required": ["must_show", "must_avoid"],
+      "additionalProperties": false,
+      "properties": {
+        "must_show": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 3 }
+        },
+        "must_avoid": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 3 }
+        }
+      }
+    },
+    "video_prompts": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["id", "source_beats", "duration_hint", "prompt"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^clip-[0-9]{2}$" },
+          "source_beats": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "integer", "minimum": 1 }
+          },
+          "duration_hint": { "type": "number", "minimum": 2, "maximum": 30 },
+          "image_prompt": {
+            "type": "string",
+            "minLength": 20,
+            "description": "仅当策略需要先生成关键图时提供"
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 40,
+            "description": "可直接提交给目标视频能力的英文提示词"
+          },
+          "negative_prompt": { "type": "string" }
+        }
+      }
+    }
+  }
+}

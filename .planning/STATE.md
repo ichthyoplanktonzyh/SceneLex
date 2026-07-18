@@ -1,82 +1,70 @@
 ---
 gsd_state_version: 1.0
 milestone: m1
-milestone_name: 语义资源与渲染管线纵向切片
+milestone_name: 语义资源与 Director 纵向切片
 status: active
-last_updated: "2026-07-18T17:00:00.000+08:00"
+last_updated: "2026-07-18T19:10:00.000+08:00"
 ---
 
 # SceneLex — 项目活记忆
 
 > 最后更新：2026-07-18 CST
-> 更新原因：产品方向变化维护——学习实验退役、渲染管线成为当前主线（见「最近重要决策」）。
+> 更新原因：完成 reluctant Director 纵向切片与本地 ComfyUI 三轮真实生成。
 
-## 当前位置
+## 当前主线
 
-- **当前执行主线**：**Phase 1.3 渲染管线** — 打通"场景规格 → 皮克斯 3D 风短视频（~20-25s）"
-  的模型无关成熟工作流。本地(M1 Max/ComfyUI)先跑通，之后换云端 API 或本地模型只替换适配器。
-- **并行副线**：语义资源扩产 — 草稿区 6 个新义项在产（`barely/filthy/grimy/hesitant/nearly/refuse`）。
-- **重大框架变化**：原 M1「可验证的纵向实验切片」的**学习实验部分已退役**（决策5）；
-  纵向切片的终点从"对照实验"改为"渲染成皮克斯短视频"。
+```text
+WordSense + SceneSpec
+→ Director Agent
+→ 当前视频能力的高质量 prompt
+→ 视频模型
+→ 可播放视频产物
+```
 
-## 资源规模
+Director 是核心中间层，不模拟完整动画制片厂。它负责理解词义必须怎样被看见、排除哪些相邻概念，再写成模型可以执行的英文导演提示词。当前阶段不建设独立审核模块；先跑通稳定的视频生成后端。
 
-| 资源类型 | 正式库 | 草稿区 |
-|---|---|---|
-| 义项 (senses) | 4 (`almost/dirty/messy/reluctant-01`) | 6 (`barely/filthy/grimy/hesitant/nearly/refuse-01`) |
-| 场景 (scenes) | 21 | 6 义项各有草稿场景 |
-| 渲染产物 (renders) | — | `reluctant-01-proto-01`（v03 SD1.5基线 / v04 Animagine） |
+现有WordSense与SceneSpec已经能正确表达词义。Director不得重新设计场景或增加记忆点，只做忠实渲染翻译；渲染层全局风格确定为Pixar-style 3D动画。
 
-## 渲染管线状态（Phase 1.3）
+## 已完成
 
-五级：`导演Agent → 角色设定稿 → 逐beat一致关键帧 → 逐beat i2v(Wan) → 拼接+音频`
+- 新增 `schema/director-prompt.schema.json`。
+- 新增 `prompts/director.md`。
+- 新增 `generic-video` 与 `wan2.2-ti2v-5b` capability profiles。
+- 新增 `tools/director.py generate/show/list`，产物版本化写入 `data/drafts/director/`。
+- 新增 Director 测试，当前6项通过。
+- 权威说明：`docs/production-workflow.md`。
+- 已为 `reluctant-01-proto-01` 生成完整 Director Prompt，三段视频提示覆盖 SceneSpec 的1–6号语义节拍。
+- 已通过本地 ComfyUI 实际运行SDXL关键图与三轮Wan 2.2生成，工作流、关键图、MP4和运行记录保存在 `data/drafts/renders/reluctant-01-proto-01/v06/`。
+- 已验证Director Prompt符合Schema；实验MP4均为合法H.264文件，生成链路可以执行并落盘。
 
-| 级 | 状态 |
-|---|---|
-| [0] 导演 Agent | 🟡 设计好未接线（render-plan 雏形 + emotion-to-visual skill v1） |
-| [1] 角色设定稿 | 🟡 能力验证（Disney SDXL 直出皮克斯角色） |
-| [2] 逐beat关键帧 | 🟡 机制通未调好（一致性✅ 风格✅，**姿势/表情解耦未解**） |
-| [3] 逐beat i2v | 🟢 栈验证（Wan2.2-5B M1 可行，皮克斯关键帧→i2v 验证中） |
-| [4] 拼接+音频 | 🔴 未搭 |
+## 当前能力
 
-详见 `.planning/phases/1.3-render-pipeline/PLAN.md`。
+- 正式资源：4个义项、21个场景；草稿区6个义项。
+- 本地 ComfyUI 0.28.0，MPS/32GB，已安装SDXL、IPAdapter和Wan 2.2 TI2V 5B。
+- `reluctant` 实验已覆盖I2V复合动作、I2V微动作、无首帧横向T2V三种条件。
+- 旧 `render-plan` / `render.py` 仍是逐 beat 文生图原型，与新 Director 并存，尚未迁移。
 
-## 已完成事项（基础设施与语义层，稳定）
+## 关键决策
 
-- ✅ Schema 三件套 v1.0（word-sense / scene-spec / resource-bundle）。
-- ✅ 语义工具链：draft/validate/export/llm（四协议）、词频表、candidates 队列、batch 断点续跑、审核工作台。
-- ✅ 五类场景证据模型（prototype/contrast/counterexample/boundary/transfer）。
-- ✅ 渲染层雏形：`tools/render.py`（plan/show/render）、`tools/imagegen.py`（ComfyUI 适配器）、
-  render-plan/render-style/render-manifest schema。
-- ✅ 渲染技术调研（一手来源）：`docs/render-stack-research.md`。
-- ✅ 命门 skill v1：`prompts/director-skills/emotion-to-visual.md`（FACS + 动画原理 + must-not）。
+1. `SceneSpec.storyboard` 是语义节拍，不与视频clip一一对应。
+2. Director默认 `direct_t2v`；关键图I2V和拆片只在模型/结果需要时使用。
+3. 模型无关指词义理解稳定；最终prompt应主动适配具体模型能力。
+4. 生成应尽早发生，不能因为预设视频昂贵而增加不必要流程。
+5. 第一版由同一个Director写prompt并查看结果，不预先拆独立Reviewer、Decision Policy或复杂Memory。
+6. 角色设定、首尾帧、animatic、连续状态都是可选工具，不是强制前置。
+7. Pixar-style 3D是渲染层统一风格锚点，只进入Director/Renderer，不进入语义资源。
+8. 当前不建设独立Reviewer或审核循环；稳定生成视频是优先事项。
+9. 一次真实运行不能只记录“生成成功”，还要区分采样完成、VAE解码完成与视觉可用。
+10. `reluctant` 三轮实验在动作幅度、I2V/T2V和方形/横向画幅变化后仍出现同类条纹、色彩分离、人体断裂和漂移；不再把继续改prompt作为下一动作。
 
-## 下一步工作
+## 下一步
 
-1. **[2] 关键帧解耦（头号阻塞）**：降 IPAdapter 权重 / 脸部特写参考 / 加 ControlNet(openpose)，
-   让姿势/表情跟提示词走。
-2. **[0] 导演 IR 契约**：为"皮克斯 + 运动提示词 + 表情线索"扩 render-plan schema；接入 skill 库。
-3. **[3][4]** i2v 运动提示词规范 + ffmpeg/F5-TTS 组装。
-4. 端到端产出第一条完整 reluctant 皮克斯短片（Phase 1.3 收口样片）。
-5. **副线**：草稿区 6 义项审核 promote（模型审核，决策6）。
+1. 使用已保存的同一份Director Prompt，在一个已知正常的视频推理后端上做对照运行，优先验证CUDA环境、可用的其他本地视频模型或更强模型。
+2. 检查当前Wan 2.2 5B权重、VAE、ComfyUI版本和Apple MPS数值兼容性，确认画面损坏来自模型权重还是本地运行时组合。
+3. 后端稳定后，重新生成 `reluctant` 的核心clip-02，并以“停顿/叹气/最小接触/缓慢行动/回望”作为语义验收标准。
+4. clip-02稳定后，再按现有Director Prompt补齐clip-01和clip-03，验证完整自动化渲染路径。
+5. 完成首个可用纵向切片后，再决定是否扩展批量调度；当前不增加审核模块。
 
-## 最近重要决策
+## 当前阻塞
 
-1. **2026-07-17** — **核心命题不做实验验证**：「场景即释义」是已确立产品前提，非研究假设；
-   `docs/mvp-evaluation.md` 归档；学习实验不再是发布/规模化前置。→ 原 ROADMAP 1.3-1.5 退役。
-2. **2026-07-17** — **人工三层审核由模型审核替代**（审核模型宜与起草模型不同）。
-3. **2026-07-18** — **渲染层目标=运动视频**（非静图幻灯片）；**统一皮克斯 3D 风**。
-4. **2026-07-18** — **已验证渲染方法（模型无关）**：设定稿→一致关键帧→i2v→拼接；
-   一致性靠设定稿锚定；语义活在关键帧（钱砸关键帧）；单词视频~20-25s。
-5. **2026-07-18** — **导演 Agent = 语义骨架 + 可插拔 skill 库**；命门=关键帧表情语义正确性（差异化落点）。
-6. **2026-07**（早期，仍有效）— 资源是核心、产品是消费者；正式资源不含厂商/模型名；生成层模型无关。
-
-## 当前阻塞项
-
-- **[2] 关键帧的身份/姿势解耦**：IPAdapter 高权重会把参考图姿势一起搬来，压掉动作/表情。修法已明确，待做。
-
-## 指标
-
-- STATE.md 维护目标：≤ 200 行。
-- Phase 1.3 收口：一条端到端皮克斯短片（角色一致 + 表情语义对 + 运动连贯 + 音频对齐）。
-- 语义资源：正式义项 4，草稿 6 扩产中。
+Director Prompt已经实际提交给本地视频后端，ComfyUI能够完成采样、解码和MP4封装，但三轮输出均视觉不可用。相同损坏同时出现在I2V大动作、I2V微动作和原生横向T2V，当前阻塞定位为本地 `Wan 2.2 TI2V 5B + ComfyUI 0.28.0 + Apple MPS` 推理链（或其权重/运行时组合），而不是词义场景缺失或尚未编写提示词。详见 `data/drafts/renders/reluctant-01-proto-01/v06/RUN-NOTES.md`。

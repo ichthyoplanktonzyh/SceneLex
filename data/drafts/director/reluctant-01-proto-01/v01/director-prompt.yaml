@@ -1,0 +1,96 @@
+schema_version: "1.0"
+scene_ref: reluctant-01-proto-01
+spec_version: 2
+version: 1
+status: draft
+profile: wan2.2-ti2v-5b
+style: pixar-3d
+strategy: split_clips
+director_note: >
+  Preserve the existing semantic scene and divide it into three short, visually
+  legible actions. The first production pass renders clip-02 because hesitation,
+  minimal contact, slow compliance, and looking back carry the target meaning.
+semantic_guardrails:
+  must_show:
+    - The boy is absorbed in a video game before the request.
+    - His mother gives him a tied trash bag and points toward the door.
+    - He pauses, sighs, slumps, and keeps his attention on the game.
+    - He eventually takes the bag with minimal contact and moves toward the door slowly.
+    - He looks back at the game while already carrying out the task.
+  must_avoid:
+    - Do not turn reluctance into refusal, anger, fear, sadness, or laziness.
+    - Do not add a new conflict, accident, character, location, or story outcome.
+    - Do not make the boy eager, energetic, smiling, or immediately compliant.
+video_prompts:
+  - id: clip-01
+    source_beats: [1, 2]
+    duration_hint: 4
+    image_prompt: >
+      Pixar-style 3D animated feature film, polished expressive character animation,
+      warm cinematic family-film lighting, cozy lived-in living room, medium-wide shot.
+      A fourteen-year-old boy with short messy black hair, a blue T-shirt, gray jeans,
+      and white sneakers sits forward on a sofa, excited and completely absorbed in a
+      video game. His mother has just entered behind him holding a tied white trash bag.
+      Clear staging, readable silhouettes, consistent proportions, no text.
+    prompt: >
+      Pixar-style 3D animated feature film. In one continuous medium-wide shot, a
+      fourteen-year-old boy leans forward on the sofa, playing a video game with quick,
+      excited controller movements and eyes fixed on the glowing screen. His mother
+      walks into the living room carrying a tied white trash bag, places it beside his
+      feet, then calmly points toward the front door. He does not react yet. Warm
+      cinematic lighting, restrained natural motion, stable camera, consistent faces
+      and anatomy, no cuts, no captions.
+    negative_prompt: >
+      2D anime, photorealistic live action, eager compliance, angry confrontation,
+      extra people, extra limbs, malformed hands, morphing face, camera shake, fast
+      zoom, scene change, subtitles, logos, text.
+  - id: clip-02
+    source_beats: [3, 4, 5]
+    duration_hint: 5
+    image_prompt: >
+      Pixar-style 3D animated feature film, polished expressive character animation,
+      warm cinematic family-film lighting, cozy living room leading to a front door,
+      medium-wide three-quarter shot. A fourteen-year-old boy with short messy black
+      hair, a blue T-shirt, gray jeans, and white sneakers stands reluctantly halfway
+      between the sofa and the door. His shoulders slump and his mouth turns down. His
+      body faces the door but his head and eyes look back longingly at the glowing game
+      screen. He holds a tied white trash bag loosely with only two fingers, arm extended
+      away from his body; the controller rests on the sofa. His mother remains quietly
+      in the background. Strong readable body language, stable anatomy, no text.
+    prompt: >
+      Pixar-style 3D animated feature film. One continuous medium-wide shot in a cozy
+      living room. The teenage boy freezes for a brief beat, his shoulders sink, and he
+      releases one long visible sigh while his eyes remain on the video game. Very
+      slowly he sets the controller on the sofa, rises with obvious hesitation, and
+      lifts the tied trash bag using only two fingers, keeping his arm extended away.
+      He turns his body toward the front door but keeps his head looking back at the
+      glowing game screen. Then he takes two tiny dragging steps toward the door and
+      glances back once more. He is complying, not refusing; his reluctance is expressed
+      only through pause, sigh, slumped posture, minimal contact, slow steps, and the
+      backward glance. Restrained natural motion, stable camera, consistent character,
+      face, clothing, bag, and room, no cuts, no captions.
+    negative_prompt: >
+      2D anime, photorealistic live action, smiling, eager movement, running, refusal,
+      dropping the bag, anger, crying, fear, slapstick, exaggerated acting, extra people,
+      duplicate body, extra limbs, malformed hands, fused fingers, morphing face or
+      clothes, changing room, camera shake, fast zoom, scene cut, subtitles, logos, text.
+  - id: clip-03
+    source_beats: [6]
+    duration_hint: 3
+    image_prompt: >
+      Pixar-style 3D animated feature film, warm cinematic family-film lighting, view
+      from the cozy living room toward the open front door. The teenage boy is just
+      leaving with the tied white trash bag, still slumped. His mother stands behind
+      him with an affectionate, knowing expression, gently shaking her head. Stable
+      character design, readable silhouettes, no text.
+    prompt: >
+      Pixar-style 3D animated feature film. From a stable medium shot inside the living
+      room, the slumped teenage boy reluctantly crosses the doorway carrying the tied
+      trash bag and disappears outside. His mother watches him go, gently shakes her
+      head with an affectionate half-smile, then gives one small knowing shrug toward
+      camera. Warm cinematic lighting, restrained motion, consistent faces and anatomy,
+      no cut, no captions.
+    negative_prompt: >
+      2D anime, photorealistic live action, anger, ridicule, argument, new character,
+      extra limbs, malformed hands, morphing face, camera shake, scene change, subtitles,
+      logos, text.

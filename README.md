@@ -44,16 +44,26 @@ reviewed / published resource bundle
 
 渲染模型、TTS、图片、视频、HTTP 服务和学习者数据都在适配器或消费者侧。它们可以引用稳定的 `sense_id`、`scene_id` 和资源版本，但不能反过来改变核心词义。
 
+`storyboard` 是语义节拍，不要求与视频 clip 一一对应。进入渲染前，Director Agent
+理解词义证据和相邻概念边界，再根据当前视频能力把场景翻译为一个或少量可直接提交的
+高质量提示词。参考图、首尾帧、拆片和 animatic 都是按需工具，不是固定流程。权威说明见
+[docs/production-workflow.md](docs/production-workflow.md)。
+
+当前渲染层统一使用`Pixar-style 3D animated film`作为全局视觉方向。该风格只进入Director
+Prompt和渲染配置；WordSense与SceneSpec保持风格无关，现有词义场景内容不由Director改写。
+
 ## 目录结构
 
 ```text
-schema/                      核心公开数据契约 (词义/场景/资源包/渲染计划/渲染清单)
+schema/                      公开语义契约 + 渲染层内部原型契约
 data/senses/                 正式词义资源
 data/scenes/{sense_id}/      正式场景证据
 data/drafts/                 隔离草稿 (含 renders/{scene_id}/v{NN}/ 渲染版本)
 prompts/                     LLM 起草/审核/渲染计划模板与风格配置
+docs/                       生产工作流、技术选型与归档评估
 tools/draft.py               起草与发布前编排
 tools/review.py              模型审核 (可选质量参考)
+tools/director.py            语义场景 → 模型适配的视频提示词
 tools/render.py              渲染层编排 (plan / show / render / assemble)
 tools/llm.py                 多协议 LLM 适配器
 tools/validate.py            正式库发布门
@@ -93,6 +103,9 @@ python3 tools/draft.py list
 python3 tools/review.py dirty-01                         # 模型审核 (可选参考, 写审核记录)
 python3 tools/review.py --all                            # 审核草稿区全部义项
 python3 tools/draft.py promote dirty-01                  # 隔离校验后原子入库; 审核可选不阻塞
+python3 tools/director.py generate reluctant-01-proto-01 # 场景 → 通用视频模型提示词
+python3 tools/director.py generate reluctant-01-proto-01 --profile wan2.2-ti2v-5b
+python3 tools/director.py show reluctant-01-proto-01     # 查看最新视频提示词
 python3 tools/render.py plan reluctant-01-proto-01       # 场景规格 → 渲染计划 (新版本目录)
 python3 tools/render.py show reluctant-01-proto-01       # 预览展开后的图像提示词与音频指令
 python3 tools/render.py render reluctant-01-proto-01     # 经 ComfyUI 渲染图像候选 + manifest
@@ -195,7 +208,8 @@ export SCENELEX_LLM_MODEL=deepseek-v4-pro
 “场景即释义”方法已确立为产品前提，学习实验不再是规模化的前置条件。近期路线：
 
 ```text
-渲染适配器层（场景规格 → 图片序列 / TTS → 可播放资源）
+Director 中间层（语义场景 → 当前视频能力的高质量提示词）
+→ 本地 ComfyUI 或云端视频模型快速生成、查看与修正
 → 模型审核（可选质量参考，工作台一键运行）
 → 批量扩产（candidates 队列 + batch 起草）
 → 资源包导出与最小消费端 demo

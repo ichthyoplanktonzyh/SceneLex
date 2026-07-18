@@ -1,15 +1,21 @@
-# 全库统一的渲染风格（内容/风格分离）
-# 计划 (render-plan) 里的 prompt 只写内容；渲染与 show 预览时把本文件追加到
-# 每个 beat 的提示词末尾。修改本文件无需重编译计划，下次渲染即生效。
-#
-# 目标模型: Animagine XL 4.0 (动漫向 SDXL)。用 danbooru 质量标签体系。
-# 换模型时同步改这里，无需重编译计划。
+# SceneLex 全库统一渲染风格。风格只属于 Director / Renderer，绝不进入 WordSense 或 SceneSpec。
+# `director_instruction` 注入 Director 提示模板；`positive` / `negative` 兼容旧 render.py 图像流程。
+id: pixar-3d
+director_instruction: >-
+  Use a Pixar-style 3D animated film look as the primary visual direction:
+  appealing stylized characters, expressive readable eyes and brows, clear
+  exaggerated but believable body language, warm cinematic family-film
+  lighting, polished 3D materials, rich color, strong visual storytelling,
+  humorous and emotionally readable staging. Preserve the exact characters,
+  setting, actions, causality, and semantic evidence already specified by the
+  SceneSpec; style the existing scene, do not invent a new story.
 positive: >-
-  anime illustration, clean lineart, cel shading, soft lighting,
-  expressive readable face, clear body language, simple background,
-  masterpiece, high score, great score, absurdres
+  Pixar-style 3D animated film, appealing stylized 3D characters,
+  expressive readable eyes and brows, clear exaggerated body language,
+  warm cinematic family-film lighting, polished 3D materials, rich color,
+  strong visual storytelling, emotionally readable staging, high detail
 negative: >-
-  photorealistic, realistic, 3d, text, english text, speech bubble, caption,
-  subtitles, letters, watermark, signature, username, lowres, worst quality,
-  low quality, low score, bad score, average score, bad anatomy, bad hands,
-  extra digits, fewer digits, jpeg artifacts, blurry, cluttered background
+  2d anime, flat illustration, cel shading, photorealistic live action,
+  plastic toy render, text, english text, speech bubble, caption, subtitles,
+  letters, watermark, signature, username, lowres, bad anatomy, bad hands,
+  extra digits, fewer digits, jpeg artifacts, blurry, unreadable expression

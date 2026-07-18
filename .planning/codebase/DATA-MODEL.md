@@ -1,6 +1,6 @@
 # SceneLex — 数据模型与不变量
 
-> 最后更新：2026-07-16
+> 最后更新：2026-07-18
 > 记录 Schema 版本、关键数据实体、ID 规则和不变量
 
 ## Schema 版本
@@ -10,6 +10,9 @@
 | `word-sense.schema.json` | 1.0 | stable |
 | `scene-spec.schema.json` | 1.0 | stable |
 | `resource-bundle.schema.json` | 1.0 | stable |
+| `render-plan.schema.json` | 1.0 | legacy prototype |
+| `render-manifest.schema.json` | 1.0 | prototype trace manifest |
+| `director-prompt.schema.json` | 1.0 | internal draft |
 
 ## 核心实体
 
@@ -54,7 +57,7 @@
 | `contrast_relation` | 与 contrast_target 的真实逻辑关系（7 种枚举） |
 | `transfer_dimensions` | 迁移场景相对原型改变的表面维度（≥2） |
 | `teaching_evidence` | 场景中可观察线索对词义命题或边界判断的支持关系 |
-| `storyboard` | 分镜数组：beat → visual + audio + purpose |
+| `storyboard` | 语义节拍：beat → visual + audio + purpose；不是影视镜头表 |
 | `learning_tasks` | 五种任务类型：scene_recognition / contrast_choice / listen_and_match / produce / transfer_judgment |
 
 ### ResourceBundle（资源包）
@@ -77,8 +80,8 @@
 | 状态 | 含义 | 可导出 |
 |---|---|---|
 | `draft` | 起草中，未审核 | 否 |
-| `reviewed` | 专家审核通过，未经过学习实验 | 是（默认导出包含） |
-| `published` | 实验验证通过，来源可追溯 | 是 |
+| `reviewed` | 语言、语义、场景和教学质量已审核 | 是（默认导出包含） |
+| `published` | 来源与生产可追溯、任务可评分、所需媒体通过 QC | 是 |
 | `deprecated` | 已废弃，保留引用兼容 | 否 |
 
 ## 内容不变量
@@ -94,6 +97,22 @@
 9. 原型场景通常遵循"先概念体验、后目标声音命名"的声画顺序。
 10. `storyboard` 必须 ≥ 2 个节拍。
 11. `learning_tasks` 必须 ≥ 1 个任务。选择题必须有 `choices` 和 `expected_answer`，开放输出必须有 `scoring_note`。
+
+## DirectorPrompt（内部草稿）
+
+文件：`data/drafts/director/{scene_id}/v{NN}/director-prompt.yaml`，Schema：`director-prompt.schema.json`。
+
+| 字段 | 职责 |
+|---|---|
+| `profile` | 当前视频能力说明的标识 |
+| `style` | 渲染层全局风格标识，当前为`pixar-3d` |
+| `strategy` | direct_t2v / image_guided_i2v / split_clips |
+| `video_prompts` | 一个或少量可直接提交的英文视频prompt |
+| `image_prompt` | I2V需要时的可选关键图prompt |
+| `source_beats` | prompt覆盖的semantic beats；全体beat至少覆盖一次 |
+| `semantic_guardrails` | 简短must-show与must-avoid，供快速查看结果 |
+
+该契约不是公开资源，不试图描述完整制片过程。Director不得通过该契约改写SceneSpec内容。旧`render-plan`只描述现有逐beat文生图实现，后续按Director接入结果决定迁移。
 
 ## YAML 格式约定（见 CONVENTIONS.md）
 
