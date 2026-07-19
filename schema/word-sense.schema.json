@@ -13,7 +13,12 @@
         "required": ["schema_version"]
       },
       "then": {
-        "required": ["inventory", "semantic_identity", "inventory_source_entries"]
+        "required": [
+          "inventory",
+          "semantic_identity",
+          "inventory_source_entries",
+          "semantic_revision"
+        ]
       }
     }
   ],
@@ -88,7 +93,12 @@
     "version": {
       "type": "integer",
       "minimum": 1,
-      "description": "该稳定义项 ID 下的内容版本"
+      "description": "该稳定义项 ID 下的内容版本; 措辞、拼写、格式、解释等不改变语义契约的修改都递增它"
+    },
+    "semantic_revision": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "语义契约修订号; 只在语义身份、成立条件、边界、causativity、valency、参与者角色或视觉证据要求发生实质变化时人工递增。Scene 通过 sense_revision 绑定它, 普通 version 变化不会使 Scene 失效"
     },
     "status": {
       "type": "string",
