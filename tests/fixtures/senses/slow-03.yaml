@@ -4,6 +4,7 @@
 schema_version: '1.1'
 language: en
 version: 1
+semantic_revision: 1
 status: draft
 id: slow-03
 word: slow

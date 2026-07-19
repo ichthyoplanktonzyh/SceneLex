@@ -35,6 +35,7 @@ import yaml
 from jsonschema import Draft202012Validator
 
 import llm
+import revisions
 
 ROOT = Path(__file__).resolve().parent.parent
 PROMPTS = ROOT / "tools" / ".." / "prompts"
@@ -284,6 +285,8 @@ def apply_inventory_fields(doc, inventory_doc, inventory_sense):
 
     signature = inventory_sense.get("semantic_signature") or {}
     doc["schema_version"] = "1.1"
+    # 新起草的义项一律是第 1 版语义契约; 之后的语义变化由人工 bump。
+    doc["semantic_revision"] = revisions.NEW_SENSE_SEMANTIC_REVISION
     doc["language"] = inventory_doc.get("language")
     doc["id"] = inventory_sense.get("id")
     doc["word"] = inventory_sense.get("lemma")
@@ -364,6 +367,8 @@ def draft_one_sense(sense_id, inventory_doc, entries, force=False):
     # 直接覆盖锁定字段只会让这份误解通过校验并落盘, 后面的内容却全是按错误
     # 理解写的。宁可失败, 也不要一份"字段正确、内容跑偏"的草稿。
     drift = inventory_module.detect_identity_drift(doc, inventory_doc, inventory_sense)
+    # semantic_revision 也是权威字段: 模型可以不写, 但不能自己决定语义契约版本。
+    drift += revisions.detect_sense_revision_drift(doc)
     if drift:
         path = _dump_failure("invalid", f"{sense_id}-identity-drift", blocks[0])
         detail = "\n".join(
@@ -515,6 +520,107 @@ def _legacy_sense(args, target):
 
 # ---------------------------------------------------------------- scenes
 
+class SceneDraftError(RuntimeError):
+    """单个场景起草失败; 消息已包含场景标识与失败阶段。"""
+
+
+def load_scene_source_sense(sense_id, sense_path):
+    """读取场景所依赖的 WordSense, 返回 (文档, semantic_revision)。
+
+    新场景必须绑定一个明确的语义契约修订: 只有 inventory-driven 的 1.1 义项才有
+    semantic_revision, legacy 1.0 义项没有可绑定的依赖。这个检查放在调用模型之前,
+    宁可不生成, 也不产出一份无法追溯依赖的场景。
+    """
+    try:
+        doc = yaml.safe_load(read(sense_path))
+    except yaml.YAMLError as exc:
+        raise SceneDraftError(
+            f"[{sense_id}] 读取阶段失败: 词义规格 YAML 解析失败: {exc}"
+        ) from exc
+    if not isinstance(doc, dict):
+        raise SceneDraftError(
+            f"[{sense_id}] 读取阶段失败: 词义规格的 YAML 根节点必须是对象"
+        )
+    if doc.get("schema_version") != "1.1":
+        raise SceneDraftError(
+            f"[{sense_id}] 依赖阶段失败: 词义 {_rel(sense_path)} 的 schema_version "
+            f"是 {doc.get('schema_version')!r}, 没有语义契约修订可绑定。\n"
+            "新场景只能从 inventory-driven 的 WordSense 1.1 起草; 请先运行:\n"
+            f"  python3 tools/inventory.py approve {sense_id.rsplit('-', 1)[0]}\n"
+            f"  python3 tools/draft.py sense {sense_id}"
+        )
+    revision = revisions.get_wordsense_semantic_revision(doc)
+    if revision is None:
+        raise SceneDraftError(
+            f"[{sense_id}] 依赖阶段失败: 词义 {_rel(sense_path)} 缺少合法的 "
+            f"semantic_revision (当前值 {doc.get('semantic_revision')!r}); "
+            "WordSense 1.1 必须声明 >= 1 的整数语义契约修订。"
+        )
+    return doc, revision
+
+
+def _dump_scene_failure(out_dir, prefix, name, text):
+    """失败的模型输出留在旁路文件里, 永不占用正常场景草稿路径。"""
+    path = out_dir / f"_{prefix}-{name}.yaml"
+    _atomic_write(path, text if text.endswith("\n") else text + "\n")
+    return path
+
+
+def _scene_doc_from_block(block, *, sense_id, semantic_revision, out_dir,
+                          fallback_name):
+    """解析一块模型输出, 检查依赖漂移, 并写入程序权威的依赖字段。
+
+    模型可以省略 schema_version / sense_ref / sense_revision (那是簿记, 由程序
+    补全); 但写了却指向别的义项或别的语义修订, 说明这一整块正文是按另一份语义
+    契约写的 — 覆盖字段只会把这个误解藏进一份看似合法的草稿里。
+    """
+    try:
+        doc = yaml.safe_load(block)
+    except yaml.YAMLError as exc:
+        path = _dump_scene_failure(out_dir, "unparsed", fallback_name, block)
+        raise SceneDraftError(
+            f"YAML 解析失败: {exc}; 原始输出已存 {_rel(path)}"
+        ) from exc
+    if not isinstance(doc, dict):
+        path = _dump_scene_failure(out_dir, "unparsed", fallback_name, block)
+        raise SceneDraftError(
+            f"场景 YAML 根节点必须是对象; 原始输出已存 {_rel(path)}"
+        )
+
+    drift = revisions.detect_scene_dependency_drift(
+        doc, sense_id=sense_id, semantic_revision=semantic_revision
+    )
+    if drift:
+        path = _dump_scene_failure(
+            out_dir, "invalid", f"{fallback_name}-dependency-drift", block
+        )
+        detail = "\n".join(
+            f"    {field}:\n      expected: {expected!r}\n      actual:   {actual!r}"
+            for field, expected, actual in drift
+        )
+        raise SceneDraftError(
+            f"scene dependency drift: 模型输出的依赖字段与当前义项冲突 "
+            f"({len(drift)} 处), 说明这一块不是按 {sense_id} 的当前语义契约写的:\n"
+            f"{detail}\n原始输出已存 {_rel(path)}; 请检查提示词与词义规格, "
+            "不要手工改字段了事。"
+        )
+
+    return revisions.apply_scene_revision_fields(
+        doc, sense_id=sense_id, semantic_revision=semantic_revision
+    )
+
+
+def _write_scene_draft(doc, block, *, out_dir, scene_id, errors):
+    """只有通过全部检查的场景才落到正常草稿路径; 其余进旁路文件。"""
+    if errors:
+        path = _dump_scene_failure(out_dir, "invalid", scene_id, block)
+        errors.append(f"  ✗ {scene_id} 未写入正常草稿路径, 原始输出存 {_rel(path)}")
+        return None
+    out = out_dir / f"{scene_id}.yaml"
+    _atomic_write(out, _yaml_block(doc) + "\n")
+    return out
+
+
 def cmd_scenes(args):
     sense_id = args.sense_id.strip()
     if not SENSE_ID.match(sense_id):
@@ -523,8 +629,13 @@ def cmd_scenes(args):
     if not sense_path:
         sys.exit(f"找不到义项 '{sense_id}' (data/senses/ 和 data/drafts/senses/ 均无)")
 
+    try:
+        _, semantic_revision = load_scene_source_sense(sense_id, sense_path)
+    except SceneDraftError as exc:
+        sys.exit(str(exc))
+
     if args.add:
-        return _scenes_add(sense_id, sense_path, args.add)
+        return _scenes_add(sense_id, sense_path, args.add, semantic_revision)
 
     template = read(PROMPTS / "scene-draft.md")
     schema = read(ROOT / "schema" / "scene-spec.schema.json")
@@ -534,9 +645,11 @@ def cmd_scenes(args):
               .replace("{{SCHEMA}}", schema)
               .replace("{{SENSE}}", sense_yaml)
               .replace("{{TYPE_STRATEGY}}", type_strategy(sense_path))
-              .replace("{{SENSE_ID}}", sense_id))
+              .replace("{{SENSE_ID}}", sense_id)
+              .replace("{{SENSE_REVISION}}", str(semantic_revision)))
 
-    print(f"→ 起草 '{sense_id}' 五场景组 ...", file=sys.stderr)
+    print(f"→ 起草 '{sense_id}' 五场景组 (语义修订 {semantic_revision}) ...",
+          file=sys.stderr)
     raw = llm.generate(prompt)
     blocks = extract_yaml_blocks(raw)
     if not blocks:
@@ -547,16 +660,15 @@ def cmd_scenes(args):
     validator = load_schema("scene-spec.schema.json")
     all_errs = []
     written = []
+    written_types = set()
     for i, block in enumerate(blocks):
         try:
-            doc = yaml.safe_load(block)
-        except yaml.YAMLError as e:
-            fname = out_dir / f"_unparsed-{i + 1}.yaml"
-            fname.write_text(block, encoding="utf-8")
-            all_errs.append(f"  ✗ 第 {i + 1} 块 YAML 解析失败: {e} (原文存 {fname.name})")
-            continue
-        if not isinstance(doc, dict):
-            all_errs.append(f"  ✗ 第 {i + 1} 块 YAML 根节点必须是对象")
+            doc = _scene_doc_from_block(
+                block, sense_id=sense_id, semantic_revision=semantic_revision,
+                out_dir=out_dir, fallback_name=f"block-{i + 1}",
+            )
+        except SceneDraftError as exc:
+            all_errs.append(f"  ✗ 第 {i + 1} 块 {exc}")
             continue
         scene_type = doc.get("scene_type", "")
         abbr = SCENE_ABBR.get(scene_type, f"blk{i + 1}")
@@ -566,28 +678,31 @@ def cmd_scenes(args):
             r"[a-z][a-z_]*-\d{2}-(?:proto|contrast|counter|boundary|transfer)-\d{2}",
             raw_id,
         ) else expected_id
-        fname = out_dir / f"{sid}.yaml"
-        if fname in written:
+        if any(path.stem == sid for path in written):
             all_errs.append(f"  ✗ 第 {i + 1} 块与前一场景使用了重复 id '{sid}'")
             continue
-        fname.write_text(block.rstrip() + "\n", encoding="utf-8")
-        written.append(fname)
-        all_errs += schema_check(doc, validator, fname.name)
+        errs = schema_check(doc, validator, f"{sid}.yaml")
         if raw_id != expected_id:
-            all_errs.append(
-                f"  ✗ {fname.name} id 必须是 '{expected_id}'"
-            )
+            errs.append(f"  ✗ {sid}.yaml id 必须是 '{expected_id}'")
+        out = _write_scene_draft(doc, block, out_dir=out_dir, scene_id=sid,
+                                 errors=errs)
+        all_errs += errs
+        if out is not None:
+            written.append(out)
+            written_types.add(scene_type)
 
-    print(f"✓ 写入 {len(written)} 个场景草稿 → {out_dir.relative_to(ROOT)}")
-    got = {yaml.safe_load(read(p)).get("scene_type") for p in written}
-    missing = [t for t in SCENE_ORDER if t not in got]
+    print(f"✓ 写入 {len(written)} 个场景草稿 → {_rel(out_dir)}")
+    missing = [t for t in SCENE_ORDER if t not in written_types]
     if missing:
         print(f"⚠ 缺少场景类型: {', '.join(missing)}")
     _report(all_errs, out_dir)
 
 
-def _scenes_add(sense_id, sense_path, scene_type):
-    """为已有义项增补一个指定类型的场景 (泛化扩证据)。"""
+def _scenes_add(sense_id, sense_path, scene_type, semantic_revision):
+    """为已有义项增补一个指定类型的场景 (泛化扩证据)。
+
+    与整组起草共用同一套依赖字段处理: 增补出来的场景同样绑定当前语义修订。
+    """
     peers = existing_scenes(sense_id, scene_type)
     if not peers:
         print(f"⚠ '{sense_id}' 尚无 {scene_type} 场景, 建议先起草完整五场景组",
@@ -603,10 +718,11 @@ def _scenes_add(sense_id, sense_path, scene_type):
               .replace("{{EXISTING}}", existing)
               .replace("{{SENSE_ID}}", sense_id)
               .replace("{{SCENE_TYPE}}", scene_type)
-              .replace("{{NEW_ID}}", new_id))
+              .replace("{{NEW_ID}}", new_id)
+              .replace("{{SENSE_REVISION}}", str(semantic_revision)))
 
-    print(f"→ 增补 '{sense_id}' 的 {scene_type} 场景 ({new_id}) ...",
-          file=sys.stderr)
+    print(f"→ 增补 '{sense_id}' 的 {scene_type} 场景 ({new_id}, "
+          f"语义修订 {semantic_revision}) ...", file=sys.stderr)
     raw = llm.generate(prompt)
     blocks = extract_yaml_blocks(raw)
     if not blocks:
@@ -614,27 +730,28 @@ def _scenes_add(sense_id, sense_path, scene_type):
 
     out_dir = DRAFTS / "scenes" / sense_id
     out_dir.mkdir(parents=True, exist_ok=True)
-    out = out_dir / f"{new_id}.yaml"
     try:
-        doc = yaml.safe_load(blocks[0])
-    except yaml.YAMLError as e:
-        unparsed = out_dir / f"_unparsed-{new_id}.yaml"
-        unparsed.write_text(blocks[0], encoding="utf-8")
-        sys.exit(f"YAML 解析失败, 原文已存 {unparsed.relative_to(ROOT)} 供修复:\n{e}")
-    if not isinstance(doc, dict):
-        sys.exit("场景草稿的 YAML 根节点必须是对象")
+        doc = _scene_doc_from_block(
+            blocks[0], sense_id=sense_id, semantic_revision=semantic_revision,
+            out_dir=out_dir, fallback_name=new_id,
+        )
+    except SceneDraftError as exc:
+        sys.exit(f"[{new_id}] {exc}")
 
-    out.write_text(blocks[0].rstrip() + "\n", encoding="utf-8")
-    print(f"✓ 草稿已写入 {out.relative_to(ROOT)}")
-
-    errs = schema_check(doc, load_schema("scene-spec.schema.json"), out.name)
+    errs = schema_check(doc, load_schema("scene-spec.schema.json"),
+                        f"{new_id}.yaml")
     if doc.get("id") != new_id:
-        errs.append(f"  ✗ {out.name} id 必须是 '{new_id}'")
+        errs.append(f"  ✗ {new_id}.yaml id 必须是 '{new_id}'")
     if doc.get("scene_type") != scene_type:
-        errs.append(f"  ✗ {out.name} scene_type 必须是 '{scene_type}'")
+        errs.append(f"  ✗ {new_id}.yaml scene_type 必须是 '{scene_type}'")
     if not doc.get("surface"):
-        errs.append(f"  ✗ {out.name} 增补场景必须填写 surface")
-    _report(errs, out)
+        errs.append(f"  ✗ {new_id}.yaml 增补场景必须填写 surface")
+
+    out = _write_scene_draft(doc, blocks[0], out_dir=out_dir, scene_id=new_id,
+                             errors=errs)
+    if out is not None:
+        print(f"✓ 草稿已写入 {_rel(out)}")
+    _report(errs, out or out_dir)
 
 
 # ---------------------------------------------------------------- list

@@ -605,3 +605,74 @@ def test_bare_word_without_num_is_also_refused(env, monkeypatch):
         draft.cmd_sense(Namespace(target="slow", num=None, force=False,
                                   legacy_dictionary_index=False))
     assert "deprecated" in str(exc.value)
+
+
+# ------------------------------------------------- 语义契约修订 (semantic_revision)
+
+def test_new_sense_starts_at_semantic_revision_one(env, monkeypatch):
+    _stub_llm(monkeypatch, _responder_from_fixtures())
+    written = _load(_draft_sense(env, "slow-02"))
+    assert written["semantic_revision"] == 1
+
+
+def test_omitted_semantic_revision_is_filled_in(env, monkeypatch):
+    def mutate(sense_id, doc):
+        doc.pop("semantic_revision")
+    _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
+    written = _load(_draft_sense(env, "slow-02"))
+    assert written["semantic_revision"] == 1
+
+
+def test_wrong_semantic_revision_is_drift(env, monkeypatch):
+    """模型不能自己决定这份语义契约是第几版。"""
+    def mutate(sense_id, doc):
+        doc["semantic_revision"] = 3
+    _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
+    message = _assert_drift(env, "slow-02", "semantic_revision")
+    assert "3" in message
+
+
+def test_boolean_semantic_revision_is_drift(env, monkeypatch):
+    """True == 1 在 Python 里成立, 但 true 不是版本号。"""
+    def mutate(sense_id, doc):
+        doc["semantic_revision"] = True
+    _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
+    _assert_drift(env, "slow-02", "semantic_revision")
+
+
+def test_all_senses_of_a_word_start_at_revision_one(env, monkeypatch):
+    _stub_llm(monkeypatch, _responder_from_fixtures())
+    draft.cmd_senses(Namespace(word="slow", force=False, workers=1))
+    for sense_id in ("slow-01", "slow-02", "slow-03"):
+        assert _load(env.senses / f"{sense_id}.yaml")["semantic_revision"] == 1
+
+
+def test_schema_requires_semantic_revision_for_11(env):
+    doc = _sense_fixture("slow-02")
+    doc.pop("semantic_revision")
+    errors = draft.schema_check(
+        doc, draft.load_schema("word-sense.schema.json"), "slow-02.yaml"
+    )
+    assert any("semantic_revision" in message for message in errors)
+
+
+def test_schema_rejects_boolean_semantic_revision(env):
+    doc = _sense_fixture("slow-02")
+    doc["semantic_revision"] = True
+    errors = draft.schema_check(
+        doc, draft.load_schema("word-sense.schema.json"), "slow-02.yaml"
+    )
+    assert any("semantic_revision" in message for message in errors)
+
+
+def test_schema_does_not_require_semantic_revision_for_legacy_10(env):
+    """1.0 是 inventory 层之前的历史资源, 不参与语义修订绑定。"""
+    doc = _sense_fixture("slow-02")
+    doc["schema_version"] = "1.0"
+    for field in ("semantic_revision", "inventory", "semantic_identity",
+                  "inventory_source_entries"):
+        doc.pop(field, None)
+    errors = draft.schema_check(
+        doc, draft.load_schema("word-sense.schema.json"), "slow-02.yaml"
+    )
+    assert errors == []

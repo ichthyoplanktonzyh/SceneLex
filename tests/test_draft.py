@@ -3,6 +3,7 @@ from types import SimpleNamespace
 from unittest import mock
 
 import pytest
+import yaml
 
 import draft
 
@@ -180,3 +181,240 @@ def test_batch_resumes_from_recorded_state(tmp_path, monkeypatch):
     draft.cmd_batch(Namespace(words=["nearly"], count=1, retries=0,
                               sleep=0, senses_only=False, concurrency=1))
     assert calls == [("scenes", "nearly-01")]
+
+
+# ------------------------------------------- 场景 → 词义语义修订绑定
+
+SCENE_ABBR = draft.SCENE_ABBR
+
+
+def _scene_doc(sense_id, scene_type, index=1, revision=1):
+    """一份 schema 合法的场景输出, 供 LLM 桩返回。"""
+    doc = {
+        "schema_version": "1.1",
+        "version": 1,
+        "status": "draft",
+        "id": f"{sense_id}-{SCENE_ABBR[scene_type]}-{index:02d}",
+        "sense_ref": sense_id,
+        "sense_revision": revision,
+        "scene_type": scene_type,
+        "title": f"{scene_type} 场景",
+        "synopsis": "一段用于测试的场景概要。",
+        "surface": {
+            "domain": f"domain-{scene_type}",
+            "participant_type": "adult",
+            "setting": f"setting-{scene_type}-{index}",
+        },
+        "storyboard": [
+            {"beat": 1, "visual": "画面一", "purpose": "建立情境"},
+            {"beat": 2, "visual": "画面二", "audio": None, "purpose": "呈现证据"},
+        ],
+        "learning_tasks": [
+            {"type": "scene_recognition", "prompt": "哪个场景符合该义项?"}
+        ],
+    }
+    if scene_type in ("contrast", "boundary", "counterexample"):
+        doc["contrast_target"] = "slow-03"
+        doc["contrast_relation"] = "different_sense"
+    if scene_type == "transfer":
+        doc["transfer_dimensions"] = ["domain", "participant"]
+    return doc
+
+
+def _sense_doc(schema_version="1.1", semantic_revision=1):
+    doc = {
+        "schema_version": schema_version,
+        "language": "en",
+        "version": 1,
+        "status": "reviewed",
+        "id": "slow-02",
+        "word": "slow",
+        "pos": "verb",
+        "sense_label": "自身速率下降",
+        "semantic_type": "state_change",
+        "semantic_skeleton": {"core": "实体自身速率下降"},
+        "conditions": {"required": ["速率下降可观察"]},
+    }
+    if semantic_revision is not None:
+        doc["semantic_revision"] = semantic_revision
+    return doc
+
+
+@pytest.fixture
+def scene_env(tmp_path, monkeypatch):
+    """草稿区重定向到 tmp_path; 词义规格放在草稿区, LLM 被桩替换。"""
+    drafts = tmp_path / "drafts"
+    (drafts / "senses").mkdir(parents=True)
+    monkeypatch.setattr(draft, "DRAFTS", drafts)
+    return SimpleNamespace(
+        drafts=drafts,
+        scenes=drafts / "scenes" / "slow-02",
+        write_sense=lambda doc: (drafts / "senses" / "slow-02.yaml").write_text(
+            yaml.safe_dump(doc, allow_unicode=True, sort_keys=False),
+            encoding="utf-8",
+        ),
+    )
+
+
+def _stub_scene_llm(monkeypatch, blocks):
+    """把 llm.generate 换成桩; blocks 是要返回的场景文档列表。"""
+    prompts = []
+
+    def fake_generate(prompt, config=None):
+        prompts.append(prompt)
+        docs = blocks(prompt) if callable(blocks) else blocks
+        return "\n".join(
+            f"```yaml\n{yaml.safe_dump(doc, allow_unicode=True, sort_keys=False)}```"
+            for doc in docs
+        )
+
+    monkeypatch.setattr(draft.llm, "generate", fake_generate)
+    return prompts
+
+
+def _full_group(mutate=None):
+    docs = [_scene_doc("slow-02", scene_type) for scene_type in draft.SCENE_ORDER]
+    if mutate:
+        for doc in docs:
+            mutate(doc)
+    return docs
+
+
+def _load(path):
+    return yaml.safe_load(path.read_text(encoding="utf-8"))
+
+
+def test_drafted_scenes_bind_current_semantic_revision(scene_env, monkeypatch):
+    scene_env.write_sense(_sense_doc(semantic_revision=3))
+    _stub_scene_llm(monkeypatch, _full_group(
+        lambda doc: doc.update(sense_revision=3)
+    ))
+    draft.cmd_scenes(Namespace(sense_id="slow-02", add=None))
+
+    written = sorted(scene_env.scenes.glob("*.yaml"))
+    assert len(written) == 5
+    for path in written:
+        doc = _load(path)
+        assert doc["schema_version"] == "1.1"
+        assert doc["sense_ref"] == "slow-02"
+        assert doc["sense_revision"] == 3
+
+
+def test_omitted_scene_dependency_fields_are_filled_in(scene_env, monkeypatch):
+    scene_env.write_sense(_sense_doc(semantic_revision=2))
+
+    def drop(doc):
+        for field in ("schema_version", "sense_ref", "sense_revision"):
+            doc.pop(field)
+
+    _stub_scene_llm(monkeypatch, _full_group(drop))
+    draft.cmd_scenes(Namespace(sense_id="slow-02", add=None))
+    doc = _load(scene_env.scenes / "slow-02-proto-01.yaml")
+    assert (doc["schema_version"], doc["sense_ref"], doc["sense_revision"]) == (
+        "1.1", "slow-02", 2
+    )
+
+
+def test_legacy_sense_cannot_seed_new_scenes(scene_env, monkeypatch):
+    scene_env.write_sense(_sense_doc(schema_version="1.0", semantic_revision=None))
+    prompts = _stub_scene_llm(monkeypatch, _full_group())
+    with pytest.raises(SystemExit) as exc:
+        draft.cmd_scenes(Namespace(sense_id="slow-02", add=None))
+    assert "1.0" in str(exc.value)
+    assert prompts == []                      # 失败发生在调用模型之前
+    assert not scene_env.scenes.exists()
+
+
+def test_sense_without_semantic_revision_cannot_seed_new_scenes(
+    scene_env, monkeypatch
+):
+    scene_env.write_sense(_sense_doc(semantic_revision=None))
+    prompts = _stub_scene_llm(monkeypatch, _full_group())
+    with pytest.raises(SystemExit) as exc:
+        draft.cmd_scenes(Namespace(sense_id="slow-02", add=None))
+    assert "semantic_revision" in str(exc.value)
+    assert prompts == []
+
+
+def test_boolean_semantic_revision_cannot_seed_new_scenes(scene_env, monkeypatch):
+    scene_env.write_sense(_sense_doc(semantic_revision=True))
+    prompts = _stub_scene_llm(monkeypatch, _full_group())
+    with pytest.raises(SystemExit):
+        draft.cmd_scenes(Namespace(sense_id="slow-02", add=None))
+    assert prompts == []
+
+
+@pytest.mark.parametrize("field,value", [
+    ("sense_ref", "slow-03"),
+    ("sense_revision", 1),
+    ("schema_version", "1.0"),
+])
+def test_wrong_scene_dependency_field_is_drift(scene_env, monkeypatch, field, value):
+    scene_env.write_sense(_sense_doc(semantic_revision=2))
+    _stub_scene_llm(monkeypatch, _full_group(
+        lambda doc: doc.update({"sense_revision": 2, field: value})
+    ))
+    draft.cmd_scenes(Namespace(sense_id="slow-02", add=None))
+
+    # 漂移的块进旁路文件, 正常草稿路径一个都不写
+    assert not list(scene_env.scenes.glob("slow-02-*.yaml"))
+    dumped = list(scene_env.scenes.glob("_invalid-*dependency-drift.yaml"))
+    assert len(dumped) == 5
+
+
+def test_scene_dependency_drift_keeps_existing_draft_intact(scene_env, monkeypatch, capsys):
+    scene_env.write_sense(_sense_doc(semantic_revision=2))
+    scene_env.scenes.mkdir(parents=True)
+    existing = scene_env.scenes / "slow-02-proto-01.yaml"
+    original = "id: slow-02-proto-01\n# 已审阅过的旧草稿\n"
+    existing.write_text(original, encoding="utf-8")
+
+    _stub_scene_llm(monkeypatch, _full_group(
+        lambda doc: doc.update(sense_revision=1)
+    ))
+    draft.cmd_scenes(Namespace(sense_id="slow-02", add=None))
+    assert existing.read_text(encoding="utf-8") == original
+    assert "scene dependency drift" in capsys.readouterr().err
+
+
+def test_scene_add_binds_the_same_revision(scene_env, monkeypatch):
+    scene_env.write_sense(_sense_doc(semantic_revision=4))
+    scene_env.scenes.mkdir(parents=True)
+    (scene_env.scenes / "slow-02-proto-01.yaml").write_text(
+        yaml.safe_dump(_scene_doc("slow-02", "prototype", revision=4),
+                       allow_unicode=True, sort_keys=False),
+        encoding="utf-8",
+    )
+    added = _scene_doc("slow-02", "prototype", index=2, revision=4)
+    added.pop("sense_revision")
+    _stub_scene_llm(monkeypatch, [added])
+
+    draft.cmd_scenes(Namespace(sense_id="slow-02", add="prototype"))
+    doc = _load(scene_env.scenes / "slow-02-proto-02.yaml")
+    assert doc["sense_revision"] == 4 and doc["schema_version"] == "1.1"
+
+
+def test_scene_add_rejects_wrong_revision(scene_env, monkeypatch):
+    scene_env.write_sense(_sense_doc(semantic_revision=4))
+    added = _scene_doc("slow-02", "prototype", revision=1)
+    _stub_scene_llm(monkeypatch, [added])
+    with pytest.raises(SystemExit) as exc:
+        draft.cmd_scenes(Namespace(sense_id="slow-02", add="prototype"))
+    assert "scene dependency drift" in str(exc.value)
+    assert not (scene_env.scenes / "slow-02-proto-01.yaml").exists()
+
+
+def test_schema_invalid_scene_never_reaches_normal_draft_path(
+    scene_env, monkeypatch
+):
+    scene_env.write_sense(_sense_doc())
+
+    def break_storyboard(doc):
+        if doc["scene_type"] == "contrast":
+            doc["storyboard"] = []
+
+    _stub_scene_llm(monkeypatch, _full_group(break_storyboard))
+    draft.cmd_scenes(Namespace(sense_id="slow-02", add=None))
+    assert not (scene_env.scenes / "slow-02-contrast-01.yaml").exists()
+    assert (scene_env.scenes / "_invalid-slow-02-contrast-01.yaml").exists()
+    assert (scene_env.scenes / "slow-02-proto-01.yaml").exists()

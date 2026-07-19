@@ -13,7 +13,10 @@
 - 每个场景严格满足词义规格的 must_show，严格避开 must_not;
 - 心理/抽象状态只能通过行为、表情、结果外化，禁止台词直述;
 - 新场景 ID 固定为 **{{NEW_ID}}**，文件内 id 字段必须与之一致;
-- 固定填写 `schema_version: "1.0"`、`version: 1`、`status: draft`;
+- 固定填写 `schema_version: "1.1"`、`version: 1`、`status: draft`;
+- 依赖字段固定填写 `sense_ref: {{SENSE_ID}}` 与 `sense_revision: {{SENSE_REVISION}}`
+  （本场景所依据的词义语义契约修订）; 这两个值由程序核对, 写错即判为依赖漂移、
+  本次生成失败, 拿不准就整个省略;
 - 必须填写 `surface` 字段（domain / participant_type / setting，小写
   kebab-case；多片段拼贴场景可用 mixed）;
 - YAML 无引号标量内不得出现 ASCII `": "`（用全角冒号"："），以引号开头的
