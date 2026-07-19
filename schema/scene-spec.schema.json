@@ -6,15 +6,32 @@
   "type": "object",
   "required": ["schema_version", "version", "status", "id", "sense_ref", "scene_type", "title", "synopsis", "storyboard", "learning_tasks"],
   "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": { "schema_version": { "const": "1.1" } },
+        "required": ["schema_version"]
+      },
+      "then": {
+        "required": ["sense_revision"]
+      }
+    }
+  ],
   "properties": {
 
     "schema_version": {
       "type": "string",
-      "const": "1.0"
+      "enum": ["1.0", "1.1"],
+      "description": "1.0: 语义修订绑定出现之前的历史场景; 1.1: 起草时绑定了 WordSense 的 semantic_revision, 必须包含 sense_revision"
     },
     "version": {
       "type": "integer",
       "minimum": 1
+    },
+    "sense_revision": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "本场景起草时所依据的 WordSense.semantic_revision; 落后于当前值说明词义语义契约已更新, 场景需要重新审核"
     },
     "status": {
       "type": "string",
