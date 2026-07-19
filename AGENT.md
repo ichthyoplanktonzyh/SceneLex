@@ -168,6 +168,18 @@ learning clients, APIs, or content packages
   `inventory`、`semantic_identity` 和 `inventory_source_entries`，且由
   `validate.py` 持续核对是否仍忠实于 Inventory。新起草一律是 `1.1`；不要通过
   把这些字段对所有版本设为可选来削弱契约。
+- WordSense 的 `version` 与 `semantic_revision` 不可互相替代：前者是普通资源修订
+  （措辞、格式、状态），后者是语义契约修订（语义身份、成立条件、边界、
+  causativity、valency、参与者角色、视觉证据要求）。`semantic_revision` 由人工
+  bump，新起草的 1.1 义项一律从 `1` 开始，由程序写入；模型写错即判为 identity
+  drift。不要自动 diff、不要让模型判断"这次改动算不算语义变化"。
+- SceneSpec `1.1` 必须声明 `sense_revision`，其值等于起草时 WordSense 的
+  `semantic_revision`；`1.0` 是绑定机制之前的历史场景，继续兼容，不批量迁移。
+  新场景只能从 WordSense 1.1 起草。是否需要重新审核由两个数字动态比较得出
+  （`python3 tools/validate.py --scene-revisions`），**不要**在 Scene 文件里存
+  `stale`/`needs_review`，也不要提供自动刷新 `sense_revision` 的命令——修订落后
+  意味着场景需要人重新看一遍视觉证据，不是只需要改个数字。落后只产生 warning，
+  修订超前或依赖不存在才是错误。
 - `semantic_skeleton` 描述与具体渲染无关、可跨场景和跨文化检验的深层条件；不要把
   某一个房间、职业、人物或文化脚本误写成词义本身，也不要把语言惯例冒充文化真理。
 - `conditions.required` 说明词义成立的必要条件；`conditions.excluded` 只写真正不适用
