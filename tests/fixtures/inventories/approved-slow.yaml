@@ -1,0 +1,105 @@
+# 测试 fixture, 不是 slow 的最终完整词义分析。
+# 已批准的 Sense Inventory: 用于验证 approved inventory → WordSense 起草链路,
+# 配套证据快照见 tests/fixtures/dictionary-evidence/slow.yaml。
+schema_version: "1.0"
+word: slow
+language: en
+status: approved
+inventory_version: 1
+
+source:
+  provider: wiktionary
+  entry_count: 4
+  evidence_digest: "sha256:a00b525537d9666ed0a6c8a9d1aa76ef546f592693c0478d0d420dabce3227d7"
+
+senses:
+  - id: slow-01
+    lemma: slow
+    pos: adjective
+    label_zh: 速度或运行速率低
+    definition: >
+      Moving, operating, or occurring at a relatively low rate.
+    semantic_signature:
+      semantic_type: scalar_property
+      dimension: rate
+      change_of_state: false
+      causative: false
+      valency: attributive_or_predicative
+    source_entries:
+      - slow-dict-001
+    decision:
+      type: keep
+      reason: >
+        这是一个稳定且具有教学价值的核心意义, 词典证据清晰单一, 不需要合并或拆分。
+    teaching_priority: core
+    usage:
+      currency: current
+      productivity: productive
+      register: neutral
+
+  - id: slow-02
+    lemma: slow
+    pos: verb
+    label_zh: 自身减速或放缓
+    definition: >
+      To become slower; to reduce one's own speed or pace.
+    semantic_signature:
+      semantic_type: state_change
+      dimension: rate
+      change_of_state: true
+      causative: false
+      valency: intransitive
+    source_entries:
+      - slow-dict-002
+    decision:
+      type: keep
+      reason: >
+        不及物用法在词典证据中独立标注, 且与致使用法 (slow-03) 论元结构不同,
+        值得作为独立可教学 sense。
+    teaching_priority: core
+    usage:
+      currency: current
+      productivity: productive
+      register: neutral
+
+  - id: slow-03
+    lemma: slow
+    pos: verb
+    label_zh: 使某物或某人减速
+    definition: >
+      To cause someone or something to become slower.
+    semantic_signature:
+      semantic_type: state_change
+      dimension: rate
+      change_of_state: true
+      causative: true
+      valency: transitive
+    source_entries:
+      - slow-dict-003
+    decision:
+      type: keep
+      reason: >
+        及物致使用法在词典证据中独立标注, 引入一个使动者论元, 与 slow-02
+        的论元结构不同, 值得作为独立可教学 sense。
+    teaching_priority: core
+    usage:
+      currency: current
+      productivity: productive
+      register: neutral
+
+deferred_entries:
+  - source_entry: slow-dict-004
+    decision: defer
+    reason: >
+      标注为罕见用法的名词义项, 缺少证据证明这是当代英语中稳定、可生产且有
+      教学价值的独立名词义项。
+    required_evidence:
+      - contemporary_corpus_examples
+
+relations:
+  - source: slow-02
+    target: slow-03
+    relation: causative_alternation
+    distinction: >
+      slow-02 表示实体自身速率降低; slow-03 引入一个使其他实体减速的致使者;
+      二者共享同一核心概念但论元结构不同。

@@ -38,12 +38,13 @@ reviewed / published resource bundle
 - `schema/scene-spec.schema.json`：模型无关的场景与学习任务契约。
 - `schema/resource-bundle.schema.json`：给外部消费者的资源包契约。
 - `schema/sense-inventory.schema.json`：整词级 Sense Inventory 契约。Wiktionary
-  条目是 dictionary evidence，不是 SceneLex sense；`data/inventories/{word}.yaml`
-  将成为该词 sense ID 与语义身份的整词级权威，决定哪些意义值得进入
-  `data/senses/`，以及它们的 ID。当前 PR 只建立 `data/drafts/inventories/`
-  草稿区和校验基础，未实现自动 approve/promote。
+  条目是 dictionary evidence，不是 SceneLex sense。
 - `data/senses/`、`data/scenes/`：已审核资源，是仓库语义权威。
-- `data/inventories/`：未来批准后的权威 Sense Inventory（本 PR 不写入）。
+- `data/inventories/{word}.yaml`：**已批准的 Sense Inventory，是新建 WordSense 的
+  唯一身份权威**——sense ID 权威、POS 权威、语义身份（semantic_signature）权威、
+  dictionary source mapping 权威。只能由 `tools/inventory.py approve` 写入。
+- `data/dictionary-evidence/{word}.yaml`：与已批准 Inventory 配套冻结的词典证据
+  快照。entry ID 的含义由它固定，Wiktionary 之后的变化不会静默改写既有引用。
 - `data/drafts/`：待审内容，绝不进入默认导出（含 `inventories/` 待审 Sense Inventory 草稿）。
 - `prompts/`：起草辅助，不是权威数据。
 - `examples/consumer/`：消费者侧示例，不属于 SceneLex 核心身份或学习记录模型。
@@ -65,11 +66,12 @@ Prompt和渲染配置；WordSense与SceneSpec保持风格无关，现有词义�
 schema/                      公开语义契约 + 渲染层内部原型契约
 data/senses/                 正式词义资源
 data/scenes/{sense_id}/      正式场景证据
-data/inventories/            正式 Sense Inventory (整词级 sense 身份权威; 本 PR 暂不写入)
+data/inventories/            已批准 Sense Inventory (整词级 sense 身份权威)
+data/dictionary-evidence/    与已批准 Inventory 配套的冻结词典证据快照
 data/drafts/                 隔离草稿 (含 inventories/ 待审 Inventory、renders/{scene_id}/v{NN}/ 渲染版本)
 prompts/                     LLM 起草/审核/渲染计划模板与风格配置
 docs/                       生产工作流、技术选型与归档评估
-tools/inventory.py           整词 Sense Inventory: draft / validate / show
+tools/inventory.py           整词 Sense Inventory: draft / validate / mark-reviewed / approve / show
 tools/draft.py               起草与发布前编排
 tools/review.py              模型审核 (可选质量参考)
 tools/director.py            语义场景 → 模型适配的视频提示词
@@ -85,10 +87,12 @@ tests/                       工具链回归测试
 
 ```text
 candidate
-→ dictionary evidence
-→ sense inventory draft
-→ inventory validation / human review
-→ sense draft
+→ dictionary evidence snapshot
+→ inventory draft
+→ inventory review
+→ inventory approve
+→ inventory-driven WordSense draft
+→ WordSense validation
 → scene evidence draft
 → 模型审核（可选质量参考, 不阻塞）
 → 隔离目录全量校验 + 人工 promote
@@ -97,11 +101,23 @@ candidate
 → published resource bundle
 ```
 
-`sense inventory draft` 是本 PR 新增的整词级规划阶段：Wiktionary 条目先被当作
-`dictionary evidence`，由 `tools/inventory.py draft` 一次性规划整个词，决定哪些
-意义合并、哪些推迟、哪些拆分，再统一分配 `{word}-01`、`{word}-02` 等 sense ID。
-**当前 `tools/draft.py sense` 仍是兼容路径**，独立起草单个义项、不读取
-inventory；后续 PR 将使 sense 起草强制读取已批准的 inventory。
+Wiktionary 条目先被当作 `dictionary evidence`，由 `tools/inventory.py draft`
+一次性规划整个词，决定哪些意义合并、哪些推迟、哪些拆分，再统一分配
+`{word}-01`、`{word}-02` 等 sense ID。人工审阅后 `mark-reviewed`，再 `approve`
+写入 `data/inventories/{word}.yaml`。
+
+**只有已批准的 Sense Inventory 能驱动新的 WordSense 起草。** `tools/draft.py sense`
+接收的是 SceneLex sense ID（不是词典条目序号）：它读取整个 Inventory，把其中
+已冻结的那一条 CURRENT_SENSE 详细化，同时注入全部 ALL_SENSES 以便正确描述边界。
+sense ID、lemma、POS、语义身份和 dictionary source mapping 由程序按 Inventory
+强制写入，模型输出的这些字段一律作废；生成结果携带 Inventory provenance，
+事后人工改动会被 `tools/validate.py` 抓出。
+
+状态流转：
+
+```text
+draft → reviewed → approved
+```
 
 常用命令：
 
@@ -112,10 +128,15 @@ python -m pip install -r requirements-dev.txt
 
 python3 tools/inventory.py draft slow                    # 起草整词 Sense Inventory
 python3 tools/inventory.py validate slow                 # 校验 (draft 优先, 否则正式库)
+python3 tools/inventory.py mark-reviewed slow            # 人工审阅通过 → status: reviewed
+python3 tools/inventory.py approve slow                  # → data/inventories/slow.yaml
 python3 tools/inventory.py show slow                     # 查看原始内容, 不修改文件
 
+python3 tools/draft.py sense slow-02                     # 按已批准 Inventory 起草单个词义
+python3 tools/draft.py senses slow                       # 起草该词全部已批准 sense
+python3 tools/draft.py senses slow --workers 3           # 并发起草
+
 python3 tools/draft.py backlog
-python3 tools/draft.py sense dirty
 python3 tools/draft.py scenes dirty-01
 python3 tools/draft.py scenes dirty-01 --add prototype   # 增补一个新表面的场景
 python3 tools/candidates.py --count 20                   # 扩产候选队列 (悬空引用+词频)
@@ -139,7 +160,32 @@ python3 tools/export.py --version 0.1.0 --output dist/scenelex-0.1.0.json
 python3 -m pytest -q
 ```
 
+已弃用的命令：
+
+```bash
+python3 tools/draft.py sense slow --num 02      # 已弃用: 词典条目不是 SceneLex sense
+```
+
+按 Wiktionary 条目序号起草会让同一个 `{word}-nn` 编号在不同批次里指向不同意义。
+该路径默认直接失败并提示新工作流；确需临时复现历史实验时可加
+`--legacy-dictionary-index`，产物写入 `data/drafts/legacy-senses/`，不进入正常
+草稿区，也不可 promote。`tools/draft.py batch` 同样改为按已批准 Inventory 枚举，
+不再按词典义项数生成 sense ID。
+
 `promote` 会先把候选资源与整个正式库合并到隔离目录中，通过全量校验后再原子移动；不会再出现“先污染正式库、后发现校验失败”。默认导出包含 `reviewed` 与 `published`，发布消费者可使用 `--published-only`。
+
+## WordSense schema 版本
+
+| 版本 | 含义 |
+|---|---|
+| `1.0` | Inventory 层出现之前的历史资源；不要求 Inventory provenance，继续通过校验 |
+| `1.1` | 由已批准 Inventory 驱动生成；**必须**包含 `inventory`、`semantic_identity`、`inventory_source_entries` |
+
+新起草的义项一律是 `1.1`。`inventory.identity_digest` 是对 Inventory 中该 sense
+的锁定身份（`id` / `lemma` / `pos` / `semantic_signature` 五个字段）计算的
+SHA-256，使用 canonical JSON（`sort_keys`、稳定分隔符、UTF-8），前缀 `sha256:`。
+`definition`、`label_zh` 和自由文本理由**不进入**摘要——文字润色不应让已生成的
+义项集体失效。
 
 ## LLM API：按协议兼容，不绑定厂商
 
@@ -226,10 +272,11 @@ export SCENELEX_LLM_MODEL=deepseek-v4-pro
 - 正式义项 4 条：`messy-01`、`reluctant-01`、`almost-01`、`dirty-01`，共 21 个场景。
 - 草稿区 6 个义项（filthy / nearly / barely / refuse / grimy / hesitant）及其场景组待审。
 - 当前正式资源状态为 `reviewed`，尚未宣称 `published`。
-- 新增整词级 Sense Inventory 基础（`schema/sense-inventory.schema.json` +
-  `tools/inventory.py`），用于在起草单个义项前先规划一个词的完整 sense 划分；
-  目前只建立 draft/validate/show 与校验基础，`tools/draft.py sense` 尚未强制
-  读取 inventory。
+- 整词级 Sense Inventory 已打通 draft → reviewed → approved 全流程；
+  `data/inventories/` 与 `data/dictionary-evidence/` 是批准后的权威目录。
+- WordSense 起草已改为 inventory-driven：`tools/draft.py sense <sense_id>` 与
+  `senses <word>` 只接受已批准 Inventory 中的 sense，旧的 `--num` 词典序号路径
+  已弃用。
 
 “场景即释义”方法已确立为产品前提，学习实验不再是规模化的前置条件。近期路线：
 

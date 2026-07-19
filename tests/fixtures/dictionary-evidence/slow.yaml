@@ -1,0 +1,35 @@
+# 测试 fixture: 冻结的 dictionary evidence snapshot, 与
+# tests/fixtures/inventories/approved-slow.yaml 配套。
+# 不是 slow 的真实 Wiktionary 快照, 只用于离线验证 inventory → sense 的链路。
+schema_version: "1.0"
+word: slow
+language: en
+provider: wiktionary
+captured_at: "2026-07-19T00:00:00Z"
+entries:
+  - entry_id: slow-dict-001
+    pos: adjective
+    gloss: Moving or operating at a low rate.
+    labels: []
+    examples:
+      - He walked at a slow pace.
+  - entry_id: slow-dict-002
+    pos: verb
+    gloss: To become slower.
+    labels:
+      - intransitive
+    examples:
+      - Traffic slowed near the exit.
+  - entry_id: slow-dict-003
+    pos: verb
+    gloss: To cause something to become slower.
+    labels:
+      - transitive
+    examples:
+      - The driver slowed the car.
+  - entry_id: slow-dict-004
+    pos: noun
+    gloss: A period of reduced activity.
+    labels:
+      - rare
+    examples: []

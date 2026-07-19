@@ -2,15 +2,82 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "word-sense.schema.json",
   "title": "WordSense",
-  "description": "SceneLex 词义对象 — 语义内核的基本单位。ID 约定: {word}-{nn}, 如 reluctant-01, run-03",
+  "description": "SceneLex 词义对象 — 语义内核的基本单位。ID 约定: {word}-{nn}, 如 reluctant-01, run-03。schema_version 1.1 起, WordSense 是某个 approved Sense Inventory sense 的详细规格, 必须携带 inventory provenance 与锁定的语义身份; 1.0 是 inventory 层出现之前的历史资源, 不强制这些字段。",
   "type": "object",
   "required": ["schema_version", "language", "version", "status", "id", "word", "pos", "sense_label", "semantic_type", "semantic_skeleton", "conditions"],
   "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": { "schema_version": { "const": "1.1" } },
+        "required": ["schema_version"]
+      },
+      "then": {
+        "required": ["inventory", "semantic_identity", "inventory_source_entries"]
+      }
+    }
+  ],
   "properties": {
 
     "schema_version": {
       "type": "string",
-      "const": "1.0"
+      "enum": ["1.0", "1.1"],
+      "description": "1.0: inventory 层之前的历史资源; 1.1: 由 approved Sense Inventory 驱动生成, 必须包含 inventory / semantic_identity / inventory_source_entries"
+    },
+
+    "inventory": {
+      "type": "object",
+      "required": ["word", "version", "evidence_digest", "sense_id", "identity_digest"],
+      "additionalProperties": false,
+      "description": "本义项所依据的 approved Sense Inventory 溯源; 由 tools/draft.py 程序化写入, 模型输出的值一律被覆盖",
+      "properties": {
+        "word": {
+          "type": "string",
+          "minLength": 1,
+          "description": "必须与顶层 word 一致 (由 Python validator 检查)"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "必须等于 approved inventory 的 inventory_version"
+        },
+        "evidence_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "必须等于 approved inventory 的 source.evidence_digest"
+        },
+        "sense_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z_]*-[0-9]{2}$",
+          "description": "必须等于顶层 id"
+        },
+        "identity_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "对 inventory sense 的锁定身份字段 (id/lemma/pos/semantic_signature) 计算的确定性摘要; 不含 definition、label_zh 等自由文本, 文字润色不改变身份"
+        }
+      }
+    },
+
+    "semantic_identity": {
+      "type": "object",
+      "required": ["semantic_type", "dimension", "change_of_state", "causative", "valency"],
+      "additionalProperties": false,
+      "description": "从 approved inventory sense 的 semantic_signature 逐字复制的锁定语义身份, 供确定性比较; 与顶层 semantic_type (决定场景策略的窄枚举) 是不同的字段, 不可互相替代",
+      "properties": {
+        "semantic_type": { "type": "string", "minLength": 1 },
+        "dimension": { "type": ["string", "null"] },
+        "change_of_state": { "type": "boolean" },
+        "causative": { "type": "boolean" },
+        "valency": { "type": "string", "minLength": 1 }
+      }
+    },
+
+    "inventory_source_entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 },
+      "description": "必须与 approved inventory sense 的 source_entries 集合完全一致, 不能增删"
     },
     "language": {
       "type": "string",

@@ -267,9 +267,56 @@ def validate_repository(data_root: Path | None = None) -> ValidationResult:
         result.coverage[sense_ref][scene_type] += 1
 
     _check_surface_diversity(result, data_root)
+    _check_inventory_identity(result, data_root)
     _check_dictionary_facts(result, data_root)
     _check_word_entries(result, data_root, entry_validator)
     return result
+
+
+def _check_inventory_identity(result: ValidationResult, data_root: Path) -> None:
+    """schema_version 1.1 的义项必须仍然忠实于它的 approved Sense Inventory。
+
+    起草时程序已强制写入身份字段, 这里防的是之后的人工编辑: 有人把 pos 改掉、
+    删掉一个 source entry 或把 boundary 指向不存在的义项, 都必须在发布门被拦下。
+    1.0 是 inventory 层之前的历史资源, 不参与本检查; 只读文件, 不触网。
+    """
+    try:
+        import inventory
+    except ImportError:
+        return
+    cache: dict[str, dict[str, Any] | str] = {}
+    for path, document in result.senses.items():
+        if document.get("schema_version") != "1.1":
+            continue
+        label = _location(path, data_root)
+        word = str(document.get("word") or "")
+        if not word:
+            continue
+        if word not in cache:
+            try:
+                cache[word] = inventory.load_approved_inventory(word)
+            except inventory.InventoryError as exc:
+                cache[word] = str(exc)
+        loaded = cache[word]
+        if isinstance(loaded, str):
+            result.errors.append(
+                f"{label}: schema_version 1.1 义项无法加载 approved Sense "
+                f"Inventory: {loaded.splitlines()[0]}"
+            )
+            continue
+        inventory_sense = inventory.find_inventory_sense(
+            loaded, str(document.get("id"))
+        )
+        if inventory_sense is None:
+            result.errors.append(
+                f"{label}: id '{document.get('id')}' 不在 '{word}' 的 approved "
+                "Sense Inventory 中"
+            )
+            continue
+        for message in inventory.validate_sense_against_inventory(
+            document, loaded, inventory_sense
+        ):
+            result.errors.append(f"{label}: {message}")
 
 
 def _check_dictionary_facts(result: ValidationResult, data_root: Path) -> None:

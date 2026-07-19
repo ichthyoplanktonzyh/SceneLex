@@ -1,0 +1,87 @@
+# 测试 fixture: 一份合法的模型输出, 对应 approved slow inventory 的 slow-02。
+# 只用于离线验证 inventory-driven 起草链路, 不是 slow 的最终词义分析,
+# 也不进入 data/senses/。
+schema_version: '1.1'
+language: en
+version: 1
+status: draft
+id: slow-02
+word: slow
+pos: verb
+sense_label: 自身速率下降
+definition: To come to move or operate at a lower rate than before
+inventory:
+  word: slow
+  version: 1
+  evidence_digest: sha256:a00b525537d9666ed0a6c8a9d1aa76ef546f592693c0478d0d420dabce3227d7
+  sense_id: slow-02
+  identity_digest: sha256:bf466da7e8f189ad2428addce19d14855cd6f9456d647523bab4b04fa363d628
+semantic_identity:
+  semantic_type: state_change
+  dimension: rate
+  change_of_state: true
+  causative: false
+  valency: intransitive
+inventory_source_entries:
+- slow-dict-002
+difficulty: basic
+pronunciation:
+  ipa: /sloʊ/
+collocations:
+- the train slowed
+- traffic slowed
+- slow down
+sentence_patterns:
+- '[thing] slowed'
+- '[thing] slows to [rate]'
+semantic_type: state_change
+semantic_skeleton:
+  participants:
+  - role: theme
+    description: 速率发生下降的实体或过程
+  propositions:
+  - 存在一个实体或过程, 它在较早时间点具有某个可观察速率
+  - 在较晚时间点该实体或过程的速率低于较早时间点
+  - 变化被描述为发生在该实体自身上, 句法上不引入使其减速的第二个论元
+conditions:
+  required:
+  - 同一实体在两个时间点上的速率可被比较
+  - 较晚时间点的速率低于较早时间点
+  excluded:
+  - condition: 只呈现一个持续的低速状态, 没有速率变化
+    alternative: slow-01
+  - condition: 表达的是某个施事使另一实体速率下降
+    alternative: slow-03
+relations:
+  boundaries:
+  - target: slow-01
+    relation: different_sense
+    distinction: 本义项要求速率发生下降 (change_of_state 为真), slow-01 只描述状态
+    diagnostic: 场景中能否看到同一实体前后速率的对比
+  - target: slow-03
+    relation: different_sense
+    distinction: '论元结构不同: 本义项只有一个减速的实体, slow-03 另有一个使其减速的论元; 二者在 valency 与 causative
+      上不同'
+    diagnostic: 语言表达中是否出现使另一实体减速的第二个论元
+  l1_confusables:
+    zh:
+    - l1_term: 慢下来
+      covers:
+      - slow-02
+      - slow-03
+      note: 中文常用同一说法覆盖自身减速与使他物减速; 英语按论元结构分成两个义项, 学习者需要判断句中是否出现致使论元
+scene_requirements:
+  must_show:
+  - 同一实体先后两个速率的可比对照
+  - 速率降低的可观察结果
+  must_not:
+  - 引入一个使该实体减速的第二论元
+  - 只呈现静态的低速
+  externalization:
+  - 用同一路径上前后位移量的缩短呈现速率下降
+  timing: 先完整呈现速率由高到低的过程, 再出现目标词的声音
+provenance:
+  sources:
+  - type: dictionary
+    citation: https://kaikki.org/dictionary/English/meaning/s/sl/slow.jsonl
+    license: CC-BY-SA

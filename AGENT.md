@@ -80,7 +80,12 @@ learning clients, APIs, or content packages
 - `prompts/scene-strategies/`：按 `semantic_type` 分化的场景表达策略片段
   （"语义—场景设计手册"的落地）；场景起草与增补时按义项类型注入，schema 的
   semantic_type 枚举每个值必须有对应片段（有测试守护）。
-- `tools/draft.py`：词义/场景草稿生产编排（含 batch 批量与 --add 增补）。
+- `tools/draft.py`：词义/场景草稿生产编排（含 batch 批量与 --add 增补）。词义起草
+  由已批准 Inventory 驱动：`sense <sense_id>` 详细化单个已冻结 sense，
+  `senses <word>` 按 Inventory 枚举整词；每次调用都注入完整 ALL_SENSES。
+  旧的 `sense <word> --num <nn>` 词典序号路径已弃用（默认失败；显式
+  `--legacy-dictionary-index` 才可用，产物落 `data/drafts/legacy-senses/`，
+  不可 promote）。batch 也按已批准 Inventory 枚举，不按词典义项数。
 - `tools/review.py`：模型审核（可选质量参考，不是强制门）——语言/场景/教学三层
   审核的执行器，输出结构化审核记录 `data/drafts/reviews/{id}.yaml`（八维度结论 +
   逐条问题 + 内容指纹）。promote 不要求审核；记录与当前内容匹配时随资源归档到
@@ -98,10 +103,27 @@ learning clients, APIs, or content packages
   Inventory 层，位于 dictionary evidence 与 sense draft 之间。Wiktionary
   条目（`dictionary.get_filtered_entries` 的稳定 entry_id）是起草输入，不是
   最终 SceneLex sense；inventory 一次性规划整个词，决定哪些证据合并、推迟或
-  拆分，再统一分配 `{word}-nn` sense ID。`data/drafts/inventories/` 是待审
-  草稿区；`data/inventories/` 是未来批准后的权威目录，当前尚未实现自动
-  approve/promote。`tools/draft.py sense` 目前仍是独立兼容路径，不读取
-  inventory。
+  拆分，再统一分配 `{word}-nn` sense ID。状态流转为
+  `draft → reviewed → approved`：`data/drafts/inventories/` 是待审草稿区，
+  `data/inventories/` 与 `data/dictionary-evidence/` 是批准后的权威目录，
+  只能由 `inventory.py approve` 写入（approve 全程离线，不生成 WordSense，
+  不删除草稿）。`load_approved_inventory()` 是 sense 起草读取 inventory 的
+  唯一入口，绝不回退到草稿。
+
+  **已批准的 Inventory 是新建 WordSense 的唯一身份权威**：sense ID、lemma、
+  POS、`semantic_signature` 和 dictionary source mapping 都以它为准。
+  硬约束：
+
+  1. 不得根据 dictionary order 或词典条目序号创建 SceneLex sense ID；
+     词典条目不是 sense，条目序号也不是 sense 编号。
+  2. 没有 approved Inventory 时不得生成新的 WordSense。
+  3. 不得重新定义 Inventory 已冻结的 sense identity；起草阶段这些字段由程序
+     强制覆盖，人工事后修改会被 `validate.py` 的身份检查拦下。
+  4. WordSense 是 approved Inventory sense 的**详细规格**，不是新的义项规划层：
+     它不创建、删除、合并、拆分或重新编号 sense。
+  5. Inventory 本身有问题时，回到 inventory 层修正或重新走 review/approve，
+     不得在 sense draft 中自行修复；模型可返回
+     `generation_status: inventory_conflict` 让工具落到 `_conflict-` 文件。
 - `docs/production-workflow.md`：Phase 1.3 的 Director 权威说明。Director 负责把模型无关
   的词义与教学场景翻译为适合当前视频能力的高质量提示词。生产默认工序是关键图先行
   （文生图 → 图片语义门 → 图生视频）；尾帧、animatic 等更多控制是遇到实际问题时
@@ -136,6 +158,12 @@ learning clients, APIs, or content packages
 
 - 义项 ID 为 `{word}-{nn}`，例如 `reluctant-01`；场景 ID 为
   `{sense_id}-{type}-{nn}`。ID 是稳定引用，重命名或重新编号是兼容性变更。
+  新建义项的 ID 由已批准的 Sense Inventory 分配，不由词典条目顺序决定。
+- WordSense `schema_version` 有两个版本：`1.0` 是 Inventory 层之前的历史资源，
+  不要求 Inventory provenance；`1.1` 由已批准 Inventory 驱动生成，必须包含
+  `inventory`、`semantic_identity` 和 `inventory_source_entries`，且由
+  `validate.py` 持续核对是否仍忠实于 Inventory。新起草一律是 `1.1`；不要通过
+  把这些字段对所有版本设为可选来削弱契约。
 - `semantic_skeleton` 描述与具体渲染无关、可跨场景和跨文化检验的深层条件；不要把
   某一个房间、职业、人物或文化脚本误写成词义本身，也不要把语言惯例冒充文化真理。
 - `conditions.required` 说明词义成立的必要条件；`conditions.excluded` 只写真正不适用
@@ -224,7 +252,9 @@ SceneLex 可向词典、播放器或课程应用提供两类能力：
 ## 工作流程
 
 1. 阅读相关 schema、至少一个同类正式义项和对应证据组，再开始修改。
-2. 新义项先进入 `data/drafts/senses/`；场景先进入对应 `data/drafts/scenes/`。
+2. 新词先规划整词 Inventory（`inventory.py draft` → 人工审阅 → `mark-reviewed`
+   → `approve`），再按 Inventory 起草义项。新义项先进入 `data/drafts/senses/`；
+   场景先进入对应 `data/drafts/scenes/`。
 3. 运行 `python3 tools/validate.py` 和 `python3 -m pytest -q`；需要排期时运行
    `python3 tools/validate.py --backlog`。
 4. 可选：用 `python3 tools/review.py <id>` 或工作台"模型审核"按钮生成审核参考，

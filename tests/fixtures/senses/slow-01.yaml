@@ -1,0 +1,84 @@
+# 测试 fixture: 一份合法的模型输出, 对应 approved slow inventory 的 slow-01。
+# 只用于离线验证 inventory-driven 起草链路, 不是 slow 的最终词义分析,
+# 也不进入 data/senses/。
+schema_version: '1.1'
+language: en
+version: 1
+status: draft
+id: slow-01
+word: slow
+pos: adjective
+sense_label: 速率低于预期基准
+definition: Moving, operating, or happening at a rate below the expected or normal
+  one
+inventory:
+  word: slow
+  version: 1
+  evidence_digest: sha256:a00b525537d9666ed0a6c8a9d1aa76ef546f592693c0478d0d420dabce3227d7
+  sense_id: slow-01
+  identity_digest: sha256:1ea3beaaf6e8eb670be7e3475a0750f722c4ed751120b037206379b91bd42250
+semantic_identity:
+  semantic_type: scalar_property
+  dimension: rate
+  change_of_state: false
+  causative: false
+  valency: attributive_or_predicative
+inventory_source_entries:
+- slow-dict-001
+difficulty: basic
+pronunciation:
+  ipa: /sloʊ/
+collocations:
+- a slow train
+- slow progress
+- slow internet
+sentence_patterns:
+- '[thing] is slow'
+- a slow [noun]
+semantic_type: attribute
+semantic_skeleton:
+  participants:
+  - role: theme
+    description: 一个其速率可被观察或比较的实体或过程
+  propositions:
+  - 存在一个可观察的实体或过程, 它的推进速率可以被测量或比较
+  - 该速率低于观察者持有的参照基准
+  - 该判断描述当前所处的状态, 不要求速率发生过变化
+conditions:
+  required:
+  - 存在可被观察的速率或推进过程
+  - 存在一个参照基准, 使当前速率被判定为低
+  excluded:
+  - condition: 描述的是速率正在下降这一变化过程本身
+    alternative: slow-02
+  - condition: 描述的是某个施事使另一实体速率下降
+    alternative: slow-03
+relations:
+  boundaries:
+  - target: slow-02
+    relation: different_sense
+    distinction: 本义项描述一个持续状态, slow-02 描述速率发生下降的变化; 二者在 change_of_state 上不同
+    diagnostic: 场景中若不存在前后速率对比, 只能是状态判断
+  l1_confusables:
+    zh:
+    - l1_term: 慢
+      covers:
+      - slow-01
+      - slow-02
+      - slow-03
+      note: 中文的慢既能作状态形容词, 也能进入减速与使减速的动词表达; 英语用不同义项区分状态与变化
+scene_requirements:
+  must_show:
+  - 同一动作或过程与一个更快参照物的并置
+  - 可见的进度差距
+  must_not:
+  - 表现速率从快变慢的过程
+  - 出现让某物减速的施事
+  externalization:
+  - 用进度条、队列或并行赛跑呈现速率差
+  timing: 先让观众看清速度差距, 再出现目标词的声音
+provenance:
+  sources:
+  - type: dictionary
+    citation: https://kaikki.org/dictionary/English/meaning/s/sl/slow.jsonl
+    license: CC-BY-SA

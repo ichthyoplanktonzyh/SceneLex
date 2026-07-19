@@ -1,0 +1,84 @@
+# 测试 fixture: 一份合法的模型输出, 对应 approved slow inventory 的 slow-03。
+# 只用于离线验证 inventory-driven 起草链路, 不是 slow 的最终词义分析,
+# 也不进入 data/senses/。
+schema_version: '1.1'
+language: en
+version: 1
+status: draft
+id: slow-03
+word: slow
+pos: verb
+sense_label: 使某物速率下降
+definition: To cause someone or something to move or operate at a lower rate than
+  before
+inventory:
+  word: slow
+  version: 1
+  evidence_digest: sha256:a00b525537d9666ed0a6c8a9d1aa76ef546f592693c0478d0d420dabce3227d7
+  sense_id: slow-03
+  identity_digest: sha256:93eeac6e34f4c3918bf27bb4c67d98a533cd4963bd2ffe543d55af2a89415afd
+semantic_identity:
+  semantic_type: state_change
+  dimension: rate
+  change_of_state: true
+  causative: true
+  valency: transitive
+inventory_source_entries:
+- slow-dict-003
+difficulty: basic
+pronunciation:
+  ipa: /sloʊ/
+collocations:
+- slow the car
+- slow the process
+- slow him down
+sentence_patterns:
+- '[agent] slowed [thing]'
+- '[thing] slows [process]'
+semantic_type: causal_logic
+semantic_skeleton:
+  participants:
+  - role: agent
+    description: 引起速率下降的论元
+  - role: theme
+    description: 速率被降低的实体或过程
+  propositions:
+  - 存在一个实体或过程, 它在较早时间点具有某个可观察速率
+  - 存在另一个论元, 它的介入与该速率的下降之间有可观察的因果联系
+  - 在较晚时间点被作用实体的速率低于较早时间点
+conditions:
+  required:
+  - 存在一个被降低速率的实体或过程
+  - 存在一个与该下降有因果联系的第二论元
+  excluded:
+  - condition: 速率下降没有可辨认的第二论元参与
+    alternative: slow-02
+  - condition: 只描述一个持续的低速状态
+    alternative: slow-01
+relations:
+  boundaries:
+  - target: slow-02
+    relation: different_sense
+    distinction: 本义项引入一个使其他实体减速的论元 (causative 为真), slow-02 只涉及实体自身速率下降
+    diagnostic: 场景中速率下降能否被追溯到另一个论元的介入
+  l1_confusables:
+    zh:
+    - l1_term: 减速
+      covers:
+      - slow-02
+      - slow-03
+      note: 中文减速在句中可以省略致使者, 学习者容易把两个义项混用; 英语靠是否带宾语区分
+scene_requirements:
+  must_show:
+  - 一个论元的介入
+  - 介入之后被作用实体速率下降的可观察结果
+  must_not:
+  - 让速率下降看起来与任何其他论元无关
+  externalization:
+  - 用介入动作与随后位移量缩短的先后顺序呈现因果
+  timing: 先呈现介入与随后的减速结果, 再出现目标词的声音
+provenance:
+  sources:
+  - type: dictionary
+    citation: https://kaikki.org/dictionary/English/meaning/s/sl/slow.jsonl
+    license: CC-BY-SA

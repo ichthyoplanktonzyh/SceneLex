@@ -90,12 +90,16 @@ def _batch_env(tmp_path, monkeypatch):
     monkeypatch.setattr(
         draft, "BATCH_STATE", tmp_path / "data" / "drafts" / "batch-state.json"
     )
+    # batch 现在按 approved Sense Inventory 枚举任务, 不再按 Wiktionary 条目数。
+    import inventory
+    monkeypatch.setattr(
+        inventory, "load_approved_inventory",
+        lambda word: {"word": word, "senses": [{"id": f"{word}-01"}]},
+    )
 
 
 def test_batch_runs_both_stages_and_cleans_state(tmp_path, monkeypatch):
     _batch_env(tmp_path, monkeypatch)
-    import dictionary
-    monkeypatch.setattr(dictionary, "sense_count", lambda w: 1)
     calls = []
     monkeypatch.setattr(
         draft, "_run_stage",
@@ -103,14 +107,56 @@ def test_batch_runs_both_stages_and_cleans_state(tmp_path, monkeypatch):
     )
     draft.cmd_batch(Namespace(words=["nearly"], count=1, retries=0,
                               sleep=0, senses_only=False, concurrency=1))
-    assert calls == [("sense", "nearly", "--num", "01"), ("scenes", "nearly-01")]
+    assert calls == [("sense", "nearly-01"), ("scenes", "nearly-01")]
     assert not draft.BATCH_STATE.exists()
+
+
+def test_batch_enumerates_inventory_senses_not_dictionary_entries(
+    tmp_path, monkeypatch
+):
+    """词典有几条不再决定生成几个 SceneLex sense ID。"""
+    _batch_env(tmp_path, monkeypatch)
+    import dictionary
+    import inventory
+    monkeypatch.setattr(
+        inventory, "load_approved_inventory",
+        lambda word: {"word": word,
+                      "senses": [{"id": f"{word}-01"}, {"id": f"{word}-02"}]},
+    )
+
+    def _must_not_be_called(word):
+        raise AssertionError("batch 不得再按词典义项数枚举任务")
+
+    monkeypatch.setattr(dictionary, "sense_count", _must_not_be_called)
+    calls = []
+    monkeypatch.setattr(
+        draft, "_run_stage",
+        lambda stage, retries, sleep: (calls.append(tuple(stage)) or (True, "ok")),
+    )
+    draft.cmd_batch(Namespace(words=["nearly"], count=1, retries=0,
+                              sleep=0, senses_only=True, concurrency=1))
+    assert sorted(calls) == [("sense", "nearly-01"), ("sense", "nearly-02")]
+
+
+def test_batch_skips_words_without_approved_inventory(tmp_path, monkeypatch):
+    _batch_env(tmp_path, monkeypatch)
+    import inventory
+
+    def _no_inventory(word):
+        raise inventory.InventoryError(f"No approved Sense Inventory for '{word}'")
+
+    monkeypatch.setattr(inventory, "load_approved_inventory", _no_inventory)
+    monkeypatch.setattr(
+        draft, "_run_stage",
+        lambda stage, retries, sleep: (True, "ok"),
+    )
+    with pytest.raises(SystemExit):
+        draft.cmd_batch(Namespace(words=["nearly"], count=1, retries=0,
+                                  sleep=0, senses_only=True, concurrency=1))
 
 
 def test_batch_failed_sense_skips_scenes_and_keeps_state(tmp_path, monkeypatch):
     _batch_env(tmp_path, monkeypatch)
-    import dictionary
-    monkeypatch.setattr(dictionary, "sense_count", lambda w: 1)
     calls = []
     monkeypatch.setattr(
         draft, "_run_stage",
@@ -118,14 +164,12 @@ def test_batch_failed_sense_skips_scenes_and_keeps_state(tmp_path, monkeypatch):
     )
     draft.cmd_batch(Namespace(words=["nearly"], count=1, retries=0,
                               sleep=0, senses_only=False, concurrency=1))
-    assert calls == [("sense", "nearly", "--num", "01")]
+    assert calls == [("sense", "nearly-01")]
     assert draft.BATCH_STATE.exists()
 
 
 def test_batch_resumes_from_recorded_state(tmp_path, monkeypatch):
     _batch_env(tmp_path, monkeypatch)
-    import dictionary
-    monkeypatch.setattr(dictionary, "sense_count", lambda w: 1)
     draft.BATCH_STATE.parent.mkdir(parents=True)
     draft.BATCH_STATE.write_text('{"nearly": {"senses": {"01": "done"}}}')
     calls = []
