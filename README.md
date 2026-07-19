@@ -77,6 +77,7 @@ tools/review.py              模型审核 (可选质量参考)
 tools/director.py            语义场景 → 模型适配的视频提示词
 tools/render.py              渲染层编排 (plan / show / render / assemble)
 tools/llm.py                 多协议 LLM 适配器
+tools/revisions.py           Scene → WordSense 语义修订绑定与状态判定
 tools/validate.py            正式库发布门
 tools/export.py              面向消费者的确定性 JSON 导出
 examples/consumer/           非权威消费者示例
@@ -167,6 +168,7 @@ python3 tools/render.py render reluctant-01-proto-01 -b 3 -n 2   # 只补渲 bea
 python3 tools/workbench.py                               # 审核工作台 http://127.0.0.1:8321
 
 python3 tools/validate.py --backlog
+python3 tools/validate.py --scene-revisions              # 场景语义修订状态
 python3 tools/export.py --version 0.1.0 --output dist/scenelex-0.1.0.json
 python3 -m pytest -q
 ```
@@ -190,13 +192,68 @@ python3 tools/draft.py sense slow --num 02      # 已弃用: 词典条目不是 
 | 版本 | 含义 |
 |---|---|
 | `1.0` | Inventory 层出现之前的历史资源；不要求 Inventory provenance，继续通过校验 |
-| `1.1` | 由已批准 Inventory 驱动生成；**必须**包含 `inventory`、`semantic_identity`、`inventory_source_entries` |
+| `1.1` | 由已批准 Inventory 驱动生成；**必须**包含 `inventory`、`semantic_identity`、`inventory_source_entries`、`semantic_revision` |
 
 新起草的义项一律是 `1.1`。`inventory.identity_digest` 是对 Inventory 中该 sense
 的锁定身份（`id` / `lemma` / `pos` / `semantic_signature` 五个字段）计算的
 SHA-256，使用 canonical JSON（`sort_keys`、稳定分隔符、UTF-8），前缀 `sha256:`。
 `definition`、`label_zh` 和自由文本理由**不进入**摘要——文字润色不应让已生成的
 义项集体失效。
+
+## 语义修订：Scene 如何绑定 WordSense
+
+数据链是：
+
+```text
+Dictionary Evidence → Approved Sense Inventory → WordSense → Scene
+```
+
+WordSense 有两个互不替代的版本概念：
+
+| 字段 | 含义 | 什么时候递增 |
+|---|---|---|
+| `version` | 资源文件自身的普通修订 | 措辞、拼写、格式、补充解释、`status` 变化、prompt 或生成元数据变化 |
+| `semantic_revision` | 语义契约修订 | 语义身份、成立条件、边界、causativity、valency、参与者角色、视觉证据要求发生实质变化，或义项被拆分/合并/重新定义 |
+
+Scene 用两个字段记录自己的依赖：
+
+- `sense_ref`：稳定的 WordSense ID；
+- `sense_revision`：**起草时**所依据的 `semantic_revision`。
+
+Scene 只绑定 `semantic_revision`。普通 `version` 变化、状态变化和文字润色都不会
+让已有 Scene 失效——那些修改不改变"这些画面还能不能证明这个义项"。
+
+`semantic_revision` 由人工维护：新起草的 inventory-driven WordSense 一律写入
+`semantic_revision: 1`（由程序写，模型写错即判为 identity drift 并失败），之后的
+语义变化由开发者在改 WordSense 时自己 bump。本项目**不**用内容摘要、diff 或 LLM
+去自动判断"这次改动算不算语义修改"。
+
+### 修订状态检查
+
+```bash
+python3 tools/validate.py --scene-revisions              # 全库
+python3 tools/validate.py --scene-revisions reluctant-01 # 只看一个义项
+```
+
+| 状态 | 含义 |
+|---|---|
+| `CURRENT` | `sense_revision` 等于当前 `semantic_revision` |
+| `NEEDS_REVIEW` | 词义语义契约已更新，本 Scene 基于旧修订生成，需要重新审核 |
+| `LEGACY` | SceneSpec 1.0 的旧场景，尚未绑定语义修订 |
+| `INVALID` | 修订超前、非法，或 1.1 Scene 缺绑定 / 引用了 1.0 义项 |
+| `MISSING` | `sense_ref` 指向的 WordSense 不存在 |
+
+状态不写进 Scene 文件（没有 `stale:` 或 `needs_review:` 字段），每次都由当前两个
+数字动态比较得出。规则：
+
+- `NEEDS_REVIEW` 目前只是 **warning**：普通 `validate` 照常成功、退出码 0，语义
+  修订不该临时卡住视频生产主线；`--scene-revisions` 也不因它失败；
+- `INVALID` 和 `MISSING` 是**错误**，`validate` 与 `--scene-revisions` 均退出非零；
+- 处理 `NEEDS_REVIEW` 的正确做法是重新生成 Scene，或人工确认原有视觉证据在新语义
+  契约下仍然成立——**不要只把 `sense_revision` 的数字改大**。因此工具链里没有、
+  也不会有"一键刷新 revision"的命令；
+- SceneSpec 1.0 的历史场景继续兼容，不做批量迁移；新 Scene 只能从 WordSense 1.1
+  起草，起草前若义项是 1.0 或缺 `semantic_revision`，在调用模型之前就失败。
 
 ## LLM API：按协议兼容，不绑定厂商
 
