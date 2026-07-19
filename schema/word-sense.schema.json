@@ -76,8 +76,9 @@
     "inventory_source_entries": {
       "type": "array",
       "minItems": 1,
+      "uniqueItems": true,
       "items": { "type": "string", "minLength": 1 },
-      "description": "必须与 approved inventory sense 的 source_entries 集合完全一致, 不能增删"
+      "description": "必须与 approved inventory sense 的 source_entries 集合完全一致, 不能增删。uniqueItems 防止 [\"x\", \"x\"] 这类重复条目因为按集合比较而被当成合法的精确映射"
     },
     "language": {
       "type": "string",

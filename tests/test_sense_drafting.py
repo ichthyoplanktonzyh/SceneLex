@@ -292,6 +292,81 @@ def test_omitted_identity_scalars_are_filled_in(env, monkeypatch):
         "slow-02", "slow", "verb")
 
 
+# ------------------------- 显式 null 是表态, 不是沉默
+
+def test_explicit_null_dimension_is_drift_when_inventory_has_value(env, monkeypatch):
+    """Inventory 说 rate, 模型说 null: 这是冲突, 不能被静默补回 rate。"""
+    def mutate(sense_id, doc):
+        doc["semantic_identity"]["dimension"] = None
+    _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
+    message = _assert_drift(env, "slow-02", "semantic_identity.dimension")
+    assert "'rate'" in message and "None" in message
+
+
+def test_explicit_null_valency_is_drift(env, monkeypatch):
+    def mutate(sense_id, doc):
+        doc["semantic_identity"]["valency"] = None
+    _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
+    _assert_drift(env, "slow-02", "semantic_identity.valency")
+
+
+@pytest.mark.parametrize("field", [
+    "semantic_type", "change_of_state", "causative",
+])
+def test_explicit_null_in_other_identity_fields_is_drift(env, monkeypatch, field):
+    def mutate(sense_id, doc):
+        doc["semantic_identity"][field] = None
+    _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
+    _assert_drift(env, "slow-02", f"semantic_identity.{field}")
+
+
+def test_explicit_null_dimension_matches_null_inventory():
+    """Inventory 本身就是 null 时, 模型写 null 是一致的, 不是 drift。"""
+    inventory_sense = {
+        "id": "x-01", "lemma": "x", "pos": "noun",
+        "semantic_signature": {
+            "semantic_type": "entity", "dimension": None,
+            "change_of_state": False, "causative": False, "valency": "n/a",
+        },
+        "source_entries": ["x-dict-001"],
+    }
+    raw = {"semantic_identity": {"dimension": None}}
+    assert inventory.detect_identity_drift(raw, {"word": "x"}, inventory_sense) == []
+
+
+def test_missing_dimension_key_is_still_filled_in(env, monkeypatch):
+    """key 不存在 = 模型没表态, 由程序补全。"""
+    def mutate(sense_id, doc):
+        doc["semantic_identity"].pop("dimension")
+    _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
+    written = _load(_draft_sense(env, "slow-02"))
+    assert written["semantic_identity"]["dimension"] == "rate"
+
+
+def test_explicit_null_top_level_identity_field_is_drift(env, monkeypatch):
+    def mutate(sense_id, doc):
+        doc["pos"] = None
+    _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
+    _assert_drift(env, "slow-02", "pos")
+
+
+def test_null_source_entries_is_drift(env, monkeypatch):
+    def mutate(sense_id, doc):
+        doc["inventory_source_entries"] = None
+    _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
+    _assert_drift(env, "slow-02", "inventory_source_entries")
+
+
+def test_duplicate_source_entries_are_rejected_by_schema():
+    """集合比较对重复条目不敏感, 由 schema 的 uniqueItems 兜底。"""
+    doc = _sense_fixture("slow-02")
+    doc["inventory_source_entries"] = ["slow-dict-002", "slow-dict-002"]
+    errors = draft.schema_check(
+        doc, draft.load_schema("word-sense.schema.json"), "slow-02.yaml"
+    )
+    assert any("inventory_source_entries" in e for e in errors)
+
+
 def test_partially_omitted_semantic_identity_is_filled_in(env, monkeypatch):
     """写对了一半、另一半没写, 不算冲突。"""
     def mutate(sense_id, doc):
