@@ -75,6 +75,25 @@ def _entries(*ids):
     return [{"entry_id": i} for i in ids]
 
 
+def _base_doc(word="slow", entries=None, **overrides):
+    """身份字段全部一致的最小合法 doc, 供单独破坏某一个字段的测试使用。"""
+    entries = entries if entries is not None else SLOW_ENTRIES
+    doc = {
+        "word": word,
+        "language": "en",
+        "source": {
+            "provider": "wiktionary",
+            "entry_count": len(entries),
+            "evidence_digest": inventory.compute_evidence_digest(entries),
+        },
+        "senses": [],
+        "deferred_entries": [],
+        "relations": [],
+    }
+    doc.update(overrides)
+    return doc
+
+
 def test_get_filtered_entries_generates_stable_ids(monkeypatch):
     import dictionary
     monkeypatch.setattr(
@@ -190,11 +209,98 @@ def test_unhandled_dictionary_entry_fails():
     assert any("未被任何 sense 使用也未 deferred" in e for e in errors)
 
 
+# ------------------------------------------------------ 顶层身份一致性校验
+
+def test_toplevel_word_mismatch_fails():
+    doc = _base_doc(word="fast")
+    errors = inventory.validate_inventory_content(doc, SLOW_ENTRIES, "slow")
+    assert any("顶层 word 不一致" in e for e in errors)
+
+
+def test_sense_lemma_mismatch_fails():
+    sense = _sense("slow-01", ["slow-dict-001"])
+    sense["lemma"] = "fast"
+    doc = _base_doc(senses=[sense])
+    errors = inventory.validate_inventory_content(doc, SLOW_ENTRIES, "slow")
+    assert any("lemma 不一致" in e for e in errors)
+
+
+def test_source_provider_mismatch_fails():
+    doc = _base_doc()
+    doc["source"]["provider"] = "wordnet"
+    errors = inventory.validate_inventory_content(doc, SLOW_ENTRIES, "slow")
+    assert any("source.provider 不一致" in e for e in errors)
+
+
+def test_source_entry_count_mismatch_fails():
+    doc = _base_doc()
+    doc["source"]["entry_count"] = 999
+    errors = inventory.validate_inventory_content(doc, SLOW_ENTRIES, "slow")
+    assert any("source.entry_count 不一致" in e for e in errors)
+
+
+def test_source_evidence_digest_mismatch_fails():
+    doc = _base_doc()
+    doc["source"]["evidence_digest"] = "sha256:" + "0" * 64
+    errors = inventory.validate_inventory_content(doc, SLOW_ENTRIES, "slow")
+    assert any("source.evidence_digest 不一致" in e for e in errors)
+
+
+def test_language_mismatch_fails():
+    doc = _base_doc()
+    doc["language"] = "fr"
+    errors = inventory.validate_inventory_content(doc, SLOW_ENTRIES, "slow")
+    assert any("language 不一致" in e for e in errors)
+
+
+# --------------------------------------------------------- relation 去重
+
+def test_same_pair_different_relation_types_are_legal():
+    entries = _entries("slow-dict-001", "slow-dict-002")
+    doc = _base_doc(
+        entries=entries,
+        senses=[_sense("slow-01", ["slow-dict-001"]),
+                _sense("slow-02", ["slow-dict-002"])],
+        relations=[
+            {"source": "slow-01", "target": "slow-02",
+             "relation": "state_change", "distinction": "A"},
+            {"source": "slow-01", "target": "slow-02",
+             "relation": "shared_dimension", "distinction": "B"},
+        ],
+    )
+    errors = inventory.validate_inventory_content(doc, entries, "slow")
+    assert not any("重复" in e for e in errors)
+
+
+def test_same_pair_same_relation_type_duplicate_fails():
+    entries = _entries("slow-dict-001", "slow-dict-002")
+    doc = _base_doc(
+        entries=entries,
+        senses=[_sense("slow-01", ["slow-dict-001"]),
+                _sense("slow-02", ["slow-dict-002"])],
+        relations=[
+            {"source": "slow-01", "target": "slow-02",
+             "relation": "state_change", "distinction": "A"},
+            {"source": "slow-01", "target": "slow-02",
+             "relation": "state_change", "distinction": "B"},
+        ],
+    )
+    errors = inventory.validate_inventory_content(doc, entries, "slow")
+    assert any("重复" in e for e in errors)
+
+
 # --------------------------------------------------------------- CLI: draft
 
-def test_draft_rejects_existing_file_without_force(tmp_path, monkeypatch):
+def _patch_draft_dirs(monkeypatch, tmp_path):
     drafts_dir = tmp_path / "inventories"
+    evidence_dir = tmp_path / "dictionary-evidence"
     monkeypatch.setattr(inventory, "DRAFTS_INVENTORIES", drafts_dir)
+    monkeypatch.setattr(inventory, "DRAFTS_EVIDENCE", evidence_dir)
+    return drafts_dir, evidence_dir
+
+
+def test_draft_rejects_existing_file_without_force(tmp_path, monkeypatch):
+    drafts_dir, evidence_dir = _patch_draft_dirs(monkeypatch, tmp_path)
     drafts_dir.mkdir(parents=True)
     existing = drafts_dir / "slow.yaml"
     existing.write_text("word: slow\n", encoding="utf-8")
@@ -203,11 +309,11 @@ def test_draft_rejects_existing_file_without_force(tmp_path, monkeypatch):
         inventory.cmd_draft(Namespace(word="slow", force=False))
 
     assert existing.read_text(encoding="utf-8") == "word: slow\n"
+    assert not evidence_dir.exists()
 
 
 def test_invalid_llm_yaml_does_not_overwrite_existing_draft(tmp_path, monkeypatch):
-    drafts_dir = tmp_path / "inventories"
-    monkeypatch.setattr(inventory, "DRAFTS_INVENTORIES", drafts_dir)
+    drafts_dir, evidence_dir = _patch_draft_dirs(monkeypatch, tmp_path)
     drafts_dir.mkdir(parents=True)
     existing = drafts_dir / "slow.yaml"
     existing.write_text('schema_version: "1.0"\n', encoding="utf-8")
@@ -222,11 +328,11 @@ def test_invalid_llm_yaml_does_not_overwrite_existing_draft(tmp_path, monkeypatc
 
     assert existing.read_text(encoding="utf-8") == 'schema_version: "1.0"\n'
     assert (drafts_dir / "_unparsed-slow.yaml").exists()
+    assert not (evidence_dir / "slow.yaml").exists()
 
 
-def test_draft_writes_valid_inventory_on_success(tmp_path, monkeypatch):
-    drafts_dir = tmp_path / "inventories"
-    monkeypatch.setattr(inventory, "DRAFTS_INVENTORIES", drafts_dir)
+def test_draft_writes_snapshot_and_inventory_together_on_success(tmp_path, monkeypatch):
+    drafts_dir, evidence_dir = _patch_draft_dirs(monkeypatch, tmp_path)
     monkeypatch.setattr(inventory.dictionary, "get_filtered_entries",
                          lambda w: list(SLOW_ENTRIES))
     fixture_text = FIXTURE.read_text(encoding="utf-8")
@@ -240,10 +346,21 @@ def test_draft_writes_valid_inventory_on_success(tmp_path, monkeypatch):
     assert doc["word"] == "slow"
     assert len(doc["senses"]) == 3
 
+    evidence_out = evidence_dir / "slow.yaml"
+    assert evidence_out.exists()
+    evidence_doc = yaml.safe_load(evidence_out.read_text(encoding="utf-8"))
+    assert [e["entry_id"] for e in evidence_doc["entries"]] == [
+        e["entry_id"] for e in SLOW_ENTRIES
+    ]
+    # 覆盖后的机器字段必须与 evidence snapshot 内容互相一致。
+    assert doc["source"]["entry_count"] == len(SLOW_ENTRIES)
+    assert doc["source"]["evidence_digest"] == inventory.compute_evidence_digest(
+        SLOW_ENTRIES
+    )
+
 
 def test_draft_rejects_llm_output_that_fails_content_validation(tmp_path, monkeypatch):
-    drafts_dir = tmp_path / "inventories"
-    monkeypatch.setattr(inventory, "DRAFTS_INVENTORIES", drafts_dir)
+    drafts_dir, evidence_dir = _patch_draft_dirs(monkeypatch, tmp_path)
     monkeypatch.setattr(inventory.dictionary, "get_filtered_entries",
                          lambda w: list(SLOW_ENTRIES))
 
@@ -258,14 +375,53 @@ def test_draft_rejects_llm_output_that_fails_content_validation(tmp_path, monkey
 
     assert not (drafts_dir / "slow.yaml").exists()
     assert (drafts_dir / "_unparsed-slow.yaml").exists()
+    assert not (evidence_dir / "slow.yaml").exists()
+
+
+def test_draft_failure_does_not_overwrite_existing_snapshot_or_inventory(
+    tmp_path, monkeypatch
+):
+    """覆盖 PR 审查项 11+12: --force 起草失败时, 既有合法 inventory 也有既有
+    合法 evidence snapshot, 二者都必须原样保留。"""
+    drafts_dir, evidence_dir = _patch_draft_dirs(monkeypatch, tmp_path)
+    drafts_dir.mkdir(parents=True)
+    evidence_dir.mkdir(parents=True)
+
+    existing_inventory = FIXTURE.read_text(encoding="utf-8")
+    existing_evidence = yaml.safe_dump(
+        inventory._build_evidence_doc("slow", SLOW_ENTRIES), allow_unicode=True
+    )
+    (drafts_dir / "slow.yaml").write_text(existing_inventory, encoding="utf-8")
+    (evidence_dir / "slow.yaml").write_text(existing_evidence, encoding="utf-8")
+
+    monkeypatch.setattr(inventory.dictionary, "get_filtered_entries",
+                         lambda w: list(SLOW_ENTRIES))
+    # Schema 合法, 但编号不连续, 应在任何文件被替换前失败。
+    broken = _load_fixture_doc()
+    broken["senses"][1]["id"] = "slow-05"
+    monkeypatch.setattr(inventory.llm, "generate",
+                         lambda prompt: yaml.safe_dump(broken, allow_unicode=True))
+
+    with pytest.raises(SystemExit):
+        inventory.cmd_draft(Namespace(word="slow", force=True))
+
+    assert (drafts_dir / "slow.yaml").read_text(encoding="utf-8") == existing_inventory
+    assert (evidence_dir / "slow.yaml").read_text(encoding="utf-8") == existing_evidence
 
 
 # ------------------------------------------------------------ CLI: validate
 
-def test_validate_command_passes_on_fixture_draft(tmp_path, monkeypatch, capsys):
+def _patch_validate_dirs(monkeypatch, tmp_path):
     drafts_dir = tmp_path / "inventories"
+    evidence_dir = tmp_path / "dictionary-evidence"
     monkeypatch.setattr(inventory, "DRAFTS_INVENTORIES", drafts_dir)
     monkeypatch.setattr(inventory, "INVENTORIES", tmp_path / "inventories_official")
+    monkeypatch.setattr(inventory, "DRAFTS_EVIDENCE", evidence_dir)
+    return drafts_dir, evidence_dir
+
+
+def test_validate_command_passes_on_fixture_draft(tmp_path, monkeypatch, capsys):
+    drafts_dir, _ = _patch_validate_dirs(monkeypatch, tmp_path)
     drafts_dir.mkdir(parents=True)
     (drafts_dir / "slow.yaml").write_text(
         FIXTURE.read_text(encoding="utf-8"), encoding="utf-8"
@@ -278,9 +434,7 @@ def test_validate_command_passes_on_fixture_draft(tmp_path, monkeypatch, capsys)
 
 
 def test_validate_command_fails_on_broken_inventory(tmp_path, monkeypatch):
-    drafts_dir = tmp_path / "inventories"
-    monkeypatch.setattr(inventory, "DRAFTS_INVENTORIES", drafts_dir)
-    monkeypatch.setattr(inventory, "INVENTORIES", tmp_path / "inventories_official")
+    drafts_dir, _ = _patch_validate_dirs(monkeypatch, tmp_path)
     drafts_dir.mkdir(parents=True)
 
     doc = _load_fixture_doc()
@@ -293,3 +447,55 @@ def test_validate_command_fails_on_broken_inventory(tmp_path, monkeypatch):
 
     with pytest.raises(SystemExit):
         inventory.cmd_validate(Namespace(word="slow"))
+
+
+def test_validate_uses_snapshot_and_never_calls_live_dictionary_fetch(
+    tmp_path, monkeypatch
+):
+    drafts_dir, evidence_dir = _patch_validate_dirs(monkeypatch, tmp_path)
+    drafts_dir.mkdir(parents=True)
+    evidence_dir.mkdir(parents=True)
+    (drafts_dir / "slow.yaml").write_text(
+        FIXTURE.read_text(encoding="utf-8"), encoding="utf-8"
+    )
+    (evidence_dir / "slow.yaml").write_text(
+        yaml.safe_dump(
+            inventory._build_evidence_doc("slow", SLOW_ENTRIES), allow_unicode=True
+        ),
+        encoding="utf-8",
+    )
+
+    def _must_not_be_called(word):
+        raise AssertionError("snapshot 存在时不应调用实时词典抓取 (不应发网络请求)")
+
+    monkeypatch.setattr(inventory.dictionary, "get_filtered_entries", _must_not_be_called)
+
+    inventory.cmd_validate(Namespace(word="slow"))  # 不抛异常即通过
+
+
+def test_validate_snapshot_survives_upstream_dictionary_drift(tmp_path, monkeypatch, capsys):
+    """上游 get_filtered_entries() 内容改变后, 已保存的 snapshot 仍让旧
+    entry_id 保持原有含义, 校验结果不受实时词典内容变化影响。"""
+    drafts_dir, evidence_dir = _patch_validate_dirs(monkeypatch, tmp_path)
+    drafts_dir.mkdir(parents=True)
+    evidence_dir.mkdir(parents=True)
+    (drafts_dir / "slow.yaml").write_text(
+        FIXTURE.read_text(encoding="utf-8"), encoding="utf-8"
+    )
+    (evidence_dir / "slow.yaml").write_text(
+        yaml.safe_dump(
+            inventory._build_evidence_doc("slow", SLOW_ENTRIES), allow_unicode=True
+        ),
+        encoding="utf-8",
+    )
+
+    drifted_entries = [
+        {"entry_id": "slow-dict-001", "pos": "noun",
+         "gloss": "A totally different, drifted meaning.",
+         "labels": [], "examples": []},
+    ]
+    monkeypatch.setattr(inventory.dictionary, "get_filtered_entries",
+                         lambda w: drifted_entries)
+
+    inventory.cmd_validate(Namespace(word="slow"))
+    assert "PASS" in capsys.readouterr().out

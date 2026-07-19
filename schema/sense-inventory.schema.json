@@ -32,12 +32,17 @@
 
     "source": {
       "type": "object",
-      "required": ["provider", "entry_count"],
+      "required": ["provider", "entry_count", "evidence_digest"],
       "additionalProperties": true,
       "description": "允许未来增加 provenance 字段",
       "properties": {
         "provider": { "type": "string", "minLength": 1 },
-        "entry_count": { "type": "integer", "minimum": 0 }
+        "entry_count": { "type": "integer", "minimum": 0 },
+        "evidence_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "对本次实际使用的 dictionary evidence snapshot 计算的确定性摘要, 见 data/drafts/dictionary-evidence/{word}.yaml; 防止 entry ID 随词典内容变化静默漂移"
+        }
       }
     },
 

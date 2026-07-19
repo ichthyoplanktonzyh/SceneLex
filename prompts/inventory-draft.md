@@ -52,6 +52,13 @@ inventory_version: 1
 source:
   provider: wiktionary
   entry_count: {{ENTRY_COUNT}}
+  evidence_digest: "{{EVIDENCE_DIGEST}}"
 ```
+
+以上字段（`schema_version`、`word`、`language`、`status`、`inventory_version`、
+`source.provider`、`source.entry_count`、`source.evidence_digest`）由起草工具
+基于本次实际词典证据程序化生成；请原样填写，不要自行计算、编造或修改
+`evidence_digest` 的值——起草工具会在你的输出之上强制覆盖这些字段，
+但仍需要你原样填写以保持输出结构完整。
 
 不要输出 Markdown 代码围栏，不要输出任何解释文字，直接输出 YAML 文档本身。

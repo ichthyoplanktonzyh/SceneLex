@@ -9,6 +9,7 @@ inventory_version: 1
 source:
   provider: wiktionary
   entry_count: 4
+  evidence_digest: "sha256:a00b525537d9666ed0a6c8a9d1aa76ef546f592693c0478d0d420dabce3227d7"
 
 senses:
   - id: slow-01
