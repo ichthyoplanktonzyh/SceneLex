@@ -109,9 +109,20 @@ Wiktionary 条目先被当作 `dictionary evidence`，由 `tools/inventory.py dr
 **只有已批准的 Sense Inventory 能驱动新的 WordSense 起草。** `tools/draft.py sense`
 接收的是 SceneLex sense ID（不是词典条目序号）：它读取整个 Inventory，把其中
 已冻结的那一条 CURRENT_SENSE 详细化，同时注入全部 ALL_SENSES 以便正确描述边界。
-sense ID、lemma、POS、语义身份和 dictionary source mapping 由程序按 Inventory
-强制写入，模型输出的这些字段一律作废；生成结果携带 Inventory provenance，
-事后人工改动会被 `tools/validate.py` 抓出。
+身份字段的处理分两种情况，程序**不会**静默替模型圆场：
+
+- 模型**没写**的机器字段（`schema_version`、`inventory.*` 等簿记信息）由程序按
+  Inventory 补全；
+- 模型**写了但与 Inventory 冲突**的身份字段（`id`、lemma、`pos`、
+  `semantic_identity.*`、`inventory_source_entries`）判定为 **identity drift**：
+  本次起草失败、逐项打印 expected / actual、原始输出存到
+  `data/drafts/senses/_invalid-{sense_id}-identity-drift.yaml`，已有合法草稿不受影响。
+
+这条区分很重要：模型如果把 `slow-02` 当成及物致使义来写，光把 `valency` 改回
+`intransitive` 并不能挽救正文——整篇语义骨架、条件和边界都是按错误义项写的。
+与其产出一份"字段正确、内容跑偏"的草稿，不如直接失败。
+
+生成结果携带 Inventory provenance，事后人工改动会被 `tools/validate.py` 抓出。
 
 状态流转：
 

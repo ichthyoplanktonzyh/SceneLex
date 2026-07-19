@@ -360,6 +360,23 @@ def draft_one_sense(sense_id, inventory_doc, entries, force=False):
             "请回到 inventory 层修正, 不要在 sense 草稿中自行修复。"
         )
 
+    # 覆盖之前先看模型自己写了什么: 如果它把 CURRENT_SENSE 理解成了别的义项,
+    # 直接覆盖锁定字段只会让这份误解通过校验并落盘, 后面的内容却全是按错误
+    # 理解写的。宁可失败, 也不要一份"字段正确、内容跑偏"的草稿。
+    drift = inventory_module.detect_identity_drift(doc, inventory_doc, inventory_sense)
+    if drift:
+        path = _dump_failure("invalid", f"{sense_id}-identity-drift", blocks[0])
+        detail = "\n".join(
+            f"    {field}:\n      expected: {expected!r}\n      actual:   {actual!r}"
+            for field, expected, actual in drift
+        )
+        raise SenseDraftError(
+            f"[{sense_id}] identity drift: 模型输出的身份字段与 approved Inventory "
+            f"冲突 ({len(drift)} 处), 说明它没有按 CURRENT_SENSE 理解本次任务:\n"
+            f"{detail}\n原始输出已存 {_rel(path)}; 请检查 Inventory 与提示词, "
+            "不要手工改字段了事。"
+        )
+
     apply_inventory_fields(doc, inventory_doc, inventory_sense)
 
     errors = schema_check(doc, load_schema("word-sense.schema.json"),
