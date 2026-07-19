@@ -16,7 +16,10 @@
 - 每个 beat 的 purpose 说明该节拍对建立词义的作用（面向内部评审，不是剧情摘要）；
 - 声画时序遵循规格中的 timing 字段；
 - 场景 ID 命名：{sense_id}-proto-01 / -contrast-01 / -counter-01 / -boundary-01 / -transfer-01，文件内 id 字段必须与之一致；
-- 每个草稿固定填写 `schema_version: "1.0"`、`version: 1`、`status: draft`；
+- 每个草稿固定填写 `schema_version: "1.1"`、`version: 1`、`status: draft`；
+- 依赖字段固定填写 `sense_ref: {{SENSE_ID}}` 与 `sense_revision: {{SENSE_REVISION}}`
+  （本场景所依据的词义语义契约修订）；这两个值由程序核对，写错即判为依赖漂移、
+  整次生成失败，拿不准就整个省略；
 - transfer 场景填写至少两个 `transfer_dimensions`，说明相对原型改变了什么；
 - 每个场景填写 `surface`（domain / participant_type / setting，小写 kebab-case，
   如 household / child / indoor-home）；多片段拼贴的 transfer 场景可用 mixed；
