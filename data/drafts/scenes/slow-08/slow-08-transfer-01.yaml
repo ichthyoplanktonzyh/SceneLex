@@ -1,0 +1,54 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-08-transfer-01
+sense_ref: slow-08
+scene_type: transfer
+title: 慢无国界——从办公室到学校到银发族
+synopsis: 三个不同的参与者类型（成人、儿童、老人）在不同的低认知难度任务上表现出理解延迟，都被旁观者用贬低语气评价“You are so slow”。多画面并置逼迫抽象出“智力低下归因 + 贬低”的核心结构。
+storyboard:
+  - beat: 1
+    visual: 片段A（办公室）：新员工小王看着电脑上的表格，反复点击“保存”却没找到正确按钮，同事走过来说：“You are so slow-witted!”（摇头，嗤笑）
+    audio: “You are so slow-witted!”（嘲笑的语气）
+    purpose: 迁移到职场场景，使用 collocation “slow-witted”，展示对简单数字任务的认知延迟。
+  - beat: 2
+    visual: 片段B（小学）：一名小学生（约8岁）在黑板前拼写单词“cat”，先写成“k”又擦掉，同桌在下面笑。老师不耐烦地说：“You are so slow on the uptake!”（双手叉腰）
+    audio: “You are so slow on the uptake!”（带讽刺的拉长音）
+    purpose: 迁移到学龄儿童场景，使用 collocation “slow on the uptake”，展示文字任务的认知延迟。
+  - beat: 3
+    visual: 片段C（社区中心）：一位70岁老人试图用智能手机挂号，连续点错，护士叹气翻白眼：“Some people are just slow learners.”（对旁边的同事说）
+    audio: “Some people are just slow learners.”（轻蔑语气）
+    purpose: 迁移到老年人群与数字技术领域，使用 collocation “slow learner”，强化“智力不足”归因而非年龄正常衰退。
+  - beat: 4
+    visual: 快速蒙太奇：三个画面并列缩小成一屏，同时播放音频。
+    audio: （叠加的厌恶音效 + 含糊的“You are so slow”）
+    purpose: 逼迫学习者抽象出共同的语义核心——无论对象是谁、环境如何，“slow”在贬低语境下总是归因于认知能力低下并带有负面态度。
+learning_tasks:
+  - type: transfer_judgment
+    prompt: 以下新场景是否可以用 slow-08（贬义）来描述？一个大学生在课堂上听不懂教授的口音，反复请求重复，教授不耐烦地说“You are slow”。请判断。
+    choices:
+      - "A: 可以，因为教授不耐烦"
+      - "B: 不可以，因为原因是口音（外因），不是智力问题"
+    expected_answer: B
+    scoring_note: 若学习者回答“不可以”并说明外因，得分；若回答“可以”则需澄清。
+  - type: scene_recognition
+    prompt: 请从以下三个片段中选出所有应使用 slow-08 的情景（多选）。
+    choices:
+      - "A: 一位厨师炒菜速度慢被催促"
+      - "B: 新员工操作简单Excel函数反复出错，同事嘲笑他‘slow’"
+      - "C: 老人因为不识英文界面而操作慢，旁边人说‘这么慢’"
+    expected_answer: ["B", "C"]
+    scoring_note: B和C都涉及认知任务与贬低态度；A是物理速度，不应选。
+teaching_evidence:
+  - claim: "无论参与者是成人、儿童还是老人，无论任务是数字、文字还是技术操作，只要外部表现为低认知难度任务上的反复失败，且评价者用贬低态度归因于智力，就属于 slow-08。"
+    beats: [1,2,3,4]
+surface:
+  domain: mixed
+  participant_type: mixed
+  setting: mixed
+contrast_target: null
+contrast_relation: null
+transfer_dimensions:
+  - participant_type (adult → child → elderly)
+  - domain (office → school → healthcare-digital)
+  - setting (indoor-office → classroom → community-center)

@@ -1,0 +1,56 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-05-contrast-01
+sense_ref: slow-05
+scene_type: contrast
+contrast_target: fast-01
+title: 快慢共现  节奏对比
+synopsis: 在小型现场演出中，乐队连续演奏两首歌曲：一首快节奏舞曲，一首慢节奏情歌。观众反应形成鲜明对比：快歌时跳跃鼓掌，慢歌时轻轻摇摆。乐手在切换时用“fast”和“slow”分别指代两首曲目，对称呈现两个名词用法。
+target_learner:
+  l1: zh
+  life_context: concert-goer
+contrast_relation: different_dimension
+transfer_dimensions: null
+surface:
+  domain: live-music
+  participant_type: adult
+  setting: indoor-stage
+teaching_evidence:
+  - claim: "'fast' 和 'slow' 分别是快节奏歌曲和慢节奏歌曲的名词称呼，两者在节奏维度上对立。"
+    beats: [1, 2, 3, 4, 5]
+storyboard:
+  - beat: 1
+    visual: 舞台上一支四人乐队。主唱对着话筒说：“Let's start with a fast!” 鼓手开始高速敲击（约 140 BPM），吉他手快速扫弦。台下观众欢呼，不少人跟着节奏跳跃、拍手。
+    audio: （密集的鼓点、失真吉他，主唱唱出快速的说唱段落） 音量较高，气氛热烈。
+    purpose: 建立"fast"作为名词的用法，并展示快节奏的典型听觉和观众反应（动感、活力）。
+  - beat: 2
+    visual: 快歌结束，主唱汗流浃背，转身喝了一口水。舞台灯光从闪烁的彩色变为柔和的暖黄色。
+    audio: （观众掌声和口哨声，逐渐安静）
+    purpose: 提供过渡，为对比做铺垫。
+  - beat: 3
+    visual: 主唱放下水瓶，拿起一把木吉他，弹了几个很慢的和弦（约 60 BPM）。贝斯手加入低音长音。灯光变得更暗，只有一束追光打在主唱身上。
+    audio: （简单的钢琴 intro，速度明显低，音符之间间隔大）
+    purpose: 通过乐器切换和灯光风格外化节奏变化，为"slow"的出现做准备。
+  - beat: 4
+    visual: 主唱轻轻拨弦，然后抬头对观众说：“And now a slow.” 随后开始演唱一首舒缓的情歌。台下观众不再跳跃，而是有人举起手机慢慢晃动，有人闭眼摇头。
+    audio: （舒缓的旋律，主唱用轻柔的声线演唱，速度约 65 BPM） 背景有轻微的和声。
+    purpose: 对称地使用名词“a slow”，并在同一空间、同一乐队、同一观众群中展示与"fast"的节奏差异。
+  - beat: 5
+    visual: 屏幕一分为二，左半显示快歌片段（人群跳跃），右半显示当前慢歌片段（大家摇摆）；中间出现文字 "fast ↔ slow"。持续 3 秒后合为一个画面。
+    audio: （左右音频混合，快慢节奏交替，最后静默）
+    purpose: 强制对比两个概念的听觉和视觉表现，强化“节奏维度”是区分轴。
+learning_tasks:
+  - type: contrast_choice
+    prompt: "以下哪个描述正确？"
+    choices:
+      - "A: 'fast' 和 'slow' 都可以指代歌曲，但节奏不同。"
+      - "B: 'fast' 指快动作，'slow' 指慢歌曲。"
+      - "C: 'slow' 是形容词，不能作名词。"
+    expected_answer: "A"
+  - type: scene_recognition
+    prompt: "观看一段视频（乐队从快歌切换到慢歌），当听到 'a slow' 时，选择对应的画面。"
+    choices:
+      - "A: 观众跳跃的场景"
+      - "B: 观众轻轻摇摆的场景"
+    expected_answer: "B"

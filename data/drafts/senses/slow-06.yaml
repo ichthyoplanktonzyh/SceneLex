@@ -1,0 +1,118 @@
+# ========================
+# A. 基础词义信息
+# ========================
+schema_version: "1.0"
+language: en
+version: 1
+status: draft
+id: slow-06
+word: slow
+pos: adjective
+sense_label: "动作缓慢（短距离）"
+definition: "Moving or acting at a notably low speed over a short distance or simple action, taking longer than the expected typical duration."
+pronunciation:
+  ipa: "/sloʊ/"
+frequency:
+  band: core
+  rank: 800
+difficulty: basic
+collocations:
+  - "slow to respond"
+  - "slow to react"
+  - "slow and deliberate"
+  - "slow movement"
+  - "slow walk"
+sentence_patterns:
+  - "[noun] is slow"
+  - "[noun] is slow to [verb]"
+  - "[noun] moves at a slow pace"
+
+# ========================
+# B. 语义类型
+# ========================
+semantic_type: scalar_degree
+
+# ========================
+# C. 语义骨架
+# ========================
+semantic_skeleton:
+  participants:
+    - role: entity
+      description: "执行运动或动作的可观察主体（人、动物或物体）"
+    - role: observer
+      description: "判断速度的主观视角持有者（隐式）"
+  propositions:
+    - "存在一个可观察实体E，E正在执行一次有明确起点和终点的运动M或动作A。"
+    - "运动M的位移距离或动作A的复杂度处于该语境下的正常或偏小范围（非长距离或复杂作业）。"
+    - "E完成M或A所花费的实际时间T_actual，显著长于同语境下典型实体完成相同M/A所需的预期时间T_expected。"
+    - "观察者将T_actual > T_expected归因于E的运动速率低于该语境下的常规阈值。"
+
+# ========================
+# D. 成立条件与排除条件
+# ========================
+conditions:
+  required:
+    - "E正在执行有明确起止的运动或动作。"
+    - "运动或动作的位移距离或复杂度在典型范围内（非极远距离或极复杂作业）。"
+    - "完成该运动或动作的实际时间T_actual明显长于同语境下的典型完成时间T_expected。"
+    - "T_actual与T_expected的差异主要由E的速率低造成，而非其他因素（如距离、复杂度、中断）。"
+  excluded:
+    - condition: "E静止不动或尚未开始动作。"
+      alternative: ""
+    - condition: "E完成动作的速率与典型相同，但因距离或复杂度大而导致耗时久。"
+      alternative: "slow-01"
+    - condition: "E完成动作的速率高于典型（即快）。"
+      alternative: "fast-01"
+
+# ========================
+# E. 概念关系
+# ========================
+relations:
+  antonyms:
+    - "fast-01"
+  hypernyms:
+    - "slow-01"
+  synonyms:
+    - "unhurried-01"
+  confusables:
+    - "slow-01"
+  boundaries:
+    - target: "slow-01"
+      relation: target_more_specific
+      distinction: "slow-01涵盖任意距离或动作的低速，而slow-06限定于短距离或简单动作的高耗时。"
+      diagnostic: "若移动距离显著远（如长跑）或动作复杂度高（如组装仪器），仍可用slow-01，但不可用slow-06；反之，短距离慢走可用slow-06和slow-01。"
+    - target: "fast-01"
+      relation: mutually_exclusive
+      distinction: "fast-01描述速率高，slow-06描述速率低。"
+      diagnostic: "同一运动M在相同条件下，若计时结果小于典型时间则适用fast-01，若大于典型时间则适用slow-06。"
+    - target: "slow-08"
+      relation: different_dimension
+      distinction: "slow-08指智力或反应迟钝（mental slowness），属于认知维度；slow-06指物理运动速率。"
+      diagnostic: "在场景中，如果主体能正常理解指令但行动缓慢，适用slow-06；如果主体理解慢或反应迟钝，适用slow-08。"
+  l1_confusables:
+    zh:
+      - l1_term: "慢"
+        covers:
+          - "slow-01"
+          - "slow-06"
+          - "slow-08"
+        note: |
+          中文"慢"不自动区分距离或动作复杂度，凡是速率低均用"慢"。
+          英文slow-06突显短距离/简单动作的异常耗时，而slow-01涵盖所有尺度。
+          教学时需通过场景对比（相同短距离，正常 vs. 慢速）让学习者感知"短距离慢"的特殊性，
+          避免将长距离慢速也归入slow-06。
+
+# ========================
+# F. 场景要求
+# ========================
+scene_requirements:
+  must_show:
+    - "一个可观察主体E（人、动物或机器）执行一个短距离位移（如走2-3米）或简单动作（如拿起一个杯子）。"
+    - "一个清晰的对比参照：同语境下另一主体以正常速度完成相同动作，或一个可见的计时器显示耗时增长。"
+  must_not:
+    - "场景中包含长距离位移（如跑马拉松）、复杂多步操作（如修理机器）或中断（如等待），否则会混淆原因。"
+  externalization:
+    - "通过秒表或进度条叠加在画面中显示实际耗时超过预期。"
+    - "通过他人不耐烦的表情、等待姿势或口头催促外化'慢'的感受。"
+    - "通过慢动作回放（非真实慢动作，而是对比正常速度镜头）突出时间差异。"
+  timing: "先完整展示慢速动作过程，让观众独立获得'时间长于预期'的体验，然后在动作结束瞬间或对比参照出现时呈现目标词'slow'（配音或字幕）。"

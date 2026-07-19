@@ -1,0 +1,48 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-08-contrast-01
+sense_ref: slow-08
+scene_type: contrast
+title: 中性的“慢”与贬低的“慢”
+synopsis: 并置两个场景：第一个中老师用中性语气说“You are a bit slow”（slow-05），第二个中主管用轻蔑语气说“You are so slow”（slow-08）。通过对称结构凸显差异轴在于语调、表情与归因。
+storyboard:
+  - beat: 1
+    visual: 场景A（教室）：学生小张在黑板上演算一道简单算术题，几次写错。老师站在一旁，面带耐心微笑，等他擦掉重写。
+    audio: （粉笔声）
+    purpose: 展示学生计算慢，但老师态度温和。
+  - beat: 2
+    visual: 老师温和地说：“Mike, you are a bit slow today. Take your time.” 语气平稳，无嘲笑。
+    audio: “Mike, you are a bit slow today. Take your time.”
+    purpose: 演示 slow-05 的中性用法——描述速度慢但不含智力贬低。
+  - beat: 3
+    visual: 画面横向分割切换或叠化到场景B（办公室）。新人小李对着电脑屏幕，反复浏览同一页操作说明，表情茫然。主管王姐站在身后，双手抱胸，嘴角下撇。
+    audio: (键盘敲击声暂停)
+    purpose: 场景转换，展示相同类型的任务（操作电脑），但氛围截然不同。
+  - beat: 4
+    visual: 主管不耐烦地摇头，用右手食指敲打桌面，身体前倾，压低声音但清晰地说：“You are so slow. Can’t figure out a simple form?”
+    audio: “You are so slow. Can’t figure out a simple form?”（语调重音落在“so”上，带刺耳笑意）
+    purpose: 展示 slow-08 的贬低用法——通过身体语言、音调和贬低性后续问句体现智力归因。
+learning_tasks:
+  - type: contrast_choice
+    prompt: 观看两段视频，判断哪一段中“slow”含有“智力低下”的贬义。
+    choices:
+      - "A: 老师微笑着说‘You are a bit slow’"
+      - "B: 主管翻白眼说‘You are so slow’"
+    expected_answer: B
+  - type: listen_and_match
+    prompt: 播放两个音频，选择对应的场景：①中性语气“You are slow”；②轻蔑语气“You are so slow”。
+    choices:
+      - "A: 教室场景"
+      - "B: 办公室场景"
+    expected_answer: "A: ① → 教室场景；B: ② → 办公室场景"
+teaching_evidence:
+  - claim: "slow-05（中性）与 slow-08（贬义）通过语气、表情和归因区分：中性描述仅陈述速度慢，贬义附加智力低下与嘲笑。"
+    beats: [2,4]
+surface:
+  domain: education-vs-office
+  participant_type: adult
+  setting: mixed
+contrast_target: slow-05
+contrast_relation: degree_neighbor
+transfer_dimensions: null

@@ -1,0 +1,60 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-04-counter-01
+sense_ref: slow-04
+scene_type: counterexample
+title: "脚伤导致走路慢，但并非‘a slow’"
+synopsis: >-
+  一名员工因脚伤走路很慢，同事看到他移动缓慢便称他为“a slow”。
+  但随后展示他在其他任务中反应极快、动作麻利，并有人纠正说
+  “不能因为他走路慢就叫他a slow”。场景说明单一领域的慢
+  不足以支持名词判断。
+contrast_target: slow-01
+contrast_relation: different_sense
+target_learner:
+  l1: zh
+  life_context: office
+surface:
+  domain: office
+  participant_type: adult
+  setting: indoor-office
+teaching_evidence:
+  - claim: "仅在单一领域（如走路）慢，不足以推断为‘a slow’。"
+    beats: [1,2,3,4]
+storyboard:
+  - beat: 1
+    visual: >-
+      办公室走廊。小陈拄着拐杖，一瘸一拐地缓慢行走。从他旁边经过的同事
+      投来目光，低声议论。
+    audio: (拐杖触地声)
+    purpose: "展示一个容易被误解为‘慢人’的视觉线索。"
+  - beat: 2
+    visual: >-
+      一名同事对另一人说：“He is such a slow.” 另一人微微皱眉，
+      但没有立即反驳。
+    audio: “He is such a slow.”
+    purpose: "错误地使用名词slow，制造反例前提。"
+  - beat: 3
+    visual: >-
+      镜头切换：小陈坐在工位上，双手飞快地在键盘上打字，
+      迅速完成一份报表。他接起电话，立即流利对答，
+      毫无迟缓。另一同事看到，对之前说话的人摇头。
+    audio: null
+    purpose: "展示小陈在其他领域快速，打破‘慢人’标签。"
+  - beat: 4
+    visual: >-
+      前一位同事露出尴尬表情，对最初说话的人说：“Just because he walks
+      slow doesn't mean he’s a slow. He’s only slow at walking.”
+      画外音重复强调。
+    audio: “Just because he walks slow doesn't make him a slow.”
+    purpose: "直接提供反例规则：单领域慢≠名词slow。"
+learning_tasks:
+  - type: transfer_judgment
+    prompt: "一个人只有在大多数情况下都慢，才适合被称为‘a slow’。以下哪种情况适合叫‘a slow’？"
+    choices:
+      - "跑步慢，但其他方面正常。"
+      - "走路、打字、开会都慢，经常最后完成。"
+      - "走路慢是因为刚做完手术，其他都快。"
+    expected_answer: "走路、打字、开会都慢，经常最后完成。"
+    scoring_note: "学习者需要理解跨领域的惯常性。"

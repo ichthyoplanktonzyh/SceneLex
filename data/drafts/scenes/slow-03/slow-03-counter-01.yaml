@@ -1,0 +1,43 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-03-counter-01
+sense_ref: slow-03
+scene_type: counterexample
+contrast_target: slow-04
+contrast_relation: overlaps
+title: 减速现象不能区分施事与否
+synopsis: 同一个球在两种场景下都减速，一种是被手按住（slow-04），一种是受摩擦力自然减速（slow-03）。只凭“球速度变慢”无法断定是哪个义项。
+target_learner:
+  l1: zh
+  life_context: home
+surface:
+  domain: indoor-play
+  participant_type: child
+  setting: indoor-living-room
+teaching_evidence:
+  - claim: "仅观察速度下降不足以推断是 slow-03，因为 slow-04 也能产生相同结果"
+    beats: [1, 2, 3]
+storyboard:
+  - beat: 1
+    visual: "A 片段：地板上一个皮球从远处滚来，速度越来越慢，最后停在客厅中央。没有人碰到球"
+    audio: "（滚动声减弱）"
+    purpose: "展示 slow-03 的典型结果——速度自然下降"
+  - beat: 2
+    visual: "B 片段：同一只皮球从同一方向滚来，一只手突然出现按在球上，球随即减速停下"
+    audio: "（手按压声，球急停声）"
+    purpose: "展示 slow-04 也能产生相同的减速现象"
+  - beat: 3
+    visual: "两个片段最终定格画面相同——球停在客厅中央。画面叠加红色问号，旁边文字：'只看结果，能确定是慢下来（slow）还是被弄慢（slow it）吗？'"
+    audio: "（语音：'Cannot tell just from the slowing. Look at the cause.'）"
+    purpose: "揭示反例：结果相同，原因不同；强调 must_show 中必须关注施事"
+  - beat: 4
+    visual: "用箭头标注 A 片段球下方'摩擦'，B 片段手写下'施事'"
+    audio: "null"
+    purpose: "澄清关键区分维度"
+learning_tasks:
+  - type: transfer_judgment
+    prompt: "观察一个场景：纸飞机在空中减速下降。你能否确定它是‘it slows’还是‘someone slows it’？为什么？"
+    choices: ~
+    expected_answer: "不能，因为没有施事信息。如果飞机只是自然滑翔，是 slow-03；如果有人用手抓住它，是 slow-04。需要更多因果线索。"
+    scoring_note: "正确指出原因（是否有施事）即可得分"

@@ -1,0 +1,139 @@
+# ============================================================
+# A. 基础词义信息
+# ============================================================
+schema_version: "1.0"
+language: en
+version: 1
+status: draft
+
+id: slow-07
+word: slow
+pos: adjective
+sense_label: "时间漫长"
+definition: "requiring or taking a long time; not quick in duration"
+
+frequency:
+  band: mid
+  rank: 800
+difficulty: intermediate
+
+pronunciation:
+  ipa: /sloʊ/
+  audio_ref: ""
+
+collocations:
+  - "slow process"
+  - "slow recovery"
+  - "slow progress"
+  - "slow death"
+  - "slow growth"
+
+sentence_patterns:
+  - "a [adj] [noun]"
+  - "[noun] is slow"
+  - "[verb] slowly"
+
+# ============================================================
+# B. 语义类型
+# ============================================================
+semantic_type: attribute
+
+# ============================================================
+# C. 语义骨架
+# ============================================================
+semantic_skeleton:
+  participants:
+    - role: event
+      description: "一个可观察的事件、过程或变化，具有明确的开始和结束（或预期结束）"
+  propositions:
+    - "存在事件 E，从起点到终点经历了一段可测量的时间间隔 T"
+    - "T 相对于同类事件在上下文中的典型持续时间而言是长的"
+    - "该词义不依赖于事件中任何部分的瞬时速率，仅关注总体时间跨度"
+
+# ============================================================
+# D. 成立条件与排除条件
+# ============================================================
+conditions:
+  required:
+    - "存在一个可观测的事件或过程"
+    - "该事件从开始到经过的时间（或预期时间）被感知为长于预期"
+    - "说话人或观察者对该时间长度有主观或客观的参照系"
+  excluded:
+    - condition: "事件未发生或尚未开始"
+      alternative: "slow-08"
+    - condition: "事件持续时间极短（远小于预期）"
+      alternative: "fast-01"
+    - condition: "描述的是对象自身的移动速率而非整体时间跨度（如‘a slow car’）"
+      alternative: "slow-01"
+
+# ============================================================
+# E. 概念关系
+# ============================================================
+relations:
+  synonyms:
+    - "prolonged-01"
+    - "lengthy-01"
+    - "protracted-01"
+    - "extended-01"
+  antonyms:
+    - "short-01"
+    - "quick-01"
+    - "brief-01"
+  hypernyms:
+    - "long_duration-01"
+  hyponyms: []
+  confusables:
+    - "slow-01"
+    - "slow-04"
+  boundaries:
+    - target: "slow-01"
+      relation: degree_neighbor
+      distinction: "slow-01 描述物体或人的运动速率低（速度慢），而 slow-07 描述事件整体耗时多（时间长）。两者常共现但不必然：慢速运动可能短距离耗时短，快速运动也可能长距离耗时长。"
+      diagnostic: "测试动词能否替换为‘take a long time’。如果是‘耗时长’，适用 slow-07；如果是‘行动慢’，适用 slow-01。例如：‘The movie was slow’（时间长）vs ‘The turtle is slow’（速度慢）"
+    - target: "slow-04"
+      relation: overlaps
+      distinction: "slow-04 指智力或理解上的迟钝（mental slowness），也隐含时间因素，但强调认知处理速度而非事件整体时长。"
+      diagnostic: "如果描述对象是人且强调反应慢、学习慢，则 slow-04；如果描述一个客观过程（如恢复、消化）则 slow-07。"
+    - target: "quick-01"
+      relation: mutually_exclusive
+      distinction: "quick 描述时间短，slow-07 描述时间长。"
+      diagnostic: "同一个事件不能同时用 quick 和 slow（在此义项下）描述，除非语境对同一事件的不同方面。"
+  l1_confusables:
+    zh:
+      - l1_term: "慢"
+        covers:
+          - "slow-01"
+          - "slow-07"
+          - "slow-04"
+        note: "中文‘慢’同时覆盖速度慢（slow-01）、时间长（slow-07）和智力迟钝（slow-04），三者在中文中缺乏词汇区分。教学提示：当描述‘一段漫长时期’或‘进展缓慢’时，英文用 slow 强调时间，而非速度。可引入‘prolonged’‘lengthy’辅助。"
+      - l1_term: "耗时"
+        covers:
+          - "slow-07"
+        note: "‘耗时’基本对应本义项，但中文母语者可能因‘慢’的通用性而过度使用 slow-01 场景词，忽略 slow-07 在‘a slow recovery’中的独立用法。"
+
+# ============================================================
+# F. 场景要求
+# ============================================================
+scene_requirements:
+  must_show:
+    - "一个从明显起点到明显终点的事件，全程需要较长时间（如植物生长、沙漏流逝、病人康复过程）"
+    - "画面中有明确的时间流逝线索：时钟指针、进度条、日影移动、日历翻页"
+    - "事件中的实体本身可能处于静止或低速状态，但重点在于等待时长"
+  must_not:
+    - "高速运动或明显速度对比（如赛车）"
+    - "将‘slow’用于描述瞬时动作（如‘a slow blink’）"
+    - "显示事件中途被打断而时间持续不明确"
+  externalization:
+    - "使用沙漏、时钟加速、日历快速翻页等视觉化时间标记"
+    - "通过人物表情（无聊、疲惫、期待）外化等待感"
+    - "背景音调低沉、节奏缓慢，或重复滴答声强调时间流逝"
+  timing: "先展示完整的长时间事件（如植物从种子到幼苗的延时摄影），然后出现画外音或字幕：‘This growth is slow.’；若是对话场景，则先让观众体验等待过程，再让角色说出‘It's so slow.’"
+
+# ============================================================
+# 资源元数据
+# ============================================================
+provenance:
+  sources:
+    - type: dictionary
+      citation: "https://kaikki.org/dictionary/English/meaning/s/sl/slow.jsonl (Wiktionary via kaikki.org, CC-BY-SA 3.0/4.0)"
+      license: CC-BY-SA

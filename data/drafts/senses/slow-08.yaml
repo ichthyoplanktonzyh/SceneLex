@@ -1,0 +1,127 @@
+# ==================== A. 基础词义信息 ====================
+schema_version: "1.0"
+language: en
+version: 1
+status: draft
+id: slow-08
+word: slow
+pos: adjective
+sense_label: "智力低下（贬义）"
+definition: "Having reduced intellectual capacity; not quick to comprehend, often used derogatorily."
+frequency:
+  band: low
+  rank: 5000
+difficulty: advanced
+pronunciation:
+  ipa: /sləʊ/
+collocations:
+  - "slow-witted"
+  - "slow on the uptake"
+  - "slow learner"
+sentence_patterns:
+  - "[noun] is so slow"
+  - "[noun] is a bit slow"
+  - "[noun] is slow to catch on"
+
+# ==================== B. 语义类型 ====================
+semantic_type: attribute
+
+# ==================== C. 语义骨架 ====================
+semantic_skeleton:
+  participants:
+    - role: experiencer
+      description: "被评价的个体（通常是人），其认知处理速度被评估为低于正常水平"
+    - role: evaluator
+      description: "做出智力低下判断的主体（说话者或观察者）"
+  propositions:
+    - "存在一个被评价的个体（experiencer），其认知过程（理解、推理、学习）的平均速率显著低于该语境下的参照标准（社会常态或他人预期）。"
+    - "该低速率被观察者（evaluator）归因于内在的智力能力不足，而非暂时的注意力缺乏、知识不足或环境干扰。"
+    - "评价者对该状态持负面态度（如轻视、嘲笑、不耐烦），且该评价通常带有贬低或侮辱的语用意图。"
+
+# ==================== D. 成立条件与排除条件 ====================
+conditions:
+  required:
+    - "被评价者表现出持续的理解困难，即使面对简单或重复的信息。"
+    - "他人对这种现象有负面情感或评价（如不耐烦、贬低）。"
+    - "该表现被解释为个体内因（智力高低），而非外因（如疲劳、语言障碍）。"
+  excluded:
+    - condition: "被评价者只是暂时分心或缺乏相关背景知识，但自身智力正常。"
+      alternative: "slow-05"
+    - condition: "被评价者身体行动缓慢但理解力正常。"
+      alternative: "slow-01"
+    - condition: "评价不带贬义或嘲笑，仅中性描述反应偏慢。"
+      alternative: "slow-05"
+
+# ==================== E. 概念关系 ====================
+relations:
+  synonyms:
+    - "dull-01"
+    - "dim-02"
+    - "stupid-03"
+  antonyms:
+    - "intelligent-01"
+    - "bright-02"
+    - "sharp-01"
+  hypernyms:
+    - "unintelligent-01"
+  hyponyms:
+    - "dense-02"
+    - "thick-01"
+  confusables:
+    - "slow-05"
+    - "dull-01"
+  boundaries:
+    - target: "slow-05"
+      relation: degree_neighbor
+      distinction: "slow-05 中性描述理解速度慢，无贬义；slow-08 明确包含贬低和智力低下的归因。"
+      diagnostic: "场景中说话者表情和语气是否带有嘲笑或轻蔑。"
+    - target: "slow-01"
+      relation: mutually_exclusive
+      distinction: "slow-01 描述物理运动或过程速度慢；slow-08 描述认知能力低下。"
+      diagnostic: "主体在完成需要智力的任务时表现如何：若操作熟练但移动慢，则适用 slow-01。"
+    - target: "stupid-03"
+      relation: overlaps
+      distinction: "两者都表示智力低下，但 stupid 更强调判断力差或做出愚蠢决定，slow 更强调学习/理解速度慢。"
+      diagnostic: "当主体长时间思考后仍能做出合理决定，只是耗时极长时，更适用 slow-08；若决定本身荒谬则适用 stupid-03。"
+  l1_confusables:
+    zh:
+      - l1_term: "慢"
+        covers:
+          - "slow-01"
+          - "slow-05"
+          - "slow-08"
+        note: "中文'慢'同时覆盖速度慢和反应慢，但缺乏贬义维度。中文母语者容易忽略 slow-08 的贬义和智力归因，仅理解为'反应慢'的中性描述。"
+      - l1_term: "笨"
+        covers:
+          - "slow-08"
+          - "stupid-03"
+        note: "中文'笨'更接近 stupid，强调天生愚钝和结果差；而 slow-08 强调过程慢，即使结果可能正确。教学上需区分'慢但最终做对'和'笨而做错'。"
+      - l1_term: "迟钝"
+        covers:
+          - "slow-05"
+          - "slow-08"
+        note: "中文'迟钝'偏中性或委婉，医学上也用；slow-08 的贬义和口语化特征（如骂人'You're so slow'）常被误译为中性'你反应慢了'。需强调语用色彩。"
+
+# ==================== F. 场景要求 ====================
+scene_requirements:
+  must_show:
+    - "被评价的个体面对一个低认知难度的任务（如简单算术、理解笑话、学习演示操作）。"
+    - "该个体反复出现理解延迟或需要多次重复才能领会，且表现出的困惑表情（皱眉、张嘴、眨眼睛）。"
+    - "评价者（可以是旁边的人或镜头外声音）表现出不耐烦，如叹气、翻白眼、摇头，并用贬低的语气说出'You are so slow!'。"
+  must_not:
+    - "被评价者因身体残疾或行动迟缓而表现慢。"
+    - "任务难度明显超出常人（如高等数学）。"
+    - "评价者用中性或同情的语气说话。"
+  externalization:
+    - "认知困难外化为：长时间凝视、重复询问、无法回答简单问题、做出错误答案后茫然。"
+    - "贬低评价外化为：说话者的语调放慢、拉长音、带讽刺笑意。"
+    - "评价者与他人交换会意的眼神或表情。"
+  timing:
+    "先展示被评价者至少两次表现出理解失败（约5-10秒），然后评价者说出目标词句，让观众已经在心中形成'这人反应好慢'的感受后再听到 'slow' 一词。"
+
+# ==================== 资源元数据 ====================
+provenance:
+  sources:
+    - type: dictionary
+      citation: "https://kaikki.org/dictionary/English/meaning/s/sl/slow.jsonl (Wiktionary via kaikki.org, CC-BY-SA 3.0/4.0)"
+      license: CC-BY-SA

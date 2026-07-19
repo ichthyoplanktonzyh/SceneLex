@@ -1,0 +1,53 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-01-contrast-01
+sense_ref: slow-01
+scene_type: contrast
+contrast_target: "stop-01"
+contrast_relation: degree_neighbor
+title: "减速与停止的对比"
+synopsis: "同一驾驶员先后两次刹车：第一次轻踩使车速从80降至30且继续行驶；第二次重踩使车完全停止。"
+target_learner:
+  l1: zh
+  life_context: city-commute
+surface:
+  domain: transport
+  participant_type: adult
+  setting: outdoor-road
+storyboard:
+  - beat: 1
+    visual: "高速路上，车内视角：车速表指针80，窗外标线快速后退。引擎轰鸣。"
+    audio: "(引擎轰鸣)"
+    purpose: "建立初始速度，为后续减速提供基准。"
+  - beat: 2
+    visual: "驾驶员看到前方弯道，轻踩刹车踏板。车速表指针缓缓降至30。车平稳转入弯道，继续行驶。窗外景物移动变慢但未停滞。"
+    audio: "(刹车轻触声，引擎声降低)"
+    purpose: "展示 agent 主动减速且车辆未停止，体现 slow 的典型特征。"
+  - beat: 3
+    visual: "车速表停在30，车辆正常行驶。画面中央出现 'Slow' 文字。"
+    audio: "Slow."
+    purpose: "在减速效果成立后输出目标语音。"
+  - beat: 4
+    visual: "（时间跳转）同一辆车，同样的高速路段，车速表再次指80。突然前方出现障碍物，驾驶员猛踩刹车。刹车片发出尖锐声，车速表指针急速下降至0。车辆完全静止，乘客前倾。"
+    audio: "(尖锐刹车声，停止后静默)"
+    purpose: "展示 stop 场景：速度降至零，车辆完全停止。"
+  - beat: 5
+    visual: "车速表指0，车辆静止。画面中央出现 'Stop' 文字。"
+    audio: "Stop."
+    purpose: "输出对比词语音。"
+  - beat: 6
+    visual: "分屏画面：左侧为 beat 2-3 场景（减速后继续行驶），右侧为 beat 4-5 场景（停止）。下方标注 'Slow' 和 'Stop' 文字，并用箭头标明'速度降低但未到零' vs '速度降到零'。"
+    audio: null
+    purpose: "并置对比，强调 slow 与 stop 的关键差异在于最终速度是否为零。"
+teaching_evidence:
+  - claim: "Slow 只要求速度降低而不为零；Stop 要求速度降为零。"
+    beats: [3, 5, 6]
+learning_tasks:
+  - type: contrast_choice
+    prompt: "观看分屏对比视频后，回答：以下哪个动作应该用 'slow' 而不是 'stop'？"
+    choices:
+      - "A: 汽车从60 km/h 减速到0 km/h"
+      - "B: 汽车从60 km/h 减速到20 km/h 并继续行驶"
+      - "C: 汽车紧急刹车后完全不动"
+    expected_answer: "B"

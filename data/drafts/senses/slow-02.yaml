@@ -1,0 +1,138 @@
+# ====================================================================
+# A. 基础词义信息
+# ====================================================================
+schema_version: "1.0"
+language: en
+version: 1
+status: draft
+id: slow-02
+word: slow
+pos: verb
+sense_label: "使缓慢"
+definition: "to cause someone or something to move, happen, or progress at a lower speed than before or than expected"
+frequency:
+  band: high
+  rank: 1800
+difficulty: intermediate
+pronunciation:
+  ipa: /sloʊ/
+collocations:
+  - "slow down"
+  - "slow progress"
+  - "slow the car"
+  - "slow the pace"
+sentence_patterns:
+  - "[agent] slow [patient] down"
+  - "[agent] slow [patient]"
+  - "[agent] slow the [noun] (of [patient])"
+
+# ====================================================================
+# B. 语义类型
+# ====================================================================
+semantic_type: state_change
+
+# ====================================================================
+# C. 语义骨架（与具体场景解耦）
+# ====================================================================
+semantic_skeleton:
+  participants:
+    - role: agent
+      description: "实体（人、自然力或机制）施加作用引起变化"
+    - role: patient
+      description: "实体或过程，其速率被降低"
+  propositions:
+    - "存在一个有方向或带时间过程的实体（patient），其当前速率可被感知或度量"
+    - "存在一个施动者（agent），其行为直接或间接作用于 patient"
+    - "该行为导致 patient 的速率低于（a）其之前的速率，或（b）某个合理预期速率"
+    - "速率变化持续一段时间，可以是瞬间完成或渐进"
+    - "评价：该变化通常被视为有目的、有意或是有意图的（但并非严格必要）"
+
+# ====================================================================
+# D. 成立条件与排除条件
+# ====================================================================
+conditions:
+  required:
+    - "patient 必须具有可观察的速率（移动、进展、发生频率等）"
+    - "agent 必须做出可归因的动作或施加影响"
+    - "速率在行为前后发生可检测的降低"
+  excluded:
+    - condition: "patient 自行降低速率，无外部 agent 干预"
+      alternative: slow-03
+    - condition: "agent 行为未导致任何可觉察的速率变化（如无效的意图）"
+      alternative: attempt-01
+    - condition: "patient 原本静止，agent 阻止其启动（非减速，而是防止加速）"
+      alternative: prevent-01
+
+# ====================================================================
+# E. 概念关系
+# ====================================================================
+relations:
+  synonyms:
+    - decelerate-01
+    - retard-01
+  antonyms:
+    - speed_up-01
+    - accelerate-01
+  hypernyms:
+    - hinder-01
+  hyponyms:
+    - brake-01
+    - check-01
+  confusables:
+    - delay-01     # 侧重于延迟开始或到达，不强调速度连续变化
+    - slacken-01   # 侧重于放松张力而非速率
+  boundaries:
+    - target: slow-01
+      relation: different_dimension
+      distinction: "slow-01 是属性（形容词），描述一个实体固有的低速率；slow-02 是动作（动词），描述使另一个实体速率降低的因果事件"
+      diagnostic: "如果句子是 'X is slow' 则形容词；如果句子是 'Y slows X' 则动词"
+    - target: slow-03
+      relation: mutually_exclusive
+      distinction: "slow-02 需要 agent 和 patient 两个不同角色；slow-03 仅一个角色（主语自身减速）"
+      diagnostic: "若主语是施动者且宾语是受动者 → slow-02；若主语是自身改变者且无受动者宾语 → slow-03"
+    - target: decelerate-01
+      relation: overlaps
+      distinction: "decelerate-01 更精确地指速度向零方向减小（物理运动），而 slow-02 可广泛用于进程、时间、发展等抽象概念；两者在物理减速上同义"
+      diagnostic: "同一动作事件中切换 decelerate 与 slow down 不改变真值时，两者成立"
+    - target: hinder-01
+      relation: target_more_specific
+      distinction: "hinder-01 指阻碍进度或施加困难，不一定要求速率降低；slow-02 专门要求速率降低"
+      diagnostic: "若场景为‘推石上山但石头不动’，则 hinder 成立但 slow 不成立（无速率变化）"
+  l1_confusables:
+    zh:
+      - l1_term: "慢下来"
+        covers:
+          - slow-02
+          - slow-03
+        note: "中文‘慢下来’可同时用于及物（你要慢下来速度）和不及物（车慢下来了），学习者常省略宾语，误将及物句处理成不及物。教学时需强调动词 slow 带宾语才表‘使…慢’"
+      - l1_term: "减速"
+        covers:
+          - slow-02
+          - decelerate-01
+        note: "中文‘减速’更多与运动物理场景关联，而英语 slow 适用范围更广（如 slow the growth）。中国人易将 slow 过度限制在交通工具上，忽略抽象用法"
+
+# ====================================================================
+# F. 场景要求
+# ====================================================================
+scene_requirements:
+  must_show:
+    - "一个 agent（手、脚、身体动作）主动对 patient 施加影响"
+    - "patient 的速率变化痕迹（如车轮转速显示器、速度条、人物行走速度对比）"
+    - "agent 动作与 patient 速率降低之间的时间关联（如同步或稍后）"
+  must_not:
+    - "只展示 patient 自己减速（如汽车无驾驶员操作而自然减速）"
+    - "agent 动作未产生任何可观察的速率变化（如无效踩油门）"
+  externalization:
+    - "agent 意图：通过目光注视、皱眉、喊‘慢点’等表情/语言外化目的"
+    - "速率变化：用副速度指针、背景参照物位移或时钟跳动频率来量化"
+    - "结果状态：最终速度低于初始速度，画面可叠加数值或图标"
+  timing: "先展示初始速率状态（如快速奔跑），接着展示 agent 干预动作，然后观察速率下降过程，最后在速率下降明显时或当人物/旁白说出‘slow’时命名"
+
+# ====================================================================
+# 来源元数据
+# ====================================================================
+provenance:
+  sources:
+    - type: dictionary
+      citation: "https://kaikki.org/dictionary/English/meaning/s/sl/slow.jsonl (Wiktionary via kaikki.org)"
+      license: CC-BY-SA

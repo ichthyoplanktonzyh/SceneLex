@@ -1,0 +1,46 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-03-boundary-01
+sense_ref: slow-03
+scene_type: boundary
+contrast_target: slow-01
+contrast_relation: target_more_specific
+title: 减速中 vs 已经慢
+synopsis: 一辆玩具车在跑道上行驶，通过三个阶段（飞快→减速中→慢速匀速）测试“正在减速”与“状态慢”的边界。当速度不再降低时，形容词更自然。
+target_learner:
+  l1: zh
+  life_context: home
+surface:
+  domain: indoor-play
+  participant_type: toy
+  setting: indoor-living-room
+teaching_evidence:
+  - claim: "slow-03（动词）强调速度递减的过程，而 slow-01（形容词）强调速度恒定的低值"
+    beats: [1, 2, 3, 4]
+storyboard:
+  - beat: 1
+    visual: "电动玩具车在环形轨道上快速行驶，轨道边有立柱参照标记。车速很高，背景模糊"
+    audio: "(马达声嗡嗡)"
+    purpose: "建立高速前状态，为后续减速做准备"
+  - beat: 2
+    visual: "玩具车接近弯道时自动减速，马达声降低，车速明显降低。参照物出现位移速度减慢"
+    audio: "(马达声下降)"
+    purpose: "属于 slow-03 的典型变化过程：速度正在降低"
+  - beat: 3
+    visual: "玩具车转入直道后保持低速匀速行驶，速度不再变化。速度表指针停在左侧低数值处并稳定"
+    audio: "(低沉的马达持续声，无变化)"
+    purpose: "此时速度不变，动词 slow 已经不再适用，应该使用形容词 slow-01：'The car is slow.'"
+  - beat: 4
+    visual: "画面分为两个时间点对比：上一幕（减速中）和这一幕（匀速慢速）。文字标注'Slowing' vs 'Slow'"
+    audio: "（语音：'During the turn it slows. On the straight it is slow.'）"
+    purpose: "明确边界：动词需要速度在时间轴上递减；若不再递减，只能用形容词"
+learning_tasks:
+  - type: listen_and_match
+    prompt: "听两段录音，匹配正确的画面：A段 'The car is slowing.' B段 'The car is slow.'"
+    choices:
+      - "画面1：玩具车在弯道减速"
+      - "画面2：玩具车在直道低速均匀行驶"
+    expected_answer:
+      - "A → 画面1"
+      - "B → 画面2"

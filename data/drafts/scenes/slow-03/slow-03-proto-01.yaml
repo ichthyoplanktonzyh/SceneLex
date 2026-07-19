@@ -1,0 +1,42 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-03-proto-01
+sense_ref: slow-03
+scene_type: prototype
+title: 自行车自然减速
+synopsis: 一个孩子骑着自行车飞快地冲下斜坡，然后进入平坦路面，车子逐渐慢下来，速度明显降低。
+target_learner:
+  l1: zh
+  life_context: campus
+surface:
+  domain: transport
+  participant_type: child
+  setting: outdoor-path
+teaching_evidence:
+  - claim: "目标物体速度逐步减小，且减速由环境因素（摩擦/坡度变化）引起，非外部施事控制"
+    beats: [1, 2, 3]
+  - claim: "速度变化可被观察者通过参照物和运动模糊感知"
+    beats: [2, 3]
+storyboard:
+  - beat: 1
+    visual: "阳光明媚的公园小路，一个男孩骑着自行车高速冲下缓坡，背景树木快速向后闪过，车链声清晰"
+    audio: "(风声、轮胎滚动的呼呼声)"
+    purpose: "建立前状态：移动物体速度高，运动感强"
+  - beat: 2
+    visual: "男孩骑到平地上，他停止踩踏板，身体坐直，自行车开始自然滑行减速。路边一排路灯相对移动速度渐渐变慢，车轮声减弱"
+    audio: "(轮胎摩擦声逐渐变轻，风声渐弱)"
+    purpose: "展示变化过程：速度单调递减，原因来自摩擦，无外部干预"
+  - beat: 3
+    visual: "自行车几乎以步行速度前进，男孩轻松地晃着腿，背景树木缓慢移动。画面定格两秒，出现自行车慢速侧影"
+    audio: "（静谧）→ 画外音：'It slows.' →（简短音效）"
+    purpose: "完成三阶段：后状态+命名，将声音与减速事件绑定"
+learning_tasks:
+  - type: scene_recognition
+    prompt: "下面哪一个画面中出现了‘slow down’的过程？"
+    choices:
+      - "A: 自行车从坡上冲下"
+      - "B: 自行车在平路自然减速"
+      - "C: 自行车静止在车棚里"
+      - "D: 男孩用力蹬车加速"
+    expected_answer: B

@@ -1,0 +1,41 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-06-contrast-01
+sense_ref: slow-06
+scene_type: contrast
+title: "Short distance slow vs. long distance slow"
+synopsis: "Two side‑by‑side scenes: a person slowly walking 2 meters (slow‑06) and the same person slowly walking 200 meters (slow‑01). A voiceover explains the difference in meaning."
+target_learner:
+  l1: zh
+  life_context: campus
+surface:
+  domain: sports
+  participant_type: adult
+  setting: outdoor-square
+teaching_evidence:
+  - claim: "Both walks are slow, but only the short‑distance one qualifies as slow‑06."
+    beats: [1, 2, 3]
+contrast_target: slow-01
+contrast_relation: target_more_specific
+transfer_dimensions: null
+storyboard:
+  - beat: 1
+    visual: "画面分割为左右两部分。左：一个人从起点线走到2米外的椅子，耗时8秒。右：同一人从操场一端走到另一端（200米），耗时4分钟。两个场景下方显示距离和耗时标签。"
+    audio: null
+    purpose: "并置短距离和长距离的慢速行为，让观众直观对比动作尺度"
+  - beat: 2
+    visual: "左侧画面再次播放，同时弹出短语‘slow movement over a short distance’；右侧画面播放，弹出短语‘slow movement over a long distance’。"
+    audio: null
+    purpose: "突出距离维度是区分 slow‑06 与 slow‑01 的关键表面特征"
+  - beat: 3
+    visual: "左侧画面人物到达椅子，旁白音响起；右侧画面人物仍在行走（远镜头）。画面淡出，留下左侧定格在‘slow’字幕。"
+    audio: "This short walk is slow. The long walk is also slow, but the word for a short‑distance slow is simply 'slow'. (中文配音：短距离慢用 slow，长距离慢也用 slow，但此义项强调短距离的异常耗时。)"
+    purpose: "明确告诉学习者 slow‑06 是 short‑distance 的特例，与一般 slow 的区别在于距离限定"
+learning_tasks:
+  - type: contrast_choice
+    prompt: "一个人用正常速度走100米，耗时1分钟；另一个人用极慢速度走2米，耗时10秒。哪个人可以用 slow-06 来描述？"
+    choices:
+      - "A: 走100米的人"
+      - "B: 走2米的人"
+    expected_answer: "B"

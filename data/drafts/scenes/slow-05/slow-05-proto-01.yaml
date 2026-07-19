@@ -1,0 +1,53 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-05-proto-01
+sense_ref: slow-05
+scene_type: prototype
+contrast_target: null
+title: 单击节拍器  聆听慢歌
+synopsis: 一位DJ在录音室里挑选了一张唱片，播放了一首节奏缓慢的抒情歌曲。听众（一名乐迷）靠在沙发上，随着极慢的节拍轻轻摇摆。播放几小节后，DJ指着音响说：“That's a slow.”
+target_learner:
+  l1: zh
+  life_context: music-enthusiast
+contrast_relation: null
+transfer_dimensions: null
+surface:
+  domain: music-recording
+  participant_type: adult
+  setting: indoor-studio
+teaching_evidence:
+  - claim: "‘slow’作为名词指代一首慢节奏歌曲"
+    beats: [1, 2, 3, 4, 5]
+storyboard:
+  - beat: 1
+    visual: 录音室内景，DJ 面前摆着一张黑胶唱片，封面上写着“Ballad #3”。背景墙上挂着一台机械节拍器，指针缓慢摆动。画面特写节拍器刻度，指向 60 BPM。
+    audio: （节拍器发出规律的“滴答”声，每秒一次，缓慢而清晰）
+    purpose: 用节拍器外化“慢速度”的具体数值，为后续命名铺垫视觉与听觉对照。
+  - beat: 2
+    visual: DJ 将唱片放入唱机，唱针落下。画面切换到音响喇叭的格栅，随着音乐震动。音乐旋律悠长，和弦转换缓慢。一位乐迷靠在沙发上，闭着眼，身体极小幅地前后晃动（约每两秒一次）。
+    audio: （一段缓慢的钢琴伴奏+女声哼唱，速度约 65 BPM，没有歌词的具体内容，只有旋律起伏）
+    purpose: 展示慢歌的典型听觉特征（低BPM、长音符、放松感）及听众的典型身体反应（轻摇、闭眼）。
+  - beat: 3
+    visual: 乐迷睁开眼，嘴角微微上扬。DJ 转过头来，朝乐迷点头微笑，然后用手朝音响的方向指了指。
+    audio: “That's a slow.” （DJ 语气平淡，带着肯定的口吻）
+    purpose: 在听众已经建立了慢节奏体验后，用名词结构“a slow”命名该实体，明确指代整首歌曲。
+  - beat: 4
+    visual: 镜头切回节拍器，指针仍以 60 BPM 摆动。画面叠加一行文字“a slow = a song that is slow”。几秒后文字淡出。
+    audio: null
+    purpose: 强化冠词+名词的句法形式，同时关联“slow”与慢速歌曲的概念。
+  - beat: 5
+    visual: DJ 轻轻哼唱旋律，乐迷也跟着哼起来。画面渐渐变暗，只有节拍器的滴答声继续。
+    audio: （两人哼唱声与节拍器合拍，约 10 秒后静默）
+    purpose: 巩固印象，展示 slow 是一种可被共享、可被演唱的实体。
+learning_tasks:
+  - type: listen_and_match
+    prompt: "你听到的 'a slow' 指的是什么？"
+    choices:
+      - "A: 一首节奏缓慢的歌曲"
+      - "B: 一个慢速的节拍器"
+      - "C: 一种缓慢的动作"
+    expected_answer: "A"
+  - type: produce
+    prompt: "看画面（展示一张慢歌唱片封面，无音频），说一个英文短句，其中 'slow' 作为名词使用。"
+    scoring_note: "正确示例: 'I like this slow.' 'Play a slow.' 如果出现形容词用法如 'a slow song' 则扣分，需提示正确结构。"

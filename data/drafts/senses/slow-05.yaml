@@ -1,0 +1,95 @@
+# ==================== A. 基础词义信息 ====================
+schema_version: "1.0"
+language: en
+version: 1
+status: draft
+id: slow-05
+word: slow
+pos: noun
+sense_label: "慢歌"
+definition: "A song with a slow tempo."
+frequency:
+  band: low
+  rank: ~
+difficulty: intermediate
+pronunciation:
+  ipa: "/sloʊ/"
+  audio_ref: ""
+collocations:
+  - "play a slow"
+  - "slow song"
+  - "slow ballad"
+  - "slow number"
+sentence_patterns:
+  - "[verb] a slow"
+  - "This is a slow."
+  - "I prefer slows to fasts."
+# ==================== B. 语义类型 ====================
+semantic_type: entity
+# ==================== C. 语义骨架 ====================
+semantic_skeleton:
+  participants:
+    - role: subject
+      description: "the musical piece referred to as a slow"
+  propositions:
+    - "There exists a musical piece that is a song (i.e., intended to be sung)."
+    - "The song has a tempo that is significantly slower than the average tempo for its genre or typical expectations."
+# ==================== D. 成立条件与排除条件 ====================
+conditions:
+  required:
+    - "The referent is a piece of music classified as a song (with lyrics)."
+    - "The tempo of the song is markedly slow (e.g., under ~80 BPM in popular music)."
+  excluded:
+    - condition: "The piece has a fast tempo (e.g., over 120 BPM in pop)."
+      alternative: "fast-01"
+    - condition: "The referent is not a song but an instrumental piece or speech."
+      alternative: "slow-03" # 假设慢乐章或慢速其他义项
+    - condition: "The word is used as an adjective describing a noun other than a song (e.g., slow car)."
+      alternative: "slow-01"
+# ==================== E. 概念关系 ====================
+relations:
+  synonyms: []
+  antonyms: []
+  hypernyms:
+    - "song-01"
+  hyponyms:
+    - "ballad-01"
+    - "slow-jam-01"
+  confusables:
+    - "slow-01"
+    - "slow-03"
+  boundaries:
+    - target: "slow-01"
+      relation: different_sense
+      distinction: "slow-01是形容词，修饰属性（如速度慢）；slow-05是名词，指代具体慢歌实体。"
+      diagnostic: "如果该词在句中充当名词性成分（如作宾语、主语，前面有冠词 a/an/the），则用slow-05；如果修饰其他名词（如 slow song），则用slow-01。"
+    - target: "slow-03"
+      relation: different_sense
+      distinction: "slow-03可能指慢速乐曲（如慢板乐章），但不强调演唱性质；slow-05专指有歌词的歌曲。"
+      diagnostic: "如果上下文强调‘唱’或‘歌手’，则用slow-05；若指器乐慢段落，则可能为slow-03。"
+  l1_confusables:
+    zh:
+      - l1_term: "慢"
+        covers:
+          - "slow-01"
+          - "slow-05"
+        note: "中文‘慢’是形容词，无独立名词义项表示‘慢歌’。中文母语者常将 slow 一律译为‘慢’，忽略其名词用法，导致在理解‘play a slow’时产生词性混淆。教学时应强调名词冠词和句法位置。"
+# ==================== F. 场景要求 ====================
+scene_requirements:
+  must_show:
+    - "一个音乐场景，例如有人在播放、演奏或提及一首歌曲。"
+    - "歌曲的节奏明显缓慢（例如拍子频率低，听众身体晃动幅度小）。"
+    - "画外音或台词中出现冠词‘a/an’或‘the’后接‘slow’作为名词使用。"
+  must_not:
+    - "展示快节奏舞蹈或激烈运动。"
+    - "将‘slow’用作形容词修饰其他名词（如 slow car）。"
+  externalization:
+    - "用节拍器显示低BPM数值或通过画面节奏（缓慢的滴答声、缓慢的手指敲击）外化速度。"
+    - "通过听众表情（放松、闭眼）或动作（轻轻摇摆）表达对慢节奏的感知。"
+  timing: "先在场景中建立对慢节奏歌曲的听觉和视觉体验（如听完一段慢歌），然后出现命名性台词‘That's a slow.’或‘I love this slow.’。"
+# ==================== 来源 ====================
+provenance:
+  sources:
+    - type: dictionary
+      citation: "Wiktionary via kaikki.org, https://kaikki.org/dictionary/English/meaning/s/sl/slow.jsonl"
+      license: CC-BY-SA

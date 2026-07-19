@@ -1,0 +1,64 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-04-contrast-01
+sense_ref: slow-04
+scene_type: contrast
+title: "整体慢 vs. 部分慢"
+synopsis: >-
+  两个角色同时出现在办公室。角色A在打字、整理文件、接电话等任务中
+  都明显比同事慢半拍；角色B只在跑步上慢（跑步机速度设置低），
+  但在其他办公任务中行动迅速。同事用不同方式谈论他们，语音上
+  区分名词和形容词用法。
+contrast_target: slow-01
+contrast_relation: different_sense
+target_learner:
+  l1: zh
+  life_context: office
+surface:
+  domain: office
+  participant_type: adult
+  setting: indoor-office
+teaching_evidence:
+  - claim: "名词‘a slow’指整体行为慢的人；形容词‘slow’只修饰特定属性。"
+    beats: [1,2,3,4,5]
+storyboard:
+  - beat: 1
+    visual: >-
+      办公室场景。左侧格子间：角色A正在敲键盘，速度很慢，旁边的同事
+      已经打完一份报告，A才打了三行。他接电话时也慢吞吞地拿起听筒。
+      右侧：角色B在跑步机上跑步，速度设为最低档，但他同时单手操作电脑，
+      回复邮件很快。
+    audio: (键盘声，跑步机低速运转声)
+    purpose: "并置两个角色，建立对比：A全领域慢，B仅跑步慢。"
+  - beat: 2
+    visual: >-
+      经理走到A身边，看到A的动作，对旁边的同事小声说。
+    audio: “He is a slow. Everything takes him twice as long.”
+    purpose: "使用名词slow指代A，强调整体属性。"
+  - beat: 3
+    visual: >-
+      经理走到B身边，看到B跑步慢但手头工作完成很快，
+      笑着对B说。
+    audio: “You are a slow runner, but a fast worker.”
+    purpose: "使用形容词slow runner，限制慢仅限于跑步。"
+  - beat: 4
+    visual: >-
+      画面分屏：左为A，右为B。文字标注：“He is a slow.” 和 “He is a slow runner.”
+      语音重复上述两句。
+    audio: (画外音) “He is a slow.” / “He is a slow runner.”
+    purpose: "强化语法差异，帮助学习者区分。"
+  - beat: 5
+    visual: >-
+      回到办公室场景。A仍在慢慢打字，B已离开跑步机开始高效工作。
+    audio: null
+    purpose: "巩固对比印象。"
+learning_tasks:
+  - type: contrast_choice
+    prompt: "以下哪个句子正确描述了角色A（左边的人）？"
+    choices:
+      - "He is a slow."
+      - "He is a slow worker."
+      - "He is a slow runner."
+    expected_answer: "He is a slow."
+    scoring_note: "学习者需选出名词用法的句子。"

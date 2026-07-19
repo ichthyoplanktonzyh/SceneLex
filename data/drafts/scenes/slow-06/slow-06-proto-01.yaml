@@ -1,0 +1,46 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-06-proto-01
+sense_ref: slow-06
+scene_type: prototype
+title: "Short distance, very slow walk"
+synopsis: "A man walks from the door to the sofa (2 meters) extremely slowly while his friend walks the same distance at normal speed; a timer overlay shows the time difference and the friend waits impatiently."
+target_learner:
+  l1: zh
+  life_context: home
+surface:
+  domain: household
+  participant_type: adult
+  setting: indoor-home
+teaching_evidence:
+  - claim: "The slow walker's time (8s) is much longer than the typical time (2s) for the same short distance."
+    beats: [1, 2, 3, 4]
+contrast_target: null
+contrast_relation: null
+transfer_dimensions: null
+storyboard:
+  - beat: 1
+    visual: "客厅，门口到沙发约2米。一位男子A站在门口，另一位男子B站在沙发旁。画面左下角叠加一个白色秒表，初始00:00。"
+    audio: null
+    purpose: "建立起点、终点和距离，明确短距离；引入计时器作为视觉参考"
+  - beat: 2
+    visual: "A开始缓慢迈步，每一步都刻意放慢，脚几乎擦着地板。秒表开始计时（00:01 → 00:08）。B从同一门口以正常步伐走向沙发，用时约2秒已经到达，转身看A。B皱眉，抬手腕看手表。"
+    audio: "（轻叹声）"
+    purpose: "展示慢速动作的全过程，让观众独立感知时间流逝慢于预期；B的不耐烦外化‘慢’的感受"
+  - beat: 3
+    visual: "A终于到达沙发，秒表显示00:08。B放下手臂，露出‘终于’的表情。画面定格，秒表数字变大（00:08），另一侧闪现一个小字‘typical 00:02’。"
+    audio: "（旁白或字幕）slow"
+    purpose: "在动作完成瞬间配合时间对比呈现目标词，将‘实际耗时＞典型耗时’与‘slow’绑定"
+  - beat: 4
+    visual: "画面回放：A从门口到沙发的全程被加速到2秒，与B的原速同步播放，显示两者速度差异。"
+    audio: null
+    purpose: "强化对比，让学习者看清慢速的量化差距"
+learning_tasks:
+  - type: scene_recognition
+    prompt: "下面哪个场景中的人可以用‘slow’来描述？"
+    choices:
+      - "A: 一个人快步走过走廊"
+      - "B: 一个人用2秒走完2米"
+      - "C: 一个人用8秒走完2米"
+    expected_answer: "C"

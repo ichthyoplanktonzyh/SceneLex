@@ -1,0 +1,50 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-06-transfer-01
+sense_ref: slow-06
+scene_type: transfer
+title: "Slow in different contexts: animal, robot, child"
+synopsis: "Three short clips — a snail crossing a leaf, a robot picking up a pen, a child putting on shoes — all take much longer than typical for that action. The same word 'slow' appears across them."
+target_learner:
+  l1: zh
+  life_context: mixed
+surface:
+  domain: mixed
+  participant_type: mixed
+  setting: mixed
+teaching_evidence:
+  - claim: "The same scalar property (short‑distance simple action taking much longer than typical) holds across diverse entities."
+    beats: [1, 2, 3, 4]
+contrast_target: null
+contrast_relation: null
+transfer_dimensions:
+  - entity-type (animal / robot / child)
+  - action-type (crawl / pick up / dress)
+  - environment (leaf / lab / bedroom)
+storyboard:
+  - beat: 1
+    visual: "特写：一片树叶上，一只蜗牛缓慢爬行从叶柄到叶尖（距离3厘米）。计时条显示8秒；旁边同类型蜗牛正常用时2秒。"
+    audio: null
+    purpose: "迁移到动物领域，展示短距离慢速的普遍性"
+  - beat: 2
+    visual: "实验室桌面，一台机械臂从起始位移动到笔架前并抓起一支笔（动作距离25厘米）。机械臂运动明显缓慢，计时4秒；正常机械臂演示1秒。"
+    audio: null
+    purpose: "迁移到机器人领域，动作简单但耗时异常长"
+  - beat: 3
+    visual: "儿童卧室，一个3岁小孩坐在地上穿鞋（简单动作），反复尝试鞋带，整个过程35秒；妈妈旁边用10秒示范穿好。"
+    audio: null
+    purpose: "迁移到儿童动作，保持短距离/简单动作条件"
+  - beat: 4
+    visual: "三个画面并置（蜗牛、机械臂、小孩）。画面同时淡出，中央出现大字‘slow’。配音从三个方向传来同一声音。"
+    audio: "slow"
+    purpose: "多画面并置+同一声音逼迫抽象出共同结构：短距离/简单动作中超常耗时"
+learning_tasks:
+  - type: listen_and_match
+    prompt: "听音频‘slow’，从以下三个画面中选出应该配这个声音的画面。（三个画面：蜗牛爬叶、机械臂拿笔、儿童穿鞋）"
+    choices:
+      - "A: 蜗牛爬叶"
+      - "B: 机械臂拿笔"
+      - "C: 儿童穿鞋"
+      - "D: 所有三个"
+    expected_answer: "D"

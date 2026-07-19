@@ -1,0 +1,42 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-06-boundary-01
+sense_ref: slow-06
+scene_type: boundary
+title: "Just above and just below the typical threshold"
+synopsis: "Two almost identical short walks: one takes 2.5 seconds (normal), the other takes 4.5 seconds (just slow). A visible threshold line shows when slow‑06 begins."
+target_learner:
+  l1: zh
+  life_context: office
+surface:
+  domain: workplace
+  participant_type: adult
+  setting: indoor-office
+teaching_evidence:
+  - claim: "Only the walk that clearly exceeds the typical duration qualifies as slow-06."
+    beats: [1, 2, 3]
+contrast_target: slow-01
+contrast_relation: target_more_specific
+transfer_dimensions: null
+storyboard:
+  - beat: 1
+    visual: "办公室走廊，A和B并排从饮水机走到座位（2.5米）。两人同时出发。A正常步伐，B略慢但接近正常。计时器显示A 2.5秒，B 3.0秒。画面出现一条灰色标杆标记‘typical 2.5s’。"
+    audio: null
+    purpose: "展示接近正常速度的边际案例，让学习者看到时间差异极小"
+  - beat: 2
+    visual: "同一走廊，另一位同事C以明显更慢的步伐走相同距离，计时器显示4.5秒。灰色标杆改为‘typical 2.5s’，再追加一条红线标记‘slow threshold 4.0s’。C的耗时超过红线。"
+    audio: null
+    purpose: "设置显性阈值，演示 slow‑06 的成立条件：耗时显著大于典型（本例超过典型1.8倍）"
+  - beat: 3
+    visual: "画面并列显示三个人的时间：A 2.5s（正常）、B 3.0s（轻微慢）、C 4.5s（慢）。红线位置清晰。语音解说。"
+    audio: "Only when the time is much longer than usual, like C, do we call the movement slow. (中文：只有时间明显长于平常，像C那样，才说动作慢。)"
+    purpose: "确立边界概念——慢不是二值，而是程度，但 slow‑06 要求达到显著差异"
+learning_tasks:
+  - type: contrast_choice
+    prompt: "短距离走路，典型时间2秒。以下哪个选项最应该用 slow-06？"
+    choices:
+      - "A: 2.2秒"
+      - "B: 3.0秒"
+      - "C: 7.0秒"
+    expected_answer: "C"

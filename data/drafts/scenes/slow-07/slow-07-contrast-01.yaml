@@ -1,0 +1,50 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-07-contrast-01
+sense_ref: slow-07
+scene_type: contrast
+title: "乌龟的短途与长途"
+synopsis: "同一只乌龟在两个不同情境中移动：短距离（缓慢爬行但很快到达）和长距离（缓慢爬行耗时很长）。对比两个事件，强调 slow-07（事件时间长）与 slow-01（运动速度低）的区别。"
+target_learner:
+  l1: zh
+  life_context: home
+contrast_target: slow-01
+contrast_relation: degree_neighbor
+surface:
+  domain: pet-care
+  participant_type: animal
+  setting: outdoor-park
+storyboard:
+  - beat: 1
+    visual: "分屏画面。左侧：乌龟在草地上，距离其前方20厘米处有一片生菜叶。右侧：乌龟在一条长达5米的小径起点，终点处有另一片生菜叶。两个画面都有计时器显示。"
+    audio: null
+    purpose: "建立对称结构，展示同一对象（乌龟）在两个不同距离的任务中，速度相同但事件总时长不同。"
+  - beat: 2
+    visual: "左侧画面：乌龟以极慢的速度爬向生菜叶，仅用约15秒就到达，计时器显示15″。右侧画面：乌龟以同样慢的速度爬行，持续前进，计时器显示2′30″ 并仍在跳动。"
+    audio: "(左侧) 轻微沙沙声； (右侧) 持续缓慢的滴答声"
+    purpose: "让观众看到‘速度相同’但‘事件时长天差地别’，为后续区分两义项提供直观证据。"
+  - beat: 3
+    visual: "左侧画面：乌龟吃到生菜叶，结束。右侧画面：乌龟继续爬行，最终到达终点，计时器显示8′15″。"
+    audio: null
+    purpose: "两个事件都结束，时间数据清晰对比。"
+  - beat: 4
+    visual: "画面合并为单一帧，左侧标注‘short distance – fast time’，右侧标注‘long distance – slow time’。镜头聚焦右侧，画外音响起。"
+    audio: "(画外音) 'The long trip was slow.'"
+    purpose: "明确将‘slow’指向事件总时长（右侧），而非乌龟的运动速度（左右相同）。教学习者区分：描述耗时用slow-07，描述运动速率用slow-01。"
+learning_tasks:
+  - type: contrast_choice
+    prompt: "以下哪种情况应用 slow-07（时间漫长）来描述？"
+    choices:
+      - "A: 乌龟爬行速度非常慢"
+      - "B: 乌龟爬行5米用了8分钟"
+      - "C: 乌龟爬行时四肢动作缓慢"
+    expected_answer: "B: 乌龟爬行5米用了8分钟"
+    scoring_note: "A和C侧重速度（slow-01），B强调时间跨度。"
+  - type: listen_and_match
+    prompt: "听录音‘The repair was slow’，然后从以下两个场景中选择："
+    choices:
+      - "A: 修理工快速拧螺丝但修了三天"
+      - "B: 修理工动作迟缓但半小时就修好"
+    expected_answer: "A: 修理工快速拧螺丝但修了三天"
+    scoring_note: "slow-07关注事件总时长，非单步骤速度。"

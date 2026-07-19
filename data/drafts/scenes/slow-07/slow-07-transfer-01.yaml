@@ -1,0 +1,54 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-07-transfer-01
+sense_ref: slow-07
+scene_type: transfer
+title: "多领域并置：漫长的恢复、下载与等待"
+synopsis: "三个来自不同生活领域的片段拼贴：医疗康复（病人从手术到出院历时两个月）、数字下载（进度条缓慢前进）、社会场景（排队购票队伍移动极慢）。每个片段独立呈现，最后并置，同一声音重复‘slow’，迫使学习者抽象出‘事件总体耗时漫长’这一核心。"
+target_learner:
+  l1: zh
+  life_context: mixed
+transfer_dimensions:
+  - "领域：从家庭园艺到医疗、数字、社会"
+  - "参与者类型：从植物/动物到人、计算机进程、人群"
+  - "环境：从户外自然到病房、电子屏幕、售票大厅"
+surface:
+  domain: mixed
+  participant_type: mixed
+  setting: mixed
+storyboard:
+  - beat: 1
+    visual: "镜头一：病房。病人躺在病床上，旁边日历快速翻页，从1月翻到3月。病人从虚弱到坐起、下床、拄拐行走。画面上角文字‘Recovery: 2 months’。"
+    audio: "(心跳监测仪的滴声，缓慢而规律)"
+    purpose: "迁移到医疗领域，展示康复过程耗时（slow-07）。"
+  - beat: 2
+    visual: "镜头二：电脑屏幕。下载进度条从0%缓慢增长到100%，旁边显示‘Downloading... 2 hours remaining’。文件图标逐渐填色。"
+    audio: "(鼠标点击声、风扇转动声，随后长时间持续的下载提示音‘叮…叮…’)"
+    purpose: "迁移到数字领域，强调用户对下载时间的感知（总时长漫长）。"
+  - beat: 3
+    visual: "镜头三：售票大厅。长队缓慢向前移动，每隔几分钟才前进一人。时钟显示从上午9:00到下午12:00。排队者表情无聊、看手机、叹气。"
+    audio: "(嘈杂的人声、偶尔叹气声、时钟滴答声)"
+    purpose: "迁移到社会场景，排队等待过程耗时（slow-07）。"
+  - beat: 4
+    visual: "三个画面并列成三格（左：康复，中：下载，右：排队）。每个画面上方出现单词‘SLOW’，随后三个画面同时缩小，中央合成一个单词‘SLOW’。"
+    audio: "(画外音，同一声音三次重复) 'Slow... slow... slow.'"
+    purpose: "多画面并置逼迫学习者抽象：无论领域如何变化，核心义项均为‘事件总时间长于预期’。"
+learning_tasks:
+  - type: scene_recognition
+    prompt: "以下哪些场景中的‘slow’与本节课所学义项（时间长）一致？请选出所有匹配项。"
+    choices:
+      - "A: 老人慢悠悠地打太极拳（动作速度慢）"
+      - "B: 一场持续了五小时的电影（时间长）"
+      - "C: 网络连接缓慢导致网页加载用了3分钟（时间长）"
+      - "D: 蜗牛缓慢爬行（速度慢）"
+    expected_answer: ["B", "C"]
+    scoring_note: "B和C均强调总耗时，A和D侧重速率。"
+  - type: listen_and_match
+    prompt: "听录音‘The funeral procession was slow.’，选择对应的情景。"
+    choices:
+      - "A: 送葬队伍以每小时5公里速度行驶"
+      - "B: 送葬队伍从出发到墓地一共用了4个小时"
+      - "C: 送葬队伍中每个人步伐缓慢"
+    expected_answer: "B"
+    scoring_note: "送葬队伍耗时长（slow-07），而非移动速度慢。"

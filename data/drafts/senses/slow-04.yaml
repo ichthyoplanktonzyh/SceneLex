@@ -1,0 +1,132 @@
+# ========================
+# A. 基础词义信息
+# ========================
+schema_version: "1.0"
+language: en
+version: 1
+status: draft
+id: slow-04
+word: slow
+pos: noun
+sense_label: "慢人"
+definition: "A person who is habitually slow or sluggish in action, movement, or understanding."
+frequency:
+  band: low
+  rank: 5000
+difficulty: intermediate
+pronunciation:
+  ipa: /sləʊ/
+  audio_ref: ""
+collocations:
+  - the slow
+  - the slow and the quick
+  - a slow
+  - the slow are left behind
+sentence_patterns:
+  - "[det] slow is [adj]"
+  - "the slow [verb] [prep] [noun]"
+  - "call someone a slow"
+
+# ========================
+# B. 语义类型
+# ========================
+semantic_type: entity
+
+# ========================
+# C. 语义骨架
+# ========================
+semantic_skeleton:
+  participants:
+    - role: referent
+      description: "A human individual who is characterized by consistently slow or sluggish behavior."
+  propositions:
+    - "存在一个人类个体作为指称对象。"
+    - "该个体在动作、反应、移动或思维方面表现出全局性的低速率或延迟，与常规社会预期形成对比。"
+    - "这种缓慢特征被他人或环境视为该个体的固有属性（而非临时状态）。"
+    - "该称谓通常带有轻度贬义或宽容评价，但并非强烈贬损。"
+
+# ========================
+# D. 成立条件与排除条件
+# ========================
+conditions:
+  required:
+    - "指称对象必须是人类（至少是拟人化的实体）。"
+    - "对象持续表现出低于正常水平的执行速度或响应速度。"
+    - "这种慢速特征在多个情境中可观测（非单次行为）。"
+    - "说话者使用该名词时隐含将该特征作为指称对象的标识。"
+  excluded:
+    - condition: "对象是动物或非生命物体。"
+      alternative: slow-01
+    - condition: "慢速特征仅限单一领域（如只走路慢但思考快）。"
+      alternative: slow-01
+    - condition: "对象具有智力障碍但身体动作正常（此时更可能用mentally slow）。"
+      alternative: slow-03
+    - condition: "说话者表达的是自嘲或临时局部的缓慢（如'我今天是slow'），此时视为形容词用法。"
+      alternative: slow-01
+
+# ========================
+# E. 概念关系
+# ========================
+relations:
+  synonyms:
+    - sluggard-01   # 假设存在
+    - slowpoke-01   # 假设存在
+  antonyms:
+    - speedster-01  # 假设存在
+    - quick-01      # 假设存在 (名词义项)
+  hypernyms:
+    - person-01     # 假设存在
+    - human-01      # 假设存在
+  hyponyms: []
+  confusables:
+    - slow-01       # 形容词义项，容易混淆为名词化形容词
+    - slow-03       # 形容词“迟钝的”，容易混淆为智力上的慢
+  boundaries:
+    - target: slow-01
+      relation: different_sense
+      distinction: "slow-01 是属性（attribute），描述动作或过程的速率；slow-04 是实体（entity），指代具有该属性的人。两者语法功能不同：形容词可做定语/表语，名词可做主语/宾语。"
+      diagnostic: "如果词项受限定词修饰（the slow）或复数（slows），且充当主语/宾语，则适用 slow-04；如果修饰名词（slow runner）或用于系表结构（is slow），则适用 slow-01。"
+    - target: slow-03
+      relation: overlaps
+      distinction: "slow-03 强调认知或智力上的迟钝（mentally slow），而 slow-04 更侧重整体行为速度慢，但两者在低理解速度上有重叠区域。"
+      diagnostic: "如果语境明确指向理解力低下（如学不会新知识），则更接近 slow-03；如果语境泛指动作慢、拖延（如吃饭慢、走路慢），则更接近 slow-04。"
+    - target: sluggard-01
+      relation: target_more_specific
+      distinction: "sluggard 强调懒惰导致的慢，带有更强的贬义；slow 作为名词更中性，可仅指速度慢而不一定是懒惰。"
+      diagnostic: "若说话者明确指责因懒惰而缓慢，可选 sluggard；若仅仅描述速度慢而不带道德评判，则用 slow-04。"
+  l1_confusables:
+    zh:
+      - l1_term: "慢的人"
+        covers:
+          - slow-04
+          - slow-01
+        note: "中文缺乏直接对应的名词，通常用形容词'慢'加'的人'结构，导致母语者容易混淆名词义项和形容词修饰结构。教学中需强调英语名词可直接指人（the slow），而中文必须添加名词中心语。"
+      - l1_term: "迟钝"
+        covers:
+          - slow-03
+          - slow-04
+        note: "中文'迟钝'同时覆盖智力慢和动作慢，但英语用 slow-03 和 slow-04 区分。学习者可能将'迟钝'整体映射到 slow-04，忽略 cognitive 维度。"
+
+# ========================
+# F. 场景要求
+# ========================
+scene_requirements:
+  must_show:
+    - "一个人物在进行需要速度的活动时明显滞后于周围的人（如排队、跑步、完成工作）。"
+    - "周围人物对该人物表现出的等待、催促或不耐烦的面部表情/肢体语言。"
+    - "该人物的动作细节：缓慢的肢体运动、犹豫的决策、拖沓的步态。"
+  must_not:
+    - "展示非人类物体（如蜗牛、乌龟）作为被称呼对象。"
+    - "场景仅展示一次性的慢速行为（如刻意放慢动作），应体现惯常性。"
+    - "使用负面道德评价标签（如'懒惰'）干扰观众对'慢速'属性的聚焦。"
+  externalization:
+    - "人物在他人完成相同任务后仍在继续，明显存在时间差。"
+    - "人物在对话中回应延迟或停顿过长。"
+    - "人物被其他角色直接称呼或议论（如'He is such a slow.'）。"
+  timing: "先展示该人物与周围环境的速度差异，形成对比；待观众自行形成‘此人慢’的观察后，再用旁白或角色对话出现名词 slow (如 'The slow are left behind')。"
+
+provenance:
+  sources:
+    - type: dictionary
+      citation: "https://kaikki.org/dictionary/English/meaning/s/sl/slow.jsonl (Wiktionary via kaikki.org, CC-BY-SA 3.0/4.0)"
+      license: CC-BY-SA

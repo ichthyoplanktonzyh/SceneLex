@@ -1,0 +1,41 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-01-boundary-01
+sense_ref: slow-01
+scene_type: boundary
+contrast_target: "stop-01"
+contrast_relation: degree_neighbor
+title: "减速到几乎停止——边界测试"
+synopsis: "城市拥堵中，车辆以极低速度（1 km/h）缓慢前行，几乎停止但未完全停止。"
+target_learner:
+  l1: zh
+  life_context: city-commute
+surface:
+  domain: transport
+  participant_type: adult
+  setting: urban-road
+storyboard:
+  - beat: 1
+    visual: "城市道路拥堵，汽车长龙。前车时停时走。车内驾驶员频繁轻踩刹车。车速表指针在10-20之间摆动。"
+    audio: "(引擎怠速声，间歇性刹车声)"
+    purpose: "建立低速但持续移动的语境。"
+  - beat: 2
+    visual: "道路完全堵死，车辆缓慢挪动。车速表指针指向1 km/h，几乎贴底。车轮缓慢转动（特写）。驾驶员踩住刹车保持低速。"
+    audio: "(低沉的引擎声，轮胎摩擦声)"
+    purpose: "展示极低速边界：速度接近零但不为零，agent 仍主动控制减速。"
+  - beat: 3
+    visual: "画面中央出现 'Slow' 文字，并显示车速1 km/h。紧接着出现对比文字 'Stop = 0 km/h'，旁边展示另一辆完全静止的车辆，车速表为0。"
+    audio: null
+    purpose: "明确标识边界：只要速度大于零，即使用 slow；速度到零才用 stop。"
+teaching_evidence:
+  - claim: "slow 适用于任何正速度的降低，即使低至1 km/h；只有在速度完全为零时使用 stop。"
+    beats: [2, 3]
+learning_tasks:
+  - type: transfer_judgment
+    prompt: "以下哪个场景更可能用 'slow' 而不是 'stop'？"
+    choices:
+      - "A: 电梯从3楼降到1楼后门打开，不动了"
+      - "B: 跑步机速度从8 km/h 降到2 km/h"
+      - "C: 汽车刹停，车轮不再转动"
+    expected_answer: "B"

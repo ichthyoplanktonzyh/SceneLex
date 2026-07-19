@@ -1,0 +1,60 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-04-boundary-01
+sense_ref: slow-04
+scene_type: boundary
+title: "认知慢 vs. 动作慢"
+synopsis: >-
+  一名学生在课堂上理解新概念非常迟缓，需要多次解释，
+  但他在体育课上动作敏捷、跑步很快。有同学叫他“a slow”，
+  老师则纠正说“他学习慢（slow-03），但不是整体慢（slow-04）”。
+  场景测试“慢”在认知领域与行为领域的边界。
+contrast_target: slow-03
+contrast_relation: overlaps
+target_learner:
+  l1: zh
+  life_context: school
+surface:
+  domain: education
+  participant_type: child
+  setting: classroom
+teaching_evidence:
+  - claim: "认知上的慢（slow-03）与整体行为慢（slow-04）有重叠，但诊断不同。"
+    beats: [1,2,3,4]
+storyboard:
+  - beat: 1
+    visual: >-
+      数学课上。老师在黑板上讲解一个例题，大部分学生点头理解。
+      小明困惑地皱眉，手指无意识地在桌上画圈。老师重复一遍，
+      小明依然表情茫然。
+    audio: (老师讲解声，小明叹气)
+    purpose: "展示小明在认知处理上慢，属于slow-03范畴。"
+  - beat: 2
+    visual: >-
+      下课后操场上。小明在50米短跑中飞快冲刺，轻松超过其他同学，
+      动作流畅敏捷。同学们惊讶。
+    audio: (起跑哨声，跑步声，欢呼声)
+    purpose: "展示小明在动作上并不慢，与认知慢形成反差。"
+  - beat: 3
+    visual: >-
+      两个同学在走廊聊天：“小明上课反应那么慢，真是个slow。”
+      另一同学反驳：“但他跑步超快！他只是学习慢，不是真的a slow。”
+      画面插入文字：“slow-03: 智力迟钝”、“slow-04: 整体慢人”。
+    audio: “He’s a slow?” “No, he’s just slow to learn, not a slow.”
+    purpose: "提出边界争论，引出两个义项的区别。"
+  - beat: 4
+    visual: >-
+      回到教室，小明又遇到新问题，他举手问老师，动作不急不缓。
+      老师耐心解释，小明慢慢露出理解的表情。
+    audio: null
+    purpose: "让观众自行判断应使用哪个义词。"
+learning_tasks:
+  - type: contrast_choice
+    prompt: "小明应该被称作‘a slow’吗？"
+    choices:
+      - "是的，他理解慢。"
+      - "不，他只在学习上慢，动作很快。"
+      - "都可以，取决于说话者的视角。"
+    expected_answer: "不，他只在学习上慢，动作很快。"
+    scoring_note: "学习者需根据边界诊断选择最合适的义项。"

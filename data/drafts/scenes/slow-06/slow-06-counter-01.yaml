@@ -1,0 +1,42 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-06-counter-01
+sense_ref: slow-06
+scene_type: counterexample
+title: "Long total time but normal speed (not slow-06)"
+synopsis: "A person walks a long distance (50 meters) at a normal pace, taking a long total time. Shows that long duration alone does not prove slow‑06; the distance must also be short."
+target_learner:
+  l1: zh
+  life_context: city
+surface:
+  domain: transportation
+  participant_type: adult
+  setting: outdoor-street
+teaching_evidence:
+  - claim: "Total time is long, but the speed is normal, so slow‑06 does not apply."
+    beats: [1, 2, 3]
+contrast_target: slow-01
+contrast_relation: target_more_specific
+transfer_dimensions: null
+storyboard:
+  - beat: 1
+    visual: "一位行人从街角走向远处的公交站，距离约50米。画面显示起止点，叠加计时器。行人步伐正常，步频均匀。"
+    audio: null
+    purpose: "建立长距离、正常速度的场景，让观众预期总时可能会长"
+  - beat: 2
+    visual: "行人到达公交站，计时器显示3分钟。画面出现一个气泡：‘总时长3分钟’。旁边迅速闪出两个对比画面：原型场景中A慢走2米用了8秒。"
+    audio: null
+    purpose: "展示总时长与慢速的关联容易被误解，提供对比数据"
+  - beat: 3
+    visual: "画面分割：左侧是刚才的行人（50米/3分钟），右侧是A（2米/8秒）。下方出现文字：‘同样花费较长时间，但左侧是正常速度，右侧是慢速’。旁白音响起。"
+    audio: "Just because it takes a long time does not mean the movement is slow. The walk across the street took long because it was far, not because the pace was slow. (中文：时间长不等于动作慢。跨过街道的时间长是因为距离远，不是速度慢。)"
+    purpose: "指出反例——必须区分‘总时长’与‘速率’，速率低才是 slow‑06 的核心"
+learning_tasks:
+  - type: transfer_judgment
+    prompt: "一个人推着装满货物的手推车走10米，用时30秒（正常速度是15秒）。是否能用 slow-06 描述？"
+    choices:
+      - "A: 能"
+      - "B: 不能"
+    expected_answer: "A"
+    scoring_note: "距离短（10米），实际时间30秒显著长于典型15秒，属于 slow‑06。"

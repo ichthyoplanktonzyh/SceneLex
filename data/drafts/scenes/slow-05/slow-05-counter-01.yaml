@@ -1,0 +1,53 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-05-counter-01
+sense_ref: slow-05
+scene_type: counterexample
+contrast_target: slow-03
+title: 慢不等于歌  器乐反例
+synopsis: 朋友A请朋友B“放首慢歌(play a slow)”。B先后试了两段慢速音频：第一段是纯钢琴慢板（无歌词），A摇头表示不对；第二段是带有歌词的慢歌，A点头认可。借此展示“仅凭慢速不能断定是slow-05（慢歌）”，必须满足歌曲（有歌词）的条件。B在过程中使用了名词“slow”，A用摇头和点头外化判断。
+target_learner:
+  l1: zh
+  life_context: home-listening
+contrast_relation: overlaps  # slow-03 与 slow-05 在“慢速”上重叠，但 slow-03 是器乐乐章
+transfer_dimensions: null
+surface:
+  domain: casual-listening
+  participant_type: adult
+  setting: indoor-living-room
+teaching_evidence:
+  - claim: "慢速不足以成为 slow-05 的证据；必须同时是 song（有歌词）。"
+    beats: [2, 3, 4, 5]
+storyboard:
+  - beat: 1
+    visual: 客厅沙发上，A 把手机递给 B，说：“Play a slow.” B 接过手机，在音乐播放器里搜索。
+    audio: “Play a slow.” （A 的语音）
+    purpose: 明确交代目标名词“a slow”，并启动寻找行为。
+  - beat: 2
+    visual: B 点开一首纯钢琴慢板乐曲（无演唱），音频通过蓝牙音箱播放。A 听了几秒，眉头微皱，轻轻摇头。B 注意到 A 的表情，暂停了播放。
+    audio: （一段缓慢的钢琴独奏，速度约 55 BPM，旋律悠扬但无人声）
+    purpose: 展示候选对象具备慢速，但缺少“歌曲”特征。用摇头表示不满足。
+  - beat: 3
+    visual: B 换了一首慢歌（有女声演唱，约 65 BPM）。A 听了几句后表情放松，点点有节拍地点头。B 微笑。
+    audio: （女声演唱的慢歌片段，含歌词，速度一致慢）
+    purpose: 展示满足所有条件的实例，通过点头外化认可。
+  - beat: 4
+    visual: 画面停格在 A 点头的瞬间，屏幕叠加文字：“慢 ≠ a slow (需要是歌曲)”，下方出现两个图标：🎵（带歌词）被勾选，🎹（纯乐器）被叉。
+    audio: null
+    purpose: 显性总结反例教训：慢速是必要条件但不是充分条件。
+  - beat: 5
+    visual: A 拿回手机，把当前慢歌加入收藏。B 靠在沙发上，和 A 一起听。
+    audio: （慢歌继续播放，直到 fade out）
+    purpose: 正面强化正确实例，巩固理解。
+learning_tasks:
+  - type: transfer_judgment
+    prompt: "新场景：朋友说 'I love this slow'，播放的是一段慢速小提琴无词独奏。这个 'slow' 用得对吗？"
+    choices:
+      - "A: 对"
+      - "B: 不对，因为没有歌词"
+    expected_answer: "B"
+    scoring_note: "判断依据：slow-05 要求是歌曲（有歌词），纯器乐即使慢速也不适用。"
+  - type: listen_and_match
+    prompt: "听两段音频：一段是慢歌，一段是慢速器乐。哪一段可以被称作 'a slow'？"
+    expected_answer: "慢歌那一段"

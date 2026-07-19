@@ -1,0 +1,44 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-01-proto-01
+sense_ref: slow-01
+scene_type: prototype
+title: "减速刹车"
+synopsis: "驾驶员看到前方有车，轻踩刹车减速，车速表指针下降，窗外景物变慢。"
+target_learner:
+  l1: zh
+  life_context: city-commute
+surface:
+  domain: transport
+  participant_type: adult
+  setting: outdoor-road
+storyboard:
+  - beat: 1
+    visual: "高速路上，车内视角：车速表指针指向80 mph，窗外车道标线快速后退。引擎轰鸣声持续。"
+    audio: "(引擎轰鸣声)"
+    purpose: "建立初始高速状态，让观众感知 patient（汽车）的高速运动。"
+  - beat: 2
+    visual: "驾驶员（约30岁男性）看到前车刹车灯亮起，目光聚焦，右脚从油门踏板移向刹车踏板，轻轻踩下。特写脚部动作。"
+    audio: "(刹车片轻触声)"
+    purpose: "展示 agent 主动施加减速动作（踩刹车）。"
+  - beat: 3
+    visual: "车速表指针从80逐渐回落至50，指针缓慢下滑；窗外标线移动速度变慢；引擎声降低。驾驶员保持稳定的踩刹车姿势。"
+    audio: "(引擎声逐渐降低至低沉)"
+    purpose: "呈现减速过程，展示速度降低的可观察变化（指针下降、参照物变慢）。"
+  - beat: 4
+    visual: "车速表指针停在50，车辆仍平稳前进。画面中央叠加目标单词 'Slow'。"
+    audio: "Slow."
+    purpose: "在减速效果已经清晰呈现后，输出目标语音，实现概念与声音的绑定。"
+  - beat: 5
+    visual: "重复前 1-3 的快速剪辑版本（约2秒），再次展现减速过程，无文字。"
+    audio: "Slow."
+    purpose: "强化关联，让学习者再次听到目标词与减速画面的对应。"
+learning_tasks:
+  - type: scene_recognition
+    prompt: "观看三个短片，选出与 'Slow' 声音匹配的场景。"
+    choices:
+      - "A: 汽车加速"
+      - "B: 汽车减速（当前场景）"
+      - "C: 汽车完全停止"
+    expected_answer: "B"

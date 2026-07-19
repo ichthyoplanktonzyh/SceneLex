@@ -1,0 +1,46 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-07-counter-01
+sense_ref: slow-07
+scene_type: counterexample
+title: "慢速却短暂的反例"
+synopsis: "展示一个物体运动速度极慢，但因为距离极短，事件很快结束。通过与之对比的另一个长距离慢速事件，教学习者不能仅凭‘速度慢’（slow-01）推断‘时间长’（slow-07）。"
+target_learner:
+  l1: zh
+  life_context: home
+contrast_target: slow-01
+contrast_relation: degree_neighbor
+surface:
+  domain: household-chores
+  participant_type: object
+  setting: indoor-home
+storyboard:
+  - beat: 1
+    visual: "桌面上有一滴蜂蜜，从瓶口缓缓向下流动。蜂蜜流动速度极慢（几乎肉眼可见的缓慢），但距离瓶口到桌面仅5厘米。旁边有一个秒表开始计时。"
+    audio: "(粘稠液体缓慢滴落的声音)"
+    purpose: "创建一个速度慢但距离短的事件，为反例做铺垫。"
+  - beat: 2
+    visual: "蜂蜜在15秒内流到桌面，秒表显示15″。事件结束。镜头随即转向另一滴蜂蜜，从同样的瓶口沿着一条长30厘米的木板向下流，流速相同。"
+    audio: null
+    purpose: "对比两个事件：速度相同，但一个短时间结束，另一个将持续很长时间。"
+  - beat: 3
+    visual: "切换为分屏：左边蜂蜜已到桌面（15″），右边蜂蜜还在木板中段，秒表显示1′20″ 且仍在流动。"
+    audio: "(左边) 静默； (右边) 持续的低频嗡鸣"
+    purpose: "强调仅凭‘速度慢’不足以判断事件长短，必须关注总距离/时间。"
+  - beat: 4
+    visual: "画面分割线消失，只留下右边蜂蜜最终流到木板末端（3′40″）。画外音响起。"
+    audio: "(画外音) 'Don't assume slow movement means a slow event.'"
+    purpose: "直接给出反例教学：速度慢 ≠ 时间长。教学习者不能仅凭slow-01的证据推断slow-07。"
+learning_tasks:
+  - type: transfer_judgment
+    prompt: "判断以下情境是否适合用‘slow’（slow-07，时间漫长）描述：一辆老爷车以20km/h行驶了100米后熄火（总时间约18秒）。"
+    choices:
+      - "是"
+      - "否"
+    expected_answer: "否"
+    scoring_note: "事件时间短（18秒），不适合slow-07；应使用slow-01描述速度慢。"
+  - type: produce
+    prompt: "用你自己的话解释为什么‘the turtle moved slowly’不一定意味着‘the journey was slow’？"
+    expected_answer: "因为‘moved slowly’指速度（slow-01），而‘journey was slow’指总耗时（slow-07）。如果距离短，即使速度慢也可能很快完成。"
+    scoring_note: "需清晰区分两种义项。"

@@ -1,0 +1,64 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-05-transfer-01
+sense_ref: slow-05
+scene_type: transfer
+contrast_target: null
+title: 不同时空  同一种慢歌
+synopsis: 通过三个不同场景的快速并置——教堂唱诗班、爵士俱乐部、儿童音乐课——展示不同文化、不同年龄、不同地点都可以用“a slow”指代一首慢歌。最后所有画面同框，伴随同一句语音“I love a slow.”，逼迫学习者抽象出核心结构：任何语境下，只要是一首慢速歌曲，即可称为 a slow。
+target_learner:
+  l1: zh
+  life_context: general
+contrast_relation: null
+transfer_dimensions:
+  - setting (church/venue/school)
+  - participant_age (adults/elders/children)
+  - music_genre (sacred/jazz/pop)
+surface:
+  domain: mixed
+  participant_type: mixed
+  setting: mixed
+teaching_evidence:
+  - claim: "无论场景如何变化，只要具备'慢速歌曲'特征，就可称 a slow。"
+    beats: [1, 2, 3, 4, 5]
+storyboard:
+  - beat: 1
+    visual: 场景A——教堂内，唱诗班穿着白衣，指挥缓慢挥舞双手，信徒们齐唱一首速度缓慢的赞美诗。镜头特写一位老妇人闭眼跟唱。
+    audio: （缓慢的管风琴伴奏与合唱，速度约 70 BPM） 持续 5 秒。
+    purpose: 迁移到宗教音乐环境，参与者为不同年龄，展示神圣氛围下的慢歌。
+  - beat: 2
+    visual: 场景B——昏暗的爵士俱乐部，萨克斯手吹奏慢板，一位女歌手轻唱，听众端着酒杯轻轻晃动。节奏更自由，但明显慢。
+    audio: （爵士慢歌，萨克斯与女声，速度约 60 BPM） 持续 5 秒。
+    purpose: 迁移到世俗娱乐场所，音乐风格转为爵士，演员不同，但核心特征不变。
+  - beat: 3
+    visual: 场景C——小学音乐教室，老师弹钢琴引导一群 7 岁孩子合唱一首慢速儿歌。孩子们并排坐着，左右摇摆身体。
+    audio: （童声合唱与钢琴，速度约 75 BPM，旋律简单） 持续 5 秒。
+    purpose: 迁移到儿童教育场景，参与者年龄最小，曲目不同，但仍然是慢歌。
+  - beat: 4
+    visual: 三幅画面同时出现在屏幕上（左中右并列），画面内容分别来自 beat 1、2、3 的某一帧。每个画面下方出现文字：“church”“jazz club”“classroom”。
+    audio: 一个年轻女性的画外音，清晰口语化：“I love a slow.”
+    purpose: 强制并置不同场景，用同一句语音绑定所有画面，逼迫学习者忽略表面差异，抽取“慢歌”这一共同实体。
+  - beat: 5
+    visual: 三个画面合成一个螺旋动画，逐渐缩小成中央的一个圆形，圆形内写“a slow”。然后消失。
+    audio: 重复画外音“a slow”，音量渐弱。
+    purpose: 结束，留下核心概念符号。
+learning_tasks:
+  - type: transfer_judgment
+    prompt: "看一个新场景：一位藏族歌手在草原上用慢速唱一首民歌（有歌词）。这个作品可以称为 'a slow' 吗？"
+    choices:
+      - "A: 可以，只要有歌词且速度慢。"
+      - "B: 不可以，因为不是流行音乐。"
+    expected_answer: "A"
+    scoring_note: "学习者应理解 genre 不是限制条件，速度与歌词才是关键。"
+  - type: scene_recognition
+    prompt: "从以下三个视频片段中，选出全部符合 'a slow' 定义的片段。"
+    choices:
+      - "A: 教堂唱诗班缓慢唱诗"
+      - "B: 爵士俱乐部慢歌演唱"
+      - "C: 儿童缓慢合唱"
+    expected_answer:
+      - "A"
+      - "B"
+      - "C"
+    scoring_note: "三选全，因为所有片段都是慢歌。"

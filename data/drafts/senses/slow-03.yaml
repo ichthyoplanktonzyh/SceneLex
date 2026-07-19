@@ -1,0 +1,120 @@
+# ============================================================
+# A. 基础词义信息
+# ============================================================
+schema_version: "1.0"
+language: en
+version: 1
+status: draft
+id: slow-03
+word: slow
+pos: verb
+sense_label: 减速
+definition: To decrease in speed; to become slower.
+frequency:
+  band: high
+  rank: 1200
+difficulty: intermediate
+pronunciation:
+  ipa: /sloʊ/
+collocations:
+  - slow down
+  - slow to a crawl
+  - slow markedly
+  - gradually slow
+sentence_patterns:
+  - "[noun] slows"
+  - "[noun] slows to [speed]"
+  - "[noun] slows as [clause]"
+
+# ============================================================
+# B. 语义类型
+# ============================================================
+semantic_type: state_change
+
+# ============================================================
+# C. 语义骨架
+# ============================================================
+semantic_skeleton:
+  participants:
+    - role: theme
+      description: 正在改变速度的移动实体
+  propositions:
+    - p1: "存在一个移动实体，其速度在时间区间内连续或逐步减小"
+    - p2: "该速度减小是实体自身运动状态的变化，而非由外部施事主动控制"
+    - p3: "观察者或参考系可感知到速度的降低（例如通过相对位置变化、声音、视觉流等）"
+
+# ============================================================
+# D. 成立条件与排除条件
+# ============================================================
+conditions:
+  required:
+    - "实体必须处于运动状态（速度 > 0）"
+    - "速度值在观察窗口内单调递减"
+    - "速度变化是实体自发或由环境因素（如摩擦力、坡度）导致，而非由其他意图主体直接操控"
+  excluded:
+    - condition: "速度保持不变或增加"
+    - condition: "速度减小但动作是由外部施事有意识控制（如人踩刹车使车减速）"
+      alternative: slow-04
+    - condition: "实体静止不动（速度为零）且未发生运动变化"
+
+# ============================================================
+# E. 概念关系
+# ============================================================
+relations:
+  synonyms:
+    - decelerate
+    - slacken
+  antonyms:
+    - speed up
+    - accelerate
+  hypernyms:
+    - change_state
+  hyponyms:
+    - idle
+    - stall
+  confusables:
+    - slow-01
+    - slow-04
+  boundaries:
+    - target: slow-01
+      relation: different_dimension
+      distinction: "slow-01是形容词，描述实体的固有属性（速度低）；slow-03是动词，描述速度从高到低的变化过程"
+      diagnostic: "如果句子聚焦于物体当前状态（如'The car is slow'），则为形容词；如果聚焦于速度随时间减小（如'The car slowed'），则为动词"
+    - target: slow-04
+      relation: different_sense
+      distinction: "slow-04是及物动词，施事主动使受事减速；slow-03是不及物动词，实体自发减速"
+      diagnostic: "如果句子中主语直接控制另一对象的减速（如'He slowed the car'），则为及物；如果主语自身减速且没有宾语（如'The car slowed'），则为不及物"
+  l1_confusables:
+    zh:
+      - l1_term: "慢"
+        covers:
+          - slow-01
+          - slow-03
+          - slow-04
+        note: "中文的「慢」作为形容词和动词的界限模糊：形容词如『车慢』，动词如『车慢了』（表变慢）；英文中动词 slow 常需加小品词 down（口语中），而中文动词「慢」可单独使用。学习者容易将 slow-03 直接当成形容词使用，或忽略 slow down 的搭配习惯。"
+
+# ============================================================
+# F. 场景要求
+# ============================================================
+scene_requirements:
+  must_show:
+    - 一个移动物体（如自行车、行人、汽车）速度明显减慢
+    - 相对参照物（如路标、树木）的位移速度减慢，或背景运动模糊程度降低
+    - 可能伴随声音提示（如引擎声降低、风声减弱）
+  must_not:
+    - 出现外部施事明显控制减速的动作（如踩刹车、拉手刹）
+    - 物体突然停止（需能观察到持续减速过程）
+  externalization:
+    - 速度变化通过物体在固定参照系中的位置变化率降低来外化
+    - 如有仪表盘场景，可显示速度表指针下降
+    - 如有声音，可表现发动机转速降低或轮子摩擦声减弱
+  timing: "先让观众观察到速度减小的现象（约2-3秒），然后配音或字幕呈现单词 slow"
+
+# ============================================================
+# 来源元数据
+# ============================================================
+provenance:
+  sources:
+    - type: dictionary
+      citation: "https://kaikki.org/dictionary/English/meaning/s/sl/slow.jsonl (Wiktionary via kaikki.org, CC-BY-SA 3.0/4.0)"
+      license: CC-BY-SA

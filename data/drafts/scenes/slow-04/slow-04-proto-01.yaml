@@ -1,0 +1,58 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-04-proto-01
+sense_ref: slow-04
+scene_type: prototype
+title: "跑步训练中的落后者"
+synopsis: >-
+  一组成年人进行定时跑步训练。大部分人在规定时间内完成并休息，
+  只有一个人始终落后，跑步姿势拖沓、呼吸沉重。教练和队员多次等待他，
+  脸上显露出无奈。最后一圈时教练看着背影说：“The slow are left behind.”
+target_learner:
+  l1: zh
+  life_context: campus
+surface:
+  domain: sports
+  participant_type: adult
+  setting: outdoor-park
+teaching_evidence:
+  - claim: "慢人被识别为持续落后于群体的个人。"
+    beats: [1,2,3,4]
+  - claim: "周围人对慢人的典型反应是等待和不耐烦。"
+    beats: [2,3]
+storyboard:
+  - beat: 1
+    visual: >-
+      广角镜头：十名跑者在跑道起点准备。哨声响起，所有人迅速起跑。
+      其中一人（李明）起跑明显慢半拍，步幅小，手臂摆动幅度低。
+    audio: (哨声) (跑步声)
+    purpose: "展示群体速度差异，建立基线。"
+  - beat: 2
+    visual: >-
+      大部分跑者已跑完一圈并停下喝水、擦汗。李明仍在跑道远端缓慢前进，
+      步伐沉重，呼吸急促。两名队员已经喝完水，回头望向李明，交替跺脚，
+      显露出等待的烦躁。
+    audio: null
+    purpose: "让观众自行体验到‘这个人很慢’的观察。"
+  - beat: 3
+    visual: >-
+      教练走到跑道边，双手叉腰，皱眉看着李明。李明终于跑完半圈，
+      速度没有任何提高。一名队员摇头小声对同伴说“又是他”。
+    audio: (小声) “又...是他”
+    purpose: "通过他人低声议论，强化李明慢的惯常性。"
+  - beat: 4
+    visual: >-
+      李明终于跑回起点处，大口喘气，弯腰扶膝。教练看着手表，
+      走向下一个活动区域，头也不回地说了一句。
+    audio: “The slow are left behind.”
+    purpose: "目标词句首次出现，将画面中的现象命名为‘slow’（名词）。"
+learning_tasks:
+  - type: listen_and_match
+    prompt: "听音频，选出描述此场景中李明的词语。"
+    choices:
+      - "the slow (名词)"
+      - "slow (形容词)"
+      - "quick (名词)"
+    expected_answer: "the slow (名词)"
+    scoring_note: "学习者需要识别目标词是名词指人。"

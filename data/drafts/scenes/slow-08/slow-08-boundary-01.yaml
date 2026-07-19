@@ -1,0 +1,48 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-08-boundary-01
+sense_ref: slow-08
+scene_type: boundary
+title: 临界一叹——中性不耐烦与嘲笑之间
+synopsis: 同一学生两次解简单数学题，老师第一次说“You’re a bit slow”语气中性（slow-05），第二次说“You are so slow”并翻白眼（slow-08）。展示话语、表情和语气的连续变化如何影响词义判断。
+storyboard:
+  - beat: 1
+    visual: 数学课上，学生Tom在黑板上做一道2位数加法，他反复列竖式，擦掉重写，耗时约10秒后才写出答案49。老师站在旁边，看了一眼手表，轻微叹了口气，但没有嘲笑表情。
+    audio: （粉笔声，轻叹声）
+    purpose: 展示慢但尚在可接受范围，老师的不耐烦属于中性。
+  - beat: 2
+    visual: 老师看着Tom，语气平静，略带无奈地说：“Tom, you’re a bit slow. Please try to speed up.” 边说边点头。
+    audio: “Tom, you’re a bit slow. Please try to speed up.”
+    purpose: 展示 slow-05 的边界：描述速度慢但无智力归因，语气中性。
+  - beat: 3
+    visual: 画面切换（或同一时间线后续）：Tom再次被叫到前面做另一道加法题。这次他同样犹豫很久，开始用手指比划。老师表情从无奈变为烦躁，双手抱臂，嘴角带讽刺笑意。
+    audio: （同学窃窃私语）
+    purpose: 引入更强烈的情绪，展示从“中性”到“贬低”的过渡。
+  - beat: 4
+    visual: 老师翻了个白眼，用拉长音调大声说：“Tom, you are so slow! 这都第三遍了！” 周围的同学也忍不住笑。
+    audio: “Tom, you are so slow! 这都第三遍了！”
+    purpose: 明确进入 slow-08 范围：语调、非语言行为（翻白眼、笑意）和附加指责明确带有贬低和智力归因。
+learning_tasks:
+  - type: contrast_choice
+    prompt: 观看两个子片段，判断哪一次老师说的“slow”含有“智力低下”的贬义。
+    choices:
+      - "A: 第一次，老师说‘You’re a bit slow’并轻叹"
+      - "B: 第二次，老师说‘You are so slow’并翻白眼"
+    expected_answer: B
+  - type: transfer_judgment
+    prompt: 一个类似场景：家长看到孩子做作业慢，叹气说“你怎么这么慢”，但没有嘲笑。请问这更接近 slow-05 还是 slow-08？
+    choices:
+      - "A: slow-05"
+      - "B: slow-08"
+    expected_answer: A
+teaching_evidence:
+  - claim: "单词 slow 从中性（slow-05）到贬义（slow-08）的边界主要取决于说话者的非语言信号（语气、表情）是否带有嘲笑与智力归因，而非速度本身。"
+    beats: [2,4]
+surface:
+  domain: education
+  participant_type: child-and-adult
+  setting: classroom
+contrast_target: slow-05
+contrast_relation: degree_neighbor
+transfer_dimensions: null

@@ -1,0 +1,50 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-08-counter-01
+sense_ref: slow-08
+scene_type: counterexample
+title: 别急着下结论——噪音干扰下的误解
+synopsis: 新人在嘈杂环境中反复提问，同事嘲笑他“slow”。但环境安静后，他迅速理解并成功操作，证明之前的慢是由外因（噪音分心）而非智力低下导致。教学点：不能仅凭“理解慢”推断智力低下。
+storyboard:
+  - beat: 1
+    visual: 咖啡机旁，旁边装修电钻声不断。新人小陈试图向老员工老赵请教报表填写步骤，他大声问：“这个总额要填在哪一栏？” 老赵回答后，小陈歪着头皱眉，没听清，又问了一遍。
+    audio: （电钻声）“这个总额要填在哪一栏？”…（老赵回答被噪音淹没）
+    purpose: 设置外因干扰（噪音），导致被评价者表现“慢”（反复询问、理解延迟）。
+  - beat: 2
+    visual: 老赵不耐烦地用手指指模板，翻了个白眼，用贬低语气说：“You are so slow! 这么简单的表都搞不定？”
+    audio: “You are so slow! 这么简单的表都搞不定？”
+    purpose: 评价者错误地将外因导致的慢归因于智力低下（slow-08），让观众产生错觉。
+  - beat: 3
+    visual: 小陈拿起文件走到隔壁安静的小会议室，独自坐下，打开计算器。几秒后，他顺畅地填写完报表，表情轻松。
+    audio: （计算器按键声，随后纸张翻动声）
+    purpose: 展示被评价者在去除外因后能正常完成低难度任务，证明其认知能力没有问题。
+  - beat: 4
+    visual: 小陈拿着填好的表格走出会议室，恰好遇到老赵。老赵惊讶地看了报表，表情尴尬。小陈平静地说：“刚才太吵了，现在好了。”
+    audio: “刚才太吵了，现在好了。”
+    purpose: 揭示真相，让观众意识到之前的“slow”判断是错误的，实际属于 slow-05（外因导致的慢）而非 slow-08。
+learning_tasks:
+  - type: transfer_judgment
+    prompt: 一个新场景：一个人在课堂上多次回答错简单问题，同学说他“slow”。但后来发现他前一天熬夜没睡好。请问这时用“You are so slow”（贬义）是否合适？
+    choices:
+      - "A: 合适，因为确实答错了"
+      - "B: 不合适，应该用中性描述"
+    expected_answer: B
+    scoring_note: 正确判断为“不合适”，并简要解释外因导致慢不应归为智力低下。
+  - type: scene_recognition
+    prompt: 选出以下能证明“慢不一定是笨”的场景。
+    choices:
+      - "A: 新员工在噪音环境下反复问问题，被嘲笑"
+      - "B: 运动员短跑速度慢被教练批评"
+      - "C: 小学生做简单加法反复算错，被同学取笑"
+    expected_answer: A
+teaching_evidence:
+  - claim: "观察到的慢可能是外因（噪音、疲劳等）导致，并非内在智力低下，因此不能仅凭慢推断 slow-08。"
+    beats: [1,2,3,4]
+surface:
+  domain: office
+  participant_type: adult
+  setting: indoor-office
+contrast_target: slow-05
+contrast_relation: degree_neighbor
+transfer_dimensions: null

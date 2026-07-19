@@ -1,0 +1,58 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-01-transfer-01
+sense_ref: slow-01
+scene_type: transfer
+transfer_dimensions:
+  - "domain: transport->health"
+  - "setting: outdoor-road->indoor-hospital"
+title: "减慢呼吸与减慢流程"
+synopsis: "治疗师引导病人减慢呼吸频率，经理通过流程调整减慢招聘速度。"
+target_learner:
+  l1: zh
+  life_context: diverse
+surface:
+  domain: mixed
+  participant_type: mixed
+  setting: mixed
+storyboard:
+  - beat: 1
+    visual: "（第一碎片）医院诊室内，一位焦虑的病人呼吸急促（胸部快速起伏）。治疗师伸出双手，掌心向下，缓慢向下压，示意病人放慢呼吸。"
+    audio: "(快速呼吸声，逐渐减缓的呼吸声)"
+    purpose: "建立初始快速呼吸状态，展示 agent（治疗师）通过手势施加主动影响。"
+  - beat: 2
+    visual: "病人跟随手势，呼吸节奏逐渐放慢，胸廓起伏间隔增大。屏幕一角出现呼吸曲线图：波峰间距从短变长。"
+    audio: "(呼吸声变慢、变深)"
+    purpose: "呈现呼吸速率降低，展示速度（频率）的减小。"
+  - beat: 3
+    visual: "（第二碎片）会议室，经理在投影前展示招聘流程。画面上有进度条显示每月新员工数量（例如 10人/月），经理点击屏幕上的“增加审批环节”按钮，进度条开始下降，速度指示器从 fast 变为 slow。"
+    audio: "(鼠标点击声，背景会议声)"
+    purpose: "展示 agent（经理）通过系统操作主动减慢招聘流程速度。"
+  - beat: 4
+    visual: "进度条稳定在较低速率（5人/月），旁边出现文字 'Slow the process'。"
+    audio: null
+    purpose: "展示减速效果，等待并置。"
+  - beat: 5
+    visual: "分屏并置：左侧是呼吸曲线变慢的画面，右侧是招聘进度条变慢的画面。上方中央出现大号文字 'Slow'。"
+    audio: "Slow."
+    purpose: "通过两个不同领域但相同减速结构的并置，逼迫学习者抽象出 slow 的核心意义：agent 主动降低 patient 的运行速度。"
+teaching_evidence:
+  - claim: "Slow 可以应用于任何领域，只要 agent 主动使 patient 速度降低。"
+    beats: [2, 4, 5]
+learning_tasks:
+  - type: transfer_judgment
+    prompt: "以下哪个活动可以用 'slow' 这个动词来描述？"
+    choices:
+      - "A: 老师让学生加快阅读速度"
+      - "B: 工程师调低机器转速"
+      - "C: 雨水使火灾自然熄灭"
+    expected_answer: "B"
+    scoring_note: "B 是 agent 主动降低机器转速；A 是加速；C 无 agent。"
+  - type: scene_recognition
+    prompt: "听到 'Slow' 时，请选择与之匹配的画面（从三个画面中选择，其中包含呼吸变慢和招聘变慢场景之外的干扰项）。"
+    choices:
+      - "A: 呼吸频率变慢"
+      - "B: 汽车急停"
+      - "C: 风扇旋转加速"
+    expected_answer: "A"

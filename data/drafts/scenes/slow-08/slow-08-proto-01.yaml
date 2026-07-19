@@ -1,0 +1,50 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-08-proto-01
+sense_ref: slow-08
+scene_type: prototype
+title: 办公室里的嘲笑
+synopsis: 新员工在学习复印机操作时一再犯错，主管表现出不耐烦与轻蔑，最终用贬低的语气说出目标词。
+storyboard:
+  - beat: 1
+    visual: 办公室一角，新人小李站在复印机前，手里拿着一张纸，皱着眉头看复印机面板。
+    audio: （复印机咔咔声）
+    purpose: 建立任务环境，展示被评价者面对简单操作时的困惑。
+  - beat: 2
+    visual: 小李按下“复印”键，机器没有反应。他反复按，试图看说明书，表情困惑。
+    audio: null
+    purpose: 展示认知处理困难——在简单操作上反复失败。
+  - beat: 3
+    visual: 主管王姐从旁边经过，斜眼看了看，叹了口气，翻了个白眼。小李怯怯地问：“这个…怎么双面复印？”
+    audio: “王姐，这个怎么双面复印？”
+    purpose: 引入评价者，其非语言行为表示不耐烦与轻视。
+  - beat: 4
+    visual: 王姐走过来，一边演示一边一字一顿地说，语气中带着讽刺的拉长音：“先按这个，再按那个，这么简单都不会？”小李呆呆地看着，嘴唇微张，还是没懂。
+    audio: “先按这个——再按那个——这么简单都不会？”
+    purpose: 进一步展示低认知难度任务（演示后仍不理解），并用拉长音外化贬低态度。
+  - beat: 5
+    visual: 小李尝试模仿，结果选错了纸张大小，机器报警。王姐双手叉腰，嘴角带嘲笑笑意，直视小李说道。
+    audio: “You are so slow!” （语调放慢、拉长，带着刺耳的笑）
+    purpose: 目标词出现，观众已在前面的节拍中形成“这人反应真慢”的感受，此刻声音命名使概念与可观察证据绑定。
+learning_tasks:
+  - type: scene_recognition
+    prompt: 观察以下三个视频片段，选出与“slow”（贬义）最匹配的场景。
+    choices:
+      - "A: 老师耐心辅导学生，学生做错后老师说‘你有点慢’"
+      - "B: 主管翻白眼嘲笑员工反复犯低级错误，说‘You are so slow!’"
+      - "C: 老人走路很慢，年轻人扶着他慢慢走"
+    expected_answer: B
+  - type: produce
+    prompt: 根据以下画面提示，说出一个符合情景的英文句子（使用 slow）。
+    scoring_note: 句子应包含贬义语气，如“You are so slow!” “He’s a slow learner.” 等。中性或同情语气不得分。
+teaching_evidence:
+  - claim: "被评价者面对低认知难度任务重复失败，评价者用非语言行为（翻白眼、叹气）和贬低语气外化负面态度。"
+    beats: [2,3,4,5]
+surface:
+  domain: office
+  participant_type: adult
+  setting: indoor-office
+contrast_target: null
+contrast_relation: null
+transfer_dimensions: null

@@ -1,0 +1,137 @@
+# ====================================================================
+# A. 基础词义信息
+# ====================================================================
+schema_version: "1.0"
+language: en
+version: 1
+status: draft
+
+id: slow-01
+word: slow
+pos: verb
+sense_label: "减速（及物）"
+definition: "Cause (something) to move or operate at a reduced speed."
+frequency:
+  band: high
+  rank: 800
+difficulty: basic
+pronunciation:
+  ipa: /sloʊ/
+  # audio_ref 暂缺
+collocations:
+  - "slow the car"
+  - "slow the process"
+  - "slow growth"
+  - "slow the pace"
+  - "slow your breathing"
+sentence_patterns:
+  - "[agent] slow [patient]"
+  - "[agent] slow [patient] down"
+
+# ====================================================================
+# B. 语义类型
+# ====================================================================
+semantic_type: state_change
+
+# ====================================================================
+# C. 语义骨架
+# ====================================================================
+semantic_skeleton:
+  participants:
+    - role: agent
+      description: "施加减速动作的实体（人、机械、自然力等）"
+    - role: patient
+      description: "被减速的移动或运行中的实体"
+  propositions:
+    - "存在一个具有当前速度的移动或运行中的实体（patient）。"
+    - "存在一个外部施动者（agent）对 patient 施加影响。"
+    - "施加影响后，patient 的速度相对于初始速度可观察地降低。"
+    - "速度降低是外部观察者能够通过比较前后状态而确认的事实。"
+
+# ====================================================================
+# D. 成立条件与排除条件
+# ====================================================================
+conditions:
+  required:
+    - "agent 主动作用于 patient（包括直接物理操作、指令、调节机制等）。"
+    - "patient 在被作用时具有可测量的速度（位移速度、运转速率等）。"
+    - "agent 的作用结果是 patient 的速度减小，而非增加或保持不变。"
+  excluded:
+    - condition: "速度降低是 patient 自发发生的（如摩擦力自然减速），agent 未施加任何影响。"
+      alternative: "slow-02"  # 不及物“减速”义项（尚未生成）
+    - condition: "agent 的作用使 patient 完全停止，而非仅仅减慢。"
+      alternative: "stop-01"  # 停止义项（尚未生成）
+
+# ====================================================================
+# E. 概念关系
+# ====================================================================
+relations:
+  synonyms:
+    - "decelerate-01"   # 更正式，但核心重合
+  antonyms:
+    - "speed_up-01"     # 加速义项（尚未生成）
+    - "accelerate-01"
+  hypernyms:
+    - "change_speed-01" # 改变速度的上位义项（尚未生成）
+  hyponyms:
+    - "brake-01"        # 专门通过刹车减速（尚未生成）
+  confusables:
+    - "slow_down-01"    # 短语动词，实际为同一义项的不同形式，但不加区分容易混淆
+    - "slow-03"         # 形容词义项（尚未生成），容易误用词性
+  boundaries:
+    - target: "decelerate-01"
+      relation: target_more_general
+      distinction: "slow 是通用日常用词，decelerate 是技术/正式用词，强调减速的速率或过程。"
+      diagnostic: "如果场景是日常对话或指令（如'Slow the car'），使用 slow；如果是科学报告或专业描述（如'Decelerate the rocket'），使用 decelerate。两者在非正式语境下可互换，但 decelerate 带有精确测量的隐含义。"
+    - target: "speed_up-01"
+      relation: mutually_exclusive
+      distinction: "动作方向完全相反：速度减小 vs 速度增大。"
+      diagnostic: "若作用于同一 patient 后速度增大了，则 slow 义项不成立。"
+    - target: "stop-01"
+      relation: degree_neighbor
+      distinction: "stop 是减速到零的极端情况，slow 只要求速度降低但不为零。"
+      diagnostic: "如果 patient 最终完全静止，优先考虑 stop；如果patient 仍在移动但更慢，则适用 slow。"
+    - target: "slow-03"
+      relation: different_sense
+      distinction: "slow-01 是及物动词（减速动作），slow-03 是形容词（速度属性）。"
+      diagnostic: "句法表现不同：动词后可跟宾语（slow the car），形容词作定语或表语（a slow car / the car is slow）。"
+
+  l1_confusables:
+    zh:
+      - l1_term: "慢（形容词）"
+        covers:
+          - "slow-01"
+          - "slow-03"
+        note: "中文‘慢’是形容词，但可以后加‘下来／起来’表达动词义（慢下来）。母语者容易直接套用‘慢’作动词，产生像‘*他慢车’这样的错误。需要区分词性：英文slow作为动词必须带宾语才能表达‘减速’概念。"
+      - l1_term: "减速"
+        covers:
+          - "slow-01"
+          - "decelerate-01"
+        note: "中文‘减速’对应英文decelerate（正式）和slow down（日常），但常被笼统地用作及物/不及物。学习者可能误以为slow只能用在交通工具上，实际上可广泛应用于任何进程（呼吸、经济、成长）。"
+
+# ====================================================================
+# F. 场景要求
+# ====================================================================
+scene_requirements:
+  must_show:
+    - "agent 主动施加影响的动作（如手推刹车杆、转动手柄、发出降低速度的指令）。"
+    - "patient 减速前后的速度对比（如速度表指针下降、车辆周围景物移动变慢、跑步者逐渐放慢步伐）。"
+    - "agent 和 patient 在同一个镜头内，体现因果关系。"
+  must_not:
+    - "patient 仅仅自然减速（如车辆滑行至停止而无外部干预）。"
+    - "patient 完全停止（除非场景需要特别强调减速到零，但此时应使用stop相关义项）。"
+    - "agent 的加速动作（如踩油门、推物体向前）。"
+  externalization:
+    - "通过视觉速度指示器（车速表、跑步机面板、风阻效果）显示数值下降。"
+    - "通过环境音效变化（引擎轰鸣声降低、风声减弱）暗示速度减慢。"
+    - "通过参照物变化率（路标移动变慢、秒针跳动间隔增大）外化速度感知。"
+  timing:
+    "先展示 agent 执行减速动作（如按下减速按钮），紧接着呈现 patient 速度下降的画面，让观众在视觉上获得‘变慢’体验后，再出现目标语音 ‘slow’。避免在减速效果出现之前就说出单词。"
+# ====================================================================
+# 来源元数据
+# ====================================================================
+provenance:
+  sources:
+    - type: dictionary
+      citation: "https://kaikki.org/dictionary/English/meaning/s/sl/slow.jsonl (Wiktionary via kaikki.org, CC-BY-SA 3.0/4.0)"
+      license: CC-BY-SA

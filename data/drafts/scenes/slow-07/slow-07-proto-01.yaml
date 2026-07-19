@@ -1,0 +1,45 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-07-proto-01
+sense_ref: slow-07
+scene_type: prototype
+title: "种子发芽：漫长的等待"
+synopsis: "通过延时摄影展示一粒种子从播种到破土成苗的完整过程，同时画面一角显示沙漏不断流逝。观看者体验时间被拉长的感觉，最终画外音点出‘slow’。"
+target_learner:
+  l1: zh
+  life_context: home
+surface:
+  domain: gardening
+  participant_type: adult
+  setting: indoor-home
+storyboard:
+  - beat: 1
+    visual: "特写：花盆中的潮湿土壤。一只手将一粒种子轻轻按入土中，然后盖上土。背景墙上挂着一个沙漏开始流沙。"
+    audio: null
+    purpose: "建立事件起点（播种），并引入时间标记（沙漏），让观众意识到时间开始计数。"
+  - beat: 2
+    visual: "延时摄影（加速）显示土壤表面隆起、裂开，一只嫩芽慢慢钻出，逐渐伸展绿叶。期间沙漏反复翻转，画面一角显示日数叠加（Day 1, Day 3, Day 7...）。"
+    audio: "(低沉持续的滴答声，节奏缓慢)"
+    purpose: "展示整个生长过程耗时多天，通过沙漏和日历数字的变化外化时间流逝，让观众感受到‘等待感’。"
+  - beat: 3
+    visual: "嫩芽长成约5厘米高的幼苗，叶片张开。沙漏最后一次流尽。镜头拉远，可以看到窗外的光线从早晨变为黄昏（显示一天结束）。"
+    audio: null
+    purpose: "事件终点清晰可见（幼苗成型），时间跨度被完整呈现。"
+  - beat: 4
+    visual: "一个成年人（无明显表情）站在花盆旁，目光平静地注视幼苗。镜头切换回开始时的沙漏，显示从开始到结束总共流过了48小时。"
+    audio: "(画外音，语气平淡) 'This growth is slow.'"
+    purpose: "将目标词‘slow’与整个长时间事件绑定，让观众通过已体验到的漫长感理解该词义（事件总时长>典型期望）。"
+learning_tasks:
+  - type: scene_recognition
+    prompt: "观看以下三个片段，哪个片段中的事件最符合刚才场景中‘slow’的含义？"
+    choices:
+      - "A: 一只乌龟在跑道上快速冲刺"
+      - "B: 一株植物从种子到开花历时三个月"
+      - "C: 一支蜡烛在风中快速燃烧殆尽"
+    expected_answer: "B: 一株植物从种子到开花历时三个月"
+    scoring_note: "正确答案是B，强调事件总时长，而非速度。"
+  - type: produce
+    prompt: "用一句话描述刚才的场景，必须包含单词‘slow’。"
+    expected_answer: "The seed germination was slow."
+    scoring_note: "句子需包含‘slow’且指时间漫长，可接受‘The growth is slow’等。"

@@ -1,0 +1,41 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-01-counter-01
+sense_ref: slow-01
+scene_type: counterexample
+contrast_target: "slow-02"
+contrast_relation: different_sense
+title: "自然减速——不是 slow（及物）"
+synopsis: "司机在平直高速上松开油门、不踩刹车，车辆因摩擦力自然减速。速度降低但无主动减速动作。"
+target_learner:
+  l1: zh
+  life_context: city-commute
+surface:
+  domain: transport
+  participant_type: adult
+  setting: outdoor-road
+storyboard:
+  - beat: 1
+    visual: "高速路上，车内视角：车速表指针120 km/h，窗外景物快速后退。司机双手离开方向盘，没有任何操作。"
+    audio: "(引擎声平稳)"
+    purpose: "建立初始高速状态，并明确 agent 未进行任何主动减速操作。"
+  - beat: 2
+    visual: "车速表指针开始缓慢下降：120→110→100→90。窗外景物相对移动速度同步减慢。司机依然没有触碰踏板或按钮。"
+    audio: "(引擎声逐渐减弱)"
+    purpose: "展示速度降低的可观察证据，但强调 agent 未主动干预。"
+  - beat: 3
+    visual: "车速表指针停在80 km/h。画面叠加闪烁的红叉和问号。"
+    audio: null
+    purpose: "提示学习者此情景不符合 slow 的主动减速要求，引发思考。"
+teaching_evidence:
+  - claim: "速度降低可以来自自然阻力，不一定有 agent 主动减速，因此仅观察速度降低不足以判断 slow（及物）。"
+    beats: [1, 2, 3]
+learning_tasks:
+  - type: transfer_judgment
+    prompt: "刚才的场景中车速降低了，但能用 'slow' 来描述司机做了什么吗？"
+    choices:
+      - "A: 可以"
+      - "B: 不可以"
+    expected_answer: "B"
+    scoring_note: "正确答案是不可以，因为司机没有主动施加减速动作，速度降低是自然摩擦力导致的。"

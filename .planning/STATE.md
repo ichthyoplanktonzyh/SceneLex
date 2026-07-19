@@ -170,7 +170,30 @@ Director 仍是核心中间层，负责把词义翻译成模型可执行的提�
 - FLUX.1 dev（12B，指令遵循强但许可非商用友好、比 Klein 4B 慢很多）
 - HiDream-O1（8B，MIT许可干净，但无 Mac/MPS 实测数据，风险未知）
 - Boogu-Image-0.1（10B，Apache 2.0，独立团队，同样无 Mac 实测，黑马备选）
-- Krea 2（12.9B，官方要求24GB+显存，对32GB机器偏重，许可需另核实）
+- Krea 2（12.9B DiT，2026-05 开源，Raw 未蒸馏基座 + Turbo 少步蒸馏两个 checkpoint；
+  2026-07-19 复查，用真实 M1 Max ComfyUI 实测数据替换了原先"官方要求24GB+"的粗略判断）：
+  - **精度与内存的真实关系**（M1 Max 64GB 实测，来源 lilting.ch）：bf16 主干单独
+    26.3GB，加 Qwen3-VL-4B 文本编码器 5.24GB + VAE 0.25GB，常驻约31.5GB；作者认为
+    64GB 系统才够、48GB 会明显 swap——**32GB 机器跑 bf16 不现实**，比原先"24GB+"的
+    估计更悲观。
+  - **fp8_scaled 路径**（社区节点 ComfyUI-AppleSilicon-FP8 + torch 2.11+）把主干压到
+    ~13GB，理论上 32GB M1 Max 可行，但未找到任何独立于 bf16 的 Mac 实测报告确认
+    速度/质量，**待验证，不能直接当结论用**。
+  - **GGUF 量化**：官方 city96/ComfyUI-GGUF 至今（issue #464 仍 open）不支持 Krea2
+    架构；社区 fork（molbal/ComfyUI-GGUF、RealRebelAI 分支）提供 Q4_0(~7.7GB) 到
+    Q8_0(~13.6GB) 量化，体积最小、理论最适合32GB机器，但**没有找到任何 Apple
+    Silicon/MPS 实测证据**，此前本项目在 Wan2.2 上已确认 GGUF 反量化算子在
+    MPS 上有过坑，不能假设 Krea2 GGUF fork 在 Mac 上默认能跑。
+  - **Raw 在 MPS 上不可用**：52 步 + 官方推荐 CFG 3.5 在 bf16/MPS 上出现 NaN 黑图；
+    去掉 CFG 图像发虚。**Turbo 是 Mac 上唯一可推理的变体。**
+  - **Turbo 速度**：官方 recipe 8 步/cfg 1.0/euler，M1 Max 上约 25s/step，单图约
+    200秒（冷启动~280秒）——明显慢于本机已验证的 Z-Image Turbo / FLUX.2 Klein 4B。
+  - **许可**：Krea 2 Community License，个人/50人以下团队商用免费，50人以上或需
+    SSO/SLA 要企业授权；强制要求部署方加技术护栏防止 NCII/CSAM/诽谤类生成物。
+  - **结论**：即使 fp8 路径在32GB机器上验证可行，速度（~200s/图）仍明显慢于当前产线
+    双雄，且 fp8/GGUF 两条更省内存的路径都缺少 Mac 实测背书，风险高于收益。
+    **维持不采用**；仅在 Z-Image/Klein 4B 在某类语义（如复合空间指令）持续暴露
+    指令遵循短板、且有余力做 fp8 单点验证时，才值得花一次性验证成本重新评估。
 - Qwen-Image（20B）、HunyuanImage 3.0（80B MoE）——体量过大，32GB机器跑不动
 - SD3.5、Kolors——中等水平，无差异化优势，不如已验证的两个候选
 - Seedream 4.0（ByteDance）——ComfyUI里是云端API节点，非本地权重，跟本地选型不是一回事

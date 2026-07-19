@@ -1,0 +1,63 @@
+schema_version: "1.0"
+version: 1
+status: draft
+id: slow-04-transfer-01
+sense_ref: slow-04
+scene_type: transfer
+title: "不同环境中的慢人"
+synopsis: >-
+  三个独立片段：1）学校餐厅，一名小女孩总是最后一个吃完，
+  同学都收拾完离开后她还在慢慢咀嚼；2）养老院，一位老人行动迟缓，
+  跟不上集体散步队伍；3）工厂流水线，一名工人装配速度明显慢于他人，
+  导致下游等待。三个片段并置，旁白统一说“The slow are left behind”，
+  让观众抽象出‘慢人’概念跨环境不变。
+transfer_dimensions:
+  - domain: household / education / manufacturing
+  - participant_type: child / elder / adult
+  - setting: indoor-school / indoor-carehome / indoor-factory
+target_learner:
+  l1: zh
+  life_context: general
+surface:
+  domain: mixed
+  participant_type: mixed
+  setting: mixed
+teaching_evidence:
+  - claim: "‘慢人’概念可跨年龄、场景、任务类型迁移。"
+    beats: [1,2,3,4]
+storyboard:
+  - beat: 1
+    visual: >-
+      场景A（学校餐厅）：午餐结束，其他孩子已经放好餐盘离开，
+      一个小女孩还在慢慢用勺子舀飯，眼神放空，桌面食物还有很多。
+    audio: (餐具碰撞声，背景孩子嬉笑声渐远)
+    purpose: "展示一个儿童慢人，在进食任务中滞后。"
+  - beat: 2
+    visual: >-
+      场景B（养老院走廊）：一群老人结伴散步，领队已走到走廊尽头，
+      一位老奶奶拄着助行器，艰难而缓慢地挪动，护理员回头等待。
+    audio: (助行器间断性触地声)
+    purpose: "展示老人慢人，在移动任务中滞后。"
+  - beat: 3
+    visual: >-
+      场景C（工厂流水线）：传送带上零件不间断移动，大多数工人
+      熟练地快速装配，一名男性工人动作迟滞，零件在他面前堆积，
+      后工序工人着急地挥手示意。
+    audio: (传送带嗡嗡声，急促的拍手声)
+    purpose: "展示成年工人慢人，在装配任务中滞后。"
+  - beat: 4
+    visual: >-
+      三画面并置：左（女孩吃饭）、中（老人走路）、右（工人装配）。
+      画面中央出现字幕：“The slow are left behind.” 旁白同步朗读。
+    audio: “The slow are left behind.”
+    purpose: "用同一句话统合三个实例，强制抽象出跨情境的共同结构。"
+learning_tasks:
+  - type: scene_recognition
+    prompt: "以下哪个画面中的主角最符合‘a slow’的定义？"
+    choices:
+      - "A: 小女孩吃饭慢"
+      - "B: 老奶奶走路慢"
+      - "C: 工人装配慢"
+      - "D: 以上全部"
+    expected_answer: "D: 以上全部"
+    scoring_note: "学习者需要识别所有画面中的主角都是惯常慢的人。"
