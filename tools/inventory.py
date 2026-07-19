@@ -748,11 +748,15 @@ _MISSING = object()
 
 
 def _stated(container: object, field: str) -> object:
-    """取模型明确写出的值; 缺失或显式留空都视为"未表态"。"""
-    if not isinstance(container, dict):
+    """取模型明确写出的值; 只有 key 不存在才算"未表态"。
+
+    显式的 null 是一次表态而不是沉默: `dimension: null` 是在断言该义项没有维度,
+    与 Inventory 声明的 `dimension: rate` 直接冲突, 必须参与比较。把它当成缺失
+    会让这类漂移被程序静默补成正确值。
+    """
+    if not isinstance(container, dict) or field not in container:
         return _MISSING
-    value = container.get(field, _MISSING)
-    return _MISSING if value is None else value
+    return container[field]
 
 
 def detect_identity_drift(
@@ -789,8 +793,8 @@ def detect_identity_drift(
     for field in IDENTITY_SIGNATURE_FIELDS:
         actual = _stated(identity, field)
         expected = signature.get(field)
-        # dimension 允许为 null: 用 _stated 会把合法的 null 误当成未表态,
-        # 因此仅在模型确实写了非空值时比较。
+        # dimension 可以合法地为 null。写了 null 就要比较: Inventory 说 rate 而
+        # 模型说 null 是冲突, 两边都是 null 则一致。
         if actual is not _MISSING and actual != expected:
             drift.append((f"semantic_identity.{field}", expected, actual))
 
