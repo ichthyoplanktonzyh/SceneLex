@@ -88,6 +88,28 @@ def teachable_senses(word: str, refresh: bool = False) -> list[dict]:
     return senses[:MAX_TEACHABLE_SENSES]
 
 
+def get_filtered_entries(word: str, refresh: bool = False) -> list[dict[str, Any]]:
+    """结构化的、经当前标签过滤的词典证据条目，供 Sense Inventory 层消费。
+
+    与 teachable_senses() 使用同一套过滤规则 (POS_KEEP + EXCLUDE_TAGS + 去重 +
+    MAX_TEACHABLE_SENSES 截断)，只是换成 inventory 层需要的字段形状，并按
+    当前过滤后条目顺序生成稳定的 entry_id (不使用随机 hash，不与 SceneLex
+    sense ID 混用)。
+    """
+    word = word.strip().lower()
+    senses = teachable_senses(word, refresh)
+    return [
+        {
+            "entry_id": f"{word}-dict-{i:03d}",
+            "pos": sense["pos"],
+            "gloss": "; ".join(sense["glosses"]),
+            "labels": sense["tags"],
+            "examples": sense["examples"],
+        }
+        for i, sense in enumerate(senses, 1)
+    ]
+
+
 def sense_count(word: str) -> int:
     """该词有几个可教学义项。"""
     try:

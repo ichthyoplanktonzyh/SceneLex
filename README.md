@@ -37,8 +37,14 @@ reviewed / published resource bundle
 - `schema/word-sense.schema.json`：词义、概念关系、来源与版本契约。
 - `schema/scene-spec.schema.json`：模型无关的场景与学习任务契约。
 - `schema/resource-bundle.schema.json`：给外部消费者的资源包契约。
+- `schema/sense-inventory.schema.json`：整词级 Sense Inventory 契约。Wiktionary
+  条目是 dictionary evidence，不是 SceneLex sense；`data/inventories/{word}.yaml`
+  将成为该词 sense ID 与语义身份的整词级权威，决定哪些意义值得进入
+  `data/senses/`，以及它们的 ID。当前 PR 只建立 `data/drafts/inventories/`
+  草稿区和校验基础，未实现自动 approve/promote。
 - `data/senses/`、`data/scenes/`：已审核资源，是仓库语义权威。
-- `data/drafts/`：待审内容，绝不进入默认导出。
+- `data/inventories/`：未来批准后的权威 Sense Inventory（本 PR 不写入）。
+- `data/drafts/`：待审内容，绝不进入默认导出（含 `inventories/` 待审 Sense Inventory 草稿）。
 - `prompts/`：起草辅助，不是权威数据。
 - `examples/consumer/`：消费者侧示例，不属于 SceneLex 核心身份或学习记录模型。
 
@@ -59,9 +65,11 @@ Prompt和渲染配置；WordSense与SceneSpec保持风格无关，现有词义�
 schema/                      公开语义契约 + 渲染层内部原型契约
 data/senses/                 正式词义资源
 data/scenes/{sense_id}/      正式场景证据
-data/drafts/                 隔离草稿 (含 renders/{scene_id}/v{NN}/ 渲染版本)
+data/inventories/            正式 Sense Inventory (整词级 sense 身份权威; 本 PR 暂不写入)
+data/drafts/                 隔离草稿 (含 inventories/ 待审 Inventory、renders/{scene_id}/v{NN}/ 渲染版本)
 prompts/                     LLM 起草/审核/渲染计划模板与风格配置
 docs/                       生产工作流、技术选型与归档评估
+tools/inventory.py           整词 Sense Inventory: draft / validate / show
 tools/draft.py               起草与发布前编排
 tools/review.py              模型审核 (可选质量参考)
 tools/director.py            语义场景 → 模型适配的视频提示词
@@ -77,6 +85,9 @@ tests/                       工具链回归测试
 
 ```text
 candidate
+→ dictionary evidence
+→ sense inventory draft
+→ inventory validation / human review
 → sense draft
 → scene evidence draft
 → 模型审核（可选质量参考, 不阻塞）
@@ -86,12 +97,22 @@ candidate
 → published resource bundle
 ```
 
+`sense inventory draft` 是本 PR 新增的整词级规划阶段：Wiktionary 条目先被当作
+`dictionary evidence`，由 `tools/inventory.py draft` 一次性规划整个词，决定哪些
+意义合并、哪些推迟、哪些拆分，再统一分配 `{word}-01`、`{word}-02` 等 sense ID。
+**当前 `tools/draft.py sense` 仍是兼容路径**，独立起草单个义项、不读取
+inventory；后续 PR 将使 sense 起草强制读取已批准的 inventory。
+
 常用命令：
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements-dev.txt
+
+python3 tools/inventory.py draft slow                    # 起草整词 Sense Inventory
+python3 tools/inventory.py validate slow                 # 校验 (draft 优先, 否则正式库)
+python3 tools/inventory.py show slow                     # 查看原始内容, 不修改文件
 
 python3 tools/draft.py backlog
 python3 tools/draft.py sense dirty
@@ -205,6 +226,10 @@ export SCENELEX_LLM_MODEL=deepseek-v4-pro
 - 正式义项 4 条：`messy-01`、`reluctant-01`、`almost-01`、`dirty-01`，共 21 个场景。
 - 草稿区 6 个义项（filthy / nearly / barely / refuse / grimy / hesitant）及其场景组待审。
 - 当前正式资源状态为 `reviewed`，尚未宣称 `published`。
+- 新增整词级 Sense Inventory 基础（`schema/sense-inventory.schema.json` +
+  `tools/inventory.py`），用于在起草单个义项前先规划一个词的完整 sense 划分；
+  目前只建立 draft/validate/show 与校验基础，`tools/draft.py sense` 尚未强制
+  读取 inventory。
 
 “场景即释义”方法已确立为产品前提，学习实验不再是规模化的前置条件。近期路线：
 

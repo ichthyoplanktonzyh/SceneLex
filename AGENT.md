@@ -94,6 +94,14 @@ learning clients, APIs, or content packages
   命名为 queue.py（遮蔽标准库）。
 - `tools/wordbook.py`：内部词目聚合视图（按词聚合本库义项与场景，view/export；
   promote 时同步词目条目）。与外部事实源 dictionary.py 职责不同，勿混淆。
+- `schema/sense-inventory.schema.json` + `tools/inventory.py`：整词级 Sense
+  Inventory 层，位于 dictionary evidence 与 sense draft 之间。Wiktionary
+  条目（`dictionary.get_filtered_entries` 的稳定 entry_id）是起草输入，不是
+  最终 SceneLex sense；inventory 一次性规划整个词，决定哪些证据合并、推迟或
+  拆分，再统一分配 `{word}-nn` sense ID。`data/drafts/inventories/` 是待审
+  草稿区；`data/inventories/` 是未来批准后的权威目录，当前尚未实现自动
+  approve/promote。`tools/draft.py sense` 目前仍是独立兼容路径，不读取
+  inventory。
 - `docs/production-workflow.md`：Phase 1.3 的 Director 权威说明。Director 负责把模型无关
   的词义与教学场景翻译为适合当前视频能力的高质量提示词。生产默认工序是关键图先行
   （文生图 → 图片语义门 → 图生视频）；尾帧、animatic 等更多控制是遇到实际问题时
