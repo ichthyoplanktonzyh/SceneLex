@@ -742,6 +742,73 @@ def relations_for_sense(inventory_doc: dict, sense_id: str) -> list[dict]:
 
 # ----------------------------------------------- WordSense ↔ inventory 一致性
 
+# 模型"没写"与"写错了"必须区别对待: 前者交给程序补全, 后者是模型对 CURRENT_SENSE
+# 的理解与已批准 Inventory 冲突, 静默覆盖只会把这个误解藏进一份看似合法的草稿里。
+_MISSING = object()
+
+
+def _stated(container: object, field: str) -> object:
+    """取模型明确写出的值; 缺失或显式留空都视为"未表态"。"""
+    if not isinstance(container, dict):
+        return _MISSING
+    value = container.get(field, _MISSING)
+    return _MISSING if value is None else value
+
+
+def detect_identity_drift(
+    raw_sense_doc: dict,
+    inventory_doc: dict,
+    inventory_sense: dict,
+) -> list[tuple[str, object, object]]:
+    """在程序覆盖机器字段之前, 检查模型原始输出是否误解了 CURRENT_SENSE。
+
+    只看模型**明确写出**的字段: 省略的机器字段由起草工具补全 (那是簿记, 不是
+    模型的语义判断); 写出来却与 approved Inventory 冲突的, 说明模型正在按另一个
+    义项理解本次任务, 后续内容整体不可信 — 返回 (字段, expected, actual) 列表,
+    由调用方判定为 identity_drift 并保留原始输出。
+
+    不检查 inventory.* provenance: 那几个字段是摘要与版本号, 不表达模型对词义的
+    理解, 缺失或写错都由程序按 Inventory 强制写入。
+    """
+    signature = inventory_sense.get("semantic_signature")
+    signature = signature if isinstance(signature, dict) else {}
+    drift: list[tuple[str, object, object]] = []
+
+    # WordSense 用顶层 word 承载 lemma; 仓库中没有独立的 lemma 字段。
+    scalar_checks = (
+        ("id", inventory_sense.get("id"), _stated(raw_sense_doc, "id")),
+        ("word (lemma)", inventory_sense.get("lemma"),
+         _stated(raw_sense_doc, "word")),
+        ("pos", inventory_sense.get("pos"), _stated(raw_sense_doc, "pos")),
+    )
+    for field, expected, actual in scalar_checks:
+        if actual is not _MISSING and actual != expected:
+            drift.append((field, expected, actual))
+
+    identity = raw_sense_doc.get("semantic_identity")
+    for field in IDENTITY_SIGNATURE_FIELDS:
+        actual = _stated(identity, field)
+        expected = signature.get(field)
+        # dimension 允许为 null: 用 _stated 会把合法的 null 误当成未表态,
+        # 因此仅在模型确实写了非空值时比较。
+        if actual is not _MISSING and actual != expected:
+            drift.append((f"semantic_identity.{field}", expected, actual))
+
+    stated_entries = _stated(raw_sense_doc, "inventory_source_entries")
+    if stated_entries is not _MISSING:
+        expected_entries = list(inventory_sense.get("source_entries") or [])
+        if isinstance(stated_entries, list):
+            if set(stated_entries) != set(expected_entries):
+                drift.append(
+                    ("inventory_source_entries", expected_entries, stated_entries)
+                )
+        else:
+            drift.append(
+                ("inventory_source_entries", expected_entries, stated_entries)
+            )
+    return drift
+
+
 def validate_sense_against_inventory(
     sense_doc: dict,
     inventory_doc: dict,

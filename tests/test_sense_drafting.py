@@ -147,47 +147,159 @@ def test_prompt_includes_only_own_source_entries_in_full(env, monkeypatch):
     assert "slow-dict-003" in prompt                           # 但 ID 仍可见
 
 
-# ------------------------------------------------ 模型不得改变锁定身份
+# ------------------------------------------------ 身份漂移: 拒绝, 而不是覆盖
 
-@pytest.mark.parametrize("field,value", [
-    ("id", "slow-99"),
-    ("word", "fast"),
-    ("pos", "noun"),
+def _assert_drift(env, sense_id, field_hint):
+    """断言起草因 identity drift 失败, 且原始输出被保留、逐项报出 expected/actual。"""
+    with pytest.raises(draft.SenseDraftError) as exc:
+        _draft_sense(env, sense_id)
+    message = str(exc.value)
+    assert "identity drift" in message
+    assert field_hint in message
+    assert "expected" in message and "actual" in message
+    assert (env.senses / f"_invalid-{sense_id}-identity-drift.yaml").exists()
+    assert not (env.senses / f"{sense_id}.yaml").exists()
+    return message
+
+
+@pytest.mark.parametrize("field,value,hint", [
+    ("id", "slow-99", "id"),
+    ("word", "fast", "word (lemma)"),
+    ("pos", "noun", "pos"),
 ])
-def test_model_cannot_change_locked_identity_fields(env, monkeypatch, field, value):
+def test_wrong_identity_field_is_drift_not_silent_overwrite(
+    env, monkeypatch, field, value, hint
+):
     def mutate(sense_id, doc):
         doc[field] = value
     _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
-    out = _draft_sense(env, "slow-02")
-    written = _load(out)
-    expected = {"id": "slow-02", "word": "slow", "pos": "verb"}[field]
-    assert written[field] == expected
+    message = _assert_drift(env, "slow-02", hint)
+    assert repr(value) in message
 
 
-def test_model_cannot_change_semantic_identity(env, monkeypatch):
+def test_wrong_causative_is_drift(env, monkeypatch):
     def mutate(sense_id, doc):
         doc["semantic_identity"]["causative"] = True
+    _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
+    _assert_drift(env, "slow-02", "semantic_identity.causative")
+
+
+def test_wrong_valency_is_drift(env, monkeypatch):
+    def mutate(sense_id, doc):
         doc["semantic_identity"]["valency"] = "transitive"
     _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
-    written = _load(_draft_sense(env, "slow-02"))
-    assert written["semantic_identity"]["causative"] is False
-    assert written["semantic_identity"]["valency"] == "intransitive"
+    _assert_drift(env, "slow-02", "semantic_identity.valency")
 
 
-def test_model_cannot_add_source_entry(env, monkeypatch):
+@pytest.mark.parametrize("field", [
+    "semantic_type", "dimension", "change_of_state",
+])
+def test_wrong_semantic_identity_subfields_are_drift(env, monkeypatch, field):
+    def mutate(sense_id, doc):
+        doc["semantic_identity"][field] = "totally-different"
+    _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
+    _assert_drift(env, "slow-02", f"semantic_identity.{field}")
+
+
+def test_added_source_entry_is_drift(env, monkeypatch):
     def mutate(sense_id, doc):
         doc["inventory_source_entries"].append("slow-dict-003")
     _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
-    written = _load(_draft_sense(env, "slow-02"))
-    assert written["inventory_source_entries"] == ["slow-dict-002"]
+    _assert_drift(env, "slow-02", "inventory_source_entries")
 
 
-def test_model_cannot_drop_source_entry(env, monkeypatch):
+def test_dropped_source_entry_is_drift(env, monkeypatch):
     def mutate(sense_id, doc):
         doc["inventory_source_entries"] = []
     _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
+    _assert_drift(env, "slow-02", "inventory_source_entries")
+
+
+def test_source_entry_order_alone_is_not_drift(env, monkeypatch):
+    """集合一致即可; 顺序不是身份。"""
+    inventory_doc = inventory.load_approved_inventory("slow")
+    sense = inventory.find_inventory_sense(inventory_doc, "slow-01")
+    assert inventory.detect_identity_drift(
+        {"inventory_source_entries": list(reversed(sense["source_entries"]))},
+        inventory_doc, sense,
+    ) == []
+
+
+def test_identity_drift_does_not_overwrite_existing_valid_draft(env, monkeypatch):
+    env.senses.mkdir(parents=True)
+    existing = env.senses / "slow-02.yaml"
+    original = "id: slow-02\n# 已审阅过的旧草稿\n"
+    existing.write_text(original, encoding="utf-8")
+
+    def mutate(sense_id, doc):
+        doc["pos"] = "noun"
+    _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
+    with pytest.raises(draft.SenseDraftError):
+        _draft_sense(env, "slow-02", force=True)
+    assert existing.read_text(encoding="utf-8") == original
+    assert (env.senses / "_invalid-slow-02-identity-drift.yaml").exists()
+
+
+def test_identity_drift_saves_raw_model_output(env, monkeypatch):
+    def mutate(sense_id, doc):
+        doc["pos"] = "noun"
+        doc["sense_label"] = "模型按错误义项写的标签"
+    _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
+    with pytest.raises(draft.SenseDraftError):
+        _draft_sense(env, "slow-02")
+    saved = _load(env.senses / "_invalid-slow-02-identity-drift.yaml")
+    # 保存的是模型原样输出, 不是被程序改写过的版本
+    assert saved["pos"] == "noun"
+    assert saved["sense_label"] == "模型按错误义项写的标签"
+
+
+def test_cli_exits_nonzero_on_identity_drift(env, monkeypatch):
+    def mutate(sense_id, doc):
+        doc["pos"] = "noun"
+    _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
+    with pytest.raises(SystemExit) as exc:
+        draft.cmd_sense(Namespace(target="slow-02", force=False, num=None,
+                                  legacy_dictionary_index=False))
+    assert exc.value.code != 0
+    assert "identity drift" in str(exc.value)
+
+
+# ------------------------------------- 省略机器字段: 由程序补全, 不算漂移
+
+def test_omitted_machine_fields_are_filled_in(env, monkeypatch):
+    """模型没写的机器字段是簿记, 不是它对词义的判断, 补全即可。"""
+    def mutate(sense_id, doc):
+        for field in ("inventory", "semantic_identity",
+                      "inventory_source_entries", "schema_version"):
+            doc.pop(field, None)
+    _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
     written = _load(_draft_sense(env, "slow-02"))
+
+    assert written["schema_version"] == "1.1"
+    assert written["semantic_identity"]["valency"] == "intransitive"
+    assert written["semantic_identity"]["causative"] is False
     assert written["inventory_source_entries"] == ["slow-dict-002"]
+    assert written["inventory"]["sense_id"] == "slow-02"
+
+
+def test_omitted_identity_scalars_are_filled_in(env, monkeypatch):
+    def mutate(sense_id, doc):
+        for field in ("id", "word", "pos"):
+            doc.pop(field, None)
+    _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
+    written = _load(_draft_sense(env, "slow-02"))
+    assert (written["id"], written["word"], written["pos"]) == (
+        "slow-02", "slow", "verb")
+
+
+def test_partially_omitted_semantic_identity_is_filled_in(env, monkeypatch):
+    """写对了一半、另一半没写, 不算冲突。"""
+    def mutate(sense_id, doc):
+        doc["semantic_identity"] = {"valency": "intransitive"}
+    _stub_llm(monkeypatch, _responder_from_fixtures(mutate))
+    written = _load(_draft_sense(env, "slow-02"))
+    assert written["semantic_identity"]["semantic_type"] == "state_change"
+    assert written["semantic_identity"]["dimension"] == "rate"
 
 
 def test_inventory_provenance_is_written_correctly(env, monkeypatch):

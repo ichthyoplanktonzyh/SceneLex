@@ -117,8 +117,12 @@ learning clients, APIs, or content packages
   1. 不得根据 dictionary order 或词典条目序号创建 SceneLex sense ID；
      词典条目不是 sense，条目序号也不是 sense 编号。
   2. 没有 approved Inventory 时不得生成新的 WordSense。
-  3. 不得重新定义 Inventory 已冻结的 sense identity；起草阶段这些字段由程序
-     强制覆盖，人工事后修改会被 `validate.py` 的身份检查拦下。
+  3. 不得重新定义 Inventory 已冻结的 sense identity。起草阶段区别对待两种情况：
+     模型**省略**的机器字段由程序补全；模型**写出但与 Inventory 冲突**的身份字段
+     （`id` / lemma / `pos` / `semantic_identity.*` / `inventory_source_entries`）
+     判定为 identity drift，起草直接失败并保留原始输出——不要用静默覆盖把模型的
+     误解藏起来，因为正文仍是按错误义项写的。人工事后修改则由 `validate.py`
+     的身份检查拦下。
   4. WordSense 是 approved Inventory sense 的**详细规格**，不是新的义项规划层：
      它不创建、删除、合并、拆分或重新编号 sense。
   5. Inventory 本身有问题时，回到 inventory 层修正或重新走 review/approve，
