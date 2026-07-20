@@ -1,0 +1,165 @@
+schema_version: '1.0'
+version: 1
+status: draft
+scene_ref: reluctant-01-proto-01
+shot_plan_ref:
+  scene_id: reluctant-01-proto-01
+  version: 5
+keyframe_plan_ref:
+  scene_id: reluctant-01-proto-01
+  version: 2
+generation:
+  human_directed: true
+  generated_at: '2026-07-20T09:48:52+00:00'
+  provider: comfyui-local
+  model: z_image_turbo_bf16.safetensors
+  workflow: comfyui-zimage-keyframe.json
+  seed_policy: fixed-scene-seed (整场 9 帧共用一个 seed)
+  reference_strategy: 无参考图。一致性 = 固定 seed + Shot Plan 的 cast/location/props 连续性描述常量块; 不使用 Character/Location/Style
+    Bible。
+  notes: Z-Image Turbo 在 cfg=1.0 下不应用负分支; must_avoid 已编译进 prompts/*.txt, 本轮由人工审核而非采样器执行。
+frames:
+- keyframe_id: shot-01-kf-01
+  shot_id: shot-01
+  image: images/shot-01-kf-01.png
+  prompt: prompts/shot-01-kf-01.txt
+  seed: 704251
+  status: generated
+  review:
+    semantic_readability: fail
+    continuity: fail
+    composition: pass
+    character_consistency: weak
+    notes:
+    - '画的是更晚的状态: 孩子在 t=0 就已经右手握住叉子, 而 v02 要求双手平放桌面。'
+    - 母亲的手臂已经完全伸出并指向西兰花, 而本帧要求'手已抬起但尚未指向'——触发事件被提前。
+    - '构图成立: medium_wide 双人镜, 母左子右, 盘子与叉子在中景可读, 孩子与盘子之间无遮挡。'
+    - 作为角色基准帧本身可用, 但这个外观在后续 8 帧里没有一次被守住。
+- keyframe_id: shot-01-kf-02
+  shot_id: shot-01
+  image: images/shot-01-kf-02.png
+  prompt: prompts/shot-01-kf-02.txt
+  seed: 704251
+  status: generated
+  review:
+    semantic_readability: weak
+    continuity: fail
+    composition: pass
+    character_consistency: fail
+    notes:
+    - '指向动作成立: 食指清楚指向孩子盘中的西兰花, 孩子的视线也已落到盘子上。'
+    - 母亲在看盘子而不是看孩子。v02 要求'保持手势的同时注视孩子'——等待才使它成为请求, 缺了它更像在介绍食物。
+    - 孩子仍然握着叉子, 违反'双手平放、尚无任何回应'; shot-02 的抵抗因此失去了'尚未开始'的起点。
+    - 母亲上衣由 kf-01 的红色变为青色, 固定 seed 未能守住角色外观。
+- keyframe_id: shot-02-kf-01
+  shot_id: shot-02
+  image: images/shot-02-kf-01.png
+  prompt: prompts/shot-02-kf-01.txt
+  seed: 704251
+  status: generated
+  review:
+    semantic_readability: fail
+    continuity: fail
+    composition: weak
+    character_consistency: fail
+    notes:
+    - 叉子已被握住且叉齿已经戳进西兰花, 而本帧要求'叉子未被碰过、什么都没有动'。
+    - '跨剪辑点的连续性锚点因此失效: 它没有复现 shot-01 末帧的姿态。'
+    - 画面左缘的人物不是母亲, 而是另一个男孩, 并且自己手里也拿着叉子——违反'母亲什么都不碰'。
+    - 构图本身是 medium_close 且孩子在右侧, 但左缘人物错误使这一格的在场关系不成立。
+- keyframe_id: shot-02-kf-02
+  shot_id: shot-02
+  image: images/shot-02-kf-02.png
+  prompt: prompts/shot-02-kf-02.txt
+  seed: 704251
+  status: generated
+  review:
+    semantic_readability: fail
+    continuity: fail
+    composition: pass
+    character_consistency: fail
+    notes:
+    - 要求是躯干后撤、双手略收回、视线回避; 实际是手臂前伸、叉子已插入食物, 抵抗第一次可见的那一刻没有被画出来。
+    - 躯干没有离开桌面, 'withdrawal' 完全缺席。
+    - 视线确实离开了盘子, 这是本帧唯一成立的 must_show。
+    - 左缘人物仍不是母亲。
+- keyframe_id: shot-02-kf-03
+  shot_id: shot-02
+  image: images/shot-02-kf-03.png
+  prompt: prompts/shot-02-kf-03.txt
+  seed: 704251
+  status: generated
+  review:
+    semantic_readability: fail
+    continuity: fail
+    composition: pass
+    character_consistency: fail
+    notes:
+    - 这是区分 reluctant 与普通慢动作的判据帧, 结果是本批最严重的失败。
+    - 要求'手停在离叉子约三分之二处且没有碰到叉子'; 实际手已握叉、叉齿已插入西兰花。
+    - 要求'躯干仍然后靠、只有手臂推进'; 实际躯干前倾并带轻微笑意, 读成的是配合而不是阻力。
+    - 母亲第三次改变外观(紫色背心加项链)。
+- keyframe_id: shot-02-kf-04
+  shot_id: shot-02
+  image: images/shot-02-kf-04.png
+  prompt: prompts/shot-02-kf-04.txt
+  seed: 704251
+  status: generated
+  review:
+    semantic_readability: weak
+    continuity: weak
+    composition: pass
+    character_consistency: fail
+    notes:
+    - '本批最接近规格的两张之一: 叉子在孩子自己手中、抬离桌面、叉齿尚未插入食物, 母亲在左缘且没有触碰任何东西。'
+    - 躯干没有保持后靠——交给 shot-03 的连续性契约里最关键的'低意愿没有随动作开始而消失'因此没有画出来。
+    - 视线离开盘子, 成立。
+    - 母亲的服装与前几帧均不一致。
+- keyframe_id: shot-03-kf-01
+  shot_id: shot-03
+  image: images/shot-03-kf-01.png
+  prompt: prompts/shot-03-kf-01.txt
+  seed: 704251
+  status: generated
+  review:
+    semantic_readability: fail
+    continuity: fail
+    composition: pass
+    character_consistency: weak
+    notes:
+    - 跨镜首帧要求与 shot-02-kf-04 完全同一状态; 实际叉子已经送进嘴里, 剪辑点两侧直接跳变。
+    - 而且叉子上没有食物——它既不是上游状态, 也不是任何一个合法的下游状态。
+    - '''叉齿尚未插入食物''与''叉子仍在盘缘''两项跨镜检查同时失败。'
+    - 孩子的身份大体延续, 但服装细节(领口/内搭)与 shot-02 不一致。
+- keyframe_id: shot-03-kf-02
+  shot_id: shot-03
+  image: images/shot-03-kf-02.png
+  prompt: prompts/shot-03-kf-02.txt
+  seed: 704251
+  status: generated
+  review:
+    semantic_readability: weak
+    continuity: weak
+    composition: pass
+    character_consistency: fail
+    notes:
+    - '本批语义最强的一张: 西兰花已在叉上、停在嘴边、嘴仍闭合, ''动作几乎完成但尚未完成''的停顿确实可读。'
+    - 没有出现 gagging、干呕、闭眼或母亲喂食等 must_avoid 项。
+    - 视线转向母亲, 而 v02 明确要求看着西兰花或垂下——转向母亲会把这一刻读成征求许可, 不是自己承担的迟疑。
+    - 躯干没有后靠, 'only the arm has committed' 未成立。
+- keyframe_id: shot-03-kf-03
+  shot_id: shot-03
+  image: images/shot-03-kf-03.png
+  prompt: prompts/shot-03-kf-03.txt
+  seed: 704251
+  status: generated
+  review:
+    semantic_readability: fail
+    continuity: fail
+    composition: pass
+    character_consistency: fail
+    notes:
+    - 要求'已经吃下、叉子放回盘子、手回到桌面'; 实际叉子仍举在半空、西兰花仍在叉齿上, 这一口根本没有发生。
+    - '''他确实吃下了''是区分 reluctant 与 refuse 的唯一收尾证据, 本帧没有提供。'
+    - 同时也无法检验'吃完之后意愿没有转正', 因为动作没有完成。
+    - 左缘人物再次变成男孩而不是母亲。

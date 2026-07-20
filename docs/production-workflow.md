@@ -141,6 +141,35 @@ Shot Plan v04 → Keyframe Plan v01 → Animatic v01 → 审核发现动作装�
 - **历史版本全部保留，绑定必须显式。** Keyframe Plan v01 仍绑定 Shot Plan v04，v02 绑定 v05；失败的那一轮不是废稿，而是这道审核门确实拦住过东西的证据。下游用 `shot_plan_ref.version` 锁版本，CLI 用 `--version` 选版本，任何一层都不跟着「最新目录」漂移。
 - **人工修订是允许的，但必须说明。** `director.py plan` 只能调用模型；当修订依据来自人工 animatic 审核时，直接新建版本目录并在 `shot_plan_ref.human_revised` 与切片记录里写清楚，不为 provenance 扩 schema，也不把人工产物伪装成模型输出。
 
+## 图片关键帧（Keyframe Plan 之后）
+
+`schema/image-keyframe-manifest.schema.json` + `tools/image_keyframe.py` + `tools/image_keyframes.py`。
+
+这一层只回答一件事：Keyframe Plan 里的文字关键状态，能不能变成语义可读、角色一致、道具连续、跨镜可衔接的真实图片。**一张图片对应一个 keyframe，不是一个 beat**——所以它不复用 legacy 的 beat-image render 逻辑，也不修改它。
+
+```bash
+python3 tools/image_keyframes.py prompts  reluctant-01-proto-01 --keyframe-plan-version 2
+python3 tools/image_keyframes.py generate reluctant-01-proto-01 --keyframe-plan-version 2
+python3 tools/image_keyframes.py generate reluctant-01-proto-01 --only shot-02-kf-03 --force
+python3 tools/image_keyframes.py review   reluctant-01-proto-01 --version 1
+python3 tools/image_keyframes.py validate reluctant-01-proto-01 --version 1
+```
+
+产物落在 `data/drafts/image-keyframes/{scene_id}/v{NN}/`，永不覆盖；`shot_plan_ref` 与 `keyframe_plan_ref` 都必须显式写明版本。manifest 刻意保持最小：没有 digest / SHA、没有依赖 DAG、没有自动 stale、没有通用 asset ID、没有各类 Bible。图片本身已经是具体资产，不为将来的系统预埋抽象。
+
+提示词由 `compile_prompt` **机械拼装**，输入全部来自已冻结的上游字段（Shot Plan 的 `composition` / `camera` / `cast` / `location` / `props`，Keyframe 的 `visual_state` / `must_show` / `must_avoid` / `continuity`）。编译器不重新决定故事、动作阶段、谁持有叉子、叉子是否已插入食物、哪一帧是语义高潮或镜头切点。风格只有一个来源：`prompts/render-style.yaml`。`must_avoid` 只进负提示词——在扩散模型里提到某个东西本身就会把它召唤出来。
+
+第一轮真实图片的审核记录见 [docs/vertical-slices/reluctant-01-image-keyframes.md](vertical-slices/reluctant-01-image-keyframes.md)。结论是 **IMAGE KEYFRAME REVISION REQUIRED**：9 张图全部生成成功，但没有构成可进入运动验证的语义证据。这一轮真实得到的工作流认识有四条：
+
+- **模型的选择必须是产物的一部分，不能是终端状态的一部分。** 第一次真跑因为 `imagegen` 的工作流来自环境变量默认值，用成了 legacy 的 beat-image SDXL 工作流，画出的东西与预期毫无关系，而 manifest 事后分辨不出来。关键帧层现在显式指定工作流并把实际模型写进 `generation`。
+- **构图字段能被稳定执行，人物状态字段不能。** `composition` / `staging` 几乎全部通过；失败集中在"某个动作还没有发生"这类否定式中间状态上——手尚未碰到叉子、叉齿尚未插入食物、双手仍平放桌面。文生图模型会用"吃饭场景"的先验直接覆盖它们。
+- **`must_avoid` 是否真的到达了模型，必须逐工作流确认。** Z-Image Turbo 是 CFG 蒸馏模型，cfg=1.0 时采样器不走负分支；负提示词被完整编译，却没有一条生效。在这种工作流下 `must_avoid` 只是人工审核清单，不能声称它是生成约束。
+- **固定 seed + 连续性描述常量块不足以锁住角色身份。** 逐帧提示词变化时，角色外观会漂移。是否需要 Character Bible 等这一条被单独验证后再决定，不因一次漂移就建结构。
+
+审核层级在产物里是硬标注：`review.html` 顶部写着 `REAL IMAGE SEMANTIC REVIEW — NOT VIDEO MOTION REVIEW`。它审的是单帧语义、must-show / must-avoid、角色与道具一致性、跨镜状态衔接；**不**审动作插值、视频节奏、运动自然度、音频、剪辑与最终学习效果。
+
+跨镜连续性对（上游镜头末帧 ↔ 下游镜头首帧）在审核页里并排显示并逐项核对。这两张图不要求像素级相同——构图可以切得更紧——但动作状态与道具状态必须相同。剪辑点在哪里由 Keyframe Plan 的镜头顺序决定，不写死在工具里。
+
 ## 下游渲染层的既有经验（Shot Plan 之后）
 
 以下内容描述 Shot Plan 下游的图像/视频工序。它们不改变 Shot Plan 的内容，只说明镜头计划最终如何被执行。
@@ -247,6 +276,8 @@ Director 写关键图 prompt + 视频 prompt
 该样本已经跑通：`reluctant` 是仓库第一个 approved Sense Inventory，`reluctant-01` 已按它重新起草为 WordSense 1.1，`reluctant-01-proto-01` 是第一条语义修订状态为 `CURRENT` 的 SceneSpec 1.1，并编译出真实 Shot Plan。当前推荐版本是 v04（3 个 Beat → 2 个 Shot，7.3s）；v01–v03 作为问题证据保留，不覆盖。逐项审查记录见
 [docs/vertical-slices/reluctant-01-proto-01.md](vertical-slices/reluctant-01-proto-01.md)。其余 20 个场景仍是 SceneSpec 1.0（`LEGACY`），本轮不做批量迁移。
 
-该样本随后走到了 Keyframe / Animatic 层：`data/drafts/keyframe-plans/reluctant-01-proto-01/v01/` 是第一份真实关键帧计划（7 帧 = 2 + 5，锚定 Shot Plan v04）。Animatic 审核的结论是 **SHOT PLAN REVISION REQUIRED BEFORE IMAGE GENERATION**——选帧成立，但 shot-02 的 4.8s 装不下它自己的动作链，建议在"握住叉子之后"的自然动作边界改成 3 个镜头。审核记录见 [docs/vertical-slices/reluctant-01-keyframe-animatic.md](vertical-slices/reluctant-01-keyframe-animatic.md)。**该建议尚未执行：v04 未被修改，也未生成 v05。**
+该样本随后走到了 Keyframe / Animatic 层：`data/drafts/keyframe-plans/reluctant-01-proto-01/v01/` 是第一份真实关键帧计划（7 帧 = 2 + 5，锚定 Shot Plan v04）。Animatic 审核的结论是 **SHOT PLAN REVISION REQUIRED BEFORE IMAGE GENERATION**——选帧成立，但 shot-02 的 4.8s 装不下它自己的动作链，建议在"握住叉子之后"的自然动作边界改成 3 个镜头。审核记录见 [docs/vertical-slices/reluctant-01-keyframe-animatic.md](vertical-slices/reluctant-01-keyframe-animatic.md)。该建议随后被执行：Shot Plan v05（人工修订，三镜）与 Keyframe Plan v02（9 帧 = 2 + 4 + 3）已生成，v04 与 v01 原样保留不覆盖。
+
+该样本随后走到了图片关键帧层：`data/drafts/image-keyframes/reluctant-01-proto-01/v01/` 是第一批真实图片（9 张，锚定 Shot Plan v05 + Keyframe Plan v02）。审核结论是 **IMAGE KEYFRAME REVISION REQUIRED**——图全部生成成功，构图与场景关系成立，但抵抗状态（躯干后靠、手停在半途、叉齿尚未插入）一张都没有画出来，`reluctant` 与普通配合无法区分。失败的是执行不是计划，v05 与 v02 均未修改。记录见 [docs/vertical-slices/reluctant-01-image-keyframes.md](vertical-slices/reluctant-01-image-keyframes.md)。
 
 随后用 `messy` 和 `almost` 检查同一个 Director 是否会根据语义类型自然选择静态关系、状态变化或终止结果，而不是套用同一种短片模板。

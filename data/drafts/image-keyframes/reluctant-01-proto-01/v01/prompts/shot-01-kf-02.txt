@@ -1,0 +1,28 @@
+# shot-01-kf-02
+# 由 Shot Plan 与 Keyframe Plan 机械编译; 不要手工改这里, 改上游。
+
+=== POSITIVE ===
+Pixar-style 3D animated film, appealing stylized 3D characters, expressive readable eyes and brows, clear exaggerated body language, warm cinematic family-film lighting, polished 3D materials, rich color, strong visual storytelling, emotionally readable staging, high detail
+
+A single frozen moment from one continuous shot — one image, one instant, not a storyboard and not a sequence of panels.
+
+FRAMING — medium_wide, eye_level angle. Mother, child and plate together in a two-shot; the pointing gesture and the plate are both clearly readable. Mother at frame left, child at frame right, plate with broccoli and the fork centred in the middle foreground between them. Nothing stands between the child and the plate. Camera static.
+
+CAST — mother (counterpart) — Adult female, seated at the left side of the table throughout, speaks to the child and never touches him, the fork or the plate. child (focal_character) — School-age child, seated at the right side of the table throughout, right-handed; starts with both hands flat on the table surface.
+
+LOCATION — A family dining table with at least two chairs, a plate with broccoli and a fork placed in front of the child. The child keeps the right side of the frame and the mother the left in every shot.
+
+PROPS — plate — White plate containing several pieces of cooked broccoli, placed in front of the child, its position on the table unchanged from first shot to last. fork — Standard dinner fork, starting beside the plate within the child's reach; once picked up it stays in the child's right hand until it is put back down on the plate.
+
+FROZEN STATE — The mother's arm is fully extended, index finger pointing at the broccoli on the child's plate; her eyes are on the child while she holds the gesture. The child has turned his head down toward the plate. His hands are still flat on the table and his posture is unchanged — upright, no withdrawal yet.
+
+MUST BE VISIBLE — Pointing finger clearly aimed at the broccoli on the child's plate. Mother's gaze on the child while the gesture is held — the waiting is what makes it a request. Child's gaze now on the plate. Child's body still neutral: hands on the table, no lean, no resistance yet.
+
+CARRIED OVER FROM THE PREVIOUS FRAME — Continues directly from the opening frame; only the mother's arm and the child's head have moved.
+
+The image contains no words, letters, subtitles, captions, definitions, vocabulary labels, narration text, speech bubbles or interface overlays.
+
+=== NEGATIVE ===
+2d anime, flat illustration, cel shading, photorealistic live action, plastic toy render, text, english text, speech bubble, caption, subtitles, letters, watermark, signature, username, lowres, bad anatomy, bad hands, extra digits, fewer digits, jpeg artifacts, blurry, unreadable expression, collage, split screen, multiple panels, storyboard, film strip
+
+MUST NOT APPEAR — Mother touching the child, the fork, or the plate — that would be force, not a request. Child already showing hesitation, which would make the resistance predate the request.
