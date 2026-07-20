@@ -22,12 +22,41 @@ SCENE_ID = "reluctant-01-proto-01"
 SENSE_PATH = ROOT / "data" / "senses" / f"{SENSE_ID}.yaml"
 SCENE_PATH = ROOT / "data" / "scenes" / SENSE_ID / f"{SCENE_ID}.yaml"
 INVENTORY_PATH = ROOT / "data" / "inventories" / "reluctant.yaml"
-PLAN_PATH = (ROOT / "data" / "drafts" / "shot-plans" / SCENE_ID / "v01"
-             / "shot-plan.yaml")
+PLANS_DIR = ROOT / "data" / "drafts" / "shot-plans" / SCENE_ID
+PROMPT_PATH = ROOT / "prompts" / "shot-plan.md"
 
 
 def _load(path: Path) -> dict:
     return yaml.safe_load(path.read_text(encoding="utf-8"))
+
+
+def _recommended_plan_path() -> Path:
+    """最新版本就是推荐版本 —— 与 director.py show 的默认选择一致。
+
+    历史版本一律保留 (v01 是第一轮问题证据), 所以这里必须取最大版本号,
+    不能钉死某个 v0N。
+    """
+    versions = sorted(PLANS_DIR.glob("v[0-9][0-9]"))
+    assert versions, f"{PLANS_DIR} 下没有任何 Shot Plan 版本"
+    return versions[-1] / "shot-plan.yaml"
+
+
+def _shot_text(shot: dict) -> str:
+    """一个镜头里所有面向执行的自由文本, 用于层级越界检查。
+
+    刻意**排除** semantic_evidence.must_avoid: 那里出现 disgust / overlay
+    这类词是在**禁止**它们, 正是我们想要的。
+    """
+    parts = [
+        shot["visual_start"]["description"],
+        shot["trigger"]["description"],
+        shot["action"]["description"],
+        shot["visual_end"]["description"],
+        shot["composition"]["staging"],
+        shot["composition"]["focal_subject"],
+        *shot["semantic_evidence"]["must_show"],
+    ]
+    return " ".join(parts).lower()
 
 
 @pytest.fixture(scope="module")
@@ -42,7 +71,7 @@ def scene() -> dict:
 
 @pytest.fixture(scope="module")
 def plan() -> dict:
-    return _load(PLAN_PATH)
+    return _load(_recommended_plan_path())
 
 
 def test_wordsense_is_inventory_driven(sense):
@@ -67,9 +96,13 @@ def test_wordsense_matches_approved_inventory_identity(sense):
     assert inventory.validate_sense_against_inventory(sense, approved, entry) == []
 
 
-def test_wordsense_starts_at_first_semantic_revision(sense):
-    assert sense["version"] == 1
+def test_wordsense_is_still_on_its_first_semantic_contract(sense):
+    """措辞与场景约束可以修订 (version 会涨), 语义契约没变则 semantic_revision 不动。
+
+    两者混用会让所有已绑定的 Scene 无谓地变成 NEEDS_REVIEW。
+    """
     assert sense["semantic_revision"] == revisions.NEW_SENSE_SEMANTIC_REVISION
+    assert sense["version"] >= 1
 
 
 def test_scene_revision_binding_is_current(scene, sense):
@@ -121,3 +154,117 @@ def test_shots_are_not_a_mechanical_one_to_one_copy_of_beats(plan, scene):
     """
     merged = [shot for shot in plan["shots"] if len(shot["source_beats"]) > 1]
     assert merged, "没有任何镜头合并 Beat, 检查是否退化成机械一一对应"
+
+
+# --------------------------------------------------------------- 层级边界
+# 以下断言锁的是"Shot Plan 只做视觉叙事执行"这条边界。第一轮真实产物
+# (v01) 在这几处全部越界, 详见 docs/vertical-slices/reluctant-01-proto-01.md。
+
+TEACHING_PACKAGING = (
+    "overlay", "added in post", "subtitle", "caption", "narrator",
+    "on screen", "on-screen", "text appears", "lower third",
+)
+
+
+def test_scene_has_no_target_word_reveal_beat(scene):
+    """揭词是教学层的事, 不是 Scene 的语义节拍。"""
+    for beat in scene["storyboard"]:
+        blob = f"{beat['visual']} {beat.get('audio') or ''}".lower()
+        assert "reluctant" not in blob, f"beat {beat['beat']} 仍在画面/音轨里揭示目标词"
+
+
+def test_recommended_plan_has_no_teaching_overlay(plan):
+    for shot in plan["shots"]:
+        text = _shot_text(shot)
+        for term in TEACHING_PACKAGING:
+            assert term not in text, f"{shot['id']} 含教学包装用语: {term!r}"
+
+
+def test_recommended_plan_never_announces_the_target_word(plan):
+    """没有旁白报词, 也没有把目标词本身当成要拍的东西。"""
+    for shot in plan["shots"]:
+        assert "reluctant" not in _shot_text(shot), (
+            f"{shot['id']} 把目标词写进了执行文本"
+        )
+        dialogue = (shot["audio"].get("dialogue") or {})
+        assert dialogue.get("speaker") != "narrator", (
+            f"{shot['id']} 用旁白承担教学职责"
+        )
+
+
+def test_dialogue_is_never_marked_required(plan):
+    """本场景的请求由指示动作建立, 台词只做自然化补充。"""
+    for shot in plan["shots"]:
+        assert shot["audio"]["mode"] != "required_dialogue", (
+            f"{shot['id']} 把可由画面还原的信息标成了 required_dialogue"
+        )
+
+
+def test_meaning_survives_muted_playback(plan):
+    """静音播放仍要有承载语义的镜头: 至少一个镜头完全不依赖对白。"""
+    silent = [s for s in plan["shots"] if s["audio"]["mode"] in ("silence", "sfx")]
+    assert silent, "每个镜头都带对白, 语义可能寄生在声音上"
+
+
+# 只在人物脑内发生、摄影机拍不到的词。这不是通用语义 lint —— 只是把第一轮
+# 真实产物里出现过的那类 trigger 钉住, 防止回归。
+INTERNAL_ONLY_VERBS = (
+    "realizes", "decides", "processes", "feels", "understands",
+    "internal resistance",
+)
+
+
+def test_triggers_are_camera_observable(plan):
+    for shot in plan["shots"]:
+        trigger = shot["trigger"]["description"].lower()
+        for verb in INTERNAL_ONLY_VERBS:
+            assert verb not in trigger, (
+                f"{shot['id']} 的 trigger 用了不可拍摄的心理动词: {verb!r} — "
+                f"{shot['trigger']['description']}"
+            )
+
+
+# reluctant 是"对行动缺乏意愿", 不是"讨厌这个东西"。这些词出现在 must_avoid
+# 里是对的 (那是在禁止它们), 出现在要拍的内容里就是语义漂移。
+SENSORY_AVERSION = ("disgust", "distaste", "gag", "grimace", "revulsion")
+
+
+def test_sensory_aversion_is_not_the_visual_evidence(plan):
+    for shot in plan["shots"]:
+        text = _shot_text(shot)
+        for term in SENSORY_AVERSION:
+            assert term not in text, (
+                f"{shot['id']} 把感官厌恶当成了视觉证据: {term!r}"
+            )
+
+
+def test_wordsense_bars_object_dislike_and_word_reveal(sense):
+    """漂移的根因在上游: WordSense 的场景约束必须先把这两条堵住。"""
+    must_not = " ".join(sense["scene_requirements"]["must_not"]).lower()
+    assert "disgust" in must_not
+    assert "target word" in must_not
+
+
+# ------------------------------------------------------- prompt contract
+# 这些规则是被 v01 的真实失败逼出来的; 删掉它们, 同样的问题会再次生成出来。
+
+@pytest.fixture(scope="module")
+def prompt_text() -> str:
+    return PROMPT_PATH.read_text(encoding="utf-8").lower()
+
+
+@pytest.mark.parametrize("rule", [
+    "realizes",              # trigger 可观察性: 心理动词黑名单
+    "decides",
+    "added in post",         # 教学包装禁令
+    "overlay",
+    "required_dialogue",     # 台词必要性判据
+    "disgust",               # 相邻概念不得抢占视觉证据
+])
+def test_prompt_states_the_rule(prompt_text, rule):
+    assert rule in prompt_text, f"prompts/shot-plan.md 缺少约束关键词: {rule!r}"
+
+
+def test_prompt_ranks_semantic_continuity_over_duration(prompt_text):
+    """时长偏好会把'抵抗贯穿动作'切成两个镜头; v02/v03 连续两次如此。"""
+    assert "语义连续性优先" in prompt_text

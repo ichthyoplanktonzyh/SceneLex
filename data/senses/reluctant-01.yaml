@@ -1,6 +1,6 @@
 schema_version: '1.1'
 language: en
-version: 1
+version: 2
 semantic_revision: 1
 status: reviewed
 id: reluctant-01
@@ -131,14 +131,21 @@ scene_requirements:
     removed the behavior must still support reluctant.
   - Facial expression as the sole evidence; a frown alone does not distinguish reluctance
     from fear, sadness, or annoyance.
+  - Sensory disgust or dislike of an object as the dominant evidence. reluctant is low
+    willingness toward an *action*; if the strongest thing on screen is how unpleasant
+    a thing tastes, smells, or looks, the scene teaches disgust, not reluctance.
+  - A beat or shot whose purpose is to display the target word, a caption, a definition,
+    or a narrator naming it; word presentation belongs to the later teaching layer.
   externalization:
   - 'Facial expressions: downturned mouth, furrowed brows, side-eye.'
   - 'Body language: stepping back, crossing arms, slow or hesitant approach.'
   - 'Vocal tone: sighing, flat or quiet voice, brief negative responses like ''I guess
     so'' or ''If I have to''.'
-  timing: Introduce the triggering event first, then show the experiencer's hesitating
-    or resistant reaction for a few seconds, then present the word 'reluctant' (spoken
-    or overlaid) after the viewer has perceived the internal state through behavior.
+  timing: Introduce the triggering event first, then hold on the experiencer's resistant
+    reaction long enough for it to read, then let the action begin and complete while
+    the resistance is still visible. Presenting the target word itself — on screen, in
+    narration, or as a caption — is a later teaching/editing concern and must not be
+    designed into the scene's beats.
 provenance:
   sources:
   - type: dictionary
