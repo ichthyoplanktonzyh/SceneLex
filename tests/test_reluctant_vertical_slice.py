@@ -145,15 +145,21 @@ def test_every_scene_beat_reaches_some_shot(plan, scene):
     assert covered == set(shot_plan_lib.scene_beats(scene))
 
 
-def test_shots_are_not_a_mechanical_one_to_one_copy_of_beats(plan, scene):
-    """Shot 是按连续观察条件编译的, 不是每个 Beat 配一个镜头。
+def test_beats_are_introduced_in_storyboard_order(plan, scene):
+    """Beat 只能按 storyboard 顺序被首次引入, 镜头序列不能倒着讲这个故事。
 
-    这条断言锁的是"Director 有权合并 Beat"这个设计事实。真实产物里
-    beat 2 (抵抗外化) 与 beat 3 (行动仍然发生) 属于同一段连续动作, 中间切一刀
-    会破坏"抵抗贯穿行动"这一核心证据。
+    这里刻意**不**断言"至少有一个镜头合并了多个 Beat"。
+    "Beat 与 Shot 不要求一一对应"不等于"不允许一一对应": 只要切镜有真实的动作
+    边界、构图、空间、语义强调或视频执行理由, 3 Beats → 3 Shots 同样成立。
+    把合并写成不变量, 等于让测试逼着内容去证明一个尚未被 animatic 验证的拆法。
     """
-    merged = [shot for shot in plan["shots"] if len(shot["source_beats"]) > 1]
-    assert merged, "没有任何镜头合并 Beat, 检查是否退化成机械一一对应"
+    order = shot_plan_lib.scene_beats(scene)
+    first_seen = []
+    for shot in plan["shots"]:
+        for beat in shot["source_beats"]:
+            if beat not in first_seen:
+                first_seen.append(beat)
+    assert first_seen == order
 
 
 # --------------------------------------------------------------- 层级边界
@@ -222,6 +228,25 @@ def test_triggers_are_camera_observable(plan):
                 f"{shot['id']} 的 trigger 用了不可拍摄的心理动词: {verb!r} — "
                 f"{shot['trigger']['description']}"
             )
+
+
+# visual_start / visual_end 是关键帧的首尾锚点, 必须是能被画出来的状态。
+# "aware" 一类的词描述的是脑内状态, 画师无从下笔。
+UNDRAWABLE_STATES = INTERNAL_ONLY_VERBS + ("aware", "knows")
+
+
+def test_visual_states_are_drawable(plan):
+    for shot in plan["shots"]:
+        for field in ("visual_start", "visual_end"):
+            block = shot[field]
+            text = " ".join([
+                block["description"],
+                *(state["state"] for state in block.get("character_states") or []),
+            ]).lower()
+            for word in UNDRAWABLE_STATES:
+                assert word not in text, (
+                    f"{shot['id']}.{field} 含无法画成关键帧的内部状态: {word!r}"
+                )
 
 
 # reluctant 是"对行动缺乏意愿", 不是"讨厌这个东西"。这些词出现在 must_avoid
