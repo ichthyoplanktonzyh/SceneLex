@@ -38,8 +38,8 @@ shots:
     description: Mother extends her arm, points her index finger at the broccoli in the child's plate,
       and speaks. Child remains motionless, maintaining neutral posture.
   visual_end:
-    description: Mother's hand still pointing at the plate, eyes fixed on the child. Child has not moved
-      but is now aware of the request.
+    description: Mother's hand still pointing at the plate, eyes fixed on the child, holding the gesture
+      and waiting. Child remains still, hands on the table, gaze now directed toward the plate.
     character_states:
     - character: child
       state: Still seated upright, hands on table, eyes now directed toward the plate (or slightly down).
@@ -57,7 +57,8 @@ shots:
   semantic_evidence:
     must_show:
     - Mother's pointing gesture directed at the broccoli.
-    - Mother's verbal instruction (visible mouth movement, if no audio).
+    - Mother's gaze moving between the child and the plate, plus an expectant pause holding the gesture
+      — together these visibly establish that she is prompting the child to act.
     - Child's neutral starting posture, hands on table, not yet showing resistance.
     must_avoid:
     - Child already displaying hesitation or discomfort before the instruction is fully given.
@@ -130,11 +131,13 @@ shots:
     - Any facial expression that alone could be read as fear, anger, or sadness — reluctance must be the
       primary reading.
   audio:
-    mode: silence
+    mode: sfx
     sfx:
-    - Fork clinking against plate when picking up the broccoli.
-    - Soft chewing sound (optional, natural ambient).
-    purpose: No dialogue needed; all semantic evidence is carried by body movement and timing.
+    - Fork clinking against the plate when picking up the broccoli.
+    - Faint chair and clothing movement as the child leans back.
+    - Quiet, unremarkable eating sound — plain, not exaggerated.
+    purpose: No dialogue needed; all semantic evidence is carried by body movement and timing. The action
+      sounds keep the scene natural and must not be performed as taste aversion.
   continuity:
     enters_from_previous: Child’s posture and hand position as in shot-01 visual_end — hands on table,
       body upright. The mother’s arm may still be present but does not need to be tracked precisely.
