@@ -128,7 +128,18 @@ python3 tools/keyframes.py list
 
 校验刻意**不**规定：每个 Shot 必须有 `initial` + `final`、每个 Shot 必须 2–5 帧、每个 Shot 必须有 `semantic_climax`、每个 Beat 必须对应关键帧、关键帧数量上限。帧数由内容的真实状态变化决定；一个样本不足以把这些写成不变量。
 
-第一条真实审核记录见 [docs/vertical-slices/reluctant-01-keyframe-animatic.md](vertical-slices/reluctant-01-keyframe-animatic.md)。
+第一条真实审核记录见 [docs/vertical-slices/reluctant-01-keyframe-animatic.md](vertical-slices/reluctant-01-keyframe-animatic.md)，它同时记录了这条链上的**第一次反馈循环**：
+
+```text
+Shot Plan v04 → Keyframe Plan v01 → Animatic v01 → 审核发现动作装不下时长
+              → Shot Plan v05 (人工修订, 三镜) → Keyframe Plan v02 → Animatic v02
+```
+
+三件事因此成为这一层的既定做法：
+
+- **上游问题在上游修。** Animatic 发现的是时长不足，修的是 Shot Plan，不是靠删关键帧或压缩停顿把它掩盖过去。Keyframe Plan 不重新导演场景这条边界，在真实反馈里也不能被绕过。
+- **历史版本全部保留，绑定必须显式。** Keyframe Plan v01 仍绑定 Shot Plan v04，v02 绑定 v05；失败的那一轮不是废稿，而是这道审核门确实拦住过东西的证据。下游用 `shot_plan_ref.version` 锁版本，CLI 用 `--version` 选版本，任何一层都不跟着「最新目录」漂移。
+- **人工修订是允许的，但必须说明。** `director.py plan` 只能调用模型；当修订依据来自人工 animatic 审核时，直接新建版本目录并在 `shot_plan_ref.human_revised` 与切片记录里写清楚，不为 provenance 扩 schema，也不把人工产物伪装成模型输出。
 
 ## 下游渲染层的既有经验（Shot Plan 之后）
 

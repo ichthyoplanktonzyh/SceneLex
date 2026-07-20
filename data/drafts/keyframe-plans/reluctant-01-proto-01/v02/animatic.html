@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang='zh'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>reluctant-01-proto-01 animatic</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 24px; font: 15px/1.55 -apple-system, "Helvetica Neue",
+       "PingFang SC", "Microsoft YaHei", sans-serif; background: #14161a; color: #e8eaed; }
+h1 { font-size: 19px; margin: 0 0 4px; }
+.sub { color: #9aa0a6; font-size: 13px; margin-bottom: 16px; }
+.warn { border: 1px solid #b3541e; background: #2a1a0d; color: #ffb782;
+        padding: 12px 14px; border-radius: 6px; margin-bottom: 18px; font-size: 13px; }
+.warn b { display: block; letter-spacing: .04em; margin-bottom: 6px; color: #ffd0a3; }
+.bar { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+button { font: inherit; padding: 6px 16px; border-radius: 5px; border: 1px solid #4a5058;
+         background: #232830; color: #e8eaed; cursor: pointer; }
+button:hover { background: #2c323b; }
+#clock { font-variant-numeric: tabular-nums; color: #9aa0a6; font-size: 13px; }
+.shot { border-top: 2px solid #3a4048; margin-top: 20px; padding-top: 10px; }
+.shot h2 { font-size: 15px; margin: 0 0 10px; }
+.shot h2 span { color: #9aa0a6; font-weight: 400; font-size: 13px; margin-left: 8px; }
+.cards { display: flex; flex-wrap: wrap; gap: 12px; }
+.kf { flex: 1 1 260px; min-width: 240px; max-width: 380px; border: 1px solid #333940;
+      border-radius: 6px; padding: 12px; background: #1b1f25; }
+.kf.on { border-color: #7aa2f7; background: #1e2633; }
+.kf .id { font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #7aa2f7; }
+.kf .t { float: right; font-variant-numeric: tabular-nums; font-size: 12px; color: #9aa0a6; }
+.kf .roles { margin: 6px 0 8px; }
+.kf .role { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 10px;
+            background: #2d3440; color: #b8c0cc; margin-right: 4px; }
+.ph { border: 1px dashed #4a5058; border-radius: 4px; padding: 10px; margin-bottom: 8px;
+      font-size: 13px; color: #cdd2d8; }
+.ph .tag { display: block; font-size: 10px; letter-spacing: .08em; color: #8a7050;
+           margin-bottom: 6px; }
+.why { font-size: 12.5px; color: #9aa0a6; }
+.why b { color: #b8c0cc; font-weight: 600; }
+ul { margin: 6px 0 0; padding-left: 18px; font-size: 12.5px; color: #9aa0a6; }
+.cut { color: #9aa0a6; font-size: 12px; margin-top: 10px; letter-spacing: .04em; }
+</style>
+</head>
+<body>
+<h1>reluctant-01-proto-01 — static animatic</h1>
+<div class='sub'>Keyframe Plan v02 · Shot Plan v5 · 9 keyframes · 10.8s</div>
+<div class='warn'><b>TEXTUAL PLACEHOLDER — NOT A VISUAL SEMANTIC REVIEW</b>可以审核：镜头顺序与边界、关键帧时序、hold 时长、状态覆盖、动作密度。<br>不能审核：构图可读性、表情质量、真实画面语义、图片之间的连续性。这些卡片是文字，不是画面；本页通过不等于视觉语义审核通过。</div>
+<div class='bar'><button id='play'>Play timeline</button><span id='clock'></span></div>
+<section class='shot'>
+<h2>shot-01<span>0.0s – 2.5s (2.5s) · establish_trigger · audio: optional_dialogue</span></h2>
+<div class='cards'>
+<div class='kf' id='shot-01-kf-01'><span class='id'>shot-01-kf-01</span><span class='t'>0.0s → 1.0s · hold 1.0s</span><div class='roles'><span class='role'>initial</span></div><div class='ph'><span class='tag'>TEXTUAL PLACEHOLDER</span>Two-shot at the dining table, mother at frame left and child at frame right. The child sits upright, both hands flat on the table, head facing forward — not looking at the plate. The mother is turned toward him, her near hand lifted off the table and starting to move toward the plate; her index finger is not yet aimed at the broccoli. The plate of broccoli and the fork sit in the middle foreground between them, untouched.</div><div class='why'><b>Why this frame: </b>锚定“请求尚未成立”的起点：孩子的注意力还不在盘子上，身体也还没有任何反应。缺了它，下一帧“妈妈指着、孩子看向盘子”就无法证明注意力转移是被请求引发的，孩子随后的停顿也可能被读成他本来就在发呆。</div><ul><li>Child&#x27;s gaze directed forward, away from the plate.</li><li>Mother&#x27;s hand already in motion but not yet pointing.</li><li>Plate and fork within the child&#x27;s easy reach, with nothing blocking access to them.</li></ul></div>
+<div class='kf' id='shot-01-kf-02'><span class='id'>shot-01-kf-02</span><span class='t'>1.0s → 2.5s · hold 1.5s</span><div class='roles'><span class='role'>trigger</span><span class='role'>final</span></div><div class='ph'><span class='tag'>TEXTUAL PLACEHOLDER</span>The mother&#x27;s arm is fully extended, index finger pointing at the broccoli on the child&#x27;s plate; her eyes are on the child while she holds the gesture. The child has turned his head down toward the plate. His hands are still flat on the table and his posture is unchanged — upright, no withdrawal yet.</div><div class='why'><b>Why this frame: </b>同一张画面同时是本镜头的触发事件与结束状态：请求关系成立（指向 + 注视 + 保持等待），孩子的注意力已经落到盘子上，但身体尚未做出任何回应。它是 shot-02 的全部阻力得以被读成“对这个请求的回应”的前提。把“请求发出”与“孩子看过去”拆成两帧只会得到两张几乎相同的图，所以这里用一帧承担两个角色。1.5s 的 hold 就是“她在等”本身。</div><ul><li>Pointing finger clearly aimed at the broccoli on the child&#x27;s plate.</li><li>Mother&#x27;s gaze on the child while the gesture is held — the waiting is what makes it a request.</li><li>Child&#x27;s gaze now on the plate.</li><li>Child&#x27;s body still neutral: hands on the table, no lean, no resistance yet.</li></ul></div>
+</div>
+<div class='cut'>— CUT —</div>
+</section>
+<section class='shot'>
+<h2>shot-02<span>2.5s – 6.0s (3.5s) · show_resistance · audio: sfx</span></h2>
+<div class='cards'>
+<div class='kf' id='shot-02-kf-01'><span class='id'>shot-02-kf-01</span><span class='t'>2.5s → 3.2s · hold 0.7s</span><div class='roles'><span class='role'>initial</span></div><div class='ph'><span class='tag'>TEXTUAL PLACEHOLDER</span>Tighter framing on the child at frame right, waist up, with the plate and fork in the lower part of the frame. He is in exactly the posture that ended shot-01 — upright, both hands flat on the table, eyes down on the broccoli, shoulders slightly tense. The mother&#x27;s extended arm is still at the left edge. Nothing has moved.</div><div class='why'><b>Why this frame: </b>跨剪辑点的连续性锚点，同时是“什么都没发生”本身的证据。删掉它，画面就从两人镜头直接跳进“已经后靠”的状态，观众失去衡量停顿长度的基准——而停顿是不情愿最先可见的形态。0.7s 的 hold 是这次停顿的可感知下限。</div><ul><li>Posture identical to the end of shot-01: hands flat, upright, gaze on the plate.</li><li>Fork within easy reach and untouched.</li><li>No external obstacle and no one restraining the child.</li></ul></div>
+<div class='kf' id='shot-02-kf-02'><span class='id'>shot-02-kf-02</span><span class='t'>3.2s → 4.6s · hold 1.4s</span><div class='roles'><span class='role'>trigger</span></div><div class='ph'><span class='tag'>TEXTUAL PLACEHOLDER</span>The child has leaned back a few degrees, shoulders settling against the chair back, hands still on the table but drawn slightly in toward his own body. His head is turned away from the plate; his eyes are directed to the side or down at the table edge — not at the food and not at the mother.</div><div class='why'><b>Why this frame: </b>抵抗第一次变得可见：后撤 + 视线回避。这一帧把“停顿”与“走神”区分开——身体正在离开被要求的对象。缺了它，动作会从中立坐姿直接跳到伸手，整段就只剩下“慢”，而慢本身不是不情愿。它到下一帧的 1.4s 里，先把后撤姿态保持住，再开始伸手。</div><ul><li>Torso withdrawn from the table — small but unmistakable.</li><li>Gaze aimed away from the plate.</li><li>Hands drawn back slightly rather than reaching.</li><li>Neutral mouth.</li></ul></div>
+<div class='kf' id='shot-02-kf-03'><span class='id'>shot-02-kf-03</span><span class='t'>4.6s → 5.4s · hold 0.8s</span><div class='roles'><span class='role'>transition</span></div><div class='ph'><span class='tag'>TEXTUAL PLACEHOLDER</span>The reach is halted mid-way. The child&#x27;s right arm is extended roughly two thirds of the distance to the fork, hand open, hovering above the table without touching it. His torso has not come forward with the arm — he is still leaned back — and his gaze is still off the plate. The arm is the only thing that has moved.</div><div class='why'><b>Why this frame: </b>把 reluctant 与普通服从分开的那一帧。从“后靠”直接过渡到“握着叉子”，插值与视频模型都会生成一次平滑、正常的伸手，中途那半秒的停顿会被抹掉——而启动延迟正是不情愿的核心证据。身体没有跟上手，也让“只有手在配合”直接可见。</div><ul><li>Hand stopped short of the fork and not touching it.</li><li>Torso still back — the body has not committed to the action.</li><li>Gaze still not on the plate.</li></ul></div>
+<div class='kf' id='shot-02-kf-04'><span class='id'>shot-02-kf-04</span><span class='t'>5.4s → 6.0s · hold 0.6s</span><div class='roles'><span class='role'>final</span></div><div class='ph'><span class='tag'>TEXTUAL PLACEHOLDER</span>The child&#x27;s right hand has closed around the fork and lifted it just clear of the table, holding it near the rim of the plate with the tines not yet in any broccoli. His torso is still leaned back against the chair, his left hand is still on the table, his eyes are still off the plate and his mouth is closed and flat. The mother is unchanged at the left edge, touching nothing.</div><div class='why'><b>Why this frame: </b>本镜头的结束状态，也是交给 shot-03 的连续性契约。它证明孩子最终**自己**握住了叉子（不是拒绝，也不是被喂），同时躯干仍然后靠——低意愿没有随着动作开始而消失。删掉它，握住叉子这个动作就发生在剪辑点之间，观众看不到他是自己拿的；shot-03 的首帧也失去了可对齐的上游状态，跨镜连续性只剩一句口头承诺。</div><ul><li>The fork in the child&#x27;s own right hand, lifted clear of the table near the rim of the plate.</li><li>Tines not yet in the food — the action is started, not completed.</li><li>Torso still leaned back at the angle established earlier.</li><li>No one else&#x27;s hand on the fork, on the plate or on the child.</li></ul></div>
+</div>
+<div class='cut'>— CUT —</div>
+</section>
+<section class='shot'>
+<h2>shot-03<span>6.0s – 10.8s (4.8s) · semantic_climax · audio: sfx</span></h2>
+<div class='cards'>
+<div class='kf' id='shot-03-kf-01'><span class='id'>shot-03-kf-01</span><span class='t'>6.0s → 7.5s · hold 1.5s</span><div class='roles'><span class='role'>initial</span></div><div class='ph'><span class='tag'>TEXTUAL PLACEHOLDER</span>The same child at frame right, framed slightly tighter so that the fork, the plate and the mouth are all readable at once. He is in exactly the state that ended shot-02 — torso leaned back against the chair, right hand gripping the fork just clear of the table near the rim of the plate, tines not yet in the food, left hand on the table, eyes off the plate. The mother is still at the left edge, touching nothing.</div><div class='why'><b>Why this frame: </b>跨镜头首帧本身就是连续性契约，不能因为与上一镜末帧接近就删掉：它是新镜头里唯一能被检查“叉子有没有跳位、手有没有换边、躯干角度有没有复位”的那张图。0.5s 它到下一帧有 1.5s，其中开头约 0.5s 是不动的——先让观众确认阻力状态被带过了剪辑点，再由这只手把西兰花叉起并抬到嘴边。抵抗不是在切镜后重新建立的。</div><ul><li>Same right hand on the fork, in the same position relative to the plate as the end of shot-02.</li><li>Same backward lean of the torso and the same screen direction.</li><li>Plate and remaining broccoli in their unchanged positions.</li><li>Gaze still off the plate and not eager.</li></ul></div>
+<div class='kf' id='shot-03-kf-02'><span class='id'>shot-03-kf-02</span><span class='t'>7.5s → 9.2s · hold 1.7s</span><div class='roles'><span class='role'>semantic_climax</span></div><div class='ph'><span class='tag'>TEXTUAL PLACEHOLDER</span>The child holds the fork with a piece of broccoli speared on it, raised and stopped just short of his mouth. His lips are closed, not yet parted. His torso is still leaned back, so the arm has had to travel the whole distance on its own; his eyes are on the broccoli or lowered, not turned toward the mother.</div><div class='why'><b>Why this frame: </b>全场最强的一帧：动作已经几乎完成，阻力仍然在。第一次停顿只能证明“启动慢”，第二次停顿证明阻力贯穿整个执行过程，这正是本场景要教的判据。缺了它，整条弧线塌成“犹豫一下然后正常吃”。同时它把“孩子自己把食物送到嘴边”钉住，与 refuse 划清界限。</div><ul><li>Broccoli on the fork, held still just short of the mouth.</li><li>Mouth closed — a visible halt, not a bite or a swallow in progress.</li><li>Body still withdrawn while only the arm has committed.</li><li>No one else&#x27;s hand on the fork or on the child — he is doing this himself.</li></ul></div>
+<div class='kf' id='shot-03-kf-03'><span class='id'>shot-03-kf-03</span><span class='t'>9.2s → 10.8s · hold 1.6s</span><div class='roles'><span class='role'>final</span></div><div class='ph'><span class='tag'>TEXTUAL PLACEHOLDER</span>The bite has been taken. The fork is back down on the plate and the child&#x27;s right hand has returned toward the table. His mouth is closed and his expression is flat, jaw at rest or on a slow chew. He is still sitting back in the chair, gaze low or to the side — he has not leaned in toward the plate and is not reaching for another piece.</div><div class='why'><b>Why this frame: </b>证明两件事同时成立：动作确实发生并由孩子自己完成（不是 refuse），而意愿始终没有转正（不是主动配合）。动作完成后身体仍维持后撤姿态，是“低意愿贯穿到底”的收尾证据。它到镜头结束还有 1.6s，咀嚼、吞咽与最后的静止都在这段里发生——它们与本帧的差别只是下颌位置，本身不改变任何语义推断，所以不单独成帧。</div><ul><li>Fork put down on the plate — the action was completed.</li><li>Body still reclined, matching the withdrawal established in shot-02.</li><li>Flat mouth, gaze low or averted.</li><li>No reach for a second piece.</li></ul></div>
+</div>
+</section>
+<script>
+const TL = [{id:"shot-01-kf-01",start:0.0,end:1.0},{id:"shot-01-kf-02",start:1.0,end:2.5},{id:"shot-02-kf-01",start:2.5,end:3.2},{id:"shot-02-kf-02",start:3.2,end:4.6},{id:"shot-02-kf-03",start:4.6,end:5.4},{id:"shot-02-kf-04",start:5.4,end:6.0},{id:"shot-03-kf-01",start:6.0,end:7.5},{id:"shot-03-kf-02",start:7.5,end:9.2},{id:"shot-03-kf-03",start:9.2,end:10.8}];
+const TOTAL = 10.8;
+let t0 = null, timer = null;
+const clock = document.getElementById('clock');
+const play = document.getElementById('play');
+function paint(t) {
+  for (const e of TL) {
+    document.getElementById(e.id).classList.toggle('on', t >= e.start && t < e.end);
+  }
+  clock.textContent = t.toFixed(1) + 's / ' + TOTAL.toFixed(1) + 's';
+}
+function stop() {
+  clearInterval(timer); timer = null; t0 = null;
+  play.textContent = 'Play timeline';
+}
+function step() {
+  const t = (Date.now() - t0) / 1000;
+  if (t >= TOTAL) { paint(TOTAL - 0.001); stop(); return; }
+  paint(t);
+}
+play.onclick = () => {
+  if (timer) { stop(); paint(0); return; }
+  play.textContent = 'Stop';
+  t0 = Date.now();
+  paint(0);
+  timer = setInterval(step, 50);
+};
+paint(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+schema_version: '1.0'
+version: 2
+status: draft
+id: reluctant-01-proto-01-keyframe-plan-02
+scene_ref: reluctant-01-proto-01
+shot_plan_ref:
+  scene_id: reluctant-01-proto-01
+  version: 5
+  human_revised: true
+shots:
+- shot_id: shot-01
+  keyframes:
+  - id: shot-01-kf-01
+    roles:
+    - initial
+    at_seconds: 0.0
+    source_state: visual_start
+    visual_state: Two-shot at the dining table, mother at frame left and child at frame right. The child
+      sits upright, both hands flat on the table, head facing forward — not looking at the plate. The
+      mother is turned toward him, her near hand lifted off the table and starting to move toward the
+      plate; her index finger is not yet aimed at the broccoli. The plate of broccoli and the fork sit
+      in the middle foreground between them, untouched.
+    semantic_purpose: 锚定“请求尚未成立”的起点：孩子的注意力还不在盘子上，身体也还没有任何反应。缺了它，下一帧“妈妈指着、孩子看向盘子”就无法证明注意力转移是被请求引发的，孩子随后的停顿也可能被读成他本来就在发呆。
+    must_show:
+    - Child's gaze directed forward, away from the plate.
+    - Mother's hand already in motion but not yet pointing.
+    - Plate and fork within the child's easy reach, with nothing blocking access to them.
+    must_avoid:
+    - Child already hesitating, leaning back, or looking uncomfortable.
+    - Any physical barrier, restraint, or third party between the child and the plate.
+    continuity:
+      from_previous: null
+      to_next: Mother's arm continues extending; the child's head begins to turn down toward the plate.
+        Hands stay flat on the table.
+  - id: shot-01-kf-02
+    roles:
+    - trigger
+    - final
+    at_seconds: 1.0
+    source_state: visual_end
+    visual_state: The mother's arm is fully extended, index finger pointing at the broccoli on the child's
+      plate; her eyes are on the child while she holds the gesture. The child has turned his head down
+      toward the plate. His hands are still flat on the table and his posture is unchanged — upright,
+      no withdrawal yet.
+    semantic_purpose: 同一张画面同时是本镜头的触发事件与结束状态：请求关系成立（指向 + 注视 + 保持等待），孩子的注意力已经落到盘子上，但身体尚未做出任何回应。它是 shot-02
+      的全部阻力得以被读成“对这个请求的回应”的前提。把“请求发出”与“孩子看过去”拆成两帧只会得到两张几乎相同的图，所以这里用一帧承担两个角色。1.5s 的 hold 就是“她在等”本身。
+    must_show:
+    - Pointing finger clearly aimed at the broccoli on the child's plate.
+    - Mother's gaze on the child while the gesture is held — the waiting is what makes it a request.
+    - Child's gaze now on the plate.
+    - 'Child''s body still neutral: hands on the table, no lean, no resistance yet.'
+    must_avoid:
+    - Mother touching the child, the fork, or the plate — that would be force, not a request.
+    - Child already showing hesitation, which would make the resistance predate the request.
+    continuity:
+      from_previous: Continues directly from the opening frame; only the mother's arm and the child's
+        head have moved.
+      to_next: Cut to a tighter framing on the child. Posture, hand position, screen direction and the
+        gaze at the plate carry over unchanged; the mother's pointing arm remains at the left edge.
+- shot_id: shot-02
+  keyframes:
+  - id: shot-02-kf-01
+    roles:
+    - initial
+    at_seconds: 0.0
+    source_state: visual_start
+    visual_state: Tighter framing on the child at frame right, waist up, with the plate and fork in the
+      lower part of the frame. He is in exactly the posture that ended shot-01 — upright, both hands flat
+      on the table, eyes down on the broccoli, shoulders slightly tense. The mother's extended arm is
+      still at the left edge. Nothing has moved.
+    semantic_purpose: 跨剪辑点的连续性锚点，同时是“什么都没发生”本身的证据。删掉它，画面就从两人镜头直接跳进“已经后靠”的状态，观众失去衡量停顿长度的基准——而停顿是不情愿最先可见的形态。0.7s
+      的 hold 是这次停顿的可感知下限。
+    must_show:
+    - 'Posture identical to the end of shot-01: hands flat, upright, gaze on the plate.'
+    - Fork within easy reach and untouched.
+    - No external obstacle and no one restraining the child.
+    must_avoid:
+    - Any backward lean or gaze aversion yet — that belongs to the next frame.
+    - Food-directed facial expressions such as a wrinkled nose.
+    continuity:
+      from_previous: Same posture, hand position, screen direction and gaze as shot-01's final frame,
+        seen from a closer framing.
+      to_next: The torso begins to move back and the head starts to turn away from the plate.
+  - id: shot-02-kf-02
+    roles:
+    - trigger
+    at_seconds: 0.7
+    visual_state: The child has leaned back a few degrees, shoulders settling against the chair back,
+      hands still on the table but drawn slightly in toward his own body. His head is turned away from
+      the plate; his eyes are directed to the side or down at the table edge — not at the food and not
+      at the mother.
+    semantic_purpose: 抵抗第一次变得可见：后撤 + 视线回避。这一帧把“停顿”与“走神”区分开——身体正在离开被要求的对象。缺了它，动作会从中立坐姿直接跳到伸手，整段就只剩下“慢”，而慢本身不是不情愿。它到下一帧的
+      1.4s 里，先把后撤姿态保持住，再开始伸手。
+    must_show:
+    - Torso withdrawn from the table — small but unmistakable.
+    - Gaze aimed away from the plate.
+    - Hands drawn back slightly rather than reaching.
+    - Neutral mouth.
+    must_avoid:
+    - Pushing the plate away or shaking the head — that reads as refuse.
+    - Wrinkled nose or covering the mouth — that reads as an aversion to the food itself.
+    - A face that alone reads as sad, frightened, or angry.
+    continuity:
+      from_previous: Same seated position and framing; only the torso angle, hand position and gaze have
+        changed.
+      to_next: The right arm starts forward toward the fork while the torso stays back.
+  - id: shot-02-kf-03
+    roles:
+    - transition
+    at_seconds: 2.1
+    visual_state: The reach is halted mid-way. The child's right arm is extended roughly two thirds of
+      the distance to the fork, hand open, hovering above the table without touching it. His torso has
+      not come forward with the arm — he is still leaned back — and his gaze is still off the plate. The
+      arm is the only thing that has moved.
+    semantic_purpose: 把 reluctant 与普通服从分开的那一帧。从“后靠”直接过渡到“握着叉子”，插值与视频模型都会生成一次平滑、正常的伸手，中途那半秒的停顿会被抹掉——而启动延迟正是不情愿的核心证据。身体没有跟上手，也让“只有手在配合”直接可见。
+    must_show:
+    - Hand stopped short of the fork and not touching it.
+    - Torso still back — the body has not committed to the action.
+    - Gaze still not on the plate.
+    must_avoid:
+    - The hand reaching for anything other than the fork.
+    - The hand recoiling backwards, which would read as refuse.
+    - A fast, confident reach with the body following it.
+    continuity:
+      from_previous: Carries over the reclined torso and averted gaze; only the arm has changed.
+      to_next: The hand resumes, closes around the fork handle and lifts it just clear of the table.
+  - id: shot-02-kf-04
+    roles:
+    - final
+    at_seconds: 2.9
+    source_state: visual_end
+    visual_state: The child's right hand has closed around the fork and lifted it just clear of the table,
+      holding it near the rim of the plate with the tines not yet in any broccoli. His torso is still
+      leaned back against the chair, his left hand is still on the table, his eyes are still off the plate
+      and his mouth is closed and flat. The mother is unchanged at the left edge, touching nothing.
+    semantic_purpose: 本镜头的结束状态，也是交给 shot-03 的连续性契约。它证明孩子最终**自己**握住了叉子（不是拒绝，也不是被喂），同时躯干仍然后靠——低意愿没有随着动作开始而消失。删掉它，握住叉子这个动作就发生在剪辑点之间，观众看不到他是自己拿的；shot-03
+      的首帧也失去了可对齐的上游状态，跨镜连续性只剩一句口头承诺。
+    must_show:
+    - The fork in the child's own right hand, lifted clear of the table near the rim of the plate.
+    - Tines not yet in the food — the action is started, not completed.
+    - Torso still leaned back at the angle established earlier.
+    - No one else's hand on the fork, on the plate or on the child.
+    must_avoid:
+    - The torso coming forward with the arm, which would end the withdrawal here.
+    - The gaze turning eager or the mouth shifting into a smile.
+    - The fork already loaded with broccoli — that belongs to the next shot.
+    continuity:
+      from_previous: The same reclined torso and averted gaze as the stalled reach; only the hand and
+        the fork have moved.
+      to_next: 'Cut to a tighter framing. Everything staged here is held across the cut: same right hand
+        on the fork, same fork position near the rim of the plate, same torso lean, same screen direction,
+        same plate and food positions, mother still at the left edge.'
+- shot_id: shot-03
+  keyframes:
+  - id: shot-03-kf-01
+    roles:
+    - initial
+    at_seconds: 0.0
+    source_state: visual_start
+    visual_state: The same child at frame right, framed slightly tighter so that the fork, the plate and
+      the mouth are all readable at once. He is in exactly the state that ended shot-02 — torso leaned
+      back against the chair, right hand gripping the fork just clear of the table near the rim of the
+      plate, tines not yet in the food, left hand on the table, eyes off the plate. The mother is still
+      at the left edge, touching nothing.
+    semantic_purpose: 跨镜头首帧本身就是连续性契约，不能因为与上一镜末帧接近就删掉：它是新镜头里唯一能被检查“叉子有没有跳位、手有没有换边、躯干角度有没有复位”的那张图。0.5s 它到下一帧有
+      1.5s，其中开头约 0.5s 是不动的——先让观众确认阻力状态被带过了剪辑点，再由这只手把西兰花叉起并抬到嘴边。抵抗不是在切镜后重新建立的。
+    must_show:
+    - Same right hand on the fork, in the same position relative to the plate as the end of shot-02.
+    - Same backward lean of the torso and the same screen direction.
+    - Plate and remaining broccoli in their unchanged positions.
+    - Gaze still off the plate and not eager.
+    must_avoid:
+    - The fork jumping to the other hand or to a different position on the table.
+    - The torso resetting to upright at the cut.
+    - The mother having moved, or now touching the child, the fork or the plate.
+    continuity:
+      from_previous: Identical staged state to shot-02's final frame at a tighter framing; nothing is
+        reset by the cut.
+      to_next: The fork lowers into a piece of broccoli, spears it, and rises slowly toward the mouth
+        while the torso stays back.
+  - id: shot-03-kf-02
+    roles:
+    - semantic_climax
+    at_seconds: 1.5
+    visual_state: The child holds the fork with a piece of broccoli speared on it, raised and stopped
+      just short of his mouth. His lips are closed, not yet parted. His torso is still leaned back, so
+      the arm has had to travel the whole distance on its own; his eyes are on the broccoli or lowered,
+      not turned toward the mother.
+    semantic_purpose: 全场最强的一帧：动作已经几乎完成，阻力仍然在。第一次停顿只能证明“启动慢”，第二次停顿证明阻力贯穿整个执行过程，这正是本场景要教的判据。缺了它，整条弧线塌成“犹豫一下然后正常吃”。同时它把“孩子自己把食物送到嘴边”钉住，与
+      refuse 划清界限。
+    must_show:
+    - Broccoli on the fork, held still just short of the mouth.
+    - Mouth closed — a visible halt, not a bite or a swallow in progress.
+    - Body still withdrawn while only the arm has committed.
+    - No one else's hand on the fork or on the child — he is doing this himself.
+    must_avoid:
+    - Gagging, retching, or turning the head away from the food at the mouth.
+    - Eyes squeezed shut, which would read as fear rather than low willingness.
+    - The mother feeding him or steadying his arm.
+    continuity:
+      from_previous: The same reclined torso as the opening frame; the fork is now loaded and raised.
+      to_next: The mouth opens, the bite is taken, and the fork is lowered back onto the plate while the
+        chewing starts.
+  - id: shot-03-kf-03
+    roles:
+    - final
+    at_seconds: 3.2
+    source_state: visual_end
+    visual_state: The bite has been taken. The fork is back down on the plate and the child's right hand
+      has returned toward the table. His mouth is closed and his expression is flat, jaw at rest or on
+      a slow chew. He is still sitting back in the chair, gaze low or to the side — he has not leaned
+      in toward the plate and is not reaching for another piece.
+    semantic_purpose: 证明两件事同时成立：动作确实发生并由孩子自己完成（不是 refuse），而意愿始终没有转正（不是主动配合）。动作完成后身体仍维持后撤姿态，是“低意愿贯穿到底”的收尾证据。它到镜头结束还有
+      1.6s，咀嚼、吞咽与最后的静止都在这段里发生——它们与本帧的差别只是下颌位置，本身不改变任何语义推断，所以不单独成帧。
+    must_show:
+    - Fork put down on the plate — the action was completed.
+    - Body still reclined, matching the withdrawal established in shot-02.
+    - Flat mouth, gaze low or averted.
+    - No reach for a second piece.
+    must_avoid:
+    - Smiling, nodding, or leaning forward for another piece.
+    - Spitting the food out or a face that reads as revulsion at the taste.
+    - Pushing the plate away.
+    continuity:
+      from_previous: The same reclined posture; the fork has moved from the mouth back to the plate.
+      to_next: null

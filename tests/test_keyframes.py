@@ -32,6 +32,16 @@ SHOT_PLAN_PATH = (
     ROOT / "data" / "drafts" / "shot-plans" / SCENE_ID / "v04" / "shot-plan.yaml"
 )
 
+# 第二轮: v01 的 animatic 审核推翻了 Shot Plan v04 的时长, Shot Plan v05 按三镜
+# 重编, Keyframe Plan v02 重新选帧。两条记录都保留 —— v01 是"审核门确实拦住了
+# 东西"的证据, 不是废稿。
+PLAN_V02_PATH = (
+    ROOT / "data" / "drafts" / "keyframe-plans" / SCENE_ID / "v02" / "keyframe-plan.yaml"
+)
+SHOT_PLAN_V05_PATH = (
+    ROOT / "data" / "drafts" / "shot-plans" / SCENE_ID / "v05" / "shot-plan.yaml"
+)
+
 
 def _load(path: Path) -> dict:
     return yaml.safe_load(path.read_text(encoding="utf-8"))
@@ -364,3 +374,161 @@ def test_keyframe_plan_carries_no_model_or_style_parameters(plan):
         "pixar", "lora", "workflow", "image_path", ".png",
     ):
         assert token not in blob, f"Keyframe Plan 含渲染层参数: {token!r}"
+
+
+# ============================================================ Keyframe Plan v02
+# 第二轮真实数据: Shot Plan v05 (三镜) 的重新选帧。这里断言的是**这一条样本上已经
+# 审过的结论**与**版本历史没有被覆盖**, 不是通用不变量 —— 仍然不规定每个 Shot 的
+# 关键帧数量、必须集齐哪些 roles, 或未来的 reluctant 版本必须是几镜。
+
+@pytest.fixture(scope="module")
+def shot_plan_v05() -> dict:
+    return _load(SHOT_PLAN_V05_PATH)
+
+
+@pytest.fixture(scope="module")
+def plan_v02() -> dict:
+    return _load(PLAN_V02_PATH)
+
+
+@pytest.fixture(scope="module")
+def manifest_v02(plan_v02, shot_plan_v05) -> dict:
+    return keyframe_lib.build_animatic(plan_v02, shot_plan_v05)
+
+
+def test_v02_passes_schema_and_validators(plan_v02, shot_plan_v05):
+    errors = draft.schema_check(
+        plan_v02, draft.load_schema("keyframe-plan.schema.json"), "keyframe-plan.yaml"
+    )
+    errors += keyframe_lib.validate_keyframe_plan(plan_v02, shot_plan_v05)
+    assert errors == []
+
+
+def test_version_history_is_kept_and_each_plan_binds_its_own_shot_plan(plan, plan_v02):
+    """v01 仍绑定 v04, v02 绑定 v05; 两份都在盘上, 谁都没有被覆盖。
+
+    绑定必须是显式的 —— 下游不得跟着"最新目录"漂移, 否则 v01 这条审核记录会在
+    Shot Plan 重编之后悄悄变成"对 v05 的审核"。
+    """
+    for path in (PLAN_PATH, SHOT_PLAN_PATH, PLAN_V02_PATH, SHOT_PLAN_V05_PATH):
+        assert path.exists(), path
+    assert plan["version"] == 1 and plan["shot_plan_ref"]["version"] == 4
+    assert plan_v02["version"] == 2 and plan_v02["shot_plan_ref"]["version"] == 5
+    assert plan_v02["id"].endswith("-keyframe-plan-02")
+
+
+def test_v02_covers_every_shot_of_the_three_shot_plan(plan_v02, shot_plan_v05):
+    """覆盖与顺序: 每个 Shot 至少一个关键帧, 顺序与 Shot Plan 一致。
+
+    这里出现 3 是因为**这一版 Shot Plan 就是三镜**, 不是关键帧层要求三镜。
+    """
+    planned = [entry["shot_id"] for entry in plan_v02["shots"]]
+    assert planned == [shot["id"] for shot in shot_plan_v05["shots"]]
+    assert all(entry["keyframes"] for entry in plan_v02["shots"])
+
+
+def test_v02_keyframe_ids_are_unique_and_times_strictly_increase(plan_v02, shot_plan_v05):
+    ids = [keyframe["id"] for _shot_id, keyframe in keyframe_lib.keyframes(plan_v02)]
+    assert len(set(ids)) == len(ids)
+
+    durations = keyframe_lib.shot_durations(shot_plan_v05)
+    for entry in plan_v02["shots"]:
+        times = [keyframe["at_seconds"] for keyframe in entry["keyframes"]]
+        assert times == sorted(set(times)), f"{entry['shot_id']} 的关键帧时间未严格递增"
+        assert times[0] == 0.0, f"{entry['shot_id']} 的首帧不在镜头起点"
+        assert times[-1] <= durations[entry["shot_id"]], (
+            f"{entry['shot_id']} 的关键帧越过了镜头时长"
+        )
+
+
+def test_v02_total_duration_equals_the_v05_shot_durations(manifest_v02, shot_plan_v05):
+    assert manifest_v02["total_duration_seconds"] == pytest.approx(
+        sum(keyframe_lib.shot_durations(shot_plan_v05).values())
+    )
+    assert manifest_v02["total_duration_seconds"] == pytest.approx(
+        shot_plan_v05["total_duration_hint"]
+    )
+
+
+def test_v02_animatic_on_disk_matches_regeneration(plan_v02, shot_plan_v05, manifest_v02):
+    committed = _load(PLAN_V02_PATH.parent / "animatic.yaml")
+    assert committed == yaml.safe_load(
+        yaml.safe_dump(manifest_v02, allow_unicode=True, sort_keys=False)
+    )
+    preview = keyframe_lib.animatic_html(plan_v02, shot_plan_v05, manifest_v02)
+    assert (PLAN_V02_PATH.parent / "animatic.html").read_text(encoding="utf-8") == preview
+
+
+def test_v02_timeline_covers_every_keyframe_without_gaps(manifest_v02, plan_v02):
+    referenced = [entry["keyframe_id"] for entry in manifest_v02["entries"]]
+    assert referenced == [
+        keyframe["id"] for _shot_id, keyframe in keyframe_lib.keyframes(plan_v02)
+    ]
+    clock = 0.0
+    for entry in manifest_v02["entries"]:
+        assert entry["start"] == pytest.approx(clock)
+        assert entry["hold_seconds"] > 0
+        clock = entry["end"]
+    assert clock == pytest.approx(manifest_v02["total_duration_seconds"])
+
+
+def test_v02_has_no_teaching_packaging_and_no_sensory_aversion_as_evidence(plan_v02):
+    """与 v01 同一条边界: 执行文本是 visual_state 与 must_show。"""
+    for _shot_id, keyframe in keyframe_lib.keyframes(plan_v02):
+        blob = " ".join([keyframe["visual_state"], *keyframe["must_show"]]).lower()
+        assert "reluctant" not in blob, f"{keyframe['id']} 把目标词写进了执行文本"
+        for term in keyframe_lib.TEACHING_PACKAGING:
+            assert term not in blob, f"{keyframe['id']} 含教学包装用语: {term!r}"
+        for term in ("disgust", "distaste", "gag", "grimace", "revulsion"):
+            assert term not in blob, f"{keyframe['id']} 把感官厌恶当成了视觉证据"
+
+
+def test_v02_anchors_both_pauses_and_the_shot_boundary(plan_v02):
+    """v05 的三镜结构必须保住三样东西, 否则这次上游修订就白做了。
+
+    1. 启动阻力 (伸手中途停住) 仍在 shot-02 内部被锚定;
+    2. 执行中的阻力 (嘴边停住) 仍是 semantic_climax;
+    3. 切点两侧各有一个锚点 —— shot-02 的末帧 (已握住叉子) 与 shot-03 的首帧。
+       画面相近不是删掉其中之一的理由: 跨镜头首帧本身就是连续性契约, 而末帧是
+       "孩子自己把叉子拿起来了" 唯一被看见的地方。
+    """
+    by_shot = {entry["shot_id"]: entry["keyframes"] for entry in plan_v02["shots"]}
+
+    roles_02 = [role for kf in by_shot["shot-02"] for role in kf["roles"]]
+    assert "transition" in roles_02, "shot-02 失去了伸手中途停住的锚点"
+    assert "final" in roles_02, "shot-02 没有把结束状态交给下一镜"
+
+    roles_03 = [role for kf in by_shot["shot-03"] for role in kf["roles"]]
+    assert "semantic_climax" in roles_03, "嘴边那次停顿不再是最强证据帧"
+    assert "initial" in by_shot["shot-03"][0]["roles"], "shot-03 缺少跨镜首帧锚点"
+
+
+def test_v02_shot_03_opening_frame_matches_the_handover_state(plan_v02):
+    """切点两侧描述的是同一个状态: 同一只手、同一个叉子位置、同样的后靠。"""
+    by_shot = {entry["shot_id"]: entry["keyframes"] for entry in plan_v02["shots"]}
+    handover = by_shot["shot-02"][-1]
+    opening = by_shot["shot-03"][0]
+    for token in ("right hand", "fork", "leaned back", "plate"):
+        assert token in handover["visual_state"].lower(), (
+            f"shot-02 末帧没有写明交接状态: {token!r}"
+        )
+        assert token in opening["visual_state"].lower(), (
+            f"shot-03 首帧没有继承交接状态: {token!r}"
+        )
+    assert opening["continuity"]["from_previous"], "shot-03 首帧没有写明它继承自哪里"
+
+
+def test_v02_has_no_duplicated_keyframe(plan_v02):
+    """没有两张关键帧描述同一个状态 —— 那是"为了凑角色枚举复制画面"的形态。"""
+    states = [
+        keyframe["visual_state"] for _shot_id, keyframe in keyframe_lib.keyframes(plan_v02)
+    ]
+    assert len(set(states)) == len(states)
+
+
+def test_v02_still_does_not_redirect_the_scene(plan_v02, shot_plan_v05):
+    assert [entry["shot_id"] for entry in plan_v02["shots"]] == \
+        [shot["id"] for shot in shot_plan_v05["shots"]]
+    assert set(plan_v02.keys()).isdisjoint({
+        "shots_override", "duration", "total_duration_hint", "cast", "location",
+    })
