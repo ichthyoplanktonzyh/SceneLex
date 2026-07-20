@@ -58,7 +58,9 @@ semantic skeleton + inclusion/exclusion conditions + L1 confusables
         ↓
 teaching-scene evidence specification (model-neutral IR)
         ↓
-Director Agent (semantic scene → model-adapted video prompt)
+Director Agent (semantic beats → executable Shot Plan)
+        ↓
+keyframe / animatic package (下一步, 尚未建设)
         ↓
 renderer adapters (image / video / TTS / interactive)
         ↓
@@ -128,24 +130,33 @@ learning clients, APIs, or content packages
   5. Inventory 本身有问题时，回到 inventory 层修正或重新走 review/approve，
      不得在 sense draft 中自行修复；模型可返回
      `generation_status: inventory_conflict` 让工具落到 `_conflict-` 文件。
-- `docs/production-workflow.md`：Phase 1.3 的 Director 权威说明。Director 负责把模型无关
-  的词义与教学场景翻译为适合当前视频能力的高质量提示词。生产默认工序是关键图先行
-  （文生图 → 图片语义门 → 图生视频）；尾帧、animatic 等更多控制是遇到实际问题时
-  按需调用的工具。
-- `tools/director.py`：Director 编排——读取 WordSense + SceneSpec + capability profile，
-  生成版本化 `data/drafts/director/{scene_id}/v{NN}/director-prompt.yaml`。
-- `schema/director-prompt.schema.json`：轻量内部契约，记录生成策略、一个或多个视频提示词
-  （clip 数量由语义场景与 Director 决定，不设固定上限）、关键图提示词和简短语义
-  guardrails；不属于公开语义资源。
-- `tools/render.py`：当前早期渲染原型——场景规格 → beat 级渲染计划（plan）→ 图像候选
+- `docs/production-workflow.md`：Phase 1.4 的生产层权威说明。Director 把 SceneSpec 的
+  语义节拍编译成 Shot Plan；Shot Plan 是 Scene 之后唯一的叙事执行权威，后续
+  Keyframe / Animatic / 视频模型只执行它，不再自行重新拆分 Scene。
+- `tools/director.py`：Director 编排——读取 WordSense + SceneSpec，生成版本化
+  `data/drafts/shot-plans/{scene_id}/v{NN}/shot-plan.yaml`（`plan` / `show` / `list`；
+  `generate` 是已弃用的兼容别名，`show-legacy` 只读旧 Director Prompt）。
+- `schema/shot-plan.schema.json` + `tools/shot_plan.py`：Shot Plan 执行契约与结构校验。
+  **Beat 是语义单位，Shot 是视频执行单位，二者不要求一一对应**：多个 beat 可以合并成
+  一个镜头，一个 beat 也可以拆成多个镜头；硬要求是每个 storyboard beat 至少被一个镜头
+  覆盖、镜头序列不逆转 beat 时间线、shot ID 从 `shot-01` 起连续。Shot Plan 决定镜头
+  拆分、顺序、状态变化、构图、摄影机、时长、语义证据、连续性与最小音频意图；**不得**
+  写入视觉风格、模型名、checkpoint、sampler、seed、最终提示词、workflow、关键帧文件或
+  剪辑时间轴。身份字段（含 `total_duration_hint`）由程序写入，模型显式写错即
+  `shot plan identity drift` 并失败；只能从语义修订 `CURRENT` 的 SceneSpec 1.1 编译，
+  不提供 `--allow-stale` 逃生通道。
+- `schema/director-prompt.schema.json`：**LEGACY** 模型提示词原型契约，历史产物保留，
+  不是新架构权威层；不属于公开语义资源。
+- `tools/render.py`：**legacy** 早期渲染原型——场景规格 → beat 级渲染计划（plan，运行时
+  打印一次 legacy warning）→ 图像候选
   （render，经 imagegen 适配器）→ playback 组装（待建）。它尚未实现权威生产工作流。版本目录
   `data/drafts/renders/{scene_id}/v{NN}/` 永不覆盖；候选文件按字母递增，
   manifest 随渲染增量更新。
 - `tools/imagegen.py`：图像生成适配器（comfyui 协议）——加载
   `tools/workflows/` 下的工作流 API JSON，跟随采样器连线自动定位正负提示词
   节点后注入，`SCENELEX_IMG_*` 配置。模型与工作流名只进 manifest。
-- `schema/render-plan.schema.json`：早期 beat 级渲染计划（现状内部 IR，不是未来 Production
-  Package 契约）。内容/风格分离：
+- `schema/render-plan.schema.json`：**LEGACY** 早期 beat 级渲染计划（内部 IR，不是未来
+  Production Package 契约；新主线的叙事拆分由 Shot Plan 决定）。内容/风格分离：
   beat prompt 只写内容，外观集中在 characters/setting 卡片、以 `{char:id}` 与
   `{setting}` 占位符引用（展开是机械替换，保证跨 beat 一致）；全局风格在
   `prompts/render-style.yaml`，渲染时追加。后续不得直接把该 Schema 扩成供应商 prompt
@@ -221,11 +232,14 @@ candidate → sense draft → reviewed sense → scene draft → reviewed scene 
   输入版本、版权/许可和审核结论。
 - 先验证语义与教学设计，再优化画面“影视感”。第一版可以是连续图片、动态漫画或
   简单动画；不要为了视频质量牺牲场景可观察性和概念边界。
-- `SceneSpec.storyboard` 是语义节拍，不是模型 prompt。Director 可以把多个 beat 写进一个
-  连续事件，也可以拆成多个 clip；clip 数量由语义场景与 Director 决定，禁止机械一对一
-  转换，也禁止为凑数增删 clip。
+- `SceneSpec.storyboard` 的 beat 是**语义单位**，Shot 是**视频执行单位**，二者不要求
+  一一对应：动作与构图连续时多个 beat 可以合并成一个镜头，一个 beat 也可以拆成
+  establishing 与 reaction 两个镜头。禁止机械一对一转换，也禁止为凑数增删镜头。
+  Shot 数量不等于 Beat 数量不是错误；未被覆盖的 beat、引用不存在的 beat、逆转 beat
+  时间线才是错误。不要修改 SceneSpec 让它承担 Shot 的职责（镜头类型、机位、运动、
+  模型 prompt、关键帧数量、渲染模型、workflow、seed 都不进 SceneSpec）。
 - 现有WordSense与SceneSpec是Director的完整内容输入。Director不得重新设计故事、增加所谓
-  记忆点、替换人物动机或修改语义外化；只把已有场景忠实翻译为模型可执行的视觉语言。
+  记忆点、替换人物动机或修改语义外化；只决定这段事件怎样被镜头看见。
 - 媒体形态、时长和镜头数由语义证据决定，不默认所有词义都是固定长度的 3D 短片。
   生产默认关键图先行：先文生图并通过图片语义门（人物/道具/姿态/视线/构图），再图生
   视频；`direct_t2v` 只在目标能力可靠承载单一连续事件且无跨 clip 一致性需求时使用。
@@ -237,8 +251,8 @@ candidate → sense draft → reviewed sense → scene draft → reviewed scene 
   不预先拆成 Reviewer、Decision Policy 或复杂生产状态机；重复失败模式出现后再抽象。
 - 生成本身也是探索手段。不要因为预设视频昂贵而延迟生成，优先快速取得候选和反馈。
 - 渲染层全局视觉方向是`Pixar-style 3D animated film`。该高层标签与具体造型、材质、
-  灯光、色彩和表演属性共同写入`prompts/render-style.yaml`和Director Prompt，但不得进入
-  WordSense或SceneSpec。具体checkpoint、工作流和供应商能力仍只属于适配层。
+  灯光、色彩和表演属性写入`prompts/render-style.yaml`与渲染适配层，但不得进入
+  WordSense、SceneSpec或Shot Plan。具体checkpoint、工作流和供应商能力仍只属于适配层。
 - 个性化只改变表面经验、入口和教学顺序；不得改变通用语义骨架、偷换对比词，或让
   个体化样本成为唯一概念证据。
 - 任何 API、内容包或下游导出都应区分 `draft`、`reviewed`、`published` 等发布状态，

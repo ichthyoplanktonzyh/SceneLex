@@ -1,56 +1,108 @@
-# SceneLex Director：语义场景到视频提示词
+# SceneLex 生产工作流：从语义节拍到可执行镜头
 
-> 状态：Phase 1.3 权威说明（2026-07-18）。
+> 状态：Phase 1.4 权威说明（2026-07-20）。Shot Plan 取代旧的 Director Prompt
+> 成为 Scene 之后的执行权威。
 
-## 核心定位
-
-SceneLex 的核心媒体能力是一个 Director 中间层：
+## 生产链
 
 ```text
-WordSense + SceneSpec
-        ↓
-Director Agent
-        ↓
-关键图 prompt + 视频 prompt（clip 数量由语义场景与 Director 决定）
-        ↓
-角色设定图（每角色一次，跨 clip 复用的参考资产）
-        ↓
-关键图生成（挂角色设定图为 reference，直接按视频目标画幅）
-        → 图片语义门（人物/道具/姿态/视线/构图，便宜且快速）
-        ↓
-Image-to-Video / Video Model（昂贵工序只接收已过门的输入）
-        ↓
-Director 查看结果并按需修正（时序语义验收）
+Dictionary Evidence
+→ Approved Sense Inventory
+→ Inventory-driven WordSense
+→ SceneSpec
+→ Shot Plan                     ← 本层：叙事执行权威
+→ Keyframe / Animatic Package   ← 后续 PR
+→ AI Video Shots
+→ Edit / Audio / Final Video
 ```
 
-Director 的价值不是模拟传统动画制片厂，而是理解一个词义必须怎样被看见，并把已经设计好的语义场景翻译成视频模型能够执行的导演语言。
+Director 的职责是这条链上的一步：
 
-这里的“已经设计好”是硬边界：现有WordSense与SceneSpec已经能准确表达目标词义，Director不得重新设计故事、增加记忆点或修改语义外化，只负责渲染翻译。
+```text
+WordSense + SceneSpec → Shot Plan
+```
 
-## 权威边界
+Director 的价值不是模拟传统动画制片厂，而是理解一个词义必须怎样被看见，并把已经设计好的语义场景拆分成可审核、可执行的镜头。
 
-- `WordSense` 与 `SceneSpec` 定义词义、概念边界和教学证据，保持模型无关。
-- Director Prompt 是内部、可版本化的模型适配产物，不反向修改语义资源。
-- 模型、workflow、seed、参考图接口和生成参数属于渲染与追溯层。
-- `SceneSpec.storyboard` 是语义节拍。Director 可以把多个 beat 写进一个连续 prompt，也可以拆成多个 clip。clip 数量不是固定规范：它由语义场景需要多少个可分离的动作阶段、以及目标能力单次能可靠承载多少动作共同决定，禁止机械地按 beat 一对一拆分，也禁止为凑某个数量增删 clip。
+这里的“已经设计好”是硬边界：现有 WordSense 与 SceneSpec 已经能准确表达目标词义，Director 不得重新设计故事、增加记忆点或修改语义外化，只决定这段事件**怎样被镜头看见**。
 
-## Director 做什么
+## Beat 与 Shot
 
-1. 从语义骨架、成立条件、排除条件、`must_show`、`must_not` 和 `teaching_evidence` 提取视觉责任。
-2. 把心理、态度、程度和逻辑翻译为动作时序、表情、视线、身体方向、速度、压力和结果。
-3. 忠实保留SceneSpec中的人物、环境、事件因果、动作节拍、声音和教学目的。
-4. 根据目标视频能力，把现有事件写成自然、具体、可直接提交的英文提示词。
-5. 明确最容易误画的相邻概念和禁止结果。
-6. 查看生成结果；若语义不成立，修改提示词或按需增加参考图、尾帧、更细的 clip 划分等
-   进一步控制（首帧关键图已是默认工序，不算升级手段）。
+```text
+Beat = semantic unit         观众必须看见的事件, 及其在词义证明中的作用
+Shot = video execution unit  一次连续摄像机观察和连续运动
+```
 
-Director 不默认创建角色数据库、状态机、正式 animatic、多 Agent 评审或复杂生产包。这些都是遇到实际失败时可以调用的工具，不是所有场景的前置流程。
+**二者不是一一对应的。** 构图与动作连续时，多个 beat 可以合并成一个 4–5 秒的镜头；一个 beat 同时要求先看外部压力、再看人物反应时，可以拆成 establishing/trigger shot 与 reaction shot。校验器不要求 Shot 数量等于 Beat 数量，只要求：
+
+- 每个 storyboard beat 至少被一个 Shot 覆盖；
+- Shot 序列不逆转 beat 的时间线；
+- Shot ID 从 `shot-01` 起连续编号。
+
+## Shot Plan 的权威边界
+
+Shot Plan **决定**：
+
+- shot segmentation（叙事拆分）；
+- temporal order（镜头顺序）；
+- state change（起始状态 / 触发 / 动作 / 结束状态）；
+- composition（景别、角度、焦点主体、调度）；
+- camera（运动与动机）；
+- duration（每镜头时长与总时长）；
+- semantic evidence（本镜头的 must_show / must_avoid）；
+- continuity（人物位置、朝向、姿势、道具的进出交接）；
+- minimal audio intent（silence / sfx / optional / required dialogue）。
+
+Shot Plan **不决定**：
+
+- visual style（任何风格锚点，包括 Pixar-style）；
+- specific model、供应商、checkpoint、sampler、seed；
+- final prompts、negative prompt；
+- workflow（ComfyUI node 等）；
+- keyframe files、音频文件；
+- final edit（最终剪辑时间轴）。
+
+后续图像与视频模型只执行 Shot Plan，不再自行重新拆分 Scene。
+
+## 上游绑定与权威字段
+
+Shot Plan 记录 `scene_ref` / `scene_version` / `sense_ref` / `sense_revision`，依赖链保持
+`Shot Plan → Scene → WordSense → Approved Inventory`，不直接依赖 Inventory，也不使用内容摘要。
+
+- 这些身份字段与 `schema_version` / `version` / `status` / `id` / `total_duration_hint` 一律由程序写入。模型**省略**可补全；模型**显式写错**判定为 `shot plan identity drift`，本次编译失败并保留原始输出。
+- Shot Plan 只能从语义修订状态为 `CURRENT` 的 SceneSpec 1.1 编译。`LEGACY` / `NEEDS_REVIEW` / `INVALID` / `MISSING` 一律在调用模型之前失败，且没有 `--allow-stale` 之类的逃生通道——普通 `validate.py` 容忍旧场景，但新的视频执行计划不应建立在已知过时的语义契约上。
+- `scene_version` 只用于提示上游动过：`director.py show` 在当前 Scene 版本与计划记录不一致时打印 `source Scene version has changed; review this Shot Plan`，不是失效判定，也不进入发布门。
+
+## 命令
+
+```bash
+python3 tools/director.py plan reluctant-01-proto-01   # Scene + WordSense → Shot Plan
+python3 tools/director.py show reluctant-01-proto-01   # 面向人工审核的展开
+python3 tools/director.py list                         # Shot Plan 版本一览
+```
+
+`data/drafts/shot-plans/{scene_id}/v{NN}/shot-plan.yaml` 永不覆盖，重编即新版本。解析失败与校验失败的模型输出进旁路文件（`_unparsed-shot-plan.txt` / `_invalid-shot-plan.yaml`），正常路径只接收通过全部检查的产物。
+
+`director.py generate` 是已弃用的兼容别名：它打印弃用提示后执行与 `plan` 完全相同的实现，不再生成旧的 `director-prompt.yaml`。
+
+## Legacy：旧 Director Prompt 与 beat-image 渲染计划
+
+以下产物继续保留以便追溯历史，但都**不是**新架构的权威层：
+
+- `schema/director-prompt.schema.json` + `prompts/director.md` + `data/drafts/director/`：旧的“场景 → 模型提示词”原型。`director.py show-legacy` 可以查看历史产物；新的 `plan` 不再生成它们。
+- `schema/render-plan.schema.json` + `prompts/render-plan.md` + `tools/render.py plan`：旧的 beat-image 渲染原型。它仍可运行（运行时打印一次 legacy warning，不影响退出码），但不消费也不修改 Shot Plan，也不会被自动迁移。
+
+Shot → Keyframe / Animatic Package 的编译由后续 PR 建设；在那之前不要把这两层当作 Shot Plan 的下游。
+
+## 下游渲染层的既有经验（Shot Plan 之后）
+
+以下内容描述 Shot Plan 下游的图像/视频工序。它们不改变 Shot Plan 的内容，只说明镜头计划最终如何被执行。
 
 ## 全局视觉方向
 
 SceneLex渲染层统一使用`Pixar-style 3D animated film`作为高信息密度风格锚点，并补充可执行属性：吸引人的风格化3D角色、可读的眼睛和眉部表演、夸张但可信的身体语言、温暖电影化家庭动画灯光、精致3D材质、丰富色彩和清楚的视觉叙事。
 
-该风格只存在于`prompts/render-style.yaml`、Director Prompt和渲染器中，不进入WordSense或SceneSpec。风格只能改变呈现，不能改变已有场景内容。
+该风格只存在于`prompts/render-style.yaml`和渲染适配层，不进入WordSense、SceneSpec或Shot Plan。风格只能改变呈现，不能改变已有场景内容，也不能改变镜头拆分。
 
 ## 生成策略：关键图先行是生产默认
 
@@ -127,21 +179,22 @@ Director 写关键图 prompt + 视频 prompt
 
 生成应尽早发生。提示词、参考图、关键帧和视频本身都可以用于探索，不因为担心成本而预先增加不必要流程。
 
-## Director Prompt 契约
+## Shot Plan 契约
 
-`schema/director-prompt.schema.json` 只保留：
+`schema/shot-plan.schema.json` 保留：
 
-- 目标 capability profile；
-- 全局渲染风格标识（当前为`pixar-3d`）；
-- `direct_t2v` / `image_guided_i2v` / `split_clips` 策略；
-- 一个或多个可直接提交的英文视频 prompt，数量由语义场景与 Director 决定；
-- 关键图 prompt（关键图先行策略下每个 clip 都应提供）；
-- 简短的 `must_show` 与 `must_avoid`。
+- 上游绑定（`scene_ref` / `scene_version` / `sense_ref` / `sense_revision`）；
+- 跨镜头连续性资源（`cast` / `location` / `props`）；
+- 镜头序列：`source_beats`、叙事与语义功能、时长、`visual_start` / `trigger` / `action` / `visual_end`、`composition`、`camera`、`semantic_evidence`、`audio`、`continuity`。
 
-它不是公开资源契约，也不是完整制片计划。
+时长纪律：每镜头 1–8 秒（生产目标 2–5 秒；>5 秒 warning，>8 秒 error），`total_duration_hint` 由程序按各镜头求和权威写入。
+
+它不是公开资源契约，也不是完整制片计划，更不是模型提示词。
+
+`schema/director-prompt.schema.json` 是它的 legacy 前身，只描述模型提示词原型，已不参与新主线。
 
 ## 当前纵向样本
 
-先用 `reluctant-01-proto-01` 验证：Director能否忠实翻译现有场景，并用统一Pixar-style 3D视觉让视频模型准确执行其中的动作时序，同时避免只画成sad、slow、hesitant、refuse或eager。
+先用 `reluctant-01-proto-01` 验证：Director 能否把现有语义节拍拆成可审核的执行镜头，让动作时序被正确看见，同时避免只画成 sad、slow、hesitant、refuse 或 eager。注意该场景目前仍是 SceneSpec 1.0（语义修订状态 `LEGACY`），需要先按 WordSense 1.1 重新起草才能编译 Shot Plan。
 
 随后用 `messy` 和 `almost` 检查同一个 Director 是否会根据语义类型自然选择静态关系、状态变化或终止结果，而不是套用同一种短片模板。
