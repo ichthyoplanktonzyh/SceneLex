@@ -10,10 +10,21 @@ Dictionary Evidence
 → Approved Sense Inventory
 → Inventory-driven WordSense
 → SceneSpec
-→ Shot Plan                     ← 本层：叙事执行权威
-→ Keyframe / Animatic Package   ← 后续 PR
-→ AI Video Shots
+→ Shot Plan                     ← 叙事执行权威
+→ Keyframe Plan                 ← 选择并描述必要的视觉状态
+→ Animatic Review               ← 审核顺序、时长、状态覆盖与镜头边界
+→ Image Keyframe Generation     ← 把已批准的视觉状态画出来
+→ AI Video Shots                ← 在已批准状态之间生成运动
 → Edit / Audio / Final Video
+```
+
+四层的职责边界不可互换：
+
+```text
+Keyframe Plan     = 选择和描述必要视觉状态
+Animatic          = 审核顺序、时长、状态覆盖和镜头边界
+Image generation  = 把已批准的视觉状态画出来
+Video generation  = 在已批准状态之间生成运动
 ```
 
 Director 的职责是这条链上的一步：
@@ -92,7 +103,32 @@ python3 tools/director.py list                         # Shot Plan 版本一览
 - `schema/director-prompt.schema.json` + `prompts/director.md` + `data/drafts/director/`：旧的“场景 → 模型提示词”原型。`director.py show-legacy` 可以查看历史产物；新的 `plan` 不再生成它们。
 - `schema/render-plan.schema.json` + `prompts/render-plan.md` + `tools/render.py plan`：旧的 beat-image 渲染原型。它仍可运行（运行时打印一次 legacy warning，不影响退出码），但不消费也不修改 Shot Plan，也不会被自动迁移。
 
-Shot → Keyframe / Animatic Package 的编译由后续 PR 建设；在那之前不要把这两层当作 Shot Plan 的下游。
+Shot Plan 的下游是 Keyframe Plan（见下一节），不是这两个 legacy 层。
+
+## Keyframe Plan 与 Animatic
+
+`schema/keyframe-plan.schema.json` + `tools/keyframe_plan.py` + `tools/keyframes.py`。
+
+Keyframe Plan 只做一件事：在 Shot Plan 已经定好的镜头里，选出并描述那些**缺了它观众的语义推断就会改变**的画面状态，并给出它们在镜头内的时间位置。它**不重新导演场景**——镜头数量、顺序与时长仍由 Shot Plan 决定；它也不写视觉风格、模型、checkpoint、sampler、seed、最终提示词或图片路径。
+
+```bash
+python3 tools/keyframes.py validate reluctant-01-proto-01
+python3 tools/keyframes.py show     reluctant-01-proto-01
+python3 tools/keyframes.py animatic reluctant-01-proto-01
+python3 tools/keyframes.py list
+```
+
+- 产物落在 `data/drafts/keyframe-plans/{scene_id}/v{NN}/`，永不覆盖；
+- `shot_plan_ref` 必须显式写明 scene ID 与 Shot Plan **版本**——草稿目录里历史版本全部保留，下游不得默默跟着"最新目录"漂移。校验是确定性的：引用的版本目录必须存在（不做 digest / SHA / 自动 stale 传播）；
+- 第一份 Keyframe Plan 由人工按真实内容选帧，工具负责校验、时间轴、预览与展示。因此没有 `plan` 子命令：**让模型按角色枚举给每个镜头凑五张关键帧，正是这一层要避免的失败模式。**
+
+`keyframes.py animatic` 确定性生成 `animatic.yaml`（机器可校验的时间轴）与 `animatic.html`（单文件预览，无 CDN、无服务器，浏览器直接打开），全程不调用任何模型。
+
+**文字占位卡不是视觉审核。** Animatic 能审时序、状态覆盖、hold 时长、镜头边界与动作密度；**不能**审构图可读性、表情质量、真实画面语义与图片之间的连续性。预览页顶部与每张卡都标着 `TEXTUAL PLACEHOLDER — NOT A VISUAL SEMANTIC REVIEW`，不要把它读成"视觉审核已通过"。
+
+校验刻意**不**规定：每个 Shot 必须有 `initial` + `final`、每个 Shot 必须 2–5 帧、每个 Shot 必须有 `semantic_climax`、每个 Beat 必须对应关键帧、关键帧数量上限。帧数由内容的真实状态变化决定；一个样本不足以把这些写成不变量。
+
+第一条真实审核记录见 [docs/vertical-slices/reluctant-01-keyframe-animatic.md](vertical-slices/reluctant-01-keyframe-animatic.md)。
 
 ## 下游渲染层的既有经验（Shot Plan 之后）
 
@@ -102,7 +138,7 @@ Shot → Keyframe / Animatic Package 的编译由后续 PR 建设；在那之前
 
 SceneLex渲染层统一使用`Pixar-style 3D animated film`作为高信息密度风格锚点，并补充可执行属性：吸引人的风格化3D角色、可读的眼睛和眉部表演、夸张但可信的身体语言、温暖电影化家庭动画灯光、精致3D材质、丰富色彩和清楚的视觉叙事。
 
-该风格只存在于`prompts/render-style.yaml`和渲染适配层，不进入WordSense、SceneSpec或Shot Plan。风格只能改变呈现，不能改变已有场景内容，也不能改变镜头拆分。
+该风格只存在于 `prompts/render-style.yaml` 和渲染适配层，**不进入 WordSense、SceneSpec、Shot Plan 或 Keyframe state identity**。风格只能改变呈现，不能改变已有场景内容，不能改变镜头拆分，也不能改变一个关键帧是"哪一个状态"。它是渲染层的当前默认值，不是新语义主链的一部分。
 
 ## 生成策略：关键图先行是生产默认
 
@@ -199,5 +235,7 @@ Director 写关键图 prompt + 视频 prompt
 
 该样本已经跑通：`reluctant` 是仓库第一个 approved Sense Inventory，`reluctant-01` 已按它重新起草为 WordSense 1.1，`reluctant-01-proto-01` 是第一条语义修订状态为 `CURRENT` 的 SceneSpec 1.1，并编译出真实 Shot Plan。当前推荐版本是 v04（3 个 Beat → 2 个 Shot，7.3s）；v01–v03 作为问题证据保留，不覆盖。逐项审查记录见
 [docs/vertical-slices/reluctant-01-proto-01.md](vertical-slices/reluctant-01-proto-01.md)。其余 20 个场景仍是 SceneSpec 1.0（`LEGACY`），本轮不做批量迁移。
+
+该样本随后走到了 Keyframe / Animatic 层：`data/drafts/keyframe-plans/reluctant-01-proto-01/v01/` 是第一份真实关键帧计划（7 帧 = 2 + 5，锚定 Shot Plan v04）。Animatic 审核的结论是 **SHOT PLAN REVISION REQUIRED BEFORE IMAGE GENERATION**——选帧成立，但 shot-02 的 4.8s 装不下它自己的动作链，建议在"握住叉子之后"的自然动作边界改成 3 个镜头。审核记录见 [docs/vertical-slices/reluctant-01-keyframe-animatic.md](vertical-slices/reluctant-01-keyframe-animatic.md)。**该建议尚未执行：v04 未被修改，也未生成 v05。**
 
 随后用 `messy` 和 `almost` 检查同一个 Director 是否会根据语义类型自然选择静态关系、状态变化或终止结果，而不是套用同一种短片模板。

@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scenelex.org/schema/keyframe-plan.schema.json",
+  "title": "SceneLex Keyframe Plan",
+  "description": "一条 Shot Plan 里每个 Shot 必须被明确锚定的视觉状态。Keyframe Plan 只做一件事: 选出并描述那些'缺了它观众的语义推断就会改变'的画面状态, 并给出它们在镜头内的时间位置。它不重新导演场景 (镜头拆分与顺序由 Shot Plan 决定), 也不决定视觉风格、图像/视频模型、checkpoint、sampler、seed、最终提示词或最终剪辑。",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "version",
+    "status",
+    "id",
+    "scene_ref",
+    "shot_plan_ref",
+    "shots"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Keyframe Plan 自身的版本; 每次重新选帧写入新版本目录, 永不覆盖"
+    },
+    "status": { "const": "draft" },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z_]*-[0-9]{2}-(proto|contrast|counter|boundary|transfer)-[0-9]{2}-keyframe-plan-[0-9]{2}$",
+      "description": "{scene_id}-keyframe-plan-{nn}"
+    },
+    "scene_ref": {
+      "type": "string",
+      "pattern": "^[a-z][a-z_]*-[0-9]{2}-(proto|contrast|counter|boundary|transfer)-[0-9]{2}$"
+    },
+
+    "shot_plan_ref": {
+      "type": "object",
+      "description": "本计划所锚定的 Shot Plan。依赖链是 Keyframe Plan → Shot Plan → Scene → WordSense; 语义修订绑定由 Shot Plan 自己记录, 这里不重复。校验只做确定性检查: 引用的版本目录必须存在。",
+      "required": ["scene_id", "version"],
+      "additionalProperties": false,
+      "properties": {
+        "scene_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z_]*-[0-9]{2}-(proto|contrast|counter|boundary|transfer)-[0-9]{2}$"
+        },
+        "version": { "type": "integer", "minimum": 1 },
+        "human_revised": {
+          "type": "boolean",
+          "description": "被引用的 Shot Plan 是否含人工修订 (不是纯模型输出)"
+        }
+      }
+    },
+
+    "shots": {
+      "type": "array",
+      "minItems": 1,
+      "description": "顺序与 Shot Plan 的 shots 一致; 每个 Shot 至少一个关键帧",
+      "items": {
+        "type": "object",
+        "required": ["shot_id", "keyframes"],
+        "additionalProperties": false,
+        "properties": {
+          "shot_id": {
+            "type": "string",
+            "pattern": "^shot-[0-9]{2}$"
+          },
+          "keyframes": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/$defs/keyframe" }
+          }
+        }
+      }
+    }
+  },
+
+  "$defs": {
+    "keyframe": {
+      "type": "object",
+      "required": [
+        "id",
+        "roles",
+        "at_seconds",
+        "visual_state",
+        "semantic_purpose",
+        "must_show"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^shot-[0-9]{2}-kf-[0-9]{2}$",
+          "description": "{shot_id}-kf-{nn}; 全局唯一, 且前缀必须是所属 Shot"
+        },
+        "roles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "一个关键帧可以同时承担多个功能 (例如镜头末帧同时是请求成立的那一帧)。数组是为了避免为了凑角色枚举而复制画面, 不是要求每个 Shot 集齐全部角色。",
+          "items": {
+            "enum": ["initial", "trigger", "transition", "semantic_climax", "final"]
+          }
+        },
+        "at_seconds": {
+          "type": "number",
+          "minimum": 0,
+          "description": "在所属 Shot 内的时间位置 (秒)。同一 Shot 内严格递增, 不超过该 Shot 的 duration_hint。不建设帧率/timecode/SMPTE。"
+        },
+        "source_state": {
+          "enum": ["visual_start", "trigger", "action", "visual_end"],
+          "description": "该状态来自 Shot Plan 的哪个字段; 只写从上游直接取到的锚点, 由 action 推导出的中间状态可省略"
+        },
+        "visual_state": {
+          "type": "string",
+          "minLength": 1,
+          "description": "画师可以直接照着画出来的一幅静止画面: 人物位置、姿势、朝向、视线、手与道具的关系。不得只写内部心理状态。"
+        },
+        "semantic_purpose": {
+          "type": "string",
+          "minLength": 1,
+          "description": "这一帧为什么必须存在 —— 缺了它, 观众的语义推断会怎样改变"
+        },
+        "must_show": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "本帧必须可见的语义证据"
+        },
+        "must_avoid": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "continuity": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "from_previous": { "type": ["string", "null"] },
+            "to_next": { "type": ["string", "null"] }
+          }
+        }
+      }
+    }
+  }
+}
