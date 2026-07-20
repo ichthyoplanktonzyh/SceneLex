@@ -198,6 +198,7 @@ python3 tools/draft.py list
 python3 tools/review.py dirty-01                         # 模型审核 (可选参考, 写审核记录)
 python3 tools/review.py --all                            # 审核草稿区全部义项
 python3 tools/draft.py promote dirty-01                  # 隔离校验后原子入库; 审核可选不阻塞
+python3 tools/draft.py promote dirty-01 --replace        # 覆盖同名已发布资源 (全量校验照跑)
 python3 tools/director.py plan reluctant-01-proto-01     # 场景语义节拍 → Shot Plan
 python3 tools/director.py show reluctant-01-proto-01     # 查看最新 Shot Plan
 python3 tools/director.py list                           # Shot Plan 版本一览

@@ -1,62 +1,44 @@
-# 原型场景: 首次建立 reluctant 概念
-# 设计依据: semantic_skeleton —— 动作进入考虑范围 + 内心抗拒 + 行为外化;
-# 全部依靠行为外化(拖延/停顿/身体方向/叹气), 禁止台词直述心理
-schema_version: "1.0"
-version: 2
+schema_version: '1.1'
+version: 1
 status: reviewed
-
 id: reluctant-01-proto-01
 sense_ref: reluctant-01
+sense_revision: 1
 scene_type: prototype
+title: 勉强吃西兰花
+synopsis: 饭桌上，妈妈要孩子吃一口西兰花。孩子内心抗拒，但最终还是勉强吃了一小口，身体语言和表情流露出明显的不情愿。
 surface:
-  domain: household-chores
-  participant_type: teen
+  domain: family-dining
+  participant_type: child
   setting: indoor-home
-
-title: 去倒垃圾
-synopsis: >
-  少年正玩得投入, 母亲要求他立刻去倒垃圾。他叹气、拖延、
-  拎垃圾袋时身体仍朝向游戏——最终还是去了, 每一步都写着不情愿。
-
 storyboard:
-  - beat: 1
-    visual: 少年盘腿坐在沙发上打游戏, 身体前倾, 完全投入, 表情兴奋。
-    audio: "(游戏音效)"
-    purpose: 建立"人物有更想做的事"——为不情愿提供动机基础
-
-  - beat: 2
-    visual: 母亲拎着系好的垃圾袋出现在客厅门口, 把袋子放在少年脚边, 指了指门。
-    audio: "Take out the trash. Now, please."
-    purpose: 外部压力出现——明确、有权威、不可回避的行动要求
-
-  - beat: 3
-    visual: >
-      少年动作停住, 肩膀垮下来, 长叹一口气。他没有立刻动,
-      眼睛仍盯着屏幕, 手指又按了两下手柄。
-    audio: "(长叹气声)"
-    purpose: 抗拒外化第一层：停顿+叹气+视线滞留——想做的事还没放下
-
-  - beat: 4
-    visual: >
-      少年以极慢的速度放下手柄, 慢吞吞起身, 弯腰用两根手指
-      拎起垃圾袋, 手臂伸得远远的, 头还回望屏幕。
-    audio: "Do I HAVE to?"
-    purpose: 抗拒外化第二层：动作迟缓+最小接触+身体朝向背离任务+语言拖延
-
-  - beat: 5
-    visual: 少年拖着脚步挪向门口, 每步都很小, 中途又回头看了一眼游戏画面。
-    audio: null
-    purpose: 抗拒外化第三层：拖步+回望——行动已开始但意愿始终缺席
-
-  - beat: 6
-    visual: 少年终于出门。母亲在他身后摇头轻笑, 对镜头方向耸肩。
-    audio: "He's always so reluctant to leave his game."
-    purpose: >
-      在抗拒已被充分外化且人物开始行动的原型时刻给出目标词；
-      “开始行动”增强样本典型性，但不是该词义在所有语境中的必要结果
-
+- beat: 1
+  visual: 妈妈指着餐盘里的西兰花，对孩子说话。
+  audio: 妈妈：来，吃一口西兰花。
+  purpose: 呈现明确的要求，把“吃西兰花”这个具体行动放在孩子面前。
+- beat: 2
+  visual: 孩子眉头皱起，身体微微向后靠，视线从西兰花上移开。他慢慢伸手去拿叉子，动作明显比平时慢。
+  audio: null
+  purpose: 用身体语言——皱眉、后靠、视线回避、动作延迟——外化内心的抗拒，避免台词直述。
+- beat: 3
+  visual: 孩子用叉子叉起一小块西兰花，举到嘴边时停顿了一下，然后只咬下极小的一口，咀嚼时嘴巴微微下撇。放下叉子后，表情带着嫌弃。
+  audio: null
+  purpose: 动作完成了，但整个过程缓慢、迟疑、接触最小，证明抵抗并未消失，仍然可见。
+- beat: 4
+  visual: 妈妈看着孩子，屏幕上浮现文字：'reluctant'。
+  audio: 画外音（英音）：“Reluctant.”
+  purpose: 在行为证据充分呈现后引入目标词，将概念与观察到的状态绑定。
+teaching_evidence:
+- claim: 孩子内心不情愿——行动上最终做了，但伴随明显的身体拒绝信号（皱眉、后靠、动作延迟、只咬一小口）。
+  beats:
+  - 2
+  - 3
 learning_tasks:
-  - type: scene_recognition
-    prompt: 听 "reluctant", 从四段短片(兴奋起身/拖延起身/拒绝不动/平静起身)中选择匹配的一段。
-  - type: listen_and_match
-    prompt: 播放 "He is reluctant to go." 在两段画面(蹦跳出门/拖步出门)中选择。
+- type: scene_recognition
+  prompt: 下列三个场景中，哪一个人物是reluctant（不情愿）？
+  choices:
+  - 'A: 妈妈让孩子吃西兰花，孩子立刻说 "我不吃！" 然后把碗推开。'
+  - 'B: 妈妈让孩子吃西兰花，孩子皱眉、身体后退，慢慢拿叉子只咬了一点点。'
+  - 'C: 妈妈让孩子吃西兰花，孩子高兴地说 "好！" 然后大口吃起来。'
+  expected_answer: B
+  scoring_note: 只有 B 同时包含「内部抵抗」与「行动最终发生且抵抗仍可见」两个要素；A 是 refuse（行动没有发生），C 两个要素都不具备。

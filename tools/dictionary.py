@@ -43,6 +43,28 @@ POS_ORDER = {"verb": 0, "noun": 1, "adj": 2, "adjective": 2,
 MAX_TEACHABLE_SENSES = 8
 
 
+def _example_texts(raw_examples: Any) -> list[str]:
+    """把词典用例统一成纯文本。
+
+    kaikki 的用例是对象 ({text, type, bold_text_offsets, ref, ...}), 但下游
+    (inventory 提示词、evidence snapshot、evidence digest) 消费的是句子本身。
+    偏移量与 ref 是排版信息, 不是语义证据, 丢弃它们不损失词义判据。少数早期
+    条目直接就是字符串, 一并接受; 没有 text 的对象没有可用证据, 直接跳过。
+    """
+    texts: list[str] = []
+    for example in raw_examples or []:
+        if isinstance(example, str):
+            text = example
+        elif isinstance(example, dict):
+            text = example.get("text") or ""
+        else:
+            continue
+        text = " ".join(str(text).split())
+        if text:
+            texts.append(text)
+    return texts
+
+
 def teachable_senses(word: str, refresh: bool = False) -> list[dict]:
     """返回该词所有值得教学的义项列表，已按优先级编号。
 
@@ -81,7 +103,7 @@ def teachable_senses(word: str, refresh: bool = False) -> list[dict]:
                 "pos": pos,
                 "glosses": glosses,
                 "tags": sorted(tags - EXCLUDE_TAGS),
-                "examples": (raw_sense.get("examples") or [])[:2],
+                "examples": _example_texts(raw_sense.get("examples"))[:2],
                 "has_raw": "raw_glosses" in raw_sense,
             })
 

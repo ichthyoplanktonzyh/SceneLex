@@ -1,154 +1,160 @@
-# ============================================================
-# A. 基础词义信息
-# ============================================================
-schema_version: "1.0"
+schema_version: '1.1'
 language: en
 version: 1
+semantic_revision: 1
 status: reviewed
-
 id: reluctant-01
 word: reluctant
 pos: adjective
-sense_label: 不情愿地面对某事
-definition: "Not willing or eager to do something; feeling resistance or hesitation about it"
-
+sense_label: 不情愿的
+definition: Unwilling to perform an action that is available to the experiencer, because
+  of the experiencer's own internal resistance; the action may still be performed, but
+  the unwillingness stays visible while it happens.
 frequency:
-  band: mid
-  rank: 2800
+  band: low
+  rank: 9349
 difficulty: intermediate
 pronunciation:
-  ipa: /rɪˈlʌktənt/
-
+  ipa: rɪˈlʌktənt
 collocations:
-  - reluctant to admit
-  - reluctant to leave
-  - reluctant to change
-  - reluctant hero
-  - reluctant agreement
-  - reluctant smile
-
+- reluctant to [verb]
+- reluctant participant
+- reluctant hero
+- reluctant agreement
 sentence_patterns:
-  - "be reluctant to [verb]"
-  - "a reluctant [noun]"
-  - "seem/appear reluctant"
-  - "reluctant but [clause]"
-
-# ============================================================
-# B. 语义类型
-# ============================================================
+- '[noun] is reluctant to [verb]'
+- '[noun] feels reluctant about [noun]'
+- '[noun] gave a reluctant nod'
 semantic_type: mental_state
-
-# ============================================================
-# C. 语义骨架
-# ============================================================
 semantic_skeleton:
   participants:
-    - role: experiencer
-      description: 感受到不情愿的人
-    - role: target_action
-      description: 人物正在面对、考虑或被要求执行的动作
-    - role: motivating_context
-      description: 使该动作进入考虑范围的要求、目标、责任或情境
-
+  - role: experiencer
+    description: An animate being capable of having internal attitudes and performing
+      actions.
+  - role: potential_action
+    description: A specific, possible future action that the experiencer could choose
+      to perform.
   propositions:
-    - 存在一个人物正在面对或考虑的动作
-    - 人物对该动作缺乏意愿，内心抗拒
-    - 存在某种要求、目标、责任或情境使该动作与人物相关
-    - 动作最终可能执行也可能不执行；结果本身不定义这种意愿状态
-    - 教学场景需要用迟缓、停顿、表情或身体方向等线索外化内心抵触
-
-# ============================================================
-# D. 成立条件与排除条件
-# ============================================================
+  - There exists an experiencer who is aware of a potential action.
+  - The experiencer has an internal state of unwillingness, resistance, or doubt toward
+    performing that action.
+  - The experiencer either refrains from the action, or if they perform it, they do
+    so with hesitation, delay, or lack of enthusiasm that is externally observable.
+  - The unwillingness originates from the experiencer's own disposition, not from
+    external prohibition or physical inability.
 conditions:
   required:
-    - 人物对一个具体动作缺乏意愿或感到抗拒
-    - 该动作正在被人物面对、考虑或被要求
-    - 词义判断针对意愿状态，不能只从最终执行或拒绝结果反推
-
+  - The experiencer is consciously considering a specific action.
+  - The experiencer's internal attitude toward the action is negative (unwilling/resistant).
+  - If the action is performed, the performance is accompanied by observable hesitation
+    or lack of genuine willingness.
   excluded:
-    - condition: 人物动作缓慢但不存在心理抵触
-      alternative: slow-01
-    - condition: 人物积极希望执行目标动作，没有意愿上的抗拒
-      alternative: eager-01
-
-# ============================================================
-# E. 概念关系
-# ============================================================
+  - condition: The experiencer is eager or enthusiastic about performing the action.
+  - condition: The experiencer is physically unable or externally prevented from performing
+      the action.
+  - condition: The experiencer performs the action spontaneously without any sign
+      of hesitation.
+  - condition: The experiencer declines the action for external or procedural reasons
+      with no internal resistance; a bare refusal does not by itself establish reluctance.
+  - condition: The experiencer moves slowly for reasons unrelated to willingness (age,
+      injury, fatigue, or a task that is simply laborious).
+  - condition: The experiencer has not understood the request, or no opportunity to
+      act has actually been presented.
+  - condition: The experiencer feels fear, sadness, or general distress that is not
+      attached to a specific action they could take.
 relations:
   synonyms:
-    - unwilling-01
-    - disinclined-01
+  - unwilling-01
+  - hesitant-01
   antonyms:
-    - eager-01
-    - willing-01
-  hypernyms:
-    - unwillingness-01
+  - willing-01
+  - eager-01
   confusables:
-    - hesitant-01
-    - resistant-01
-    - refuse-01
-    - unwilling-01
-
+  - hesitant-01
+  - refuse-01
   boundaries:
-    - target: hesitant-01
-      relation: overlaps
-      distinction: hesitant 强调决定或行动的不确定，reluctant 强调缺乏意愿；一个人可以既犹豫又不情愿。
-      diagnostic: 分别寻找选择摇摆的证据与意愿抗拒的证据，不能只凭停顿同时推断两者。
-    - target: refuse-01
-      relation: different_dimension
-      distinction: refuse 是拒绝行为，reluctant 是意愿状态；两者可以共现，拒绝结果本身不能证明此前不情愿。
-      diagnostic: 画面若只呈现明确说不，可确认 refuse；只有出现回避、拖延等意愿线索时才支持 reluctant。
-    - target: unwilling-01
-      relation: overlaps
-      distinction: unwilling 与 reluctant 高度重叠，reluctant 常带有面对行动但有保留或阻力的语用侧重。
-      diagnostic: 用自然语料和母语者判断比较搭配偏好，不把两者当成严格互斥类别。
-
+  - target: refuse-01
+    relation: different_dimension
+    distinction: refuse names an observable act of declining; reluctant names an internal
+      willingness state. They can co-occur, but neither entails the other — someone
+      can refuse briskly with no reluctance, and can be deeply reluctant yet comply.
+      A depicted refusal is therefore not evidence of reluctance.
+    diagnostic: If the scene only shows a clear no, it establishes refuse and nothing
+      more; reluctant requires separate willingness evidence — delay, withdrawal, minimal
+      contact — attached to an action the experiencer could still take.
+  - target: unwilling-01
+    relation: overlaps
+    distinction: Both describe a lack of desire to act, but reluctant emphasizes emotional
+      resistance and internal conflict, whereas unwilling focuses on the decision
+      not to act regardless of emotional nuance.
+    diagnostic: If the person eventually does the action but with clear emotional
+      struggle, reluctant fits better; if they simply refuse or state refusal without
+      emotional display, unwilling fits.
+  - target: hesitant-01
+    relation: overlaps
+    distinction: hesitant is about uncertainty over which way to decide; reluctant is
+      about lacking the will to do a thing already identified. A person can be both at
+      once, so they are not points on one scale.
+    diagnostic: Look for the two kinds of evidence separately — wavering between options
+      versus resistance to one known action. A pause on its own supports neither.
   l1_confusables:
     zh:
-      - l1_term: 不愿意
-        covers:
-          - reluctant-01
-          - unwilling-01
-          - refuse-01
-        note: >
-          中文"不愿意"覆盖从被动抵触到主动拒绝的整个谱系。
-          reluctant 偏向"虽然不想但可能还是会做"，
-          unwilling 偏向"明确不想做"，
-          refuse 偏向"已决定不做并表达出来"。
-          中文不强制区分这三层。
-      - l1_term: 勉强
-        covers:
-          - reluctant-01
-          - grudging-01
-        note: >
-          "勉强"侧重结果——最终做了但不情愿。
-          reluctant 侧重过程中的心理状态，不要求最终一定执行。
-
-# ============================================================
-# F. 场景要求
-# ============================================================
+    - l1_term: 不情愿
+      covers:
+      - reluctant-01
+      - unwilling-01
+      - hesitant-01
+      note: 中文'不情愿'常覆盖 reluctant 和 unwilling 的语义，但 reluctant 更强调内心的抵触情绪（可能仍会做），unwilling
+        更强调决定不做，而 hesitant 侧重犹豫。教学时建议通过表情和行动结果区分：reluctant 场景中主角最终可能勉强执行但满脸不情愿，unwilling
+        场景中主角直接拒绝，hesitant 场景中主角犹豫不决但可能没有强烈反感。
+    - l1_term: 不愿意
+      covers:
+      - reluctant-01
+      - unwilling-01
+      note: 中文'不愿意'比'不情愿'更偏向意志层面的否定，常用于 unwilling；reluctant 的场景中若主角说'我不愿意'但行为上服从，可用，但更自然的表达是'不情愿地'。
 scene_requirements:
   must_show:
-    - 人物面对一个明确的动作、选择或任务
-    - 人物表现出不想做的外部迹象
-    - 存在使该动作进入考虑范围的原因（要求、目标、责任、风险等）
-    - 可以展示执行或拒绝，但不能把最终结果当作 reluctant 的定义
-
+  - A clear triggering event or request that puts a specific, physically available
+    action in front of the experiencer.
+  - 'The experiencer''s resistance carried by the body rather than by speech: delay
+    before moving, withdrawal or lean-away, minimal contact with the object, slowed
+    or partial movement.'
+  - The action beginning or completing anyway, with the resistance still legible while
+    it happens.
   must_not:
-    - 不能只依赖台词说明心理状态（如让人物直接说"I'm reluctant"）
-    - 不能仅凭人物拒绝并离开就断言 reluctant——refuse 与 reluctant 是不同维度
-    - 不能仅凭人物长时间权衡就断言 reluctant——hesitant 可能没有意愿抗拒
-    - 不能只展示"慢"而没有心理层面的抗拒
-
+  - External force or prohibition that directly prevents the action (e.g., tied up,
+    forbidden by authority).
+  - The experiencer showing enjoyment or eagerness during the action.
+  - The experiencer refusing outright and the action never happening; that scene teaches
+    refuse-01.
+  - Dialogue, captions, or narration carrying the meaning on their own; with all speech
+    removed the behavior must still support reluctant.
+  - Facial expression as the sole evidence; a frown alone does not distinguish reluctance
+    from fear, sadness, or annoyance.
   externalization:
-    - 动作速度明显减缓、拖延
-    - 停顿——在行动前有明显的不动
-    - 身体方向——背向任务、侧身、后倾
-    - 面部表情——皱眉、抿嘴、叹气
-    - 语言上的拖延——"Do I have to?"、叹气后才开始
-    - 视线回避——不看任务或发出指令的人
-
-  timing: >
-    先展示使动作进入考虑范围的情境和人物的行为反应（抵触外化），
-    在意愿抗拒已被画面充分外化、但结果尚未替代心理证据时出现目标词。
+  - 'Facial expressions: downturned mouth, furrowed brows, side-eye.'
+  - 'Body language: stepping back, crossing arms, slow or hesitant approach.'
+  - 'Vocal tone: sighing, flat or quiet voice, brief negative responses like ''I guess
+    so'' or ''If I have to''.'
+  timing: Introduce the triggering event first, then show the experiencer's hesitating
+    or resistant reaction for a few seconds, then present the word 'reluctant' (spoken
+    or overlaid) after the viewer has perceived the internal state through behavior.
+provenance:
+  sources:
+  - type: dictionary
+    citation: Wiktionary (kaikki.org) — reluctant - English Lemma, CC-BY-SA 3.0/4.0
+    license: CC-BY-SA
+inventory:
+  word: reluctant
+  version: 1
+  evidence_digest: sha256:bfc8a93ab442081766f1026200961f260e49614d55041b892f79efcc94707568
+  sense_id: reluctant-01
+  identity_digest: sha256:19a027924421e9e06c4e045de9778e29620a4435b727dda4eb625a1117b7fa7f
+semantic_identity:
+  semantic_type: disposition
+  dimension: null
+  change_of_state: false
+  causative: false
+  valency: adj
+inventory_source_entries:
+- reluctant-dict-001
