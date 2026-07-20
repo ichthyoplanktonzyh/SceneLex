@@ -821,19 +821,33 @@ def cmd_promote(args):
 
     sense_dest = ROOT / "data" / "senses" / f"{ident}.yaml"
     scene_dest_dir = ROOT / "data" / "scenes" / ident
-    if has_sense and sense_dest.exists():
-        sys.exit(f"正式义项已存在: {sense_dest.relative_to(ROOT)}；拒绝静默覆盖")
     scene_files = sorted(scene_draft_dir.glob("*.yaml")) if has_scenes else []
     leftovers = [p for p in scene_files if p.name.startswith("_")]
     if leftovers:
         names = ", ".join(p.name for p in leftovers)
         sys.exit(f"场景草稿目录存在未解析残骸: {names}；修复或删除后重试")
+
+    # --replace 只放宽"目标已存在"这一条 (与 inventory.py approve --force 同义):
+    # 发布前全量校验一律照跑。用于把同一个 sense ID 的旧资源升级到新链路产物 —
+    # 例如把 schema 1.0 的 WordSense 换成 inventory-driven 的 1.1。未被本次草稿
+    # 覆盖到的旧场景原样保留, 不因为替换了义项就被连带删除。
+    # 缺省 False: 进程内直接调用 cmd_promote 的调用方不会意外获得覆盖能力。
+    allow_replace = getattr(args, "replace", False)
+    replaced = []
+    if has_sense and sense_dest.exists():
+        if not allow_replace:
+            sys.exit(f"正式义项已存在: {sense_dest.relative_to(ROOT)}；拒绝静默覆盖")
+        replaced.append(sense_dest)
     for path in scene_files:
-        if (scene_dest_dir / path.name).exists():
-            sys.exit(
-                f"正式场景已存在: {(scene_dest_dir / path.name).relative_to(ROOT)}"
-                "；拒绝静默覆盖"
-            )
+        dest = scene_dest_dir / path.name
+        if dest.exists():
+            if not allow_replace:
+                sys.exit(
+                    f"正式场景已存在: {dest.relative_to(ROOT)}；拒绝静默覆盖"
+                )
+            replaced.append(dest)
+    for path in replaced:
+        print(f"⚠ 将覆盖已发布资源: {path.relative_to(ROOT)}")
 
     # 模型审核是可选参考, 只提示不阻塞
     reviewed_files = ([sense_draft] if has_sense else []) + scene_files
@@ -1180,6 +1194,8 @@ def main():
 
     p = sub.add_parser("promote", help="草稿定稿并校验 (模型审核可选, 不阻塞)")
     p.add_argument("id")
+    p.add_argument("--replace", action="store_true",
+                   help="覆盖同名的已发布义项/场景 (发布前全量校验仍照跑)")
     p.set_defaults(func=cmd_promote)
 
     sub.add_parser("backlog", help="输出选词 backlog").set_defaults(

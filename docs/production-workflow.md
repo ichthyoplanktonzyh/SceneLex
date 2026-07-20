@@ -195,6 +195,9 @@ Director 写关键图 prompt + 视频 prompt
 
 ## 当前纵向样本
 
-先用 `reluctant-01-proto-01` 验证：Director 能否把现有语义节拍拆成可审核的执行镜头，让动作时序被正确看见，同时避免只画成 sad、slow、hesitant、refuse 或 eager。注意该场景目前仍是 SceneSpec 1.0（语义修订状态 `LEGACY`），需要先按 WordSense 1.1 重新起草才能编译 Shot Plan。
+先用 `reluctant-01-proto-01` 验证：Director 能否把现有语义节拍拆成可审核的执行镜头，让动作时序被正确看见，同时避免只画成 sad、slow、hesitant、refuse 或 eager。
+
+该样本已经跑通：`reluctant` 是仓库第一个 approved Sense Inventory，`reluctant-01` 已按它重新起草为 WordSense 1.1，`reluctant-01-proto-01` 是第一条语义修订状态为 `CURRENT` 的 SceneSpec 1.1，并编译出第一份真实 Shot Plan（4 个 Beat → 3 个 Shot）。逐项审查记录见
+[docs/vertical-slices/reluctant-01-proto-01.md](vertical-slices/reluctant-01-proto-01.md)。其余 20 个场景仍是 SceneSpec 1.0（`LEGACY`），本轮不做批量迁移。
 
 随后用 `messy` 和 `almost` 检查同一个 Director 是否会根据语义类型自然选择静态关系、状态变化或终止结果，而不是套用同一种短片模板。

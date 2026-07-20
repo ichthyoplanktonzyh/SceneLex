@@ -1,0 +1,18 @@
+schema_version: '1.0'
+word: reluctant
+language: en
+provider: wiktionary
+captured_at: '2026-07-20T02:44:11Z'
+entries:
+- entry_id: reluctant-dict-001
+  pos: adj
+  gloss: Not wanting to take some action; unwilling to do something.
+  labels: []
+  examples:
+  - She was reluctant to lend him the money
+  - Surprisingly, our new dog is a reluctant ball-retriever.
+- entry_id: reluctant-dict-002
+  pos: adj
+  gloss: Tending to match as little text as possible.
+  labels: []
+  examples: []

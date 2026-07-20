@@ -40,6 +40,124 @@ def test_failed_preflight_does_not_move_draft(tmp_path, monkeypatch):
     assert not (root / "data" / "senses" / "test-01.yaml").exists()
 
 
+def _promote_env(tmp_path, monkeypatch, *, published_sense=None,
+                 published_scene=None):
+    """一个可发布的最小仓库: 一份词义草稿, 外加可选的同名已发布资源。"""
+    root = tmp_path
+    drafts = root / "data" / "drafts"
+    (root / "data" / "senses").mkdir(parents=True)
+    (root / "data" / "scenes").mkdir()
+    (drafts / "senses").mkdir(parents=True)
+    (drafts / "senses" / "test-01.yaml").write_text(
+        'schema_version: "1.1"\nstatus: draft\nid: test-01\n'
+    )
+    if published_sense is not None:
+        (root / "data" / "senses" / "test-01.yaml").write_text(published_sense)
+    if published_scene is not None:
+        scene_dir = root / "data" / "scenes" / "test-01"
+        scene_dir.mkdir(parents=True)
+        (scene_dir / "test-01-proto-01.yaml").write_text(published_scene)
+        draft_scenes = drafts / "scenes" / "test-01"
+        draft_scenes.mkdir(parents=True)
+        (draft_scenes / "test-01-proto-01.yaml").write_text(
+            'schema_version: "1.1"\nstatus: draft\nid: test-01-proto-01\n'
+        )
+    monkeypatch.setattr(draft, "ROOT", root)
+    monkeypatch.setattr(draft, "DRAFTS", drafts)
+    monkeypatch.setattr(draft, "_review_advisory", lambda *a, **k: None)
+    return root, drafts
+
+
+def _promote_ok(ident, **kwargs):
+    """跑一次成功的 promote。收尾的复核校验会以 SystemExit(0) 结束进程。"""
+    with mock.patch(
+        "draft.subprocess.run", return_value=SimpleNamespace(returncode=0)
+    ), pytest.raises(SystemExit) as excinfo:
+        draft.cmd_promote(Namespace(id=ident, **kwargs))
+    assert excinfo.value.code == 0
+
+
+def test_promote_refuses_to_overwrite_published_sense_by_default(
+    tmp_path, monkeypatch
+):
+    """没有 --replace 时, 已发布资源必须原样保留 (拒绝静默覆盖)。"""
+    root, drafts = _promote_env(
+        tmp_path, monkeypatch, published_sense="published: original\n"
+    )
+
+    with pytest.raises(SystemExit):
+        draft.cmd_promote(Namespace(id="test-01", replace=False))
+
+    assert (root / "data" / "senses" / "test-01.yaml").read_text() == (
+        "published: original\n"
+    )
+    assert (drafts / "senses" / "test-01.yaml").exists()
+
+
+def test_promote_replace_overwrites_published_sense(tmp_path, monkeypatch):
+    """--replace 用于把同一个 sense ID 升级到新链路产物。"""
+    root, drafts = _promote_env(
+        tmp_path, monkeypatch, published_sense="published: original\n"
+    )
+
+    _promote_ok("test-01", replace=True)
+
+    promoted = (root / "data" / "senses" / "test-01.yaml").read_text()
+    assert "id: test-01" in promoted
+    assert "published: original" not in promoted
+    assert not (drafts / "senses" / "test-01.yaml").exists()
+
+
+def test_promote_replace_still_runs_preflight_validation(tmp_path, monkeypatch):
+    """--replace 只放宽'目标已存在', 发布前全量校验一律照跑。"""
+    root, drafts = _promote_env(
+        tmp_path, monkeypatch, published_sense="published: original\n"
+    )
+
+    with mock.patch(
+        "draft.subprocess.run", return_value=SimpleNamespace(returncode=1)
+    ), pytest.raises(SystemExit):
+        draft.cmd_promote(Namespace(id="test-01", replace=True))
+
+    # 校验失败时旧资源不能已经被覆盖掉。
+    assert (root / "data" / "senses" / "test-01.yaml").read_text() == (
+        "published: original\n"
+    )
+    assert (drafts / "senses" / "test-01.yaml").exists()
+
+
+def test_promote_replace_covers_published_scenes(tmp_path, monkeypatch):
+    root, drafts = _promote_env(
+        tmp_path, monkeypatch,
+        published_sense="published: original\n",
+        published_scene="published: original scene\n",
+    )
+
+    with pytest.raises(SystemExit):
+        draft.cmd_promote(Namespace(id="test-01", replace=False))
+
+    _promote_ok("test-01", replace=True)
+
+    scene = root / "data" / "scenes" / "test-01" / "test-01-proto-01.yaml"
+    assert "id: test-01-proto-01" in scene.read_text()
+
+
+def test_promote_defaults_to_not_replacing_when_flag_absent(
+    tmp_path, monkeypatch
+):
+    """进程内直接调用 (无 replace 属性) 不应意外获得覆盖能力。"""
+    root, _ = _promote_env(
+        tmp_path, monkeypatch, published_sense="published: original\n"
+    )
+
+    with pytest.raises(SystemExit):
+        draft.cmd_promote(Namespace(id="test-01"))
+
+    assert (root / "data" / "senses" / "test-01.yaml").read_text() == (
+        "published: original\n"
+    )
+
+
 def test_promote_rejects_path_like_identifier():
     with pytest.raises(SystemExit):
         draft.cmd_promote(Namespace(id="../escape-01"))

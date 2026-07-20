@@ -1,0 +1,38 @@
+schema_version: '1.0'
+word: reluctant
+language: en
+status: reviewed
+inventory_version: 1
+source:
+  provider: wiktionary
+  entry_count: 2
+  evidence_digest: sha256:bfc8a93ab442081766f1026200961f260e49614d55041b892f79efcc94707568
+senses:
+- id: reluctant-01
+  lemma: reluctant
+  pos: adjective
+  label_zh: 不情愿的
+  definition: Not wanting to take some action; unwilling to do something.
+  semantic_signature:
+    semantic_type: disposition
+    dimension: null
+    change_of_state: false
+    causative: false
+    valency: adj
+  source_entries:
+  - reluctant-dict-001
+  decision:
+    type: keep
+    reason: 常规核心含义，有充分例证，是教学中最常用的意义。
+  teaching_priority: core
+  usage:
+    currency: current
+    productivity: productive
+    register: general
+deferred_entries:
+- source_entry: reluctant-dict-002
+  decision: defer
+  reason: 技术含义（正则表达式中的“reluctant”匹配）领域特定，缺乏例句，且对于一般英语学习者不构成稳定可教学的义项。
+  required_evidence:
+  - 至少两个在自然语言或编程教程中使用的完整例句，以确认其实际使用范围和频率。
+relations: []

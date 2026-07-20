@@ -1,0 +1,201 @@
+title: Reluctant Broccoli - Prototype Scene
+cast:
+- id: child
+  role: focal_character
+  continuity_description: A young child, approximately 6–8 years old, with short hair, wearing casual
+    home clothes. Seated at the dining table.
+- id: mother
+  role: counterpart
+  continuity_description: An adult woman, motherly appearance, seated across the table from the child.
+    Attentive expression.
+location:
+  id: dining-room
+  continuity_description: A family dining room with a table, two chairs (one for mother, one for child).
+    The table has a plate with broccoli and a fork near the child.
+props:
+- id: broccoli
+  continuity_description: Small green broccoli florets on a plate, clearly visible in the center of the
+    table.
+- id: fork
+  continuity_description: A standard dining fork placed to the right of the child's plate.
+shots:
+- id: shot-01
+  source_beats:
+  - 1
+  narrative_function: establish_trigger
+  semantic_function: 呈现外部要求，将‘吃西兰花’这个具体行动放在孩子面前。
+  duration_hint: 2.5
+  visual_start:
+    description: Mother and child are seated at the dining table. Child has neutral expression, hands
+      resting near the plate. Mother's hand is not yet pointing. Broccoli on plate is visible.
+    character_states:
+    - character: child
+      state: Sitting upright, facing mother, neutral expression.
+    - character: mother
+      state: Facing child, right hand resting near her own plate, mouth about to speak.
+  trigger:
+    description: Mother speaks the request and points at the broccoli.
+  action:
+    description: Mother raises her right hand, points her index finger toward the broccoli on the child's
+      plate, and says '来吧，吃一口西兰花。' (Come on, eat a bite of broccoli.) Child's eyebrows begin to furrow
+      slightly.
+  visual_end:
+    description: Mother's finger pointing at broccoli, child's eyebrows furrowed, torso starts leaning
+      back.
+    character_states:
+    - character: child
+      state: Frowning, leaning back, gaze shifting away from broccoli.
+    - character: mother
+      state: Hand still pointing, looking at child expectantly.
+  composition:
+    shot_size: medium_wide
+    angle: eye_level
+    focal_subject: Mother and child
+    staging: Child seated left, mother seated right. Table visible between them, broccoli centered.
+  camera:
+    movement: static
+    motivation: Establishes the dining setting and the triggering request.
+  semantic_evidence:
+    must_show:
+    - Mother points at the broccoli
+    - Child's initial neutral expression visible before the request
+    - No immediate positive response from child
+    must_avoid:
+    - Child smiling or reaching eagerly
+    - Any external force or prohibition
+  audio:
+    mode: required_dialogue
+    dialogue:
+      speaker: mother
+      text: 来吧，吃一口西兰花。
+    sfx: []
+    purpose: The request must be explicitly heard to establish the specific action. Without the spoken
+      command, the viewer cannot know what action is being proposed.
+  continuity:
+    enters_from_previous: null
+    exits_to_next: Child begins frowning and leaning away, gaze averting.
+- id: shot-02
+  source_beats:
+  - 2
+  - 3
+  narrative_function: semantic_climax
+  semantic_function: 用身体语言外化内部抵抗，同时行动最终发生但抵抗持续可见——皱眉、后靠、视线回避、动作延迟、最小接触。
+  duration_hint: 5.0
+  visual_start:
+    description: Child is leaning back, brows furrowed, eyes averted from the broccoli. Mother's hand
+      is still pointing but child is not looking at it.
+    character_states:
+    - character: child
+      state: Leaning back, frowning, looking away from plate.
+    - character: mother
+      state: Hand still pointing, watching child.
+  trigger:
+    description: Child processes the request and begins to act despite internal resistance.
+  action:
+    description: Child slowly turns head back toward the plate, eyes on the broccoli. With a visible pause,
+      child reaches for the fork, fingers moving slowly. Picks up the fork, hesitates for a moment, then
+      stabs a very small piece of broccoli. Lifts it to mouth, pauses again at the lips, then takes a
+      tiny bite – minimal contact. Chews with mouth corners turned down, then lowers the fork back to
+      the plate. Facial expression shows clear distaste.
+  visual_end:
+    description: Child has placed the fork down on the plate, mouth slightly downturned, brows still slightly
+      furrowed, expressing disgust.
+    character_states:
+    - character: child
+      state: Sitting back, fork on plate, mouth corners pulled down, slight frown.
+    - character: mother
+      state: Watching with a mix of expectation and observation.
+  composition:
+    shot_size: medium
+    angle: over_shoulder
+    focal_subject: Child
+    staging: Camera slightly above mother's shoulder, focused on child's upper body, face, and hands.
+      The broccoli and fork are within frame.
+  camera:
+    movement: static
+    motivation: Static allows the viewer to focus on the child's micro‑expressions and hesitation; no
+      external distraction.
+  semantic_evidence:
+    must_show:
+    - Child's leaning back and frowning (resistance before action)
+    - Slow, delayed reaching for the fork
+    - Pause before taking the bite
+    - Minimal bite size
+    - Displeased chewing and facial expression after swallowing
+    must_avoid:
+    - Eager or fast movement
+    - Large bite
+    - Smiling or neutral expression during/after eating
+    - Any external force or prohibition
+  audio:
+    mode: sfx
+    sfx:
+    - Fork scraping against plate softly
+    - Chewing sound (muted, unenthusiastic)
+    purpose: Natural sounds enhance realism but the core semantic evidence remains visual.
+  continuity:
+    enters_from_previous: Child already leaning back, brows furrowed, gaze averted.
+    exits_to_next: Child sits with fork on plate, expression of mild disgust, mother watching.
+- id: shot-03
+  source_beats:
+  - 4
+  narrative_function: confirm_outcome
+  semantic_function: 在行为证据充分后引入目标词，将概念与观察到的状态绑定。
+  duration_hint: 3.0
+  visual_start:
+    description: Child has just placed the fork down, face still showing distaste. Mother is looking at
+      child.
+    character_states:
+    - character: child
+      state: Sitting back, fork on plate, mouth downturned, slight frown.
+    - character: mother
+      state: Looking at child, expression neutral to satisfied.
+  trigger:
+    description: No new trigger; the action is complete. The word 'reluctant' is presented.
+  action:
+    description: The camera remains steady. After a brief beat (0.5s), the word 'reluctant' appears on
+      screen (clean sans‑serif text, centered or lower third). Simultaneously, a narrator's voice (British
+      English) says 'Reluctant.' The mother may give a small nod, but no further action. Hold for about
+      1 second after the word.
+  visual_end:
+    description: The word 'reluctant' is visible on screen. Child's expression remains unchanged.
+    character_states:
+    - character: child
+      state: Still looking slightly displeased, unchanged.
+    - character: mother
+      state: Looking at child, no major change.
+  composition:
+    shot_size: medium_wide
+    angle: eye_level
+    focal_subject: Child and mother (both in frame)
+    staging: Child on left, mother on right. The word 'reluctant' appears as an overlay (not part of the
+      scene but added in post).
+  camera:
+    movement: static
+    motivation: Static prevents distraction from the text/audio presentation.
+  semantic_evidence:
+    must_show:
+    - The word 'reluctant' clearly legible on screen
+    - Child's ongoing displeased expression (confirming the state persists)
+    must_avoid:
+    - Word appearing before the action is complete
+    - Child suddenly changing expression to happy or neutral
+  audio:
+    mode: required_dialogue
+    dialogue:
+      speaker: narrator
+      text: Reluctant.
+    purpose: The pronunciation of the word is part of the teaching design; the scene cannot convey the
+      spoken form without audio. The text alone would not provide the auditory cue for learners.
+  continuity:
+    enters_from_previous: Child sitting with fork down, facial expression of distaste; mother watching.
+    exits_to_next: null
+schema_version: '1.0'
+version: 1
+status: draft
+id: reluctant-01-proto-01-shot-plan-01
+scene_ref: reluctant-01-proto-01
+scene_version: 1
+sense_ref: reluctant-01
+sense_revision: 1
+total_duration_hint: 10.5

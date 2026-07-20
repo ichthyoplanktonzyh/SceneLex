@@ -189,6 +189,22 @@ def build_word_entry(word: str, ranks: dict[str, int]) -> dict[str, Any]:
     return entry
 
 
+def _scalar_line(key: str, value: Any) -> str:
+    """把一个顶层标量字段序列化成 YAML 行。
+
+    这里必须走 yaml 而不是 f-string: 形如 "1.0" 的版本号插值出来是裸 1.0,
+    再读回来就成了 float, 与 schema 要求的字符串常量对不上 —— schema_version
+    正是这种值。让 yaml 决定何时加引号。
+    """
+    rendered = yaml.safe_dump(
+        value, allow_unicode=True, sort_keys=False, default_flow_style=True
+    ).strip()
+    # safe_dump 给纯量文档补的结束标记在这里是噪声。
+    if rendered.endswith("\n..."):
+        rendered = rendered[: -len("\n...")].strip()
+    return f"{key}: {rendered}"
+
+
 def write_word_entry(word: str, entry: dict[str, Any]) -> None:
     """写出/更新 data/words/{word}.yaml。"""
     if not entry:
@@ -226,14 +242,14 @@ def write_word_entry(word: str, entry: dict[str, Any]) -> None:
                 lines.append(f"  rank: {entry['frequency']['rank']}")
                 lines.append(f"  band: {entry['frequency']['band']}")
             else:
-                lines.append(f"{key}: {entry[key]}")
+                lines.append(_scalar_line(key, entry[key]))
             written_keys.add(key)
 
     # 其余字段
     for key, value in entry.items():
         if key.startswith("_") or key in written_keys:
             continue
-        lines.append(f"{key}: {value}")
+        lines.append(_scalar_line(key, value))
 
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
