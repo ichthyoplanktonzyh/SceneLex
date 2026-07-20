@@ -1,0 +1,183 @@
+title: 勉强吃西兰花
+cast:
+- id: mother
+  role: counterpart
+  continuity_description: A woman with a gentle but firm demeanor, sitting across the table.
+- id: child
+  role: focal_character
+  continuity_description: A school-aged child, seated at the dining table.
+location:
+  id: dining-room
+  continuity_description: A home dining room with a table, chairs, and a plate with broccoli.
+props:
+- id: plate-with-broccoli
+  continuity_description: A plate containing a piece of broccoli, placed in front of the child.
+- id: fork
+  continuity_description: A fork placed beside the plate.
+shots:
+- id: shot-01
+  source_beats:
+  - 1
+  narrative_function: establish_context
+  semantic_function: 呈现触发事件——妈妈通过指向和语言发出请求，孩子正常待机。
+  duration_hint: 3.0
+  visual_start:
+    description: Mother and child seated at table, child's hands on table, plate with broccoli in front
+      of child.
+    character_states:
+    - character: mother
+      state: sitting erect, looking at child, hand in gesture position.
+    - character: child
+      state: sitting upright, hands resting on table edge, neutral expression.
+  trigger:
+    description: Mother points at the broccoli on the plate and says "来，吃一口西兰花。"
+  action:
+    description: Mother extends her arm, index finger pointing toward the broccoli on the child's plate,
+      while turning her head to look at the child.
+  visual_end:
+    description: Mother's hand is still pointing toward the plate, child remains in place but has not
+      moved yet.
+    character_states:
+    - character: mother
+      state: arm extended, finger pointing at broccoli, gaze fixed on child.
+    - character: child
+      state: same as start, hands still on table, looking at mother.
+  composition:
+    shot_size: medium_wide
+    angle: eye_level
+    focal_subject: mother and child
+    staging: Mother on left side of frame, child on right, table with plate in center. Mother's pointing
+      gesture clearly visible.
+  camera:
+    movement: static
+    motivation: 固定机位清楚显示指示动作和双方位置关系。
+  semantic_evidence:
+    must_show:
+    - Mother clearly indicates the broccoli (verbally and gesturally).
+    - Child is aware of the request and has the opportunity to act.
+    must_avoid:
+    - Child showing eagerness or refusal before the request is complete.
+  audio:
+    mode: optional_dialogue
+    dialogue:
+      speaker: mother
+      text: 来，吃一口西兰花。
+    purpose: 请求内容明确化，但即使无台词，指向动作已足够。
+  continuity:
+    enters_from_previous: null
+    exits_to_next: Mother's pointing hand is still in frame but will be lowered later; child remains seated.
+- id: shot-02
+  source_beats:
+  - 2
+  narrative_function: reveal_reaction
+  semantic_function: 将孩子的不情愿外化为停顿、后靠、视线回避和伸手迟疑。
+  duration_hint: 4.0
+  visual_start:
+    description: Child still seated, hands resting on table, looking at mother or plate.
+    character_states:
+    - character: child
+      state: sitting normally, neutral expression, looking toward plate.
+    - character: mother
+      state: still pointing, waiting.
+  trigger:
+    description: Child stops moving; after a pause, child's body leans back slightly, eyes shift away
+      from the plate.
+  action:
+    description: Child first freezes, then leans back against chair, turns head slightly to the side (avoiding
+      direct view of broccoli). After a noticeable pause, child slowly reaches for the fork, hand pausing
+      mid-air for a moment before continuing.
+  visual_end:
+    description: Child's hand is holding the fork, fork is being brought toward the broccoli.
+    character_states:
+    - character: child
+      state: body slightly leaning back, head turned slightly away, one hand gripping fork, fork pointed
+        toward broccoli but not yet touching.
+    - character: mother
+      state: has lowered hand slightly, watching child.
+  composition:
+    shot_size: medium_close
+    angle: eye_level
+    focal_subject: child
+    staging: Focus on child's upper body and hands. Mother's presence indicated at edge of frame.
+  camera:
+    movement: static
+    motivation: 固定近景，专注捕捉孩子的动作细节和身体语言。
+  semantic_evidence:
+    must_show:
+    - Child freezes/stops (first sign of hesitation).
+    - Child leans back (withdrawal motion).
+    - Child averts gaze from the broccoli (avoidance).
+    - Child's reach for the fork is delayed and includes a mid-air pause (slowed, hesitant movement).
+    - No external force pushes child; child initiates action on own.
+    must_avoid:
+    - Showing fear, disgust (e.g., face scrunched) that suggests sensory disgust toward broccoli.
+    - Showing tearfulness or strong negative affect.
+    - Dialogue from child.
+  audio:
+    mode: silence
+    sfx:
+    - subtle chair creak when child leans back.
+    purpose: 沉默强化对动作的注意，动作本身就传达不情愿。
+  continuity:
+    enters_from_previous: Child seated, mother's pointing ends.
+    exits_to_next: Child has fork in hand, about to engage with broccoli.
+- id: shot-03
+  source_beats:
+  - 3
+  narrative_function: confirm_outcome
+  semantic_function: 动作完成但意愿未转正：孩子在自己吃下西兰花的过程中仍带有停顿和肢体回避，放下叉子后继续后靠。
+  duration_hint: 4.0
+  visual_start:
+    description: Child holds fork, starts to pick up a piece of broccoli.
+    character_states:
+    - character: child
+      state: leaning back slightly, holding fork with broccoli speared.
+  trigger:
+    description: Child lifts broccoli toward mouth, pauses again at mouth level before finally taking
+      a bite.
+  action:
+    description: Child brings broccoli to mouth, hesitates with it near lips, then opens mouth and eats
+      the piece. Chews with a neutral expression, puts fork down, leans back again.
+  visual_end:
+    description: Child with fork placed back on plate, body leaning back against chair, looking down or
+      away.
+    character_states:
+    - character: child
+      state: body slightly leaned back, face neutral (not smiling), fork on plate, broccoli consumed.
+    - character: mother
+      state: watching child, posture relaxes slightly.
+  composition:
+    shot_size: medium_close
+    angle: three_quarter
+    focal_subject: child
+    staging: Focus on child's face and hand movement. Mother visible from behind or side at edge.
+  camera:
+    movement: static
+    motivation: 固定镜头捕捉进食动作中的犹豫和后续姿态，避免干扰。
+  semantic_evidence:
+    must_show:
+    - Child hesitates again at mouth level before eating (delayed action even at final step).
+    - Child eats the broccoli (action completed by child, not force-fed).
+    - Chewing without eagerness (neutral, no smile).
+    - After eating, child leans back and does not reach for more or show willingness to continue.
+    must_avoid:
+    - Child smiling, nodding, or saying "thank you".
+    - Mother praising or force-feeding.
+    - Child showing disgust (spitting, grimacing).
+  audio:
+    mode: silence
+    sfx:
+    - soft chewing sounds.
+    purpose: 视觉证据主导，咀嚼音只是自然声效。
+  continuity:
+    enters_from_previous: Child has fork with broccoli.
+    exits_to_next: null
+schema_version: '1.0'
+version: 3
+status: draft
+id: reluctant-01-proto-01-shot-plan-03
+scene_ref: reluctant-01-proto-01
+scene_version: 2
+sense_ref: reluctant-01
+sense_revision: 1
+total_duration_hint: 11.0
