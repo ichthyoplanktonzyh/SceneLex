@@ -1,3 +1,5 @@
+import pytest
+
 import validate
 
 
@@ -257,5 +259,124 @@ def test_scene_revisions_cli_filters_by_sense(tmp_path, capsys):
     ]
     _revision_exit_code(tmp_path, scenes, sense_filter="b-01")
     out = capsys.readouterr().out
+    assert "b-01-proto-01" in out and "a-01-proto-01" not in out
+    assert "needs_review: 1" in out
+
+
+# --------------------------------- revision-only 路径不替发布门发言
+
+def _revision_repo(tmp_path, scene, sense):
+    """一个只放了 senses/ 与 scenes/ 的最小数据目录。"""
+    import yaml
+    (tmp_path / "senses").mkdir()
+    (tmp_path / "scenes" / sense["id"]).mkdir(parents=True)
+    (tmp_path / "senses" / f"{sense['id']}.yaml").write_text(
+        yaml.safe_dump(sense, allow_unicode=True), encoding="utf-8")
+    (tmp_path / "scenes" / sense["id"] / f"{scene['id']}.yaml").write_text(
+        yaml.safe_dump(scene, allow_unicode=True), encoding="utf-8")
+    return tmp_path
+
+
+def _forbid_full_gate_checks(monkeypatch):
+    """任何与语义修订无关的发布门检查被调用都算失败。"""
+    def _forbidden(name):
+        def _boom(*args, **kwargs):
+            raise AssertionError(f"revision-only 路径不得运行 {name}")
+        return _boom
+
+    for name in ("_check_dictionary_facts", "_check_inventory_identity",
+                 "_check_word_entries", "_check_surface_diversity",
+                 "validate_repository", "load_schema"):
+        monkeypatch.setattr(validate, name, _forbidden(name))
+
+
+def test_revision_only_path_skips_unrelated_gate_checks(tmp_path, monkeypatch):
+    _revision_repo(tmp_path, _bound_scene(sense_revision=1),
+                   _sense(semantic_revision=2))
+    _forbid_full_gate_checks(monkeypatch)
+    result = validate.validate_scene_revisions(tmp_path)
+    assert [c.status for c in result.scene_revisions.values()] == [
+        revisions.NEEDS_REVIEW
+    ]
+
+
+def test_revision_only_path_neither_runs_nor_hides_unrelated_errors(
+    tmp_path, monkeypatch
+):
+    """一个与修订无关的普通校验错误 (这里: 场景 id 与文件名不一致) 既不被运行,
+    也不被这份只谈修订的报告吞掉。"""
+    scene = _bound_scene(sense_revision=2)
+    sense = _sense(semantic_revision=2)
+    _revision_repo(tmp_path, scene, sense)
+    # 完整发布门会因为这个改名报错; revision-only 不该关心它。
+    (tmp_path / "scenes" / sense["id"] / f"{scene['id']}.yaml").rename(
+        tmp_path / "scenes" / sense["id"] / "renamed.yaml"
+    )
+    assert any("文件名与 id" in message
+               for message in validate.validate_repository(tmp_path).errors)
+
+    _forbid_full_gate_checks(monkeypatch)
+    result = validate.validate_scene_revisions(tmp_path)
+    assert result.errors == []
+    assert [c.status for c in result.scene_revisions.values()] == [
+        revisions.CURRENT
+    ]
+
+
+def _run_cli(tmp_path, monkeypatch, capsys, *args):
+    """跑一次 validate.py 的 CLI, 返回 (退出码, stdout)。"""
+    _forbid_full_gate_checks(monkeypatch)
+    monkeypatch.setattr(
+        validate.sys, "argv",
+        ["validate.py", "--data-root", str(tmp_path), "--scene-revisions", *args],
+    )
+    with pytest.raises(SystemExit) as exit_info:
+        validate.main()
+    return exit_info.value.code, capsys.readouterr().out
+
+
+@pytest.mark.parametrize("scene_revision,sense_revision,schema_version,expected", [
+    (2, 2, "1.1", 0),        # CURRENT
+    (1, 2, "1.1", 0),        # NEEDS_REVIEW
+    (None, 1, "1.0", 0),     # LEGACY
+    (9, 2, "1.1", 1),        # INVALID
+])
+def test_scene_revisions_cli_exit_code_by_status(
+    tmp_path, monkeypatch, capsys, scene_revision, sense_revision,
+    schema_version, expected
+):
+    _revision_repo(
+        tmp_path,
+        _bound_scene(schema_version=schema_version, sense_revision=scene_revision),
+        _sense(schema_version=schema_version,
+               semantic_revision=sense_revision if schema_version == "1.1" else None),
+    )
+    code, _ = _run_cli(tmp_path, monkeypatch, capsys)
+    assert code == expected
+
+
+def test_scene_revisions_cli_fails_on_missing_sense(tmp_path, monkeypatch, capsys):
+    _revision_repo(tmp_path, _bound_scene(sense_ref="ghost-01"), _sense())
+    code, out = _run_cli(tmp_path, monkeypatch, capsys)
+    assert code == 1 and "MISSING" in out
+
+
+def test_scene_revisions_cli_sense_filter_still_works(
+    tmp_path, monkeypatch, capsys
+):
+    import yaml
+    _revision_repo(tmp_path, _bound_scene(sense_revision=1),
+                   _sense(semantic_revision=2))
+    (tmp_path / "senses" / "b-01.yaml").write_text(
+        yaml.safe_dump(_sense(sense_id="b-01", semantic_revision=5)),
+        encoding="utf-8")
+    (tmp_path / "scenes" / "b-01").mkdir()
+    (tmp_path / "scenes" / "b-01" / "b-01-proto-01.yaml").write_text(
+        yaml.safe_dump(_bound_scene(scene_id="b-01-proto-01", sense_ref="b-01",
+                                    sense_revision=1)),
+        encoding="utf-8")
+
+    code, out = _run_cli(tmp_path, monkeypatch, capsys, "b-01")
+    assert code == 0
     assert "b-01-proto-01" in out and "a-01-proto-01" not in out
     assert "needs_review: 1" in out

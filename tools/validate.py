@@ -129,6 +129,35 @@ def _beats_are_contiguous(beats: list[Any]) -> bool:
     return beats == list(range(1, len(beats) + 1))
 
 
+def load_revision_documents(
+    data_root: Path | None = None,
+) -> tuple[ValidationResult, Path, list[str]]:
+    """只加载 senses/scenes 两棵 YAML 树; 返回 (result, data_root, 读取失败)。
+
+    读取失败单独返回一份, 是为了让调用方能把"文件根本读不出来"与"修订状态不对"
+    分开报告 — 前者与语义修订无关, 只是这份报告不完整。
+    """
+    data_root = (data_root or ROOT / "data").resolve()
+    result = ValidationResult()
+    load_errors: list[str] = []
+    result.senses = load_yaml_files(data_root / "senses", load_errors)
+    result.scenes = load_yaml_files(data_root / "scenes", load_errors)
+    result.errors += load_errors
+    return result, data_root, load_errors
+
+
+def validate_scene_revisions(data_root: Path | None = None) -> ValidationResult:
+    """只回答"场景与词义的语义修订对不对得上", 不跑发布门。
+
+    修订状态是给内容负责人看的日常问题, 不是发布决策: 它只需要两棵 YAML 树和
+    两个数字。跑完整校验会让这条命令替发布门发言 — 要么因为无关的错误失败, 要么
+    把那些错误吞进一份只谈修订的报告里。发布门请直接运行 validate_repository。
+    """
+    result, resolved_root, _ = load_revision_documents(data_root)
+    _check_scene_revisions(result, resolved_root)
+    return result
+
+
 def validate_repository(data_root: Path | None = None) -> ValidationResult:
     """Validate a data directory containing ``senses`` and ``scenes``."""
     data_root = (data_root or ROOT / "data").resolve()
@@ -566,13 +595,23 @@ def main() -> None:
         help="只报告场景与 WordSense 的语义修订状态; 可选按义项 ID 过滤",
     )
     arguments = parser.parse_args()
-    result = validate_repository(arguments.data_root)
     if arguments.scene_revisions is not None:
-        sys.exit(
-            print_scene_revisions(
-                result, arguments.data_root.resolve(), arguments.scene_revisions
-            )
+        result, resolved_root, load_errors = load_revision_documents(
+            arguments.data_root
         )
+        _check_scene_revisions(result, resolved_root)
+        code = print_scene_revisions(
+            result, resolved_root, arguments.scene_revisions
+        )
+        # 读不出来的文件与语义修订无关, 但会让这份报告不完整, 必须说出来。
+        if load_errors:
+            print(f"\n{len(load_errors)} 个文件读取失败, 报告不完整:",
+                  file=sys.stderr)
+            for load_error in load_errors:
+                print(f"  ✗ {load_error}", file=sys.stderr)
+            code = 1
+        sys.exit(code)
+    result = validate_repository(arguments.data_root)
     print_result(result, arguments.backlog)
     if result.errors:
         sys.exit(1)
