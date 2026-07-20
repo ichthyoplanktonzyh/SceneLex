@@ -1,0 +1,351 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scenelex.org/schema/shot-plan.schema.json",
+  "title": "SceneLex Shot Plan",
+  "description": "场景语义节拍的执行拆分 — Scene 之后唯一的叙事执行权威。Beat 是语义单位, Shot 是视频执行单位, 二者不要求一一对应。Shot Plan 决定镜头划分、时序、画面状态变化、构图、摄影机行为、时长、语义证据与连续性；它不决定视觉风格、渲染模型、最终提示词、workflow、关键帧文件、seed 或最终剪辑。",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "version",
+    "status",
+    "id",
+    "scene_ref",
+    "scene_version",
+    "sense_ref",
+    "sense_revision",
+    "title",
+    "total_duration_hint",
+    "cast",
+    "location",
+    "props",
+    "shots"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Shot Plan 自身的版本；由工具决定, 每次重新编译写入新版本目录"
+    },
+    "status": { "const": "draft" },
+
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z_]*-[0-9]{2}-(proto|contrast|counter|boundary|transfer)-[0-9]{2}-shot-plan-[0-9]{2}$",
+      "description": "{scene_id}-shot-plan-{nn}"
+    },
+    "scene_ref": {
+      "type": "string",
+      "pattern": "^[a-z][a-z_]*-[0-9]{2}-(proto|contrast|counter|boundary|transfer)-[0-9]{2}$",
+      "description": "被拆分的 SceneSpec ID"
+    },
+    "scene_version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "编译时 SceneSpec 的普通资源版本；用于提示上游是否已改动, 不是失效判定"
+    },
+    "sense_ref": {
+      "type": "string",
+      "pattern": "^[a-z][a-z_]*-[0-9]{2}$",
+      "description": "场景所教授的义项 ID；依赖链是 Shot Plan → Scene → WordSense → Approved Inventory"
+    },
+    "sense_revision": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "编译时 WordSense 的 semantic_revision, 与 SceneSpec.sense_revision 一致"
+    },
+
+    "title": { "type": "string", "minLength": 1 },
+    "total_duration_hint": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "各 Shot duration_hint 之和；由工具权威写入, 模型不得决定"
+    },
+
+    "cast": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "跨镜头需要保持一致的人物；没有人物时为空数组",
+      "items": {
+        "type": "object",
+        "required": ["id", "continuity_description"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "role": {
+            "type": "string",
+            "description": "如 focal_character / counterpart / bystander；用于人工审核, 不是渲染指令"
+          },
+          "continuity_description": {
+            "type": "string",
+            "minLength": 1,
+            "description": "跨镜头必须保持稳定的外观与身份特征；不写视觉风格"
+          }
+        }
+      }
+    },
+    "location": {
+      "type": "object",
+      "required": ["id", "continuity_description"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "continuity_description": { "type": "string", "minLength": 1 }
+      }
+    },
+    "props": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "承担语义证据或连续性的道具；没有则为空数组",
+      "items": {
+        "type": "object",
+        "required": ["id", "continuity_description"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "continuity_description": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+
+    "shots": {
+      "type": "array",
+      "minItems": 1,
+      "description": "执行镜头序列；数量由叙事拆分决定, 不要求等于 storyboard beat 数",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "source_beats",
+          "narrative_function",
+          "semantic_function",
+          "duration_hint",
+          "visual_start",
+          "trigger",
+          "action",
+          "visual_end",
+          "composition",
+          "camera",
+          "semantic_evidence",
+          "audio",
+          "continuity"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^shot-[0-9]{2}$" },
+          "source_beats": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "description": "本镜头覆盖的 SceneSpec.storyboard beat；可以覆盖多个 beat, 一个 beat 也可以被多个镜头引用",
+            "items": { "type": "integer", "minimum": 1 }
+          },
+          "narrative_function": {
+            "enum": [
+              "establish_context",
+              "establish_trigger",
+              "reveal_reaction",
+              "show_resistance",
+              "show_transition",
+              "semantic_climax",
+              "confirm_outcome",
+              "contrast",
+              "reset_or_bridge"
+            ]
+          },
+          "semantic_function": {
+            "type": "string",
+            "minLength": 1,
+            "description": "本镜头对证明目标词义的作用"
+          },
+          "duration_hint": {
+            "type": "number",
+            "minimum": 1.0,
+            "maximum": 8.0,
+            "description": "秒；生产目标是 2–5 秒的连续动作原子, 超过 5 秒由校验器给 warning"
+          },
+
+          "visual_start": { "$ref": "#/$defs/visualState" },
+          "trigger": {
+            "type": "object",
+            "required": ["description"],
+            "additionalProperties": false,
+            "description": "使镜头状态发生变化的可观察事件；纯建立镜头写明没有新触发事件, 但不得省略",
+            "properties": {
+              "description": { "type": "string", "minLength": 1 }
+            }
+          },
+          "action": {
+            "type": "object",
+            "required": ["description"],
+            "additionalProperties": false,
+            "description": "起止状态之间可被拍摄的运动或变化；写可观察行为, 不写心理判断",
+            "properties": {
+              "description": { "type": "string", "minLength": 1 }
+            }
+          },
+          "visual_end": { "$ref": "#/$defs/visualState" },
+
+          "composition": {
+            "type": "object",
+            "required": ["shot_size", "angle", "focal_subject", "staging"],
+            "additionalProperties": false,
+            "properties": {
+              "shot_size": {
+                "enum": [
+                  "extreme_wide",
+                  "wide",
+                  "medium_wide",
+                  "medium",
+                  "medium_close",
+                  "close_up",
+                  "extreme_close_up",
+                  "insert"
+                ]
+              },
+              "angle": {
+                "enum": [
+                  "eye_level",
+                  "high_angle",
+                  "low_angle",
+                  "over_shoulder",
+                  "top_down",
+                  "point_of_view",
+                  "profile",
+                  "three_quarter"
+                ]
+              },
+              "focal_subject": { "type": "string", "minLength": 1 },
+              "staging": { "type": "string", "minLength": 1 }
+            }
+          },
+          "camera": {
+            "type": "object",
+            "required": ["movement", "motivation"],
+            "additionalProperties": false,
+            "description": "需要复杂复合运动时应拆镜头, 不写长机位路径",
+            "properties": {
+              "movement": {
+                "enum": [
+                  "static",
+                  "pan",
+                  "tilt",
+                  "push_in",
+                  "pull_out",
+                  "track",
+                  "orbit",
+                  "handheld",
+                  "rack_focus"
+                ]
+              },
+              "motivation": { "type": "string", "minLength": 1 }
+            }
+          },
+
+          "semantic_evidence": {
+            "type": "object",
+            "required": ["must_show", "must_avoid"],
+            "additionalProperties": false,
+            "description": "只写本镜头的语义守卫, 不复述整个 WordSense",
+            "properties": {
+              "must_show": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": { "type": "string", "minLength": 3 }
+              },
+              "must_avoid": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": { "type": "string", "minLength": 3 }
+              }
+            }
+          },
+
+          "audio": {
+            "type": "object",
+            "required": ["mode"],
+            "additionalProperties": false,
+            "description": "默认 visual-first、dialogue-minimal、language-modular；台词不得成为唯一语义证据",
+            "properties": {
+              "mode": {
+                "enum": ["silence", "sfx", "optional_dialogue", "required_dialogue"]
+              },
+              "dialogue": {
+                "type": "object",
+                "required": ["speaker", "text"],
+                "additionalProperties": false,
+                "properties": {
+                  "speaker": { "type": "string", "minLength": 1 },
+                  "text": { "type": "string", "minLength": 1 }
+                }
+              },
+              "sfx": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": { "type": "string", "minLength": 1 }
+              },
+              "purpose": {
+                "type": "string",
+                "minLength": 1,
+                "description": "声音承担什么；mode 为 required_dialogue 时必须说明为何该镜头无法只靠画面成立"
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": { "mode": { "const": "required_dialogue" } },
+                  "required": ["mode"]
+                },
+                "then": { "required": ["dialogue", "purpose"] }
+              }
+            ]
+          },
+
+          "continuity": {
+            "type": "object",
+            "required": ["enters_from_previous", "exits_to_next"],
+            "additionalProperties": false,
+            "description": "供后续 Keyframe / Animatic 保持人物位置、朝向、姿势、道具与动作延续",
+            "properties": {
+              "enters_from_previous": {
+                "type": ["string", "null"],
+                "description": "首个镜头可为 null"
+              },
+              "exits_to_next": {
+                "type": ["string", "null"],
+                "description": "末个镜头可为 null"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "$defs": {
+    "visualState": {
+      "type": "object",
+      "required": ["description", "character_states"],
+      "additionalProperties": false,
+      "properties": {
+        "description": { "type": "string", "minLength": 1 },
+        "character_states": {
+          "type": "array",
+          "description": "姿势、视线、表情、空间关系、手持道具、任务状态；写成可读短句而不是十几个字段",
+          "items": {
+            "type": "object",
+            "required": ["character", "state"],
+            "additionalProperties": false,
+            "properties": {
+              "character": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+              "state": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    }
+  }
+}
