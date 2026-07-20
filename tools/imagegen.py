@@ -79,10 +79,12 @@ def find_nodes(workflow: dict[str, Any]) -> tuple[str, str, str]:
 
 
 def model_name(workflow: dict[str, Any]) -> str:
-    for node in workflow.values():
-        ckpt = node.get("inputs", {}).get("ckpt_name")
-        if ckpt:
-            return str(ckpt)
+    """权重文件名。checkpoint 与 split 权重 (UNET + 独立文本编码器) 都要认。"""
+    for field in ("ckpt_name", "unet_name"):
+        for node in workflow.values():
+            name = node.get("inputs", {}).get(field)
+            if name:
+                return str(name)
     return "unknown"
 
 

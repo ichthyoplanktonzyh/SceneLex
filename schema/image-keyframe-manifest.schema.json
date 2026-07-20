@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scenelex.org/schema/image-keyframe-manifest.schema.json",
+  "title": "SceneLex Image Keyframe Manifest",
+  "description": "一条 Keyframe Plan 里每个关键帧对应的一张真实图片。这一层只回答'这些文字状态能不能被画出来、画出来之后语义是否成立、跨镜是否接得上'。它不是通用资产系统: 没有 digest、没有依赖图、没有自动 stale、没有通用 asset ID。一张图片对应一个 keyframe, 不是一个 beat。",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "version",
+    "status",
+    "scene_ref",
+    "shot_plan_ref",
+    "keyframe_plan_ref",
+    "generation",
+    "frames"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "本 manifest 自身的版本; 重新生成写入新版本目录, 永不覆盖"
+    },
+    "status": {
+      "const": "draft"
+    },
+    "scene_ref": {
+      "type": "string",
+      "pattern": "^[a-z][a-z_]*-[0-9]{2}-(proto|contrast|counter|boundary|transfer)-[0-9]{2}$"
+    },
+    "shot_plan_ref": {
+      "type": "object",
+      "description": "关键帧图片最终服从的镜头执行权威。显式绑定版本, 不跟随'最新目录'漂移。",
+      "required": ["scene_id", "version"],
+      "additionalProperties": false,
+      "properties": {
+        "scene_id": { "type": "string" },
+        "version": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "keyframe_plan_ref": {
+      "type": "object",
+      "description": "图片逐帧对应的 Keyframe Plan 版本。",
+      "required": ["scene_id", "version"],
+      "additionalProperties": false,
+      "properties": {
+        "scene_id": { "type": "string" },
+        "version": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "generation": {
+      "type": "object",
+      "description": "这一批图片实际是怎么产生的 —— 只记录本次真实使用过的东西。",
+      "required": ["human_directed", "generated_at", "provider", "model", "workflow", "seed_policy"],
+      "additionalProperties": false,
+      "properties": {
+        "human_directed": {
+          "type": "boolean",
+          "description": "画面内容由人工写定的 Keyframe Plan 决定, 模型只负责把冻结状态画出来"
+        },
+        "generated_at": { "type": "string" },
+        "provider": { "type": "string" },
+        "model": { "type": "string" },
+        "workflow": { "type": "string" },
+        "seed_policy": { "type": "string" },
+        "reference_strategy": {
+          "type": "string",
+          "description": "本场景实际使用的一致性手段; 本层不建立通用 Character/Location/Style Bible"
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "frames": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["keyframe_id", "shot_id", "image", "prompt", "seed", "status", "review"],
+        "additionalProperties": false,
+        "properties": {
+          "keyframe_id": { "type": "string" },
+          "shot_id": { "type": "string" },
+          "image": {
+            "type": "string",
+            "description": "相对本 manifest 的图片路径; 每帧唯一, 不允许两帧共用一张图"
+          },
+          "prompt": { "type": "string" },
+          "seed": { "type": "integer" },
+          "status": { "enum": ["generated", "regenerated", "blocked"] },
+          "review": {
+            "type": "object",
+            "required": [
+              "semantic_readability",
+              "continuity",
+              "composition",
+              "character_consistency",
+              "notes"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "semantic_readability": { "enum": ["pending", "pass", "weak", "fail"] },
+              "continuity": { "enum": ["pending", "pass", "weak", "fail"] },
+              "composition": { "enum": ["pending", "pass", "weak", "fail"] },
+              "character_consistency": { "enum": ["pending", "pass", "weak", "fail"] },
+              "notes": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

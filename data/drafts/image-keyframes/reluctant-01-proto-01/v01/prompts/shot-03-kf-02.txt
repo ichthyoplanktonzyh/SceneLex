@@ -1,0 +1,28 @@
+# shot-03-kf-02
+# 由 Shot Plan 与 Keyframe Plan 机械编译; 不要手工改这里, 改上游。
+
+=== POSITIVE ===
+Pixar-style 3D animated film, appealing stylized 3D characters, expressive readable eyes and brows, clear exaggerated body language, warm cinematic family-film lighting, polished 3D materials, rich color, strong visual storytelling, emotionally readable staging, high detail
+
+A single frozen moment from one continuous shot — one image, one instant, not a storyboard and not a sequence of panels.
+
+FRAMING — medium_close, three_quarter angle. Child's face, right hand and the fork, framed so that the halt at the mouth and the reclined torso are visible in the same image. Child at frame right in the same seated position and screen direction as shot-02, plate visible in the lower part of the frame, mother partially visible at the left edge. Camera static.
+
+CAST — mother (counterpart) — Adult female, seated at the left side of the table throughout, speaks to the child and never touches him, the fork or the plate. child (focal_character) — School-age child, seated at the right side of the table throughout, right-handed; starts with both hands flat on the table surface.
+
+LOCATION — A family dining table with at least two chairs, a plate with broccoli and a fork placed in front of the child. The child keeps the right side of the frame and the mother the left in every shot.
+
+PROPS — plate — White plate containing several pieces of cooked broccoli, placed in front of the child, its position on the table unchanged from first shot to last. fork — Standard dinner fork, starting beside the plate within the child's reach; once picked up it stays in the child's right hand until it is put back down on the plate.
+
+FROZEN STATE — The child holds the fork with a piece of broccoli speared on it, raised and stopped just short of his mouth. His lips are closed, not yet parted. His torso is still leaned back, so the arm has had to travel the whole distance on its own; his eyes are on the broccoli or lowered, not turned toward the mother.
+
+MUST BE VISIBLE — Broccoli on the fork, held still just short of the mouth. Mouth closed — a visible halt, not a bite or a swallow in progress. Body still withdrawn while only the arm has committed. No one else's hand on the fork or on the child — he is doing this himself.
+
+CARRIED OVER FROM THE PREVIOUS FRAME — The same reclined torso as the opening frame; the fork is now loaded and raised.
+
+The image contains no words, letters, subtitles, captions, definitions, vocabulary labels, narration text, speech bubbles or interface overlays.
+
+=== NEGATIVE ===
+2d anime, flat illustration, cel shading, photorealistic live action, plastic toy render, text, english text, speech bubble, caption, subtitles, letters, watermark, signature, username, lowres, bad anatomy, bad hands, extra digits, fewer digits, jpeg artifacts, blurry, unreadable expression, collage, split screen, multiple panels, storyboard, film strip
+
+MUST NOT APPEAR — Gagging, retching, or turning the head away from the food at the mouth. Eyes squeezed shut, which would read as fear rather than low willingness. The mother feeding him or steadying his arm.

@@ -1,0 +1,28 @@
+# shot-02-kf-01
+# 由 Shot Plan 与 Keyframe Plan 机械编译; 不要手工改这里, 改上游。
+
+=== POSITIVE ===
+Pixar-style 3D animated film, appealing stylized 3D characters, expressive readable eyes and brows, clear exaggerated body language, warm cinematic family-film lighting, polished 3D materials, rich color, strong visual storytelling, emotionally readable staging, high detail
+
+A single frozen moment from one continuous shot — one image, one instant, not a storyboard and not a sequence of panels.
+
+FRAMING — medium_close, eye_level angle. Child from the waist up, framed so that the backward lean of the torso and the travel of the right arm are both readable in the same image. Child at frame right in the same seated position as shot-01, plate and fork in the lower part of the frame, mother partially visible at the left edge. Nothing is added to or removed from the table. Camera static.
+
+CAST — mother (counterpart) — Adult female, seated at the left side of the table throughout, speaks to the child and never touches him, the fork or the plate. child (focal_character) — School-age child, seated at the right side of the table throughout, right-handed; starts with both hands flat on the table surface.
+
+LOCATION — A family dining table with at least two chairs, a plate with broccoli and a fork placed in front of the child. The child keeps the right side of the frame and the mother the left in every shot.
+
+PROPS — plate — White plate containing several pieces of cooked broccoli, placed in front of the child, its position on the table unchanged from first shot to last. fork — Standard dinner fork, starting beside the plate within the child's reach; once picked up it stays in the child's right hand until it is put back down on the plate.
+
+FROZEN STATE — Tighter framing on the child at frame right, waist up, with the plate and fork in the lower part of the frame. He is in exactly the posture that ended shot-01 — upright, both hands flat on the table, eyes down on the broccoli, shoulders slightly tense. The mother's extended arm is still at the left edge. Nothing has moved.
+
+MUST BE VISIBLE — Posture identical to the end of shot-01: hands flat, upright, gaze on the plate. Fork within easy reach and untouched. No external obstacle and no one restraining the child.
+
+CARRIED OVER FROM THE PREVIOUS FRAME — Same posture, hand position, screen direction and gaze as shot-01's final frame, seen from a closer framing.
+
+The image contains no words, letters, subtitles, captions, definitions, vocabulary labels, narration text, speech bubbles or interface overlays.
+
+=== NEGATIVE ===
+2d anime, flat illustration, cel shading, photorealistic live action, plastic toy render, text, english text, speech bubble, caption, subtitles, letters, watermark, signature, username, lowres, bad anatomy, bad hands, extra digits, fewer digits, jpeg artifacts, blurry, unreadable expression, collage, split screen, multiple panels, storyboard, film strip
+
+MUST NOT APPEAR — Any backward lean or gaze aversion yet — that belongs to the next frame. Food-directed facial expressions such as a wrinkled nose.

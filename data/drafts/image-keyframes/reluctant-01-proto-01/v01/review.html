@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang='zh'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>reluctant-01-proto-01 image keyframes</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 24px; font: 15px/1.55 -apple-system, "Helvetica Neue",
+       "PingFang SC", "Microsoft YaHei", sans-serif; background: #14161a; color: #e8eaed; }
+h1 { font-size: 19px; margin: 0 0 4px; }
+.sub { color: #9aa0a6; font-size: 13px; margin-bottom: 16px; }
+.warn { border: 1px solid #b3541e; background: #2a1a0d; color: #ffb782;
+        padding: 12px 14px; border-radius: 6px; margin-bottom: 18px; font-size: 13px; }
+.warn b { display: block; letter-spacing: .04em; margin-bottom: 6px; color: #ffd0a3; }
+.shot { border-top: 2px solid #3a4048; margin-top: 22px; padding-top: 10px; }
+.shot h2 { font-size: 15px; margin: 0 0 10px; }
+.shot h2 span { color: #9aa0a6; font-weight: 400; font-size: 13px; margin-left: 8px; }
+.cards { display: flex; flex-wrap: wrap; gap: 14px; }
+.kf { flex: 1 1 330px; min-width: 300px; max-width: 460px; border: 1px solid #333940;
+      border-radius: 6px; padding: 12px; background: #1b1f25; }
+.kf img { width: 100%; display: block; border-radius: 4px; background: #0e1013; }
+.kf .id { font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #7aa2f7; }
+.kf .t { float: right; font-variant-numeric: tabular-nums; font-size: 12px; color: #9aa0a6; }
+.kf .roles { margin: 6px 0 8px; }
+.kf .role { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 10px;
+            background: #2d3440; color: #b8c0cc; margin-right: 4px; }
+.missing { border: 1px dashed #b3541e; color: #ffb782; padding: 26px 10px; text-align: center;
+           border-radius: 4px; font-size: 13px; }
+.why { font-size: 12.5px; color: #9aa0a6; margin-top: 10px; }
+.why b { color: #b8c0cc; font-weight: 600; }
+ul { margin: 6px 0 0; padding-left: 18px; font-size: 12.5px; color: #9aa0a6; }
+ul.avoid { color: #d99a9a; }
+.neigh { font-size: 12px; color: #7f868e; margin-top: 10px;
+         font-family: ui-monospace, Menlo, monospace; }
+.verdicts { margin-top: 10px; font-size: 12px; }
+.v { display: inline-block; padding: 1px 7px; border-radius: 10px; margin-right: 5px;
+     background: #2d3440; color: #b8c0cc; }
+.v.pass { background: #1d3324; color: #93d3a6; }
+.v.weak { background: #38310f; color: #e2c86a; }
+.v.fail { background: #3a1e1e; color: #f09a9a; }
+.notes { font-size: 12px; color: #cdd2d8; margin-top: 8px; padding-left: 18px; }
+.pair { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; }
+.pair figure { flex: 1 1 380px; margin: 0; }
+.pair img { width: 100%; border-radius: 4px; display: block; }
+.pair figcaption { font-family: ui-monospace, Menlo, monospace; font-size: 12px;
+                   color: #7aa2f7; margin-bottom: 6px; }
+table.checks { border-collapse: collapse; margin-top: 12px; font-size: 12.5px; }
+table.checks td { border: 1px solid #333940; padding: 4px 10px; color: #b8c0cc; }
+table.checks td:first-child { color: #9aa0a6; }
+</style>
+</head>
+<body>
+<h1>reluctant-01-proto-01 — image keyframes v01</h1>
+<div class='sub'>Shot Plan v5 · Keyframe Plan v2 · 9 frames · z_image_turbo_bf16.safetensors · comfyui-zimage-keyframe.json · seed policy: fixed-scene-seed (整场 9 帧共用一个 seed)</div>
+<div class='warn'><b>REAL IMAGE SEMANTIC REVIEW — NOT VIDEO MOTION REVIEW</b>可以审核：单帧语义是否可读、must-show / must-avoid 是否成立、角色与道具是否一致、跨镜状态是否接得上。<br>不能审核：动作插值、视频节奏、运动自然度、音频、剪辑、最终学习效果。本页通过只意味着可以进入运动验证，不意味着片子成立。</div>
+<section class='shot'>
+<h2>shot-01<span>establish_trigger · medium_wide · 2.5s</span></h2>
+<div class='cards'>
+<div class='kf' id='shot-01-kf-01'><span class='id'>shot-01-kf-01</span><span class='t'>t=0.0s · seed 704251</span><div class='roles'><span class='role'>initial</span></div><img src='images/shot-01-kf-01.png' alt='shot-01-kf-01' loading='lazy'><div class='verdicts'><span class='v fail'>semantic: fail</span><span class='v fail'>continuity: fail</span><span class='v pass'>composition: pass</span><span class='v weak'>character: weak</span></div><ul class='notes'><li>画的是更晚的状态: 孩子在 t=0 就已经右手握住叉子, 而 v02 要求双手平放桌面。</li><li>母亲的手臂已经完全伸出并指向西兰花, 而本帧要求&#x27;手已抬起但尚未指向&#x27;——触发事件被提前。</li><li>构图成立: medium_wide 双人镜, 母左子右, 盘子与叉子在中景可读, 孩子与盘子之间无遮挡。</li><li>作为角色基准帧本身可用, 但这个外观在后续 8 帧里没有一次被守住。</li></ul><div class='why'><b>Semantic purpose: </b>锚定“请求尚未成立”的起点：孩子的注意力还不在盘子上，身体也还没有任何反应。缺了它，下一帧“妈妈指着、孩子看向盘子”就无法证明注意力转移是被请求引发的，孩子随后的停顿也可能被读成他本来就在发呆。</div><div class='why'><b>Must show</b></div><ul><li>Child&#x27;s gaze directed forward, away from the plate.</li><li>Mother&#x27;s hand already in motion but not yet pointing.</li><li>Plate and fork within the child&#x27;s easy reach, with nothing blocking access to them.</li></ul><div class='why'><b>Must avoid</b></div><ul class='avoid'><li>Child already hesitating, leaning back, or looking uncomfortable.</li><li>Any physical barrier, restraint, or third party between the child and the plate.</li></ul><div class='neigh'>prev: — · next: shot-01-kf-02</div></div>
+<div class='kf' id='shot-01-kf-02'><span class='id'>shot-01-kf-02</span><span class='t'>t=1.0s · seed 704251</span><div class='roles'><span class='role'>trigger</span><span class='role'>final</span></div><img src='images/shot-01-kf-02.png' alt='shot-01-kf-02' loading='lazy'><div class='verdicts'><span class='v weak'>semantic: weak</span><span class='v fail'>continuity: fail</span><span class='v pass'>composition: pass</span><span class='v fail'>character: fail</span></div><ul class='notes'><li>指向动作成立: 食指清楚指向孩子盘中的西兰花, 孩子的视线也已落到盘子上。</li><li>母亲在看盘子而不是看孩子。v02 要求&#x27;保持手势的同时注视孩子&#x27;——等待才使它成为请求, 缺了它更像在介绍食物。</li><li>孩子仍然握着叉子, 违反&#x27;双手平放、尚无任何回应&#x27;; shot-02 的抵抗因此失去了&#x27;尚未开始&#x27;的起点。</li><li>母亲上衣由 kf-01 的红色变为青色, 固定 seed 未能守住角色外观。</li></ul><div class='why'><b>Semantic purpose: </b>同一张画面同时是本镜头的触发事件与结束状态：请求关系成立（指向 + 注视 + 保持等待），孩子的注意力已经落到盘子上，但身体尚未做出任何回应。它是 shot-02 的全部阻力得以被读成“对这个请求的回应”的前提。把“请求发出”与“孩子看过去”拆成两帧只会得到两张几乎相同的图，所以这里用一帧承担两个角色。1.5s 的 hold 就是“她在等”本身。</div><div class='why'><b>Must show</b></div><ul><li>Pointing finger clearly aimed at the broccoli on the child&#x27;s plate.</li><li>Mother&#x27;s gaze on the child while the gesture is held — the waiting is what makes it a request.</li><li>Child&#x27;s gaze now on the plate.</li><li>Child&#x27;s body still neutral: hands on the table, no lean, no resistance yet.</li></ul><div class='why'><b>Must avoid</b></div><ul class='avoid'><li>Mother touching the child, the fork, or the plate — that would be force, not a request.</li><li>Child already showing hesitation, which would make the resistance predate the request.</li></ul><div class='neigh'>prev: shot-01-kf-01 · next: shot-02-kf-01</div></div>
+</div>
+</section>
+<section class='shot'>
+<h2>shot-02<span>show_resistance · medium_close · 3.5s</span></h2>
+<div class='cards'>
+<div class='kf' id='shot-02-kf-01'><span class='id'>shot-02-kf-01</span><span class='t'>t=0.0s · seed 704251</span><div class='roles'><span class='role'>initial</span></div><img src='images/shot-02-kf-01.png' alt='shot-02-kf-01' loading='lazy'><div class='verdicts'><span class='v fail'>semantic: fail</span><span class='v fail'>continuity: fail</span><span class='v weak'>composition: weak</span><span class='v fail'>character: fail</span></div><ul class='notes'><li>叉子已被握住且叉齿已经戳进西兰花, 而本帧要求&#x27;叉子未被碰过、什么都没有动&#x27;。</li><li>跨剪辑点的连续性锚点因此失效: 它没有复现 shot-01 末帧的姿态。</li><li>画面左缘的人物不是母亲, 而是另一个男孩, 并且自己手里也拿着叉子——违反&#x27;母亲什么都不碰&#x27;。</li><li>构图本身是 medium_close 且孩子在右侧, 但左缘人物错误使这一格的在场关系不成立。</li></ul><div class='why'><b>Semantic purpose: </b>跨剪辑点的连续性锚点，同时是“什么都没发生”本身的证据。删掉它，画面就从两人镜头直接跳进“已经后靠”的状态，观众失去衡量停顿长度的基准——而停顿是不情愿最先可见的形态。0.7s 的 hold 是这次停顿的可感知下限。</div><div class='why'><b>Must show</b></div><ul><li>Posture identical to the end of shot-01: hands flat, upright, gaze on the plate.</li><li>Fork within easy reach and untouched.</li><li>No external obstacle and no one restraining the child.</li></ul><div class='why'><b>Must avoid</b></div><ul class='avoid'><li>Any backward lean or gaze aversion yet — that belongs to the next frame.</li><li>Food-directed facial expressions such as a wrinkled nose.</li></ul><div class='neigh'>prev: shot-01-kf-02 · next: shot-02-kf-02</div></div>
+<div class='kf' id='shot-02-kf-02'><span class='id'>shot-02-kf-02</span><span class='t'>t=0.7s · seed 704251</span><div class='roles'><span class='role'>trigger</span></div><img src='images/shot-02-kf-02.png' alt='shot-02-kf-02' loading='lazy'><div class='verdicts'><span class='v fail'>semantic: fail</span><span class='v fail'>continuity: fail</span><span class='v pass'>composition: pass</span><span class='v fail'>character: fail</span></div><ul class='notes'><li>要求是躯干后撤、双手略收回、视线回避; 实际是手臂前伸、叉子已插入食物, 抵抗第一次可见的那一刻没有被画出来。</li><li>躯干没有离开桌面, &#x27;withdrawal&#x27; 完全缺席。</li><li>视线确实离开了盘子, 这是本帧唯一成立的 must_show。</li><li>左缘人物仍不是母亲。</li></ul><div class='why'><b>Semantic purpose: </b>抵抗第一次变得可见：后撤 + 视线回避。这一帧把“停顿”与“走神”区分开——身体正在离开被要求的对象。缺了它，动作会从中立坐姿直接跳到伸手，整段就只剩下“慢”，而慢本身不是不情愿。它到下一帧的 1.4s 里，先把后撤姿态保持住，再开始伸手。</div><div class='why'><b>Must show</b></div><ul><li>Torso withdrawn from the table — small but unmistakable.</li><li>Gaze aimed away from the plate.</li><li>Hands drawn back slightly rather than reaching.</li><li>Neutral mouth.</li></ul><div class='why'><b>Must avoid</b></div><ul class='avoid'><li>Pushing the plate away or shaking the head — that reads as refuse.</li><li>Wrinkled nose or covering the mouth — that reads as an aversion to the food itself.</li><li>A face that alone reads as sad, frightened, or angry.</li></ul><div class='neigh'>prev: shot-02-kf-01 · next: shot-02-kf-03</div></div>
+<div class='kf' id='shot-02-kf-03'><span class='id'>shot-02-kf-03</span><span class='t'>t=2.1s · seed 704251</span><div class='roles'><span class='role'>transition</span></div><img src='images/shot-02-kf-03.png' alt='shot-02-kf-03' loading='lazy'><div class='verdicts'><span class='v fail'>semantic: fail</span><span class='v fail'>continuity: fail</span><span class='v pass'>composition: pass</span><span class='v fail'>character: fail</span></div><ul class='notes'><li>这是区分 reluctant 与普通慢动作的判据帧, 结果是本批最严重的失败。</li><li>要求&#x27;手停在离叉子约三分之二处且没有碰到叉子&#x27;; 实际手已握叉、叉齿已插入西兰花。</li><li>要求&#x27;躯干仍然后靠、只有手臂推进&#x27;; 实际躯干前倾并带轻微笑意, 读成的是配合而不是阻力。</li><li>母亲第三次改变外观(紫色背心加项链)。</li></ul><div class='why'><b>Semantic purpose: </b>把 reluctant 与普通服从分开的那一帧。从“后靠”直接过渡到“握着叉子”，插值与视频模型都会生成一次平滑、正常的伸手，中途那半秒的停顿会被抹掉——而启动延迟正是不情愿的核心证据。身体没有跟上手，也让“只有手在配合”直接可见。</div><div class='why'><b>Must show</b></div><ul><li>Hand stopped short of the fork and not touching it.</li><li>Torso still back — the body has not committed to the action.</li><li>Gaze still not on the plate.</li></ul><div class='why'><b>Must avoid</b></div><ul class='avoid'><li>The hand reaching for anything other than the fork.</li><li>The hand recoiling backwards, which would read as refuse.</li><li>A fast, confident reach with the body following it.</li></ul><div class='neigh'>prev: shot-02-kf-02 · next: shot-02-kf-04</div></div>
+<div class='kf' id='shot-02-kf-04'><span class='id'>shot-02-kf-04</span><span class='t'>t=2.9s · seed 704251</span><div class='roles'><span class='role'>final</span></div><img src='images/shot-02-kf-04.png' alt='shot-02-kf-04' loading='lazy'><div class='verdicts'><span class='v weak'>semantic: weak</span><span class='v weak'>continuity: weak</span><span class='v pass'>composition: pass</span><span class='v fail'>character: fail</span></div><ul class='notes'><li>本批最接近规格的两张之一: 叉子在孩子自己手中、抬离桌面、叉齿尚未插入食物, 母亲在左缘且没有触碰任何东西。</li><li>躯干没有保持后靠——交给 shot-03 的连续性契约里最关键的&#x27;低意愿没有随动作开始而消失&#x27;因此没有画出来。</li><li>视线离开盘子, 成立。</li><li>母亲的服装与前几帧均不一致。</li></ul><div class='why'><b>Semantic purpose: </b>本镜头的结束状态，也是交给 shot-03 的连续性契约。它证明孩子最终**自己**握住了叉子（不是拒绝，也不是被喂），同时躯干仍然后靠——低意愿没有随着动作开始而消失。删掉它，握住叉子这个动作就发生在剪辑点之间，观众看不到他是自己拿的；shot-03 的首帧也失去了可对齐的上游状态，跨镜连续性只剩一句口头承诺。</div><div class='why'><b>Must show</b></div><ul><li>The fork in the child&#x27;s own right hand, lifted clear of the table near the rim of the plate.</li><li>Tines not yet in the food — the action is started, not completed.</li><li>Torso still leaned back at the angle established earlier.</li><li>No one else&#x27;s hand on the fork, on the plate or on the child.</li></ul><div class='why'><b>Must avoid</b></div><ul class='avoid'><li>The torso coming forward with the arm, which would end the withdrawal here.</li><li>The gaze turning eager or the mouth shifting into a smile.</li><li>The fork already loaded with broccoli — that belongs to the next shot.</li></ul><div class='neigh'>prev: shot-02-kf-03 · next: shot-03-kf-01</div></div>
+</div>
+</section>
+<section class='shot'>
+<h2>shot-03<span>semantic_climax · medium_close · 4.8s</span></h2>
+<div class='cards'>
+<div class='kf' id='shot-03-kf-01'><span class='id'>shot-03-kf-01</span><span class='t'>t=0.0s · seed 704251</span><div class='roles'><span class='role'>initial</span></div><img src='images/shot-03-kf-01.png' alt='shot-03-kf-01' loading='lazy'><div class='verdicts'><span class='v fail'>semantic: fail</span><span class='v fail'>continuity: fail</span><span class='v pass'>composition: pass</span><span class='v weak'>character: weak</span></div><ul class='notes'><li>跨镜首帧要求与 shot-02-kf-04 完全同一状态; 实际叉子已经送进嘴里, 剪辑点两侧直接跳变。</li><li>而且叉子上没有食物——它既不是上游状态, 也不是任何一个合法的下游状态。</li><li>&#x27;叉齿尚未插入食物&#x27;与&#x27;叉子仍在盘缘&#x27;两项跨镜检查同时失败。</li><li>孩子的身份大体延续, 但服装细节(领口/内搭)与 shot-02 不一致。</li></ul><div class='why'><b>Semantic purpose: </b>跨镜头首帧本身就是连续性契约，不能因为与上一镜末帧接近就删掉：它是新镜头里唯一能被检查“叉子有没有跳位、手有没有换边、躯干角度有没有复位”的那张图。0.5s 它到下一帧有 1.5s，其中开头约 0.5s 是不动的——先让观众确认阻力状态被带过了剪辑点，再由这只手把西兰花叉起并抬到嘴边。抵抗不是在切镜后重新建立的。</div><div class='why'><b>Must show</b></div><ul><li>Same right hand on the fork, in the same position relative to the plate as the end of shot-02.</li><li>Same backward lean of the torso and the same screen direction.</li><li>Plate and remaining broccoli in their unchanged positions.</li><li>Gaze still off the plate and not eager.</li></ul><div class='why'><b>Must avoid</b></div><ul class='avoid'><li>The fork jumping to the other hand or to a different position on the table.</li><li>The torso resetting to upright at the cut.</li><li>The mother having moved, or now touching the child, the fork or the plate.</li></ul><div class='neigh'>prev: shot-02-kf-04 · next: shot-03-kf-02</div></div>
+<div class='kf' id='shot-03-kf-02'><span class='id'>shot-03-kf-02</span><span class='t'>t=1.5s · seed 704251</span><div class='roles'><span class='role'>semantic_climax</span></div><img src='images/shot-03-kf-02.png' alt='shot-03-kf-02' loading='lazy'><div class='verdicts'><span class='v weak'>semantic: weak</span><span class='v weak'>continuity: weak</span><span class='v pass'>composition: pass</span><span class='v fail'>character: fail</span></div><ul class='notes'><li>本批语义最强的一张: 西兰花已在叉上、停在嘴边、嘴仍闭合, &#x27;动作几乎完成但尚未完成&#x27;的停顿确实可读。</li><li>没有出现 gagging、干呕、闭眼或母亲喂食等 must_avoid 项。</li><li>视线转向母亲, 而 v02 明确要求看着西兰花或垂下——转向母亲会把这一刻读成征求许可, 不是自己承担的迟疑。</li><li>躯干没有后靠, &#x27;only the arm has committed&#x27; 未成立。</li></ul><div class='why'><b>Semantic purpose: </b>全场最强的一帧：动作已经几乎完成，阻力仍然在。第一次停顿只能证明“启动慢”，第二次停顿证明阻力贯穿整个执行过程，这正是本场景要教的判据。缺了它，整条弧线塌成“犹豫一下然后正常吃”。同时它把“孩子自己把食物送到嘴边”钉住，与 refuse 划清界限。</div><div class='why'><b>Must show</b></div><ul><li>Broccoli on the fork, held still just short of the mouth.</li><li>Mouth closed — a visible halt, not a bite or a swallow in progress.</li><li>Body still withdrawn while only the arm has committed.</li><li>No one else&#x27;s hand on the fork or on the child — he is doing this himself.</li></ul><div class='why'><b>Must avoid</b></div><ul class='avoid'><li>Gagging, retching, or turning the head away from the food at the mouth.</li><li>Eyes squeezed shut, which would read as fear rather than low willingness.</li><li>The mother feeding him or steadying his arm.</li></ul><div class='neigh'>prev: shot-03-kf-01 · next: shot-03-kf-03</div></div>
+<div class='kf' id='shot-03-kf-03'><span class='id'>shot-03-kf-03</span><span class='t'>t=3.2s · seed 704251</span><div class='roles'><span class='role'>final</span></div><img src='images/shot-03-kf-03.png' alt='shot-03-kf-03' loading='lazy'><div class='verdicts'><span class='v fail'>semantic: fail</span><span class='v fail'>continuity: fail</span><span class='v pass'>composition: pass</span><span class='v fail'>character: fail</span></div><ul class='notes'><li>要求&#x27;已经吃下、叉子放回盘子、手回到桌面&#x27;; 实际叉子仍举在半空、西兰花仍在叉齿上, 这一口根本没有发生。</li><li>&#x27;他确实吃下了&#x27;是区分 reluctant 与 refuse 的唯一收尾证据, 本帧没有提供。</li><li>同时也无法检验&#x27;吃完之后意愿没有转正&#x27;, 因为动作没有完成。</li><li>左缘人物再次变成男孩而不是母亲。</li></ul><div class='why'><b>Semantic purpose: </b>证明两件事同时成立：动作确实发生并由孩子自己完成（不是 refuse），而意愿始终没有转正（不是主动配合）。动作完成后身体仍维持后撤姿态，是“低意愿贯穿到底”的收尾证据。它到镜头结束还有 1.6s，咀嚼、吞咽与最后的静止都在这段里发生——它们与本帧的差别只是下颌位置，本身不改变任何语义推断，所以不单独成帧。</div><div class='why'><b>Must show</b></div><ul><li>Fork put down on the plate — the action was completed.</li><li>Body still reclined, matching the withdrawal established in shot-02.</li><li>Flat mouth, gaze low or averted.</li><li>No reach for a second piece.</li></ul><div class='why'><b>Must avoid</b></div><ul class='avoid'><li>Smiling, nodding, or leaning forward for another piece.</li><li>Spitting the food out or a face that reads as revulsion at the taste.</li><li>Pushing the plate away.</li></ul><div class='neigh'>prev: shot-03-kf-02 · next: —</div></div>
+</div>
+</section>
+<section class='shot'>
+<h2>Continuity pair<span>shot-01-kf-02 → shot-02-kf-01 · 跨镜头动作状态必须相同，构图可以更紧</span></h2>
+<div class='pair'>
+<figure><figcaption>shot-01-kf-02</figcaption><img src='images/shot-01-kf-02.png' alt='shot-01-kf-02'></figure>
+<figure><figcaption>shot-02-kf-01</figcaption><img src='images/shot-02-kf-01.png' alt='shot-02-kf-01'></figure>
+</div>
+<table class='checks'><tr><td>same child identity</td><td>逐项人工核对</td></tr><tr><td>same right hand on fork</td><td>逐项人工核对</td></tr><tr><td>same fork orientation</td><td>逐项人工核对</td></tr><tr><td>same fork position near plate rim</td><td>逐项人工核对</td></tr><tr><td>tines not yet inserted into food</td><td>逐项人工核对</td></tr><tr><td>same torso recline</td><td>逐项人工核对</td></tr><tr><td>same gaze direction</td><td>逐项人工核对</td></tr><tr><td>same screen direction</td><td>逐项人工核对</td></tr><tr><td>same plate position</td><td>逐项人工核对</td></tr><tr><td>same food arrangement</td><td>逐项人工核对</td></tr><tr><td>mother still at left edge</td><td>逐项人工核对</td></tr><tr><td>mother touching nothing</td><td>逐项人工核对</td></tr></table>
+</section>
+<section class='shot'>
+<h2>Continuity pair<span>shot-02-kf-04 → shot-03-kf-01 · 跨镜头动作状态必须相同，构图可以更紧</span></h2>
+<div class='pair'>
+<figure><figcaption>shot-02-kf-04</figcaption><img src='images/shot-02-kf-04.png' alt='shot-02-kf-04'></figure>
+<figure><figcaption>shot-03-kf-01</figcaption><img src='images/shot-03-kf-01.png' alt='shot-03-kf-01'></figure>
+</div>
+<table class='checks'><tr><td>same child identity</td><td>逐项人工核对</td></tr><tr><td>same right hand on fork</td><td>逐项人工核对</td></tr><tr><td>same fork orientation</td><td>逐项人工核对</td></tr><tr><td>same fork position near plate rim</td><td>逐项人工核对</td></tr><tr><td>tines not yet inserted into food</td><td>逐项人工核对</td></tr><tr><td>same torso recline</td><td>逐项人工核对</td></tr><tr><td>same gaze direction</td><td>逐项人工核对</td></tr><tr><td>same screen direction</td><td>逐项人工核对</td></tr><tr><td>same plate position</td><td>逐项人工核对</td></tr><tr><td>same food arrangement</td><td>逐项人工核对</td></tr><tr><td>mother still at left edge</td><td>逐项人工核对</td></tr><tr><td>mother touching nothing</td><td>逐项人工核对</td></tr></table>
+</section>
+</body>
+</html>
