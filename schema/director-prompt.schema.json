@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://scenelex.org/schema/director-prompt.schema.json",
   "title": "SceneLex Director Prompt",
-  "description": "导演中间层输出：把语义场景翻译为适合目标视频能力的高质量提示词。内部草稿契约，不属于公开语义资源。",
+  "description": "LEGACY — 旧的模型提示词原型契约：把语义场景直接翻译为目标视频能力的提示词。历史产物继续保留，但已不是新架构的权威层：新主线是 schema/shot-plan.schema.json（Scene → Shot Plan），最终模型提示词属于 Shot Plan 下游的渲染适配层。内部草稿契约，不属于公开语义资源。",
   "type": "object",
   "required": [
     "schema_version",
