@@ -1,0 +1,262 @@
+schema_version: '1.0'
+version: 5
+status: draft
+id: reluctant-01-proto-01-shot-plan-05
+scene_ref: reluctant-01-proto-01
+scene_version: 2
+sense_ref: reluctant-01
+sense_revision: 1
+title: 勉强吃西兰花
+total_duration_hint: 10.8
+cast:
+- id: mother
+  role: counterpart
+  continuity_description: Adult female, seated at the left side of the table throughout, speaks to the
+    child and never touches him, the fork or the plate.
+- id: child
+  role: focal_character
+  continuity_description: School-age child, seated at the right side of the table throughout, right-handed;
+    starts with both hands flat on the table surface.
+location:
+  id: dining-table
+  continuity_description: A family dining table with at least two chairs, a plate with broccoli and a
+    fork placed in front of the child. The child keeps the right side of the frame and the mother the
+    left in every shot.
+props:
+- id: plate
+  continuity_description: White plate containing several pieces of cooked broccoli, placed in front of
+    the child, its position on the table unchanged from first shot to last.
+- id: fork
+  continuity_description: Standard dinner fork, starting beside the plate within the child's reach; once
+    picked up it stays in the child's right hand until it is put back down on the plate.
+shots:
+- id: shot-01
+  source_beats:
+  - 1
+  narrative_function: establish_trigger
+  semantic_function: 呈现一个具体、可执行、没有外在屏障的行动机会；通过妈妈的手指动作、注视与等待姿态建立请求关系，并把孩子的注意力引到盘子上，而身体尚未开始行动。
+  duration_hint: 2.5
+  visual_start:
+    description: Child sits normally at the right of the table, both hands resting flat on the surface,
+      head facing forward. Mother is visible at the left, one hand raised off the table and beginning
+      to move toward the plate.
+    character_states:
+    - character: child
+      state: Sitting upright, both hands flat on the table, gaze directed forward rather than at the plate.
+    - character: mother
+      state: Facing the child, one hand moving toward the plate, mouth opening to speak.
+  trigger:
+    description: Mother points at the broccoli on the plate and says the instruction.
+  action:
+    description: Mother extends her arm, points her index finger at the broccoli in the child's plate,
+      and speaks, then holds the gesture. The child turns his head down toward the plate but otherwise
+      stays motionless, hands still flat on the table.
+  visual_end:
+    description: Mother's arm is fully extended, index finger pointing at the broccoli, her eyes on the
+      child while she holds the gesture and waits. The child's head is turned down toward the plate; his
+      hands are still flat on the table and his posture is unchanged.
+    character_states:
+    - character: child
+      state: Still seated upright, hands flat on the table, eyes now directed down at the plate, no lean.
+    - character: mother
+      state: Arm extended, finger pointing at the broccoli, gaze held expectantly on the child.
+  composition:
+    shot_size: medium_wide
+    angle: eye_level
+    focal_subject: Mother, child and plate together in a two-shot; the pointing gesture and the plate
+      are both clearly readable.
+    staging: Mother at frame left, child at frame right, plate with broccoli and the fork centred in the
+      middle foreground between them. Nothing stands between the child and the plate.
+  camera:
+    movement: static
+    motivation: Stable framing to establish the request gesture, the spatial relation and the fact that
+      the action is available.
+  semantic_evidence:
+    must_show:
+    - Mother's pointing gesture directed at the broccoli on the child's plate.
+    - Mother's gaze moving between the child and the plate, plus an expectant pause holding the gesture
+      — together these visibly establish that she is prompting the child to act.
+    - Child's neutral starting posture, hands on the table, not yet showing resistance.
+    - Plate and fork within the child's easy reach, with nothing blocking access to them.
+    must_avoid:
+    - Child already displaying hesitation or discomfort before the instruction is fully given.
+    - Mother blocking the action, touching the fork, or physically forcing the child.
+    - Any barrier, restraint or third party between the child and the plate.
+  audio:
+    mode: optional_dialogue
+    dialogue:
+      speaker: mother
+      text: Come on, eat a piece of broccoli.
+    purpose: Makes the request explicit; the pointing already conveys the request, but dialogue removes
+      any ambiguity for the audience. The scene must still read with the line removed.
+  continuity:
+    enters_from_previous: null
+    exits_to_next: Child seated at frame right, upright, both hands flat on the table, eyes down on the
+      plate, shoulders slightly tense; mother at frame left with her arm still extended and the pointing
+      gesture held; plate and fork untouched in front of the child.
+- id: shot-02
+  source_beats:
+  - 2
+  narrative_function: show_resistance
+  semantic_function: 把不愿意执行这个动作外化为可观察行为——请求后的静止、后靠、视线回避、缓慢伸手、手在中途停住，最后孩子仍然自己握住了叉子；机会一直存在，没有任何外力阻止，也没有拒绝。
+  duration_hint: 3.5
+  visual_start:
+    description: 'Tighter framing on the child, continuing directly from shot-01: he is upright at frame
+      right, hands flat on the table, eyes down on the broccoli, shoulders slightly tense. The mother''s
+      extended arm is still visible at the left edge. Nothing has moved.'
+    character_states:
+    - character: child
+      state: Sitting upright, both hands flat on the table, eyes down on the plate, shoulders slightly
+        tense.
+    - character: mother
+      state: Arm still extended at the left edge of frame, holding the pointing gesture, not touching
+        anything.
+  trigger:
+    description: The instruction has been delivered and the mother holds her gesture; the child stays
+      completely still for a beat instead of moving.
+  action:
+    description: The child holds still, then lets his torso lean back a few degrees until his shoulders
+      settle against the chair back, drawing his hands slightly in toward his own body; his head turns
+      away and his eyes go to the side or down at the table edge. After that pause he starts to reach
+      for the fork with his right hand — the arm moves forward slowly while the torso stays back, stops
+      roughly two thirds of the way with the hand open above the table, holds there, then resumes and
+      closes around the fork handle.
+  visual_end:
+    description: The child's right hand has closed around the fork and lifted it just clear of the table,
+      the fork held near the rim of the plate with its tines not yet touching any broccoli. His torso
+      is still leaned back against the chair, his left hand still on the table, his eyes still off the
+      plate. The mother is unchanged at frame left, not touching the child, the fork or the plate.
+    character_states:
+    - character: child
+      state: Torso leaned back against the chair, right hand gripping the fork just above the plate rim,
+        tines not yet in the food, left hand on the table, eyes off the plate to the side or down, mouth
+        closed and flat.
+    - character: mother
+      state: Still at frame left, hand lowered slightly or still raised, watching and waiting, touching
+        nothing.
+  composition:
+    shot_size: medium_close
+    angle: eye_level
+    focal_subject: Child from the waist up, framed so that the backward lean of the torso and the travel
+      of the right arm are both readable in the same image.
+    staging: Child at frame right in the same seated position as shot-01, plate and fork in the lower
+      part of the frame, mother partially visible at the left edge. Nothing is added to or removed from
+      the table.
+  camera:
+    movement: static
+    motivation: A fixed frame keeps the pause and the stalled reach inside one uninterrupted take — any
+      move or cut would hide exactly the moments where nothing happens.
+  semantic_evidence:
+    must_show:
+    - Stillness after the request, held long enough to be seen as a pause and not as a cut.
+    - Backward lean of the torso away from the table, small but unmistakable.
+    - Eye gaze turned away from the food.
+    - The reach starting slowly and stopping part way, with the hand open and short of the fork.
+    - The torso staying back while only the arm travels — the body does not commit to the action.
+    - The child closing his own hand around the fork, with no one else's hand on him or on the fork.
+    - Plate, fork and the path between the child and the plate free of any obstacle the whole time.
+    must_avoid:
+    - Child pushing the plate away, shaking his head, or standing up — that reads as refuse.
+    - Child wrinkling his nose, covering his mouth, gagging, or any disgust directed at the food.
+    - A fast, confident reach with the body following the arm.
+    - The mother touching the child, the fork or the plate.
+    - A face that on its own reads as fear, anger or sadness — low willingness must be carried by the
+      body.
+  audio:
+    mode: sfx
+    sfx:
+    - Faint chair and clothing movement as the child leans back.
+    - A single quiet contact sound as the hand closes around the fork.
+    purpose: No dialogue; the evidence is entirely body movement and timing. The sounds keep the moment
+      natural and must not be performed as taste aversion.
+  continuity:
+    enters_from_previous: Continues shot-01's final state at a tighter framing — child at frame right,
+      upright, both hands flat on the table, eyes down on the plate; mother at frame left with the pointing
+      gesture still held; plate and fork untouched in their established positions.
+    exits_to_next: 'Hand over to shot-03 in this exact state: child at frame right, torso leaned back
+      against the chair at the angle reached here; right hand gripping the fork, lifted just clear of
+      the table and held near the rim of the plate with the tines not yet in the food; left hand on the
+      table; gaze off the plate to the side or down, not turned eager; mouth closed and flat; plate and
+      remaining broccoli in their unchanged positions; mother at frame left, watching, touching nothing.
+      The action stage handed over is "fork grasped, food not yet speared".'
+- id: shot-03
+  source_beats:
+  - 3
+  narrative_function: semantic_climax
+  semantic_function: 证明抵抗不是只发生在动作开始之前——孩子在自己完成这一口的过程中再次停住，动作完成后身体仍未转为积极；行动确实发生（区别于 refuse），意愿始终没有转正（区别于配合）。
+  duration_hint: 4.8
+  visual_start:
+    description: The same child at frame right in the state that ended shot-02, framed slightly tighter
+      so that the fork, the plate and the mouth are all readable — torso leaned back against the chair,
+      right hand gripping the fork just clear of the table near the rim of the plate, tines not yet in
+      the food, left hand on the table, eyes off the plate. The mother is still at frame left, touching
+      nothing.
+    character_states:
+    - character: child
+      state: Torso leaned back against the chair at the same angle as the end of shot-02, right hand gripping
+        the fork above the plate rim with the tines not yet in the food, left hand on the table, gaze
+        off the plate, mouth closed.
+    - character: mother
+      state: Seated at frame left in the same position, watching, not touching the child, the fork or
+        the plate.
+  trigger:
+    description: The child lowers the fork into a piece of broccoli and spears it.
+  action:
+    description: The child holds the opening position briefly, then lowers the fork, spears a piece of
+      broccoli and raises it slowly toward his mouth while his torso stays back, so the arm has to travel
+      the whole distance. Just short of his lips the fork stops and is held there, mouth closed. He then
+      opens his mouth, takes the bite, chews with a flat expression and swallows, and puts the fork back
+      down on the plate. His torso does not come forward at any point.
+  visual_end:
+    description: The bite is over. The fork is back down on the plate, the child's right hand has returned
+      toward the table, his mouth is closed and his expression flat. He is still sitting back against
+      the chair with his gaze low or to the side — he has not leaned in toward the plate and has not reached
+      for another piece. The mother is unchanged at frame left.
+    character_states:
+    - character: child
+      state: Still leaned back against the chair, both hands back near the table, fork resting on the
+        plate, mouth closed, expression flat, gaze low or to the side, no smile and no forward lean.
+    - character: mother
+      state: Seated at frame left, watching, posture unchanged, still touching nothing.
+  composition:
+    shot_size: medium_close
+    angle: three_quarter
+    focal_subject: Child's face, right hand and the fork, framed so that the halt at the mouth and the
+      reclined torso are visible in the same image.
+    staging: Child at frame right in the same seated position and screen direction as shot-02, plate visible
+      in the lower part of the frame, mother partially visible at the left edge.
+  camera:
+    movement: static
+    motivation: A fixed frame holds the halt at the mouth and the state after the bite in one take, so
+      the resistance is seen to continue through the action rather than being re-established after a cut.
+  semantic_evidence:
+    must_show:
+    - The opening state matching the end of shot-02 exactly — same hand, same fork position, same lean,
+      same screen direction — held briefly before anything moves.
+    - The lift toward the mouth performed by the arm alone, with the torso staying back.
+    - A clear halt with the food held just short of the closed mouth.
+    - The child putting the food into his own mouth, with no one else's hand on the fork or on him.
+    - Chewing and swallowing with a flat, unremarkable expression.
+    - The fork put back down and the body still leaned back afterwards, with no reach for another piece.
+    must_avoid:
+    - Gagging, retching, spitting the food out, or turning the head away from the food at the mouth.
+    - A grimace, wrinkled nose or any distaste directed at the flavour after the bite.
+    - Smiling, nodding, leaning forward, or any shift into active participation.
+    - The mother feeding the child, steadying his arm, or praising him.
+    - The fork changing hands, the plate moving, or the lean resetting to upright at the cut.
+  audio:
+    mode: sfx
+    sfx:
+    - Fork tines contacting the plate when the broccoli is speared.
+    - A quiet, unremarkable eating sound — plain, not exaggerated.
+    - A soft contact sound as the fork is set back down on the plate.
+    purpose: No dialogue is needed; the timing of the halt and the posture after the bite carry the meaning.
+      The eating sounds must stay plain and must not be performed as taste aversion.
+  continuity:
+    enters_from_previous: 'Takes over shot-02''s exit state without any change: same child at frame right,
+      same torso lean against the chair, the fork already in the same right hand and held just clear of
+      the table near the rim of the plate with the tines not yet in the food, left hand on the table,
+      gaze still off the plate and not eager, plate and broccoli in their unchanged positions, mother
+      still seated at frame left touching nothing. Only the framing is tighter; nothing in the staged
+      state is reset by the cut.'
+    exits_to_next: null

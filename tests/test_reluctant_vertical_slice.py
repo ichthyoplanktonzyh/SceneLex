@@ -162,6 +162,77 @@ def test_beats_are_introduced_in_storyboard_order(plan, scene):
     assert first_seen == order
 
 
+# --------------------------------------------- v05: animatic 审核驱动的上游修订
+# 以下断言锁的是**这一条真实样本当前的拆分决定**, 由 Keyframe Plan v01 / Animatic
+# v01 的时长证据逼出来 (见 docs/vertical-slices/reluctant-01-keyframe-animatic.md)。
+# 它们是数据回归, 不是通用架构规则: 通用校验器仍然不要求三镜、不要求 Beat 与 Shot
+# 一一对应, 也不要求任何固定时长。
+
+def test_recommended_plan_is_the_animatic_revised_three_shot_cut(plan):
+    """v05 是当前推荐版本, 且历史版本一个都没有被覆盖。"""
+    assert plan["version"] == 5
+    assert plan["id"] == f"{SCENE_ID}-shot-plan-05"
+    for version in range(1, 6):
+        assert (PLANS_DIR / f"v{version:02d}" / "shot-plan.yaml").exists()
+    assert len(plan["shots"]) == 3, (
+        "本场景当前的拆分是三镜: 合并版 (v04) 的 shot-02 装不下自己的动作链"
+    )
+
+
+def test_v05_gives_each_pause_a_shot_that_can_carry_it(plan):
+    """时长判据: 每个镜头都回到生产目标区间, 总时长仍是一条短片。
+
+    这里不断言具体秒数 —— 秒数是内容判断, 会随重新审核而变; 断言的是"没有任何一个
+    镜头再次越过这一层自己的执行纪律"。
+    """
+    for shot in plan["shots"]:
+        assert shot["duration_hint"] <= shot_plan_lib.WARN_SHOT_DURATION, (
+            f"{shot['id']} 又回到了超过生产目标的长度"
+        )
+    total = plan["total_duration_hint"]
+    assert shot_plan_lib.MIN_TOTAL_DURATION <= total <= shot_plan_lib.MAX_TOTAL_DURATION
+    assert shot_plan_lib.shot_plan_warnings(plan) == []
+
+
+def test_v05_hands_the_resistance_state_across_the_cut(plan):
+    """切点必须交接状态, 而不是让下一镜重新建立低意愿。
+
+    v02/v03 的真正缺陷就是这一步: 切点位置对, 但跨点状态没写出来。
+    """
+    shot_02 = next(s for s in plan["shots"] if s["id"] == "shot-02")
+    shot_03 = next(s for s in plan["shots"] if s["id"] == "shot-03")
+
+    exits = (shot_02["continuity"]["exits_to_next"] or "").strip()
+    enters = (shot_03["continuity"]["enters_from_previous"] or "").strip()
+    assert exits and enters
+    assert len(exits) > 80 and len(enters) > 80, (
+        "'Continue from previous shot.' 这一类交接等于没有交接"
+    )
+
+    # 交接的是具体状态: 哪只手、叉子在哪、躯干角度、屏幕方向、动作阶段。
+    for text, label in ((exits, "shot-02.exits_to_next"), (enters, "shot-03.enters_from_previous")):
+        lowered = text.lower()
+        for token in ("right hand", "fork", "lean", "frame right", "plate"):
+            assert token in lowered, f"{label} 没有写明 {token!r}"
+
+    # 下一镜的起始画面必须继承同一个状态, 而不是从中立坐姿重开。
+    start = shot_03["visual_start"]["description"].lower()
+    for token in ("fork", "leaned back"):
+        assert token in start, f"shot-03.visual_start 没有继承 {token!r}"
+
+
+def test_v05_keeps_the_action_self_performed_and_unobstructed(plan):
+    """三镜之后仍要能读出: 机会存在、没有外力、孩子自己完成、意愿没有转正。"""
+    blob = " ".join(_shot_text(shot) for shot in plan["shots"])
+    assert "nothing blocking access" in blob or "nothing stands between" in blob
+    assert "no one else's hand" in blob, "没有任何一镜写明这一口是孩子自己吃的"
+
+    final_end = plan["shots"][-1]["visual_end"]["description"].lower()
+    assert "leaned back" in final_end or "sitting back" in final_end, (
+        "结尾没有保住低意愿姿态"
+    )
+
+
 # --------------------------------------------------------------- 层级边界
 # 以下断言锁的是"Shot Plan 只做视觉叙事执行"这条边界。第一轮真实产物
 # (v01) 在这几处全部越界, 详见 docs/vertical-slices/reluctant-01-proto-01.md。
