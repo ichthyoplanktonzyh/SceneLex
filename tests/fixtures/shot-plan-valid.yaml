@@ -1,0 +1,121 @@
+# 合法 Shot Plan 参考样例 (测试 fixture, 不是正式资源)。
+# 它演示 Beat 与 Shot 的非一一对应: 3 个 storyboard beat → 2 个执行镜头,
+# beat 2 同时被两个镜头引用 (动作跨镜头延续)。
+schema_version: "1.0"
+version: 1
+status: draft
+
+id: reluctant-01-proto-01-shot-plan-01
+scene_ref: reluctant-01-proto-01
+scene_version: 1
+sense_ref: reluctant-01
+sense_revision: 1
+
+title: The Unwanted Presentation — Shot Plan
+total_duration_hint: 6.5
+
+cast:
+  - id: student
+    role: focal_character
+    continuity_description: A college student in a gray hooded sweatshirt, dark hair, sitting in the third row.
+  - id: teacher
+    role: counterpart
+    continuity_description: A middle-aged teacher in a navy cardigan, holding a class roster.
+
+location:
+  id: classroom
+  continuity_description: A modest university classroom with rows of desks, whiteboard at the front, daylight from the left.
+
+props:
+  - id: presentation-remote
+    continuity_description: A small black presentation remote lying on the front desk.
+
+shots:
+  - id: shot-01
+    source_beats: [1, 2]
+    narrative_function: establish_trigger
+    semantic_function: 建立发起该行动的外部要求, 并让"更想做别的事"与要求同框可读。
+    duration_hint: 3.0
+    visual_start:
+      description: The student is seated at a desk, leaning over a phone hidden behind a notebook.
+      character_states:
+        - character: student
+          state: seated, absorbed in the phone, shoulders relaxed
+        - character: teacher
+          state: standing at the front, reading from the roster
+    trigger:
+      description: The teacher looks up from the roster and points toward the presentation area.
+    action:
+      description: The student's hands stop moving, the phone lowers to the desk, and the head lifts toward the front of the room.
+    visual_end:
+      description: The student sits upright and motionless while nearby students turn to look.
+      character_states:
+        - character: student
+          state: seated upright, phone face-down under one hand, gaze fixed forward
+    composition:
+      shot_size: medium_wide
+      angle: eye_level
+      focal_subject: the student, with the teacher visible across the room
+      staging: Teacher in the left foreground, student across the room on the right third.
+    camera:
+      movement: static
+      motivation: Keep the external request and the reluctant subject readable in one frame.
+    semantic_evidence:
+      must_show:
+        - The request is clearly directed at this specific student.
+        - The student was doing something they would rather continue.
+      must_avoid:
+        - The student appearing confused about what is being asked.
+        - The student refusing outright or leaving the room.
+    audio:
+      mode: optional_dialogue
+      dialogue:
+        speaker: teacher
+        text: You're next.
+      purpose: Clarify the request; the reluctance itself must remain visible without the line.
+    continuity:
+      enters_from_previous: null
+      exits_to_next: The student stays in the same seat, hand still resting on the phone.
+
+  - id: shot-02
+    source_beats: [2, 3]
+    narrative_function: show_resistance
+    semantic_function: "抗拒外化: 停顿、视线滞留与迟缓起身证明行动在意愿缺席的情况下发生。"
+    duration_hint: 3.5
+    visual_start:
+      description: The student is seated upright, one hand still flat on the phone, eyes toward the front.
+      character_states:
+        - character: student
+          state: seated upright, jaw tight, hand pinning the phone to the desk
+    trigger:
+      description: The teacher holds out the presentation remote and waits.
+    action:
+      description: The student exhales, looks down at the phone, pushes the chair back slowly, and rises with both hands pressing on the desk.
+    visual_end:
+      description: The student stands beside the desk, body still angled toward the seat, taking one small step forward.
+      character_states:
+        - character: student
+          state: standing, torso turned back toward the desk, one short step taken
+    composition:
+      shot_size: medium
+      angle: three_quarter
+      focal_subject: the student's face, shoulders and hands
+      staging: Student fills the right of frame; the waiting teacher stays soft in the background.
+    camera:
+      movement: push_in
+      motivation: Tighten on the hesitation as the action finally begins.
+    semantic_evidence:
+      must_show:
+        - The action begins despite visible resistance.
+        - Body orientation stays with what the student would rather be doing.
+      must_avoid:
+        - Eager or energetic standing up.
+        - Sadness read as the cause instead of unwillingness.
+    audio:
+      mode: sfx
+      sfx:
+        - chair legs scraping the floor
+      purpose: Mark the slowness of the movement without explaining it.
+    continuity:
+      enters_from_previous: Same seat and posture as the end of shot-01, phone still on the desk.
+      exits_to_next: null
