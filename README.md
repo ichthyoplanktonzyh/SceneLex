@@ -51,19 +51,58 @@ reviewed / published resource bundle
 
 渲染模型、TTS、图片、视频、HTTP 服务和学习者数据都在适配器或消费者侧。它们可以引用稳定的 `sense_id`、`scene_id` 和资源版本，但不能反过来改变核心词义。
 
-`storyboard` 是语义节拍，不要求与视频 clip 一一对应。进入渲染前，Director Agent
-理解词义证据和相邻概念边界，再根据当前视频能力把场景翻译为可直接提交的高质量
-提示词；clip 数量由语义场景与 Director 决定。生产默认工序是关键图先行：先文生图
-并通过图片语义门，再图生视频；尾帧、animatic 等更多控制是按需工具。权威说明见
+## 从语义到视频：Beat 与 Shot
+
+```text
+Dictionary Evidence
+→ Approved Sense Inventory
+→ Inventory-driven WordSense
+→ SceneSpec
+→ Shot Plan
+→ Keyframe / Animatic Package
+→ AI Video Shots
+→ Edit / Audio / Final Video
+```
+
+```text
+Beat = semantic unit         观众必须看见的事件, 及其在词义证明中的作用
+Shot = video execution unit  一次连续摄像机观察和连续运动
+```
+
+`SceneSpec.storyboard` 的 beat 与 Shot **不是一一对应**：动作连续时多个 beat 可以
+合并成一个镜头，一个 beat 也可以拆成 establishing 与 reaction 两个镜头。硬要求只有
+覆盖（每个 beat 至少被一个镜头引用）与时间顺序。
+
+**Shot Plan 是 Scene 之后唯一的叙事执行权威**（`schema/shot-plan.schema.json`）。它
+决定镜头拆分、顺序、画面状态变化、构图、摄影机行为、时长、语义证据、连续性与最小
+音频意图；它**不**决定视觉风格、具体模型、最终提示词、workflow、关键帧文件、seed
+或最终剪辑。后续图像与视频模型只执行 Shot Plan，不再自行重新拆分 Scene。
+
+```bash
+python3 tools/director.py plan reluctant-01-proto-01   # Scene + WordSense → Shot Plan
+python3 tools/director.py show reluctant-01-proto-01   # 面向人工审核的展开
+python3 tools/director.py list                         # Shot Plan 版本一览
+```
+
+Shot Plan 只能从语义修订状态为 `CURRENT` 的 SceneSpec 1.1 编译；身份字段由程序写入，
+模型写错即 `shot plan identity drift` 并失败。产物落在
+`data/drafts/shot-plans/{scene_id}/v{NN}/shot-plan.yaml`，永不覆盖。权威说明见
 [docs/production-workflow.md](docs/production-workflow.md)。
 
-当前渲染层统一使用`Pixar-style 3D animated film`作为全局视觉方向。该风格只进入Director
-Prompt和渲染配置；WordSense与SceneSpec保持风格无关，现有词义场景内容不由Director改写。
+渲染层的全局视觉方向（当前为 `Pixar-style 3D animated film`）只存在于
+`prompts/render-style.yaml` 与渲染适配层；WordSense、SceneSpec 与 Shot Plan 都保持
+风格无关。
+
+**Legacy（保留但不再是新主线）**：`schema/director-prompt.schema.json` +
+`prompts/director.md` 是旧的模型提示词原型；`schema/render-plan.schema.json` +
+`tools/render.py plan` 是旧的 beat-image 渲染原型（运行时打印一次 legacy warning，
+不影响退出码）。历史文件继续保留，不做自动迁移；Shot → Keyframe / Animatic 由后续
+PR 建设。
 
 ## 目录结构
 
 ```text
-schema/                      公开语义契约 + 渲染层内部原型契约
+schema/                      公开语义契约 + Shot Plan 执行契约 + 渲染层原型契约
 data/senses/                 正式词义资源
 data/scenes/{sense_id}/      正式场景证据
 data/inventories/            已批准 Sense Inventory (整词级 sense 身份权威)
@@ -74,8 +113,9 @@ docs/                       生产工作流、技术选型与归档评估
 tools/inventory.py           整词 Sense Inventory: draft / validate / mark-reviewed / approve / show
 tools/draft.py               起草与发布前编排
 tools/review.py              模型审核 (可选质量参考)
-tools/director.py            语义场景 → 模型适配的视频提示词
-tools/render.py              渲染层编排 (plan / show / render / assemble)
+tools/director.py            语义节拍 → 可执行 Shot Plan (plan / show / list)
+tools/shot_plan.py           Shot Plan 身份、Beat→Shot 映射与时长/连续性校验
+tools/render.py              legacy beat-image 渲染原型 (plan / show / render)
 tools/llm.py                 多协议 LLM 适配器
 tools/revisions.py           Scene → WordSense 语义修订绑定与状态判定
 tools/validate.py            正式库发布门
@@ -158,10 +198,10 @@ python3 tools/draft.py list
 python3 tools/review.py dirty-01                         # 模型审核 (可选参考, 写审核记录)
 python3 tools/review.py --all                            # 审核草稿区全部义项
 python3 tools/draft.py promote dirty-01                  # 隔离校验后原子入库; 审核可选不阻塞
-python3 tools/director.py generate reluctant-01-proto-01 # 场景 → 通用视频模型提示词
-python3 tools/director.py generate reluctant-01-proto-01 --profile wan2.2-ti2v-5b
-python3 tools/director.py show reluctant-01-proto-01     # 查看最新视频提示词
-python3 tools/render.py plan reluctant-01-proto-01       # 场景规格 → 渲染计划 (新版本目录)
+python3 tools/director.py plan reluctant-01-proto-01     # 场景语义节拍 → Shot Plan
+python3 tools/director.py show reluctant-01-proto-01     # 查看最新 Shot Plan
+python3 tools/director.py list                           # Shot Plan 版本一览
+python3 tools/render.py plan reluctant-01-proto-01       # legacy: beat 级渲染计划
 python3 tools/render.py show reluctant-01-proto-01       # 预览展开后的图像提示词与音频指令
 python3 tools/render.py render reluctant-01-proto-01     # 经 ComfyUI 渲染图像候选 + manifest
 python3 tools/render.py render reluctant-01-proto-01 -b 3 -n 2   # 只补渲 beat 3, 出 2 张候选
@@ -177,6 +217,7 @@ python3 -m pytest -q
 
 ```bash
 python3 tools/draft.py sense slow --num 02      # 已弃用: 词典条目不是 SceneLex sense
+python3 tools/director.py generate <scene_id>   # 已弃用: plan 的兼容别名
 ```
 
 按 Wiktionary 条目序号起草会让同一个 `{word}-nn` 编号在不同批次里指向不同意义。
@@ -349,7 +390,8 @@ export SCENELEX_LLM_MODEL=deepseek-v4-pro
 “场景即释义”方法已确立为产品前提，学习实验不再是规模化的前置条件。近期路线：
 
 ```text
-Director 中间层（语义场景 → 当前视频能力的高质量提示词）
+Shot Plan（语义节拍 → 可审核的执行镜头，已建立）
+→ Keyframe / Animatic Package（下一步）
 → 本地 ComfyUI 或云端视频模型快速生成、查看与修正
 → 模型审核（可选质量参考，工作台一键运行）
 → 批量扩产（candidates 队列 + batch 起草）
