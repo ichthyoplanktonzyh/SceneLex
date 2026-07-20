@@ -186,10 +186,28 @@ def test_unsorted_source_beats_fail():
     assert any("升序" in issue for issue in issues)
 
 
-def test_shot_order_reversing_the_beat_timeline_fails():
-    plan = make_plan([one_shot([3], 1), one_shot([1, 2], 2)])
-    issues = shot_plan.validate_shot_plan(plan, SCENE)
-    assert any("逆转了 beat 时间线" in issue for issue in issues)
+@pytest.mark.parametrize("sequence", [
+    [[3], [1, 2]],       # 整体倒序
+    [[2], [1, 2]],       # 最大引用没有下降, 但 beat 1 在 beat 2 之后才首次出现
+    [[2, 3], [1, 3]],    # 同上, 且 beat 1 被夹在延续的 beat 3 里
+    [[1, 3], [2, 3]],    # 跳过 beat 2 先引入 beat 3, 之后才补上
+    [[1], [3], [2, 3]],  # 同上, 分散在三个镜头
+])
+def test_out_of_order_first_appearance_fails(sequence):
+    shots = [one_shot(beats, i + 1) for i, beats in enumerate(sequence)]
+    issues = shot_plan.validate_shot_plan(make_plan(shots), SCENE)
+    assert any("beat 首次出现顺序" in issue for issue in issues)
+
+
+@pytest.mark.parametrize("sequence", [
+    [[1], [1, 2], [2, 3]],   # 每个镜头延续上一个镜头的末 beat
+    [[1, 2], [2], [2, 3]],   # 一个 beat 横跨三个镜头
+    [[1, 2, 3]],             # 全部合并进一个镜头
+    [[1], [2], [3]],
+])
+def test_in_order_first_appearance_passes(sequence):
+    shots = [one_shot(beats, i + 1) for i, beats in enumerate(sequence)]
+    assert shot_plan.validate_shot_plan(make_plan(shots), SCENE) == []
 
 
 def test_state_fields_must_not_be_empty():

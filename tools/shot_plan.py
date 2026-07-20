@@ -168,7 +168,9 @@ def validate_shot_plan(plan: dict, scene: dict) -> list[str]:
     expected_beats = scene_beats(scene)
     known = set(expected_beats)
     covered: set[int] = set()
-    highest_seen: int | None = None
+    seen_beats: set[int] = set()
+    # expected_beats 中下一个允许被首次引入的位置。
+    next_intro = 0
 
     for index, shot in enumerate(shots):
         if not isinstance(shot, dict):
@@ -195,15 +197,23 @@ def validate_shot_plan(plan: dict, scene: dict) -> list[str]:
             if unknown:
                 errors.append(f"{label} 引用了场景中不存在的 beat: {unknown}")
             covered.update(clean)
-            # 一个 beat 可以跨镜头延续 (shot-01 [1,2] → shot-02 [2,3] 合法),
-            # 但镜头序列整体不能倒着走 beat 时间线。
-            if clean:
-                if highest_seen is not None and max(clean) < highest_seen:
+            # 判据是 beat 的**首次出现顺序**, 不是每个镜头的最大引用: 已经出现过的
+            # beat 可以在后续镜头继续延续 (shot-01 [1,2] → shot-02 [2,3] 合法),
+            # 但新 beat 必须按 storyboard 顺序被首次引入 — 先引入 beat 2 再引入
+            # beat 1, 或者跳过 beat 2 先引入 beat 3, 都是在倒着讲这个故事。
+            for beat in sorted(set(clean)):
+                if beat in seen_beats or beat not in known:
+                    continue
+                due = expected_beats[next_intro] if next_intro < len(expected_beats) else None
+                if beat != due:
                     errors.append(
-                        f"{label} 明显逆转了 beat 时间线: 已推进到 beat "
-                        f"{highest_seen}, 此镜头最大引用为 {max(clean)}"
+                        f"{label} 违反 beat 首次出现顺序: 此处首次引入 beat {beat}, "
+                        f"但尚未出现的最早 beat 是 {due}"
                     )
-                highest_seen = max(highest_seen or 0, max(clean))
+                seen_beats.add(beat)
+                while next_intro < len(expected_beats) \
+                        and expected_beats[next_intro] in seen_beats:
+                    next_intro += 1
 
         duration = _number(shot.get("duration_hint"))
         if duration is None:
