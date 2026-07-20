@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://scenelex.org/schema/render-plan.schema.json",
-  "title": "SceneLex Render Plan",
+  "title": "SceneLex Render Plan (legacy)",
   "description": "渲染计划：场景规格到图像/TTS 渲染指令的编译产物（渲染层内部 IR，非对外契约）。内容与风格分离：prompt 只描述内容，全局风格由 prompts/render-style.yaml 在渲染时追加；角色/场景外观集中在卡片，beat prompt 用 {char:id} 与 {setting} 占位符引用，保证跨 beat 一致性。",
   "type": "object",
   "required": ["schema_version", "scene_ref", "spec_version", "version", "status", "characters", "setting", "beats"],

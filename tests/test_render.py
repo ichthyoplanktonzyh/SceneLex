@@ -80,6 +80,16 @@ def test_plan_writes_versioned_file_with_forced_fields(tmp_path, monkeypatch):
     assert doc["spec_version"] == 1
 
 
+def test_plan_prints_legacy_warning_without_failing(tmp_path, monkeypatch, capsys):
+    """beat-image 计划仍可运行, 但不再是新主线; warning 不影响退出码。"""
+    _env(tmp_path, monkeypatch)
+    monkeypatch.setattr(llm, "generate", lambda prompt: VALID_PLAN)
+    render.cmd_plan(Namespace(scene_id="test-01-proto-01"))
+    err = capsys.readouterr().err
+    assert "legacy beat-image prototype" in err
+    assert "director.py plan" in err
+
+
 def test_plan_versions_never_overwrite(tmp_path, monkeypatch):
     drafts = _env(tmp_path, monkeypatch)
     monkeypatch.setattr(llm, "generate", lambda prompt: VALID_PLAN)

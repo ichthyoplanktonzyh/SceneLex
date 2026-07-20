@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 """SceneLex 渲染层编排 — 场景规格 → 可播放教学资源。
 
+**plan / show 是 legacy beat-image 原型。** 新主线是
+``Scene → Shot Plan → Keyframe / Animatic → Video Shot``: 叙事拆分由
+``tools/director.py plan`` 编译的 Shot Plan 权威决定, 渲染层不再自行决定 beat
+如何变成画面片段。这里的 plan 继续可用以复现历史产物, 但不消费也不修改 Shot Plan;
+Shot → Keyframe / Animatic 的编译由后续 PR 建设。
+
 当前实现: plan (渲染计划编译) / show (展开提示词预览) / list。
 render (图像/TTS 适配器) 与 assemble (playback 组装) 在适配器就绪后接入;
 ComfyUI 工作流由用户提供后配置。
@@ -118,7 +124,14 @@ def plan_issues(plan, scene_doc):
 
 # ---------------------------------------------------------------- plan
 
+LEGACY_PLAN_WARNING = (
+    "warning: render.py plan is a legacy beat-image prototype.\n"
+    "Use director.py plan to create the authoritative Shot Plan."
+)
+
+
 def cmd_plan(args):
+    print(LEGACY_PLAN_WARNING, file=sys.stderr)
     scene_id = args.scene_id.strip()
     scene_path, sense_path, _ = locate(scene_id)
     scene_doc = yaml.safe_load(draft.read(scene_path))
