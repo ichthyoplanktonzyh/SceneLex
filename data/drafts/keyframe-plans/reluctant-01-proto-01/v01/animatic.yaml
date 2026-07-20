@@ -1,0 +1,80 @@
+schema_version: '1.0'
+scene_ref: reluctant-01-proto-01
+shot_plan_ref:
+  scene_id: reluctant-01-proto-01
+  version: 4
+  human_revised: true
+keyframe_plan_version: 1
+review_scope: 时序、状态覆盖、hold 时长、镜头边界、动作密度 —— 不含构图可读性、表情质量与真实画面连续性
+total_duration_seconds: 7.3
+shots:
+- shot_id: shot-01
+  start: 0.0
+  end: 2.5
+  duration_seconds: 2.5
+  audio_mode: optional_dialogue
+  transition_to_next: cut
+- shot_id: shot-02
+  start: 2.5
+  end: 7.3
+  duration_seconds: 4.8
+  audio_mode: sfx
+  transition_to_next: null
+entries:
+- shot_id: shot-01
+  keyframe_id: shot-01-kf-01
+  roles:
+  - initial
+  start: 0.0
+  end: 1.0
+  hold_seconds: 1.0
+  starts_shot: true
+- shot_id: shot-01
+  keyframe_id: shot-01-kf-02
+  roles:
+  - trigger
+  - final
+  start: 1.0
+  end: 2.5
+  hold_seconds: 1.5
+  starts_shot: false
+- shot_id: shot-02
+  keyframe_id: shot-02-kf-01
+  roles:
+  - initial
+  start: 2.5
+  end: 3.3
+  hold_seconds: 0.8
+  starts_shot: true
+- shot_id: shot-02
+  keyframe_id: shot-02-kf-02
+  roles:
+  - trigger
+  start: 3.3
+  end: 4.3
+  hold_seconds: 1.0
+  starts_shot: false
+- shot_id: shot-02
+  keyframe_id: shot-02-kf-03
+  roles:
+  - transition
+  start: 4.3
+  end: 5.5
+  hold_seconds: 1.2
+  starts_shot: false
+- shot_id: shot-02
+  keyframe_id: shot-02-kf-04
+  roles:
+  - semantic_climax
+  start: 5.5
+  end: 6.5
+  hold_seconds: 1.0
+  starts_shot: false
+- shot_id: shot-02
+  keyframe_id: shot-02-kf-05
+  roles:
+  - final
+  start: 6.5
+  end: 7.3
+  hold_seconds: 0.8
+  starts_shot: false

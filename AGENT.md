@@ -60,7 +60,7 @@ teaching-scene evidence specification (model-neutral IR)
         ↓
 Director Agent (semantic beats → executable Shot Plan)
         ↓
-keyframe / animatic package (下一步, 尚未建设)
+Keyframe Plan (选择并描述必要视觉状态) → Animatic review
         ↓
 renderer adapters (image / video / TTS / interactive)
         ↓
@@ -145,6 +145,21 @@ learning clients, APIs, or content packages
   剪辑时间轴。身份字段（含 `total_duration_hint`）由程序写入，模型显式写错即
   `shot plan identity drift` 并失败；只能从语义修订 `CURRENT` 的 SceneSpec 1.1 编译，
   不提供 `--allow-stale` 逃生通道。
+- `schema/keyframe-plan.schema.json` + `tools/keyframe_plan.py` + `tools/keyframes.py`：
+  Shot Plan 的下游。Keyframe Plan 只在**已定好的镜头里**选出并描述那些「缺了它观众的
+  语义推断就会改变」的画面状态，并给出镜头内的时间位置；它**不重新导演场景**（镜头
+  数量、顺序、时长仍由 Shot Plan 决定），也**不得**写入视觉风格、模型、checkpoint、
+  sampler、seed、最终提示词或图片路径。`shot_plan_ref` 必须显式写明 Shot Plan 版本
+  （草稿目录历史版本全部保留，下游不得跟着"最新目录"漂移）；校验是确定性的——引用的
+  版本目录必须存在，不做 digest / SHA / 自动 stale 传播。产物落在
+  `data/drafts/keyframe-plans/{scene_id}/v{NN}/`，永不覆盖。
+  `keyframes.py animatic` 确定性生成时间轴与单文件 HTML 预览，**不调用任何模型**。
+  第一份计划由人工选帧，所以没有 `plan` 子命令：让模型按角色枚举给每个镜头凑五张
+  关键帧，正是这一层要避免的失败模式。校验刻意**不**规定「每个 Shot 必须有
+  initial + final / 必须 2–5 帧 / 必须有 semantic_climax / 每个 Beat 必须对应关键帧」——
+  帧数由内容的真实状态变化决定。
+  **文字占位卡不是视觉审核**：animatic 能审时序、状态覆盖、hold 时长、镜头边界与
+  动作密度，不能审构图可读性、表情质量与真实画面语义。
 - `schema/director-prompt.schema.json`：**LEGACY** 模型提示词原型契约，历史产物保留，
   不是新架构权威层；不属于公开语义资源。
 - `tools/render.py`：**legacy** 早期渲染原型——场景规格 → beat 级渲染计划（plan，运行时
@@ -250,9 +265,11 @@ candidate → sense draft → reviewed sense → scene draft → reviewed scene 
 - Director 是第一版唯一核心智能中间层：写 prompt、查看结果、指出主要语义偏差并修正。
   不预先拆成 Reviewer、Decision Policy 或复杂生产状态机；重复失败模式出现后再抽象。
 - 生成本身也是探索手段。不要因为预设视频昂贵而延迟生成，优先快速取得候选和反馈。
-- 渲染层全局视觉方向是`Pixar-style 3D animated film`。该高层标签与具体造型、材质、
-  灯光、色彩和表演属性写入`prompts/render-style.yaml`与渲染适配层，但不得进入
-  WordSense、SceneSpec或Shot Plan。具体checkpoint、工作流和供应商能力仍只属于适配层。
+- 渲染层当前的全局视觉方向是 `Pixar-style 3D animated film`。该高层标签与具体造型、
+  材质、灯光、色彩和表演属性写入 `prompts/render-style.yaml` 与渲染适配层，但**不得
+  进入 WordSense、SceneSpec、Shot Plan 或 Keyframe state identity**——风格不能决定
+  一个关键帧是"哪一个状态"。它是渲染层的默认值，不是语义主链的一部分。具体
+  checkpoint、工作流和供应商能力仍只属于适配层。
 - 个性化只改变表面经验、入口和教学顺序；不得改变通用语义骨架、偷换对比词，或让
   个体化样本成为唯一概念证据。
 - 任何 API、内容包或下游导出都应区分 `draft`、`reviewed`、`published` 等发布状态，

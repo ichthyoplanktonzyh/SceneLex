@@ -59,7 +59,9 @@ Dictionary Evidence
 → Inventory-driven WordSense
 → SceneSpec
 → Shot Plan
-→ Keyframe / Animatic Package
+→ Keyframe Plan
+→ Animatic Review
+→ Image Keyframe Generation
 → AI Video Shots
 → Edit / Audio / Final Video
 ```
@@ -89,15 +91,42 @@ Shot Plan 只能从语义修订状态为 `CURRENT` 的 SceneSpec 1.1 编译；�
 `data/drafts/shot-plans/{scene_id}/v{NN}/shot-plan.yaml`，永不覆盖。权威说明见
 [docs/production-workflow.md](docs/production-workflow.md)。
 
+## Keyframe Plan 与 Animatic
+
+Shot Plan 的下游是 **Keyframe Plan**（`schema/keyframe-plan.schema.json`）：在已定好的
+镜头里，选出并描述那些**缺了它观众的语义推断就会改变**的画面状态，并给出它们在镜头
+内的时间位置。它不重新导演场景（镜头数量、顺序、时长仍由 Shot Plan 决定），也不写
+风格、模型、seed 或图片路径。
+
+```bash
+python3 tools/keyframes.py validate reluctant-01-proto-01
+python3 tools/keyframes.py show     reluctant-01-proto-01
+python3 tools/keyframes.py animatic reluctant-01-proto-01   # 时间轴 + 单文件 HTML 预览
+```
+
+`shot_plan_ref` 必须显式写明 Shot Plan 版本；产物落在
+`data/drafts/keyframe-plans/{scene_id}/v{NN}/`，永不覆盖。`animatic` 不调用任何模型。
+
+```text
+Keyframe Plan     = 选择和描述必要视觉状态
+Animatic          = 审核顺序、时长、状态覆盖和镜头边界
+Image generation  = 把已批准的视觉状态画出来
+Video generation  = 在已批准状态之间生成运动
+```
+
+**文字占位卡不是视觉审核。** Animatic 能审时序、状态覆盖、hold 时长、镜头边界与动作
+密度，不能审构图可读性、表情质量与真实画面语义。第一条真实审核记录见
+[docs/vertical-slices/reluctant-01-keyframe-animatic.md](docs/vertical-slices/reluctant-01-keyframe-animatic.md)。
+
 渲染层的全局视觉方向（当前为 `Pixar-style 3D animated film`）只存在于
-`prompts/render-style.yaml` 与渲染适配层；WordSense、SceneSpec 与 Shot Plan 都保持
-风格无关。
+`prompts/render-style.yaml` 与渲染适配层；WordSense、SceneSpec、Shot Plan 与 Keyframe
+state identity 都保持风格无关。它是渲染层的默认值，不是语义主链的一部分。
 
 **Legacy（保留但不再是新主线）**：`schema/director-prompt.schema.json` +
 `prompts/director.md` 是旧的模型提示词原型；`schema/render-plan.schema.json` +
 `tools/render.py plan` 是旧的 beat-image 渲染原型（运行时打印一次 legacy warning，
-不影响退出码）。历史文件继续保留，不做自动迁移；Shot → Keyframe / Animatic 由后续
-PR 建设。
+不影响退出码）。历史文件继续保留，不做自动迁移——新的 Keyframe Plan 只读 Shot Plan，
+既不读也不修改这两个 legacy 层。
 
 ## 目录结构
 
@@ -392,7 +421,8 @@ export SCENELEX_LLM_MODEL=deepseek-v4-pro
 
 ```text
 Shot Plan（语义节拍 → 可审核的执行镜头，已建立）
-→ Keyframe / Animatic Package（下一步）
+→ Keyframe Plan + Animatic 审核（已建立首条真实样本）
+→ Image Keyframe Generation（下一步）
 → 本地 ComfyUI 或云端视频模型快速生成、查看与修正
 → 模型审核（可选质量参考，工作台一键运行）
 → 批量扩产（candidates 队列 + batch 起草）
