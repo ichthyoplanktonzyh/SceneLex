@@ -167,9 +167,18 @@ learning clients, APIs, or content packages
   （render，经 imagegen 适配器）→ playback 组装（待建）。它尚未实现权威生产工作流。版本目录
   `data/drafts/renders/{scene_id}/v{NN}/` 永不覆盖；候选文件按字母递增，
   manifest 随渲染增量更新。
-- `tools/imagegen.py`：图像生成适配器（comfyui 协议）——加载
-  `tools/workflows/` 下的工作流 API JSON，跟随采样器连线自动定位正负提示词
-  节点后注入，`SCENELEX_IMG_*` 配置。模型与工作流名只进 manifest。
+- `tools/imagegen.py`：图像生成适配器，支持两个协议：
+  - `comfyui`（默认）：加载 `tools/workflows/` 下的工作流 API JSON，跟随采样器连线
+    自动定位正负提示词节点后注入，`SCENELEX_IMG_*` 配置。模型与工作流名只进 manifest。
+  - `aliyun-token-plan`（实验路径）：Token Plan 专属 Endpoint，Wan 2.7 图片编辑与
+    多图参考；通过 `edit()` 函数调用；Key 由 `SCENELEX_ALIYUN_TOKEN_PLAN_KEY` 传入，
+    不写入任何文件。ComfyUI 路径不受影响。
+- `tools/image_keyframe_edit.py`：Wan 2.7 状态编辑实验领域库——`compile_edit_instruction()`
+  机械拼装编辑指令（确定性，不调用 LLM）、`review_html()` 生成审核页、
+  `validate_edit_run()` 校验 gate 枚举与绑定。
+- `tools/image_keyframe_edits.py`：Wan 2.7 状态编辑实验 CLI（`smoke` / `generate` / `review`
+  / `validate` / `show`）；产物落在 `data/drafts/image-keyframe-edits/{scene_id}/v{NN}/`。
+  不覆盖 `image-keyframes/` 历史版本。
 - `schema/render-plan.schema.json`：**LEGACY** 早期 beat 级渲染计划（内部 IR，不是未来
   Production Package 契约；新主线的叙事拆分由 Shot Plan 决定）。内容/风格分离：
   beat prompt 只写内容，外观集中在 characters/setting 卡片、以 `{char:id}` 与

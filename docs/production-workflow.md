@@ -281,3 +281,5 @@ Director 写关键图 prompt + 视频 prompt
 该样本随后走到了图片关键帧层：`data/drafts/image-keyframes/reluctant-01-proto-01/v01/` 是第一批真实图片（9 张，锚定 Shot Plan v05 + Keyframe Plan v02）。审核结论是 **IMAGE KEYFRAME REVISION REQUIRED**——图全部生成成功，构图与场景关系成立，但抵抗状态（躯干后靠、手停在半途、叉齿尚未插入）一张都没有画出来，`reluctant` 与普通配合无法区分。失败的是执行不是计划，v05 与 v02 均未修改。记录见 [docs/vertical-slices/reluctant-01-image-keyframes.md](vertical-slices/reluctant-01-image-keyframes.md)。
 
 随后用 `messy` 和 `almost` 检查同一个 Director 是否会根据语义类型自然选择静态关系、状态变化或终止结果，而不是套用同一种短片模板。
+
+针对图片关键帧层 IMAGE KEYFRAME REVISION REQUIRED 的结论，启动了 Token Plan Wan 2.7 状态编辑实验（`feat/reluctant-wan27-image-edit-prototype`）：用图片编辑而非文生图，以 v01 图为基础输入，通过编辑指令强制指定冻结状态（躯干后靠、手停在半途等），直接回答"wan2.7-image-pro 能否通过图片编辑准确执行 reluctant 核心判据"。该实验增加了 `aliyun-token-plan` 适配器协议（`tools/imagegen.py`）、编辑指令编译库（`tools/image_keyframe_edit.py`）、CLI 工具（`tools/image_keyframe_edits.py`）与对应 schema 和测试（59 tests pass）。本次执行因运行环境网络代理阻断 `*.maas.aliyuncs.com` TLS 握手，api_gate: blocked，semantic_gate: not_run；代码与工具框架已就绪，在可连接 Token Plan Endpoint 的网络环境中可立即执行。记录见 [docs/vertical-slices/reluctant-01-wan27-image-edit.md](vertical-slices/reluctant-01-wan27-image-edit.md)。
