@@ -793,6 +793,193 @@ class TestManifest:
         assert any("keyframe_plan_ref" in issue for issue in issues)
 
 
+class TestDerivedRunGates:
+    @staticmethod
+    def _run_with_targets(*targets: dict) -> dict:
+        return {"targets": list(targets)}
+
+    @staticmethod
+    def _target(
+        keyframe_id: str,
+        *,
+        status: str | None = None,
+        selected: bool = False,
+    ) -> dict:
+        attempts = []
+        selected_attempt = None
+        if status:
+            attempts.append({
+                "attempt": "attempt-01",
+                "status": status,
+                "image": "images/result.png" if status == "generated" else None,
+            })
+            if selected:
+                selected_attempt = "attempt-01"
+        return {
+            "keyframe_id": keyframe_id,
+            "attempts": attempts,
+            "selected_attempt": selected_attempt,
+        }
+
+    def test_incomplete_run_is_pending(self):
+        import image_keyframe_edit as edit_lib
+        run_doc = self._run_with_targets(
+            self._target("kf-01", status="generated", selected=True),
+            self._target("kf-02"),
+        )
+        assert edit_lib.derive_api_gate(run_doc) == "pending"
+
+    def test_recorded_failure_blocks_incomplete_run(self):
+        import image_keyframe_edit as edit_lib
+        run_doc = self._run_with_targets(
+            self._target("kf-01", status="generated", selected=True),
+            self._target("kf-02", status="failed"),
+        )
+        assert edit_lib.derive_api_gate(run_doc) == "blocked"
+
+    def test_all_targets_need_selected_generated_artifacts_to_pass(self):
+        import image_keyframe_edit as edit_lib
+        run_doc = self._run_with_targets(
+            self._target("kf-01", status="generated", selected=True),
+            self._target("kf-02", status="generated", selected=True),
+        )
+        assert edit_lib.derive_api_gate(run_doc) == "pass"
+
+    def test_no_selected_artifact_means_semantic_gate_not_run(self):
+        import image_keyframe_edit as edit_lib
+        run_doc = self._run_with_targets(self._target("kf-01"))
+        assert edit_lib.derive_semantic_gate(run_doc) == "not_run"
+
+    def test_completed_weak_review_requires_revision(self):
+        import image_keyframe_edit as edit_lib
+        target = self._target("kf-01", status="generated", selected=True)
+        target["attempts"][0]["reviews"] = edit_lib.blank_reviews_v11()
+        target["attempts"][0]["reviews"]["human"] = {
+            "status": "completed",
+            "reviewer": "tester",
+            "reviewed_at": "2026-07-24T00:00:00+00:00",
+            "verdicts": edit_lib.blank_verdict_set()
+            | {"state_fidelity": "weak"},
+            "notes": [],
+        }
+        run_doc = self._run_with_targets(target)
+        assert edit_lib.derive_semantic_gate(run_doc) == "revision_required"
+
+    def test_all_completed_human_dimensions_must_pass(self):
+        import image_keyframe_edit as edit_lib
+        targets = []
+        for keyframe_id in ("kf-01", "kf-02"):
+            target = self._target(
+                keyframe_id,
+                status="generated",
+                selected=True,
+            )
+            target["attempts"][0]["reviews"] = edit_lib.blank_reviews_v11()
+            target["attempts"][0]["reviews"]["human"] = {
+                "status": "completed",
+                "reviewer": "tester",
+                "reviewed_at": "2026-07-24T00:00:00+00:00",
+                "verdicts": {
+                    dimension: "pass"
+                    for dimension in edit_lib.REVIEW_DIMS
+                },
+                "notes": [],
+            }
+            targets.append(target)
+        run_doc = self._run_with_targets(*targets)
+        assert edit_lib.derive_semantic_gate(run_doc) == "pass"
+
+
+class TestHumanReviewRecording:
+    def test_records_review_and_refreshes_gates(self):
+        import image_keyframe_edit as edit_lib
+        target = {
+            "keyframe_id": "kf-01",
+            "selected_attempt": None,
+            "attempts": [{
+                "attempt": "attempt-01",
+                "status": "generated",
+                "image": "images/result.png",
+                "reviews": edit_lib.blank_reviews_v11(),
+            }],
+        }
+        run_doc = {
+            "schema_version": "1.1",
+            "api_gate": "pending",
+            "semantic_gate": "not_run",
+            "targets": [target],
+        }
+
+        edit_lib.record_human_review(
+            run_doc,
+            keyframe_id="kf-01",
+            attempt_id="attempt-01",
+            reviewer="tester",
+            reviewed_at="2026-07-24T00:00:00+00:00",
+            verdicts={
+                dimension: "pass"
+                for dimension in edit_lib.REVIEW_DIMS
+            },
+            notes=["looks correct"],
+        )
+
+        assert target["selected_attempt"] == "attempt-01"
+        assert run_doc["api_gate"] == "pass"
+        assert run_doc["semantic_gate"] == "pass"
+        assert (
+            target["attempts"][0]["reviews"]["human"]["reviewer"]
+            == "tester"
+        )
+
+    def test_rejects_unbound_attempt(self):
+        import image_keyframe_edit as edit_lib
+        run_doc = {
+            "schema_version": "1.1",
+            "targets": [{"keyframe_id": "kf-01", "attempts": []}],
+        }
+        with pytest.raises(ValueError, match="not a bound generated artifact"):
+            edit_lib.record_human_review(
+                run_doc,
+                keyframe_id="kf-01",
+                attempt_id="attempt-01",
+                reviewer="tester",
+                reviewed_at="2026-07-24T00:00:00+00:00",
+                verdicts={
+                    dimension: "pass"
+                    for dimension in edit_lib.REVIEW_DIMS
+                },
+            )
+
+
+class TestAttemptPersistence:
+    def test_next_attempt_skips_unbound_disk_artifacts(self, tmp_path):
+        import image_keyframe_edits
+
+        keyframe_id = "shot-02-kf-03"
+        (tmp_path / f"{keyframe_id}-attempt-01.png").write_bytes(b"old-1")
+        (tmp_path / f"{keyframe_id}-attempt-02.png").write_bytes(b"old-2")
+
+        attempt_id, output_path = image_keyframe_edits._next_attempt_id(
+            {"attempts": []},
+            tmp_path,
+            keyframe_id,
+        )
+
+        assert attempt_id == "attempt-03"
+        assert output_path.name == f"{keyframe_id}-attempt-03.png"
+
+    def test_next_attempt_skips_manifest_attempts(self, tmp_path):
+        import image_keyframe_edits
+
+        attempt_id, _ = image_keyframe_edits._next_attempt_id(
+            {"attempts": [{"attempt": "attempt-01"}]},
+            tmp_path,
+            "shot-03-kf-01",
+        )
+
+        assert attempt_id == "attempt-02"
+
+
 # ================================================================ 15.4 History Guard
 
 @pytest.mark.parametrize("rel_path", [

@@ -28,11 +28,12 @@
     "keyframe_plan_ref": { "$ref": "#/$defs/planRef" },
     "source_image_keyframe_ref": { "$ref": "#/$defs/planRef" },
     "api_gate": {
-      "enum": ["pending", "pass", "blocked"]
+      "enum": ["pending", "pass", "blocked"],
+      "description": "历史字段名，实际表示本次 Edit Run 的生成执行门：全部 target 都绑定 generated selected_attempt 才是 pass；存在记录化失败且未全通过是 blocked；其余是不完整但未阻塞的 pending。不得用裸图片文件推断。"
     },
     "semantic_gate": {
       "enum": ["pending", "pass", "revision_required", "not_run"],
-      "description": "由 Human Review 决定的语义 Gate"
+      "description": "从 selected attempts 的 Human Reviews 确定性推导：无绑定候选是 not_run；存在 weak/fail 是 revision_required；全部 target 生成覆盖且全部人工维度 pass 才是 pass；其余是 pending。VLM 不参与推导。"
     },
     "generation": {
       "type": "object",

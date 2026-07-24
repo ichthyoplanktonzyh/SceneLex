@@ -14,11 +14,12 @@ Dictionary Evidence
 → Keyframe Plan                 ← 选择并描述必要的视觉状态
 → Animatic Review               ← 审核顺序、时长、状态覆盖与镜头边界
 → Image Keyframe Generation     ← 把已批准的视觉状态画出来
-→ AI Video Shots                ← 在已批准状态之间生成运动
+→ Motion Directive              ← 把 Shot 动作与关键状态编译成运动执行要求
+→ AI Motion Segments            ← 在已批准状态之间生成运动
 → Edit / Audio / Final Video
 ```
 
-四层的职责边界不可互换：
+各层职责边界不可互换：
 
 ```text
 Keyframe Plan     = 选择和描述必要视觉状态
@@ -26,6 +27,11 @@ Animatic          = 审核顺序、时长、状态覆盖和镜头边界
 Image generation  = 把已批准的视觉状态画出来
 Video generation  = 在已批准状态之间生成运动
 ```
+
+`Shot` 是叙事执行单位，`Motion Segment` 是一次视频模型调用的生成单位。二者不要求
+一一对应：一个包含多个语义停顿的 Shot 可以由多个 Segment 连续组装，但这些模型调用
+边界不是叙事切镜，不能反向改变 Shot Plan。每个 Segment 的动作、起止状态与时序约束
+由 Motion Directive 明确记录；该最小契约是当前图片门之后、云端 I2V 之前的待建层。
 
 Director 的职责是这条链上的一步：
 
@@ -271,15 +277,29 @@ Director 写关键图 prompt + 视频 prompt
 
 ## 当前纵向样本
 
-先用 `reluctant-01-proto-01` 验证：Director 能否把现有语义节拍拆成可审核的执行镜头，让动作时序被正确看见，同时避免只画成 sad、slow、hesitant、refuse 或 eager。
+当前只用 `reluctant-01-proto-01` 关闭第一条完整纵向切片：让动作时序被正确看见，
+同时避免主要读作 sad、slow、hesitant、refuse、dislike 或 eager。
 
-该样本已经跑通：`reluctant` 是仓库第一个 approved Sense Inventory，`reluctant-01` 已按它重新起草为 WordSense 1.1，`reluctant-01-proto-01` 是第一条语义修订状态为 `CURRENT` 的 SceneSpec 1.1，并编译出真实 Shot Plan。当前推荐版本是 v04（3 个 Beat → 2 个 Shot，7.3s）；v01–v03 作为问题证据保留，不覆盖。逐项审查记录见
-[docs/vertical-slices/reluctant-01-proto-01.md](vertical-slices/reluctant-01-proto-01.md)。其余 20 个场景仍是 SceneSpec 1.0（`LEGACY`），本轮不做批量迁移。
+`reluctant` 是仓库第一个 approved Sense Inventory，`reluctant-01` 已按它重新起草为
+WordSense 1.1，`reluctant-01-proto-01` 是第一条语义修订状态为 `CURRENT` 的
+SceneSpec 1.1。其余 20 个场景仍是 SceneSpec 1.0（`LEGACY`），本轮不批量迁移。
 
-该样本随后走到了 Keyframe / Animatic 层：`data/drafts/keyframe-plans/reluctant-01-proto-01/v01/` 是第一份真实关键帧计划（7 帧 = 2 + 5，锚定 Shot Plan v04）。Animatic 审核的结论是 **SHOT PLAN REVISION REQUIRED BEFORE IMAGE GENERATION**——选帧成立，但 shot-02 的 4.8s 装不下它自己的动作链，建议在"握住叉子之后"的自然动作边界改成 3 个镜头。审核记录见 [docs/vertical-slices/reluctant-01-keyframe-animatic.md](vertical-slices/reluctant-01-keyframe-animatic.md)。该建议随后被执行：Shot Plan v05（人工修订，三镜）与 Keyframe Plan v02（9 帧 = 2 + 4 + 3）已生成，v04 与 v01 原样保留不覆盖。
+当前执行版本是 Shot Plan v05（三镜、10.8s）与 Keyframe Plan v02
+（9 帧 = 2 + 4 + 3）。它们来自一次真实反馈循环：
+Shot Plan v04 → Keyframe Plan v01 → Animatic 发现动作预算不足 → 人工修订 v05 →
+Keyframe Plan v02 → Animatic v02 通过。历史版本原样保留。
 
-该样本随后走到了图片关键帧层：`data/drafts/image-keyframes/reluctant-01-proto-01/v01/` 是第一批真实图片（9 张，锚定 Shot Plan v05 + Keyframe Plan v02）。审核结论是 **IMAGE KEYFRAME REVISION REQUIRED**——图全部生成成功，构图与场景关系成立，但抵抗状态（躯干后靠、手停在半途、叉齿尚未插入）一张都没有画出来，`reluctant` 与普通配合无法区分。失败的是执行不是计划，v05 与 v02 均未修改。记录见 [docs/vertical-slices/reluctant-01-image-keyframes.md](vertical-slices/reluctant-01-image-keyframes.md)。
+Image Keyframes v01 真实生成 9 张图，人工结论为
+**IMAGE KEYFRAME REVISION REQUIRED**：构图与场景关系大体成立，但核心抵抗状态没有
+稳定画出，不能进入 I2V。失败的是图片执行，不是 Shot Plan 或 Keyframe Plan。
 
-随后用 `messy` 和 `almost` 检查同一个 Director 是否会根据语义类型自然选择静态关系、状态变化或终止结果，而不是套用同一种短片模板。
+为修复图片执行，v02 建立了
+Source Packet → Qwen3.6-Flash Visual Compiler → Render Directive Validator →
+Wan 2.7 Image Pro → VLM advisory → Human Gate。4 个诊断 target 均已有通过
+Validator 的 Render Directive。
 
-针对图片关键帧层 IMAGE KEYFRAME REVISION REQUIRED 的结论，启动了 Token Plan Wan 2.7 状态编辑实验（`feat/reluctant-wan27-image-edit-prototype`）：用图片编辑而非文生图，以 v01 图为基础输入，通过编辑指令强制指定冻结状态（躯干后靠、手停在半途等），直接回答"wan2.7-image-pro 能否通过图片编辑准确执行 reluctant 核心判据"。该实验增加了 `aliyun-token-plan` 适配器协议（`tools/imagegen.py`）、编辑指令编译库（`tools/image_keyframe_edit.py`）、CLI 工具（`tools/image_keyframe_edits.py`）与对应 schema 和测试（59 tests pass）。本次执行因运行环境网络代理阻断 `*.maas.aliyuncs.com` TLS 握手，api_gate: blocked，semantic_gate: not_run；代码与工具框架已就绪，在可连接 Token Plan Endpoint 的网络环境中可立即执行。记录见 [docs/vertical-slices/reluctant-01-wan27-image-edit.md](vertical-slices/reluctant-01-wan27-image-edit.md)。
+v02 目录还存在 `shot-02-kf-03` 的两张 Wan 图片，但当前 manifest 没有对应 attempt、
+request/seed 绑定或人工审核。它们只能证明“曾产生可视结果”，不能作为
+Pipeline-ready 产物。当前权威状态是 `api_gate: pending`、
+`semantic_gate: not_run`。下一步是重新执行并形成完整绑定，而不是从裸文件反推
+provenance。统一术语见根目录 `CONTEXT.md`，当前项目状态见 `.planning/STATE.md`。

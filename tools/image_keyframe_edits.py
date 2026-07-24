@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -64,6 +65,31 @@ def _load_yaml(path: Path) -> dict[str, Any]:
 def _save_yaml(path: Path, data: dict[str, Any]) -> None:
     with open(path, "w", encoding="utf-8") as f:
         yaml.safe_dump(data, f, allow_unicode=True, sort_keys=False)
+
+
+def _sync_run_gates(run_doc: dict[str, Any]) -> None:
+    run_doc["api_gate"] = edit_lib.derive_api_gate(run_doc)
+    run_doc["semantic_gate"] = edit_lib.derive_semantic_gate(run_doc)
+
+
+def _next_attempt_id(
+    target: dict[str, Any],
+    images_dir: Path,
+    keyframe_id: str,
+) -> tuple[str, Path]:
+    """Choose the next manifest ID without overwriting orphaned disk artifacts."""
+    used_ids = {
+        attempt.get("attempt")
+        for attempt in target.get("attempts", []) or []
+        if attempt.get("attempt")
+    }
+    attempt_num = 1
+    while True:
+        attempt_id = f"attempt-{attempt_num:02d}"
+        output_path = images_dir / f"{keyframe_id}-{attempt_id}.png"
+        if attempt_id not in used_ids and not output_path.exists():
+            return attempt_id, output_path
+        attempt_num += 1
 
 
 def _load_upstream(scene_id: str, version: int) -> tuple[dict, dict, dict, EditDraftDir]:
@@ -295,12 +321,11 @@ def cmd_generate(args: argparse.Namespace) -> None:
             compiler_request_id=directive.get("compiler", {}).get("request_id"),
         )
 
-        existing_attempts = target.get("attempts", [])
-        attempt_num = len(existing_attempts) + 1
-        attempt_id = f"attempt-{attempt_num:02d}"
-
-        out_filename = f"{kf_id}-{attempt_id}.png"
-        out_img_path = draft.images_dir / out_filename
+        attempt_id, out_img_path = _next_attempt_id(
+            target,
+            draft.images_dir,
+            kf_id,
+        )
 
         print(f"… 生成 {kf_id} ({attempt_id}) via Wan 2.7", flush=True)
         if bbox_list_arg:
@@ -311,18 +336,35 @@ def cmd_generate(args: argparse.Namespace) -> None:
                 instruction=serialized_prompt,
                 input_images=input_images,
                 model=run_doc.get("generation", {}).get("primary_model"),
-<<<<<<< HEAD
                 size=run_doc.get("generation", {}).get("requested_size"),
-=======
-                requested_size=run_doc.get("generation", {}).get("requested_size"),
->>>>>>> origin/main
                 bbox_list=bbox_list_arg,
             )
             out_img_path.write_bytes(img_bytes)
-            run_doc["api_gate"] = "pass"
         except Exception as exc:
             print(f"  ❌ Wan API 生成失败: {exc}", file=sys.stderr)
-            run_doc["api_gate"] = "blocked"
+            target.setdefault("attempts", []).append({
+                "attempt": attempt_id,
+                "model": run_doc.get("generation", {}).get("primary_model")
+                or "wan2.7-image-pro",
+                "prompt": serialized_prompt,
+                "image": None,
+                "request_id": None,
+                "seed": 0,
+                "bbox_list": bbox_list_arg,
+                "status": "failed",
+                "render_directive_ref": {
+                    "keyframe_id": kf_id,
+                    "compiler_attempt": "compiler-attempt-01",
+                    "path": draft._rel(rd_file),
+                },
+                "reviews": edit_lib.blank_reviews_v11(),
+                "error": {
+                    "http_status": None,
+                    "message": str(exc),
+                },
+            })
+            _sync_run_gates(run_doc)
+            _save_yaml(draft.manifest_path, run_doc)
             continue
 
         attempt_record = {
@@ -344,8 +386,11 @@ def cmd_generate(args: argparse.Namespace) -> None:
 
         target.setdefault("attempts", []).append(attempt_record)
         target["selected_attempt"] = attempt_id
+        _sync_run_gates(run_doc)
+        _save_yaml(draft.manifest_path, run_doc)
         print(f"  ✓ {draft._rel(out_img_path)}")
 
+    _sync_run_gates(run_doc)
     _save_yaml(draft.manifest_path, run_doc)
     cmd_review(args)
 
@@ -402,6 +447,53 @@ def cmd_review(args: argparse.Namespace) -> None:
     print(f"✓ 已更新 review.html: {draft._rel(draft.review_path)}")
 
 
+def cmd_review_human(args: argparse.Namespace) -> None:
+    """记录一个绑定 attempt 的人工五维审核，并确定性刷新整批 Gate。"""
+    shot_plan, kf_plan, src_manifest, draft = _load_upstream(args.scene_id, args.version)
+    run_doc = _load_yaml(draft.manifest_path)
+    target = next(
+        (
+            item
+            for item in run_doc.get("targets", [])
+            if item.get("keyframe_id") == args.only
+        ),
+        None,
+    )
+    if not target:
+        sys.exit(f"错误: 未找到 target {args.only}")
+
+    attempt_id = args.attempt or target.get("selected_attempt")
+    if not attempt_id:
+        sys.exit("错误: 必须通过 --attempt 指定一个 generated attempt")
+
+    verdicts = {
+        "semantic_readability": args.semantic_readability,
+        "state_fidelity": args.state_fidelity,
+        "character_consistency": args.character_consistency,
+        "prop_continuity": args.prop_continuity,
+        "composition": args.composition,
+    }
+    try:
+        edit_lib.record_human_review(
+            run_doc,
+            keyframe_id=args.only,
+            attempt_id=attempt_id,
+            reviewer=args.reviewer,
+            reviewed_at=datetime.now(timezone.utc).isoformat(),
+            verdicts=verdicts,
+            notes=args.note,
+        )
+    except ValueError as exc:
+        sys.exit(f"错误: {exc}")
+
+    _save_yaml(draft.manifest_path, run_doc)
+    cmd_review(args)
+    print(
+        f"✓ Human Review: {args.only}/{attempt_id}; "
+        f"semantic_gate={run_doc['semantic_gate']}"
+    )
+
+
 def cmd_validate(args: argparse.Namespace) -> None:
     """validate 命令: 校验 schema、引用、文件、覆盖与 gate。"""
     shot_plan, kf_plan, src_manifest, draft = _load_upstream(args.scene_id, args.version)
@@ -446,6 +538,26 @@ def main() -> None:
     p_vlm = subparsers.add_parser("review-vlm", help="执行 VLM 辅助审核")
     add_common(p_vlm)
     p_vlm.set_defaults(func=cmd_review_vlm)
+
+    p_human = subparsers.add_parser("review-human", help="记录人工五维审核")
+    add_common(p_human)
+    p_human.add_argument("--attempt", help="要审核的 attempt ID；默认使用 selected_attempt")
+    p_human.add_argument("--reviewer", required=True, help="审核者标识")
+    verdict_choices = ("pass", "weak", "fail")
+    for option in (
+        "semantic-readability",
+        "state-fidelity",
+        "character-consistency",
+        "prop-continuity",
+        "composition",
+    ):
+        p_human.add_argument(
+            f"--{option}",
+            required=True,
+            choices=verdict_choices,
+        )
+    p_human.add_argument("--note", action="append", default=[], help="审核备注，可重复")
+    p_human.set_defaults(func=cmd_review_human)
 
     p_rev = subparsers.add_parser("review", help="重建 review.html")
     add_common(p_rev)

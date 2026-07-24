@@ -249,6 +249,150 @@ def blank_target(keyframe_id: str) -> dict:
     }
 
 
+def derive_api_gate(run_doc: dict) -> str:
+    """Derive the run-level generation gate from bound target attempts.
+
+    ``pass`` means every target selects a generated artifact. ``blocked`` means
+    at least one target has a recorded failed attempt while the run is not
+    complete. A run with no recorded failure and incomplete coverage remains
+    ``pending``.
+    """
+    targets = run_doc.get("targets", []) or []
+    if not targets:
+        return "pending"
+
+    all_selected_generated = True
+    has_failed_attempt = False
+
+    for target in targets:
+        attempts = target.get("attempts", []) or []
+        selected_id = target.get("selected_attempt")
+        selected = next(
+            (attempt for attempt in attempts if attempt.get("attempt") == selected_id),
+            None,
+        )
+        if not (
+            selected
+            and selected.get("status") == "generated"
+            and selected.get("image")
+        ):
+            all_selected_generated = False
+        if any(attempt.get("status") == "failed" for attempt in attempts):
+            has_failed_attempt = True
+
+    if all_selected_generated:
+        return "pass"
+    if has_failed_attempt:
+        return "blocked"
+    return "pending"
+
+
+def derive_semantic_gate(run_doc: dict) -> str:
+    """Derive the run-level Human Semantic Gate from selected attempts."""
+    targets = run_doc.get("targets", []) or []
+    selected_attempts: list[dict] = []
+
+    for target in targets:
+        selected_id = target.get("selected_attempt")
+        if not selected_id:
+            continue
+        selected = next(
+            (
+                attempt
+                for attempt in target.get("attempts", []) or []
+                if attempt.get("attempt") == selected_id
+            ),
+            None,
+        )
+        if selected:
+            selected_attempts.append(selected)
+
+    if not selected_attempts:
+        return "not_run"
+
+    completed_reviews: list[dict] = []
+    for attempt in selected_attempts:
+        human = ((attempt.get("reviews") or {}).get("human") or {})
+        if human.get("status") == "completed":
+            completed_reviews.append(human)
+
+    if any(
+        verdict in ("weak", "fail")
+        for review in completed_reviews
+        for verdict in (review.get("verdicts") or {}).values()
+    ):
+        return "revision_required"
+
+    if derive_api_gate(run_doc) != "pass":
+        return "pending"
+    if len(completed_reviews) != len(targets):
+        return "pending"
+    if all(
+        set((review.get("verdicts") or {}).values()) == {"pass"}
+        for review in completed_reviews
+    ):
+        return "pass"
+    return "pending"
+
+
+def record_human_review(
+    run_doc: dict,
+    *,
+    keyframe_id: str,
+    attempt_id: str,
+    reviewer: str,
+    reviewed_at: str,
+    verdicts: dict[str, str],
+    notes: list[str] | None = None,
+) -> None:
+    """Record a v1.1 human review and refresh deterministic run gates."""
+    if run_doc.get("schema_version") != SCHEMA_VERSION_V11:
+        raise ValueError("Human review recording requires Edit Run schema 1.1")
+    if set(verdicts) != set(REVIEW_DIMS):
+        raise ValueError(f"Human review must cover exactly {REVIEW_DIMS}")
+    invalid = {
+        value for value in verdicts.values()
+        if value not in ("pass", "weak", "fail")
+    }
+    if invalid:
+        raise ValueError(f"Invalid human verdicts: {sorted(invalid)}")
+
+    target = next(
+        (
+            item
+            for item in run_doc.get("targets", []) or []
+            if item.get("keyframe_id") == keyframe_id
+        ),
+        None,
+    )
+    if not target:
+        raise ValueError(f"Unknown keyframe target: {keyframe_id}")
+
+    attempt = next(
+        (
+            item
+            for item in target.get("attempts", []) or []
+            if item.get("attempt") == attempt_id
+        ),
+        None,
+    )
+    if not attempt or attempt.get("status") != "generated" or not attempt.get("image"):
+        raise ValueError(
+            f"{keyframe_id}/{attempt_id} is not a bound generated artifact"
+        )
+
+    target["selected_attempt"] = attempt_id
+    attempt.setdefault("reviews", blank_reviews_v11())["human"] = {
+        "status": "completed",
+        "reviewer": reviewer,
+        "reviewed_at": reviewed_at,
+        "verdicts": dict(verdicts),
+        "notes": list(notes or []),
+    }
+    run_doc["api_gate"] = derive_api_gate(run_doc)
+    run_doc["semantic_gate"] = derive_semantic_gate(run_doc)
+
+
 def build_edit_run(
     plan: dict,
     shot_plan: dict,
@@ -301,7 +445,7 @@ def build_edit_run(
             "version": source_keyframe_manifest.get("version"),
         },
         "api_gate": "pending",
-        "semantic_gate": "pending",
+        "semantic_gate": "not_run",
         "generation": {
             "protocol": "aliyun-token-plan",
             "endpoint_kind": "token-plan-beijing",
@@ -464,10 +608,24 @@ def validate_edit_run(
     api_gate = run_doc.get("api_gate")
     if api_gate not in API_GATE_VALUES:
         issues.append(f"api_gate {api_gate!r} 不在允许范围 {API_GATE_VALUES}")
+    else:
+        expected_api_gate = derive_api_gate(run_doc)
+        if api_gate != expected_api_gate:
+            issues.append(
+                f"api_gate={api_gate!r} 与绑定 attempts 推导值 "
+                f"{expected_api_gate!r} 不一致"
+            )
 
     sem_gate = run_doc.get("semantic_gate")
     if sem_gate not in SEMANTIC_GATE_VALUES:
         issues.append(f"semantic_gate {sem_gate!r} 不在允许范围 {SEMANTIC_GATE_VALUES}")
+    else:
+        expected_semantic_gate = derive_semantic_gate(run_doc)
+        if sem_gate != expected_semantic_gate:
+            issues.append(
+                f"semantic_gate={sem_gate!r} 与 Human Reviews 推导值 "
+                f"{expected_semantic_gate!r} 不一致"
+            )
 
     ir = run_doc.get("identity_reference") or {}
     if ir.get("scope") not in (None, "experiment-local"):

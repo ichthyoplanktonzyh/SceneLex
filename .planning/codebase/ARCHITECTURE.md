@@ -1,109 +1,83 @@
 # SceneLex — 架构骨架
 
-> 最后更新：2026-07-18
+> 最后更新：2026-07-24
 
 ## 系统身份
 
 SceneLex 是词义语义资源、教学场景证据和可追溯媒体的生产系统，不是学习应用。
 
 ```text
-语义资源层
-  WordSense + SceneSpec
-        ↓
-Director 中间层
-  semantic scene → model-adapted prompt
-        ↓
-模型适配与媒体层
-  video/image/TTS/interactive + manifest
-        ↓
+语义权威
+  Inventory → WordSense → SceneSpec
+                         ↓
+执行计划
+  Shot Plan → Keyframe Plan → Animatic
+                         ↓
+图片执行
+  Source Packet → Render Directive → Image Candidate → Human Gate
+                         ↓
+视频执行
+  Motion Directive → I2V Motion Segment → Human Video Gate → Edit / Audio / Final
+                         ↓
 消费者
-  dictionary/course/player/API
+  dictionary / course / player / API
 ```
 
-## 内容生产
+## 权威边界
+
+- WordSense 定义词义身份、条件与边界。
+- SceneSpec 定义证明该词义的模型无关教学事件。
+- Shot Plan 决定镜头、时序、构图与连续性，不改变故事。
+- Keyframe Plan 选择必要视觉状态，不重新导演。
+- Source Packet 是从冻结上游确定性提取的编译输入。
+- Render Directive 是模型适配的物理编辑 IR，不是语义权威。
+- Motion Segment 是一次视频模型生成单位，不等于 Shot；一个 Shot 可由多个 Segment 连续组装。
+- 图像和视频候选只有绑定 manifest attempt 后才是可追溯产物。
+- VLM 只提供建议；人工 Gate 决定能否进入下游。
+
+## 当前主线
 
 ```text
-candidate → sense/scene draft → 可选模型审核 → 校验 + 人工 promote
-→ reviewed semantic resource
-→ Director Prompt
-→ 视频模型候选
-→ Director 查看与修正
-→ selected/published media
+reluctant-01-proto-01 SceneSpec 1.1
+→ Shot Plan v05
+→ Keyframe Plan v02
+→ Image Keyframes v01 (revision required)
+→ 4 diagnostic Source Packets
+→ 4 validated Render Directives
+→ Wan 2.7 bound candidates (pending)
+→ Human Image Semantic Gate
+→ Motion Directive / Video Run (待建)
+→ Cloud I2V Motion Segments
+→ Human Video Semantic Gate
+→ Final video
 ```
 
-学习实验可以优化资源，但不是发布或规模化前置。
+## 模型适配
 
-## 语义资源层
+- Qwen3.6-Flash 当前承担 Visual Compiler 与 VLM advisory review。
+- Wan 2.7 Image Pro 当前承担关键状态图片编辑。
+- 本地 Wan 2.2 / MPS 视频路径已判定不可用。
+- 视频目标是云端 I2V；具体供应商尚未成为语义或执行契约的一部分。
+- 模型、endpoint、seed、BBox、request ID 只进入适配层和 manifest。
 
-- `schema/word-sense.schema.json`、`data/senses/`：义项权威。
-- `schema/scene-spec.schema.json`、`data/scenes/`：教学场景证据权威。
-- `schema/resource-bundle.schema.json`、`tools/export.py`：确定性分发。
-- `tools/draft.py`、`tools/review.py`、`tools/validate.py`：起草、可选审核与校验。
+## Gate
 
-`SceneSpec.storyboard` 是semantic beats。它告诉Director事件和证据怎样发展，但不是需要机械逐项执行的视频clip列表。
+- Generation Gate（历史字段 `api_gate`）只描述整批绑定生成覆盖。
+- Image Semantic Gate 描述静态语义、状态、角色、道具与构图。
+- Video Semantic Gate 描述动作阶段、停顿、速度、结果与跨镜连续性。
+- 任一层未通过，不得把产物交给下一昂贵层。
 
-## Director 中间层
+## Legacy
 
-权威说明：`docs/production-workflow.md`。
-
-输入：
-
-```text
-WordSense
-SceneSpec
-video capability profile
-```
-
-输出：
-
-```text
-strategy: direct_t2v | image_guided_i2v | split_clips
-style: pixar-3d
-video_prompts[]
-optional image_prompt
-semantic_guardrails: must_show / must_avoid
-```
-
-Director默认最简单的 `direct_t2v`。只有模型能力或实际结果要求更多控制时，才加入关键图、参考图、首尾帧、拆片或animatic。
-
-Director不负责内容创作：WordSense与SceneSpec已经完成词义和场景设计，它只能忠实翻译。全局`pixar-3d`风格由`prompts/render-style.yaml`注入Director和Renderer。
-
-相关文件：
-
-- `schema/director-prompt.schema.json`
-- `prompts/director.md`
-- `prompts/video-model-profiles/`
-- `tools/director.py`
-- `data/drafts/director/{scene_id}/v{NN}/director-prompt.yaml`
-
-## 模型适配层
-
-模型无关不等于prompt无差别：词义和证据保持稳定，Director根据能力profile改变表达粒度。
-
-- 强视频模型可以接收完整连续事件和多个动作阶段。
-- 本地Wan 2.2 TI2V 5B更适合短、单一主要动作，必要时关键图I2V或少量拆片。
-- 模型、workflow、seed、分辨率和供应商参数只进入内部Director/renderer产物与manifest，不进入正式语义资源。
-
-当前本地ComfyUI是首个执行后端，已具备SDXL、CLIP Vision/IPAdapter和Wan 2.2能力。
-
-## 反馈循环
-
-第一版由同一个Director完成：
-
-```text
-写prompt → 查看视频 → pass或指出主要语义偏差 → 改prompt
-```
-
-不预先建设独立Reviewer、复杂决策规则或生产状态机。真实重复失败出现后，再抽象出稳定skill或评审组件。
-
-## 旧渲染原型
-
-`schema/render-plan.schema.json`、`prompts/render-plan.md`、`prompts/render-style.yaml`和`tools/render.py`是早期逐beat文生图管线。它们暂时保留，但不再代表目标架构；后续根据Director实际接入方式决定迁移或删除。
+- `director-prompt.schema.json`、`prompts/director.md`、`data/drafts/director/` 是旧提示词原型。
+- `render-plan.schema.json` 与 `tools/render.py` 是旧 beat-image 原型。
+- 历史产物保留用于追溯，但不参与当前生产主线。
 
 ## 不变量
 
-- 语义骨架与人物、地点、媒体和模型解耦。
-- Director不得改变must-show、must-not和概念关系。
-- semantic beats与video clips不要求一一对应。
-- 生成应尽早发生；控制工具按失败需要逐步增加。
-- 生成不等于审核，审核不等于发布。
+- 语义层不绑定人物表面、视觉风格、模型或供应商。
+- Beat、Shot、Keyframe 与 Motion Segment 是不同单位，不要求一一对应。
+- 上游问题在上游修，下游不得静默重写。
+- 历史版本不覆盖；下游显式绑定版本。
+- 裸文件不等于绑定产物，生成成功不等于语义通过。
+- 通过图片门后如发生重绘、转画幅或 outpaint，必须重新审核。

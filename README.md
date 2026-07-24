@@ -7,6 +7,7 @@ SceneLex 是一套可独立发布、版本化和复用的**词义语义资源与
 SceneLex 不是某个学习 App 的内部素材目录，也不由某个词典、播放器、课程或模型厂商定义。“场景即释义”是本产品已确立的核心方法与卖点，不是待验证的研究假设；学习产品是资源消费者之一。
 
 理论全文见 [一、先明确系统最终要解决什么问题.md](一、先明确系统最终要解决什么问题.md)。仓库约束见 [AGENT.md](AGENT.md)。
+跨层统一术语与 Gate 含义见 [CONTEXT.md](CONTEXT.md)。
 历史效果评估方案（已归档，非发布前提）见 [docs/mvp-evaluation.md](docs/mvp-evaluation.md)。
 
 ## 核心产物
@@ -62,7 +63,10 @@ Dictionary Evidence
 → Keyframe Plan
 → Animatic Review
 → Image Keyframe Generation
-→ AI Video Shots
+→ Source Packet / Visual Compiler / Render Directive
+→ Human Image Semantic Gate
+→ Motion Directive / AI Motion Segments
+→ Human Video Semantic Gate
 → Edit / Audio / Final Video
 ```
 

@@ -1,60 +1,58 @@
-# Phase 1.3 — Director 中间层
+# Phase 1.3 — `reluctant` 媒体纵向切片
 
 > 创建：2026-07-18
+> 最后更新：2026-07-24
 > 状态：进行中
 
 ## 目标
 
-让Director把`WordSense + SceneSpec`稳定翻译为当前视频模型能执行的高质量提示词，并通过一次真实生成—查看—改写循环验证价值。
+完成 `reluctant-01-proto-01` 从已审核语义规格到可播放、可追溯、语义正确成片的第一条纵向切片。
 
-```text
-semantic scene
-→ Director Prompt
-→ video model
-→ Director pass/retry
-→ revised prompt
-```
+## 已完成
 
-## P0：Director MVP ✅
+- [x] Legacy Director Prompt 原型验证。
+- [x] Shot Plan 成为 Scene 之后的叙事执行权威。
+- [x] Shot Plan v04 经 Animatic 反馈修订为 v05。
+- [x] Keyframe Plan v02 与 Animatic v02 通过。
+- [x] 第一批 9 张真实关键图生成并被图片语义门拦下。
+- [x] 建立 Source Packet → Visual Compiler → Render Directive → Validator。
+- [x] 建立 Wan 2.7 图片状态编辑与 VLM advisory review 工具。
+- [x] 为 4 个诊断状态生成已验证 Render Directive。
 
-- [x] 轻量Director Prompt Schema。
-- [x] 通用Director提示模板。
-- [x] `generic-video`和`wan2.2-ti2v-5b` capability profiles。
-- [x] `pixar-3d`全局渲染风格接入Director和旧render流程。
-- [x] `generate/show/list`命令和版本化草稿目录。
-- [x] Schema、元数据强制、beat覆盖和策略一致性测试。
+## 当前 P0：关闭图片语义门
 
-## P1：`reluctant`真实Prompt
+- [ ] 重新执行 4 个诊断 target；所有成功与失败都写 manifest attempt。
+- [ ] 每个 target 选择一个绑定的 generated attempt。
+- [ ] 完成 VLM advisory review。
+- [ ] 完成人工五维审核与整批 Semantic Gate。
+- [ ] 仅在 `api_gate: pass` 且 `semantic_gate: pass` 后进入视频。
 
-- [ ] 用可用LLM分别生成`generic-video`与`wan2.2-ti2v-5b`版本。
-- [ ] 检查prompt是否明确：任务进入考虑、意愿抗拒、可见外化、结果不定义词义。
-- [ ] 检查是否排除：仅慢、仅悲伤、只犹豫、明确拒绝、开心主动执行。
-- [ ] 检查Director是否忠实保留原场景，没有擅自增加情节或记忆点。
-- [ ] 检查图片与视频prompt是否明确包含Pixar-style 3D方向。
-- [ ] 根据检查修改Director模板或profile，而不是手工美化单个输出。
+## P1：视频运动
 
-## P2：尽早生成视频
+- [ ] 定义最小 Motion Directive 与 Video Run 记录。
+- [ ] 将三镜映射为一个或多个 Motion Segment；模型调用边界不得改写 Shot。
+- [ ] 明确云端 I2V 适配能力并用已过图片门的输入生成候选。
+- [ ] 审核停顿、速度、动作阶段、跨镜连续性和概念边界。
+- [ ] 对主要失败做一次最小修订循环。
 
-- [ ] 先把最简单可行prompt提交给本地Wan或可用强视频模型。
-- [ ] 每轮生成多个候选，不因预设成本而延迟尝试。
-- [ ] 保存模型、prompt版本、结果和选择；不要求先搭完整编辑系统。
+## P2：成片
 
-## P3：最小反馈循环
-
-- [ ] 让Director查看候选，输出`pass/retry`、一个主要问题和修改后的prompt。
-- [ ] 只在结果暴露实际问题时升级控制：构图→首帧，身份→参考图，终点→尾帧，复杂度→拆片。
-- [ ] 跑通至少一次自动或半自动改写并验证是否改善语义。
+- [ ] 三镜最小硬切拼接。
+- [ ] 添加必要 SFX、可选对话和目标声音。
+- [ ] 记录最终选择与 provenance。
+- [ ] 编写 CLOSEOUT.md，并同步 STATE / ROADMAP。
 
 ## 验收
 
-- Director Prompt能直接用于目标视频能力，不含“参考上文”等内部依赖。
-- `reluctant`候选呈现明确外部要求、可见抗拒和非主动执行，不把最终执行当成词义定义。
-- generic和Wan版本可有不同粒度，但语义guardrails一致。
-- 只有真实失败才触发额外控制；没有强制animatic或固定镜头数。
+- 可播放成片呈现“有外部任务、低意愿可见、主体仍自主执行”。
+- 不主要读作 slow、hesitant、refuse、dislike 或 eager。
+- 所有进入下游的输入均是 manifest 绑定且通过人工 Gate 的同一文件。
+- 失败版本与实验产物保留，不被新产物覆盖。
 
-## 暂不做
+## 非目标
 
-- 完整Production Package或传统制片状态机；
-- 独立多Agent Reviewer/Decision Policy；
-- 固定所有词义为同一种视频格式；
-- 在第一轮真实生成前扩充大量workflow和模型。
+- 批量扩产；
+- 通用资产注册表或依赖 DAG；
+- 独立多 Agent Reviewer；
+- legacy 场景批量迁移；
+- 消费者应用开发。

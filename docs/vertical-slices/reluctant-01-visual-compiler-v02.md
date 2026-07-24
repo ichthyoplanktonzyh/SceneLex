@@ -1,12 +1,21 @@
 # reluctant-01 · LLM Visual Compiler 与多模态审核链路 formalization 报告 (v02)
 
+> [!IMPORTANT]
+> 本文证明 Visual Compiler 与 Wan 2.7 路线产生过可视结果，不代表 v02 Edit Run
+> 已完成。当前 `edit-run.yaml` 没有绑定任何 generation attempt；目录中的两张
+> `shot-02-kf-03` 图片属于 unbound artifacts，不能计入 Generation Gate 或
+> Human Semantic Gate。权威状态是 `api_gate: pending`、`semantic_gate: not_run`。
+
 ## 概述与工程目标
 
 本报告总结了 SceneLex 生产管线中 **LLM Visual Compiler (物理渲染编译器)** 与 **多模态 VLM 审核链路** 的正式落地成果。
 
 针对 `reluctant-01-proto-01` 场景中的 4 张诊断关键帧（`shot-02-kf-03`, `shot-02-kf-04`, `shot-03-kf-01`, `shot-03-kf-03`），消除了机械字符串拼接提示词导致的语义冲突与鬼影缺陷，建立了确定性 IR 编译与审计流。
 
-已全面接入阿里云 **`Qwen3.6-Flash`** (`qwen3.6-flash`) 作为 LLM Visual Compiler 及 VLM Reviewer 的多模态驱动模型，并通过 **Wan 2.7 Image Pro** (`wan2.7-image-pro`) 完成了实际物理关键帧的图生图重绘与局部 BBox 编辑实测。
+已接入阿里云 **`Qwen3.6-Flash`** (`qwen3.6-flash`) 作为 LLM Visual Compiler 及
+VLM Reviewer 的多模态驱动模型。4 个诊断状态均完成 Render Directive 编译；
+Wan 2.7 Image Pro 曾为其中 1 个状态产生两张未绑定实验图片。其余 3 个状态尚未形成
+绑定候选，整批人工语义审核尚未开始。
 
 ---
 
@@ -64,15 +73,19 @@ SceneLex 视频教学生成管线正式解耦为以下五层：
 
 ---
 
-## 4. Wan 2.7 图像转绘与重绘实测评估
+## 4. Wan 2.7 未绑定图片观察
 
 针对 `shot-02-kf-03`（伸手悬停 / 不接触叉子），调用 **Wan 2.7 Image Pro** (`wan2.7-image-pro`) 进行了实测生成与 VLM 对比评审：
 
 * **[Attempt 01](file:///Users/shadow/SceneLex/data/drafts/image-keyframe-edits/reluctant-01-proto-01/v02/images/shot-02-kf-03-attempt-01.png)**:
   - 右臂延伸到了桌面附近，身体维持后靠。手部位置偏低，悬停感较弱。
-* **[Attempt 02](file:///Users/shadow/SceneLex/data/drafts/image-keyframe-edits/reluctant-01-proto-01/v02/images/shot-02-kf-03-attempt-02.png) ⭐ (最佳实践)**:
-  - **角色与风格保真度 (9.5/10)**: 3D 动画质感、人物面部特征、绿 T 恤、木质餐桌与西兰花盘子 100% 保持一致，无面部扭曲或画风撕裂。
-  - **动作微状态精准度**: 右臂向前延伸 2/3 处并在半空中悬停（hovering mid-air），手掌处于空置状态，完美体现了“不情愿犹豫”的核心视觉语义。
+* **[文件 02](file:///Users/shadow/SceneLex/data/drafts/image-keyframe-edits/reluctant-01-proto-01/v02/images/shot-02-kf-03-attempt-02.png)**:
+  - 观察上角色、风格、环境和“手臂前伸但躯干后靠”的状态较接近目标。
+  - 由于缺少 manifest attempt、request ID、seed、VLM 记录和 Human Review，
+    不给出正式分数，也不称为 selected/best/passed candidate。
+
+这两张文件只能作为“路线值得重新执行”的诊断证据。正式结论必须来自重新生成后
+写入 manifest 的 Bound Artifact。
 
 ---
 
@@ -92,8 +105,8 @@ SceneLex 视频教学生成管线正式解耦为以下五层：
   * [tools/imagegen.py](file:///Users/shadow/SceneLex/tools/imagegen.py) (Wan 2.7 适配器，支持 `aliyun-token-plan` 协议与 `bbox_list` 映射)
   * [tools/image_keyframe_edit.py](file:///Users/shadow/SceneLex/tools/image_keyframe_edit.py) (领域业务逻辑库)
   * [tools/image_keyframe_edits.py](file:///Users/shadow/SceneLex/tools/image_keyframe_edits.py) (CLI 命令行调度工具)
-* **生成图片与看板**：
-  * [shot-02-kf-03-attempt-01.png](file:///Users/shadow/SceneLex/data/drafts/image-keyframe-edits/reluctant-01-proto-01/v02/images/shot-02-kf-03-attempt-01.png) (Wan 2.7 生成 Attempt 01 产物)
-  * [shot-02-kf-03-attempt-02.png](file:///Users/shadow/SceneLex/data/drafts/image-keyframe-edits/reluctant-01-proto-01/v02/images/shot-02-kf-03-attempt-02.png) (Wan 2.7 生成 Attempt 02 最佳产物)
+* **未绑定图片与看板**：
+  * [shot-02-kf-03-attempt-01.png](file:///Users/shadow/SceneLex/data/drafts/image-keyframe-edits/reluctant-01-proto-01/v02/images/shot-02-kf-03-attempt-01.png)（unbound diagnostic artifact）
+  * [shot-02-kf-03-attempt-02.png](file:///Users/shadow/SceneLex/data/drafts/image-keyframe-edits/reluctant-01-proto-01/v02/images/shot-02-kf-03-attempt-02.png)（unbound diagnostic artifact）
   * [review.html](file:///Users/shadow/SceneLex/data/drafts/image-keyframe-edits/reluctant-01-proto-01/v02/review.html) (HTML 跨镜比较与 VLM/Human 评审面板)
   * [edit-run.yaml](file:///Users/shadow/SceneLex/data/drafts/image-keyframe-edits/reluctant-01-proto-01/v02/edit-run.yaml) (Edit Run v1.1 Manifest)

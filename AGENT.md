@@ -3,6 +3,8 @@
 这份文件是本仓库的工作约束和快速项目记忆。修改前先读完它；涉及
 产品方向、数据模型或生产流程时，再读 `README.md` 与
 `一、先明确系统最终要解决什么问题.md` 的相关章节。
+跨语义、执行、渲染与审核层的统一术语见 `CONTEXT.md`；不得把生成成功、
+VLM 建议或目录中的裸文件称为“已通过”或“可进入下游”。
 
 ## 项目定位
 
@@ -145,6 +147,9 @@ learning clients, APIs, or content packages
   剪辑时间轴。身份字段（含 `total_duration_hint`）由程序写入，模型显式写错即
   `shot plan identity drift` 并失败；只能从语义修订 `CURRENT` 的 SceneSpec 1.1 编译，
   不提供 `--allow-stale` 逃生通道。
+  **Shot 也不等于一次视频模型调用**：一次调用产出的连续区间统一称为
+  Motion Segment；一个 Shot 可以由一个或多个 Segment 无叙事切镜地组成，模型调用
+  边界不得反向改写 Shot Plan。
 - `schema/keyframe-plan.schema.json` + `tools/keyframe_plan.py` + `tools/keyframes.py`：
   Shot Plan 的下游。Keyframe Plan 只在**已定好的镜头里**选出并描述那些「缺了它观众的
   语义推断就会改变」的画面状态，并给出镜头内的时间位置；它**不重新导演场景**（镜头
@@ -173,12 +178,19 @@ learning clients, APIs, or content packages
   - `aliyun-token-plan`（实验路径）：Token Plan 专属 Endpoint，Wan 2.7 图片编辑与
     多图参考；通过 `edit()` 函数调用；Key 由 `SCENELEX_ALIYUN_TOKEN_PLAN_KEY` 传入，
     不写入任何文件。ComfyUI 路径不受影响。
-- `tools/image_keyframe_edit.py`：Wan 2.7 状态编辑实验领域库——`compile_edit_instruction()`
-  机械拼装编辑指令（确定性，不调用 LLM）、`review_html()` 生成审核页、
-  `validate_edit_run()` 校验 gate 枚举与绑定。
-- `tools/image_keyframe_edits.py`：Wan 2.7 状态编辑实验 CLI（`smoke` / `generate` / `review`
-  / `validate` / `show`）；产物落在 `data/drafts/image-keyframe-edits/{scene_id}/v{NN}/`。
-  不覆盖 `image-keyframes/` 历史版本。
+- `schema/image-render-source-packet.schema.json` +
+  `schema/image-render-directive.schema.json` + `tools/image_render_compiler.py`：
+  图片物理编译层。Source Packet 从冻结上游确定性提取；Qwen3.6-Flash Visual Compiler
+  翻译为 Render Directive；Validator 确定性校验覆盖、冲突与 BBox。Render Directive
+  是模型适配 IR，不是新的语义权威。
+- `tools/image_keyframe_edit.py`：Wan 2.7 状态编辑实验领域库——构造 Edit Run、
+  校验 manifest 绑定、生成审核页，并分离 VLM advisory review 与 Human Semantic Gate。
+- `tools/image_keyframe_edits.py`：Wan 2.7 状态编辑实验 CLI（`compile` /
+  `show-directive` / `generate` / `review-vlm` / `review-human` / `review` /
+  `validate` / `smoke`）；
+  产物落在 `data/drafts/image-keyframe-edits/{scene_id}/v{NN}/`，不覆盖
+  `image-keyframes/` 历史版本。`api_gate` 是历史字段名，实际表示整批 Generation Gate：
+  全部 target 具有 selected generated attempt 才为 pass；VLM 不得改变 Human Gate。
 - `schema/render-plan.schema.json`：**LEGACY** 早期 beat 级渲染计划（内部 IR，不是未来
   Production Package 契约；新主线的叙事拆分由 Shot Plan 决定）。内容/风格分离：
   beat prompt 只写内容，外观集中在 characters/setting 卡片、以 `{char:id}` 与
