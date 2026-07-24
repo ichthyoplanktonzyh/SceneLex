@@ -1,0 +1,39 @@
+# shot-02-kf-03 / attempt-01
+# 由 Keyframe Plan 与 Shot Plan 机械编译; 不要手工改这里, 改上游。
+# Wan 2.7 不支持独立 negative_prompt: must_avoid 在 FORBIDDEN OUTCOMES 节以
+# 自然语言形式出现，并作为人工审核清单。
+
+=== EDIT INSTRUCTION ===
+IMAGE ROLES
+
+Image 1 is the base frame to edit. The output must preserve the composition and aspect ratio of Image 1.
+
+PRESERVE EXACTLY
+
+Preserve the framing: medium_close, eye_level angle. Child from the waist up, framed so that the backward lean of the torso and the travel of the right arm are both readable in the same image. Child at frame right in the same seated position as shot-01, plate and fork in the lower part of the frame, mother partially visible at the left edge. Nothing is added to or removed from the table. Camera static.
+
+CAST — mother (counterpart) — Adult female, seated at the left side of the table throughout, speaks to the child and never touches him, the fork or the plate. child (focal_character) — School-age child, seated at the right side of the table throughout, right-handed; starts with both hands flat on the table surface.
+
+LOCATION — A family dining table with at least two chairs, a plate with broccoli and a fork placed in front of the child. The child keeps the right side of the frame and the mother the left in every shot.
+
+PROPS — plate — White plate containing several pieces of cooked broccoli, placed in front of the child, its position on the table unchanged from first shot to last. fork — Standard dinner fork, starting beside the plate within the child's reach; once picked up it stays in the child's right hand until it is put back down on the plate.
+
+CHANGE ONLY
+
+The reach is halted mid-way. The child's right arm is extended roughly two thirds of the distance to the fork, hand open, hovering above the table without touching it. His torso has not come forward with the arm — he is still leaned back — and his gaze is still off the plate. The arm is the only thing that has moved.
+
+TARGET FROZEN STATE
+
+Hand stopped short of the fork and not touching it. Torso still back — the body has not committed to the action. Gaze still not on the plate.
+
+MUST BE CLEARLY VISIBLE
+
+Hand stopped short of the fork and not touching it. Torso still back — the body has not committed to the action. Gaze still not on the plate.
+
+FORBIDDEN OUTCOMES
+
+The hand reaching for anything other than the fork. The hand recoiling backwards, which would read as refuse. A fast, confident reach with the body following it.
+
+NO TEACHING PACKAGING
+
+The image contains no words, letters, subtitles, captions, definitions, vocabulary labels, narration text, speech bubbles or interface overlays. Do not show the word 'reluctant' or any other vocabulary label in the image.

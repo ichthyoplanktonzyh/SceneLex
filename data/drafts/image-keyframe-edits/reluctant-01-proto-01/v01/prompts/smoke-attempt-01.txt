@@ -1,0 +1,9 @@
+# smoke test
+# 输入图: images/shot-02-kf-02.png
+
+=== EDIT INSTRUCTION ===
+Keep the same child, clothing, dining table, plate, fork, lighting, visual style and camera framing.
+
+Make only one visible change: move the child's torso slightly backward until the shoulders rest against the chair back.
+
+Keep both hands on the table. Do not move the fork or the plate.
