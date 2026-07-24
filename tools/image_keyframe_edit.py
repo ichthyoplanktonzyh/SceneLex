@@ -252,6 +252,145 @@ def compile_edit_instruction(
     return "\n\n".join(sections)
 
 
+# ---------------------------------------------------------- Prompt Compiler LLM 智能编译步
+
+_PROMPT_COMPILER_SYSTEM_PROMPT = """You are a Visual Prompt Compiler for Image-to-Image / Inpainting Edit Models (specifically Wan 2.7 Image Pro).
+Your job is to translate complex human/educational semantic requirements into an extremely concise, physically precise, and conflict-free visual edit prompt, along with a Bounding Box (BBox) for local inpainting if applicable.
+
+RULES:
+1. Strip ALL human psychological/educational explanation (e.g. "why", "reluctant", "semantic purpose", "must_avoid").
+2. Focus ONLY on physical geometry, object states, positions, angles, and facial micro-expressions.
+3. CONFLICT ELIMINATION (CRITICAL): If an object is moved or grabbed (e.g., picking up a fork), explicitly instruct the model to REMOVE or ERASE the object from its original position on the table/surface to avoid ghosting/duplication.
+4. BBOX ESTIMATION: Estimate a normalized 4-integer bounding box `[x1, y1, x2, y2]` (scale 0-1000) for the local edit region if only a specific area changes (e.g. hand/fork movement). If full frame changes, return null for bbox.
+5. Keep the compiled prompt under 100 words.
+6. Output JSON format strictly as:
+{
+  "compiled_prompt": "PRESERVE: ... CHANGE: ...",
+  "target_bbox": [x1, y1, x2, y2]  // or null
+}"""
+
+_VLM_REVIEWER_SYSTEM_PROMPT = """You are an automated VLM (Vision Language Model) Quality Evaluator for Keyframe Generation in an AI Educational Video Pipeline.
+Analyze the provided keyframe image against the target requirements.
+
+Target Visual State: {visual_state}
+Must Show: {must_show}
+Must Avoid: {must_avoid}
+
+Evaluate strictly for:
+1. semantic_readability (pass/weak/fail)
+2. state_fidelity (pass/weak/fail)
+3. character_consistency (pass/weak/fail)
+4. prop_continuity (pass/weak/fail)
+5. composition (pass/weak/fail)
+
+Check specifically for ghosting artifacts (e.g. duplicated props on table), noise feedback, posture mismatch, or unwanted eager facial expressions.
+
+Output JSON format strictly as:
+{
+  "semantic_readability": "pass|weak|fail",
+  "state_fidelity": "pass|weak|fail",
+  "character_consistency": "pass|weak|fail",
+  "prop_continuity": "pass|weak|fail",
+  "composition": "pass|weak|fail",
+  "overall_verdict": "pass|revision_required",
+  "notes": ["issue 1...", "issue 2..."]
+}"""
+
+
+def compile_edit_instruction_llm(
+    keyframe: dict,
+    shot: dict,
+    shot_plan: dict,
+    *,
+    identity_ref: Path | None,
+    base_image: Path,
+) -> tuple[str, list[int] | None]:
+    """Smart Prompt Compiler:
+    Translates human/educational semantics into focused physical edit instructions and estimated BBox for Wan 2.7.
+    Returns (instruction_text, target_bbox_list_or_none).
+    """
+    raw_instruction = compile_edit_instruction(
+        keyframe,
+        shot,
+        shot_plan,
+        identity_ref=identity_ref,
+        base_image=base_image,
+    )
+
+    import llm
+    try:
+        config = llm.LLMConfig.from_env()
+    except Exception as exc:
+        raise RuntimeError(
+            "Prompt Compiler 必须配置 LLM (请设置 SCENELEX_LLM_PROTOCOL 及相关环境变量)。"
+            "没有 LLM 进行物理语义编译，机械拼接的提示词无法生成合格的关键帧。"
+        ) from exc
+
+    prompt_input = (
+        f"KEYFRAME VISUAL STATE TO ACHIEVE:\n{keyframe.get('visual_state', '')}\n\n"
+        f"MUST SHOW:\n{', '.join(keyframe.get('must_show', []))}\n\n"
+        f"MUST AVOID (What to eliminate physically):\n{', '.join(keyframe.get('must_avoid', []))}\n\n"
+        f"RAW CONTEXT:\n{raw_instruction}\n\n"
+        "Please compile this into JSON format containing compiled_prompt and target_bbox."
+    )
+
+    try:
+        res_text = llm.generate(
+            prompt_input,
+            system_prompt=_PROMPT_COMPILER_SYSTEM_PROMPT,
+        )
+        import json
+        data = {}
+        cleaned_text = res_text.strip()
+        if cleaned_text.startswith("```"):
+            cleaned_text = cleaned_text.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+        data = json.loads(cleaned_text)
+        compiled_prompt = data.get("compiled_prompt", "").strip()
+        bbox = data.get("target_bbox")
+        if compiled_prompt and len(compiled_prompt) > 20:
+            header = "# [LLM Prompt Compiler & BBox Active]\n=== EDIT INSTRUCTION ===\n"
+            return f"{header}{compiled_prompt}", bbox
+        raise RuntimeError("LLM Prompt Compiler 返回的 compiled_prompt 内容过短")
+    except Exception as exc:
+        raise RuntimeError(
+            f"Prompt Compiler LLM 编译失败: {exc}。关键帧提示词必须由 LLM 生成。"
+        ) from exc
+
+
+def review_keyframe_vlm(
+    image_path: Path,
+    keyframe: dict,
+) -> dict:
+    """Automated VLM Vision Gate Reviewer:
+    Evaluates generated keyframe image quality and semantic compliance.
+    """
+    import llm
+    vlm_prompt = _VLM_REVIEWER_SYSTEM_PROMPT.format(
+        visual_state=keyframe.get("visual_state", ""),
+        must_show=", ".join(keyframe.get("must_show", [])),
+        must_avoid=", ".join(keyframe.get("must_avoid", [])),
+    )
+    # We construct prompt for LLM Vision call
+    prompt_input = f"Evaluate keyframe image file: {image_path.name}"
+    try:
+        res = llm.generate(prompt_input, system_prompt=vlm_prompt)
+        import json
+        cleaned = res.strip()
+        if cleaned.startswith("```"):
+            cleaned = cleaned.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+        return json.loads(cleaned)
+    except Exception as exc:
+        print(f"⚠ VLM Reviewer call skipped/failed: {exc}", file=sys.stderr)
+        return {
+            "semantic_readability": "pending",
+            "state_fidelity": "pending",
+            "character_consistency": "pending",
+            "prop_continuity": "pending",
+            "composition": "pending",
+            "notes": [f"VLM review error: {exc}"],
+        }
+
+
 def prompt_file_text(keyframe_id: str, attempt_id: str, instruction: str) -> str:
     """写进 prompts/*.txt 的内容 —— 提示词是可审计产物。"""
     return (

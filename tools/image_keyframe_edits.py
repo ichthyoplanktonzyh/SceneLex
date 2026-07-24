@@ -412,10 +412,10 @@ def cmd_generate(args: argparse.Namespace) -> None:
             )
             continue
 
-        # 编译编辑指令
+        # 编译编辑指令（使用 Prompt Compiler LLM 自动预测 Prompt + BBox）
         attempt_num = len(existing_attempts) + 1
         attempt_id = f"attempt-{attempt_num:02d}"
-        instruction = edit_lib.compile_edit_instruction(
+        instruction, compiled_bbox = edit_lib.compile_edit_instruction_llm(
             kf, shot, shot_plan,
             identity_ref=identity_ref_path,
             base_image=base_image_path,
@@ -434,18 +434,23 @@ def cmd_generate(args: argparse.Namespace) -> None:
         else:
             input_images = [base_image_path]
 
-        # bbox（可选）
+        # bbox（手动 CLI 参数优先，其次使用 Prompt Compiler 预测的 target_bbox）
         bbox_list_arg = None
         if args.bbox:
-            # 格式: "x1,y1,x2,y2" 或 "x1,y1,x2,y2;x1,y1,x2,y2"
             try:
                 bbox_list_arg = _parse_bbox(args.bbox, len(input_images))
             except ValueError as exc:
                 sys.exit(f"--bbox 格式错误: {exc}")
+        elif compiled_bbox:
+            # 单张编辑图绑定 bbox，如果涉及参考图，参考图默认为全图 (None)
+            bboxes_for_imgs = [None] * (len(input_images) - 1) + [compiled_bbox]
+            bbox_list_arg = bboxes_for_imgs
 
         print(f"… 生成 {kf_id} (attempt {attempt_num})", flush=True)
         print(f"  基础图: {draft._rel(base_image_path)}")
         print(f"  输入图片: {len(input_images)} 张")
+        if bbox_list_arg:
+            print(f"  BBox 局域重绘: {bbox_list_arg}")
 
         total_api_calls += 1
         out_img_filename = f"{kf_id}-{attempt_id}.png"
@@ -491,6 +496,12 @@ def cmd_generate(args: argparse.Namespace) -> None:
         attempt_record["image"] = f"images/{out_img_filename}"
         attempt_record["request_id"] = trace.get("request_id")
         attempt_record["status"] = "generated"
+
+        # 触发 VLM 多模态自动视觉评估 Gate
+        vlm_review = edit_lib.review_keyframe_vlm(out_img_path, kf)
+        attempt_record["review"] = vlm_review
+        print(f"  [VLM Auto Gate]: {vlm_review.get('overall_verdict', 'pending')}")
+
         target.setdefault("attempts", []).append(attempt_record)
 
         print(f"  ✓ {draft._rel(out_img_path)} ({len(img_bytes) // 1024} KB)")
