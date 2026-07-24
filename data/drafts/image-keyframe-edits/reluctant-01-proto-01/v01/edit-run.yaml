@@ -1,0 +1,126 @@
+schema_version: '1.0'
+version: 1
+status: draft
+scene_ref: reluctant-01-proto-01
+shot_plan_ref:
+  scene_id: reluctant-01-proto-01
+  version: 5
+keyframe_plan_ref:
+  scene_id: reluctant-01-proto-01
+  version: 2
+source_image_keyframe_ref:
+  scene_id: reluctant-01-proto-01
+  version: 1
+api_gate: pass
+semantic_gate: revision_required
+generation:
+  protocol: aliyun-token-plan
+  endpoint_kind: token-plan-beijing
+  primary_model: wan2.7-image-pro
+  fallback_model: wan2.7-image
+  requested_size: 1152*640
+  watermark: false
+  generated_at: '2026-07-24T05:10:07+00:00'
+identity_reference:
+  image: data/drafts/image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-02.png
+  rationale: 'shot-02-kf-02: 孩子脸部最清楚、服装最完整、没有严重畸形、姿态最接近预期。作为整轮实验统一的身份参考图。scope=experiment-local，不是正式 Character
+    Asset。'
+  scope: experiment-local
+targets:
+- keyframe_id: shot-02-kf-03
+  source_image: images/shot-02-kf-03.png
+  identity_reference: null
+  attempts:
+  - attempt: attempt-01
+    model: wan2.7-image-pro
+    prompt: prompts/shot-02-kf-03-attempt-01.txt
+    image: images/shot-02-kf-03-attempt-01.png
+    request_id: dcb5c13d-e0b9-4741-b51b-fcf5ce4df02e
+    seed: 704251
+    bbox_list: null
+    status: generated
+    review:
+      semantic_readability: pass
+      state_fidelity: pass
+      character_consistency: pass
+      prop_continuity: pass
+      composition: pass
+      notes:
+      - Very clean generation. Successfully separates the reaching hand from the reclined torso, matching
+        the reluctant semantic purpose.
+  selected_attempt: attempt-01
+- keyframe_id: shot-02-kf-04
+  source_image: images/shot-02-kf-04.png
+  identity_reference: null
+  attempts:
+  - attempt: attempt-01
+    model: wan2.7-image-pro
+    prompt: prompts/shot-02-kf-04-attempt-01.txt
+    image: images/shot-02-kf-04-attempt-01.png
+    request_id: 91a33175-f447-47da-94f4-f7a4f4f8a7a9
+    seed: 704251
+    bbox_list: null
+    status: generated
+    review:
+      semantic_readability: weak
+      state_fidelity: pass
+      character_consistency: weak
+      prop_continuity: fail
+      composition: pass
+      notes:
+      - Suffers from high-frequency color noise/grain.
+      - 'Prop duplication artifact: boy holds the fork in his hand, but the original fork is still lying
+        on the table.'
+  selected_attempt: attempt-01
+- keyframe_id: shot-03-kf-01
+  source_image: images/shot-03-kf-01.png
+  identity_reference: null
+  attempts:
+  - attempt: attempt-01
+    model: wan2.7-image-pro
+    prompt: prompts/shot-03-kf-01-attempt-01.txt
+    image: images/shot-03-kf-01-attempt-01.png
+    request_id: d5c0eb59-3575-46f7-acb9-8ba0bfcf92f5
+    seed: 704251
+    bbox_list: null
+    status: generated
+    review:
+      semantic_readability: fail
+      state_fidelity: weak
+      character_consistency: fail
+      prop_continuity: fail
+      composition: weak
+      notes:
+      - Severe visual corruption (color noise feedback loop).
+      - Unusable image due VAE feedback degradation from the already noisy base image of the previous
+        frame.
+  selected_attempt: attempt-01
+- keyframe_id: shot-03-kf-03
+  source_image: images/shot-03-kf-03.png
+  identity_reference: null
+  attempts:
+  - attempt: attempt-01
+    model: wan2.7-image-pro
+    prompt: prompts/shot-03-kf-03-attempt-01.txt
+    image: images/shot-03-kf-03-attempt-01.png
+    request_id: 1abdb258-fc58-4da2-87fa-02fdc10b1ec7
+    seed: 704251
+    bbox_list: null
+    status: generated
+    review:
+      semantic_readability: pass
+      state_fidelity: fail
+      character_consistency: pass
+      prop_continuity: fail
+      composition: pass
+      notes:
+      - Clean generation, but failed state fidelity.
+      - Depicts the speared broccoli at the mouth (the climax state) instead of the fork put down on the
+        plate (the final state).
+  selected_attempt: attempt-01
+smoke_test:
+  status: pass
+  request_id: 7da17ef7-e95a-498a-bcb5-b8d9fe592f79
+  model: wan2.7-image-pro
+  actual_size: 1152*640
+  image: images/smoke-attempt-01.png

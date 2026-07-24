@@ -1,0 +1,39 @@
+# shot-03-kf-03 / attempt-01
+# 由 Keyframe Plan 与 Shot Plan 机械编译; 不要手工改这里, 改上游。
+# Wan 2.7 不支持独立 negative_prompt: must_avoid 在 FORBIDDEN OUTCOMES 节以
+# 自然语言形式出现，并作为人工审核清单。
+
+=== EDIT INSTRUCTION ===
+IMAGE ROLES
+
+Image 1 is an experiment-local identity reference for the child. Image 2 is the base frame to edit. The output must preserve the composition and aspect ratio of Image 2.
+
+PRESERVE EXACTLY
+
+Preserve the framing: medium_close, three_quarter angle. Child's face, right hand and the fork, framed so that the halt at the mouth and the reclined torso are visible in the same image. Child at frame right in the same seated position and screen direction as shot-02, plate visible in the lower part of the frame, mother partially visible at the left edge. Camera static.
+
+CAST — mother (counterpart) — Adult female, seated at the left side of the table throughout, speaks to the child and never touches him, the fork or the plate. child (focal_character) — School-age child, seated at the right side of the table throughout, right-handed; starts with both hands flat on the table surface.
+
+LOCATION — A family dining table with at least two chairs, a plate with broccoli and a fork placed in front of the child. The child keeps the right side of the frame and the mother the left in every shot.
+
+PROPS — plate — White plate containing several pieces of cooked broccoli, placed in front of the child, its position on the table unchanged from first shot to last. fork — Standard dinner fork, starting beside the plate within the child's reach; once picked up it stays in the child's right hand until it is put back down on the plate.
+
+CHANGE ONLY
+
+The bite has been taken. The fork is back down on the plate and the child's right hand has returned toward the table. His mouth is closed and his expression is flat, jaw at rest or on a slow chew. He is still sitting back in the chair, gaze low or to the side — he has not leaned in toward the plate and is not reaching for another piece.
+
+TARGET FROZEN STATE
+
+Fork put down on the plate — the action was completed. Body still reclined, matching the withdrawal established in shot-02. Flat mouth, gaze low or averted. No reach for a second piece.
+
+MUST BE CLEARLY VISIBLE
+
+Fork put down on the plate — the action was completed. Body still reclined, matching the withdrawal established in shot-02. Flat mouth, gaze low or averted. No reach for a second piece.
+
+FORBIDDEN OUTCOMES
+
+Smiling, nodding, or leaning forward for another piece. Spitting the food out or a face that reads as revulsion at the taste. Pushing the plate away.
+
+NO TEACHING PACKAGING
+
+The image contains no words, letters, subtitles, captions, definitions, vocabulary labels, narration text, speech bubbles or interface overlays. Do not show the word 'reluctant' or any other vocabulary label in the image.
