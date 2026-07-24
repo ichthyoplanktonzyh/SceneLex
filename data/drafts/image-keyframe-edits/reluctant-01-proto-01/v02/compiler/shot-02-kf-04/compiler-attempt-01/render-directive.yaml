@@ -1,0 +1,88 @@
+schema_version: '1.0'
+scene_ref: reluctant-01-proto-01
+keyframe_id: shot-02-kf-04
+compiler_attempt: compiler-attempt-01
+edit_mode: local_edit
+image_roles:
+- image_id: image-01
+  role: identity_reference
+- image_id: image-02
+  role: base_image
+preserve:
+  identity:
+  - preserve character features and clothes
+  composition:
+  - preserve camera angle and background lighting
+  body_state:
+  - preserve torso posture
+remove_from_previous_state:
+- remove previous fork position on table
+change:
+- subject: arm_and_fork
+  operation: update
+  target_state: The child's right hand has closed around the fork and lifted it just
+    clear of the table, holding it near the rim of the plate with the tines not yet
+    in any broccoli. His torso is still leaned back against the chair, his left hand
+    is still on the table, his eyes are still off the plate and his mouth is closed
+    and flat. The mother is unchanged at the left edge, touching nothing.
+must_be_visible:
+- source_id: show-01
+  physical_requirement: The fork in the child's own right hand, lifted clear of the
+    table near the rim of the plate.
+- source_id: show-02
+  physical_requirement: Tines not yet in the food — the action is started, not completed.
+- source_id: show-03
+  physical_requirement: Torso still leaned back at the angle established earlier.
+- source_id: show-04
+  physical_requirement: No one else's hand on the fork, on the plate or on the child.
+forbidden_outcomes:
+- source_id: avoid-01
+  physical_requirement: The torso coming forward with the arm, which would end the
+    withdrawal here.
+- source_id: avoid-02
+  physical_requirement: The gaze turning eager or the mouth shifting into a smile.
+- source_id: avoid-03
+  physical_requirement: The fork already loaded with broccoli — that belongs to the
+    next shot.
+edit_regions:
+- semantic_region: arm and prop action area
+  image_id: image-02
+  bbox_normalized:
+  - 250
+  - 300
+  - 750
+  - 850
+  confidence: 0.95
+coverage:
+  must_show_ids:
+  - show-01
+  - show-02
+  - show-03
+  - show-04
+  must_avoid_ids:
+  - avoid-01
+  - avoid-02
+  - avoid-03
+compiler:
+  protocol: openai-chat
+  model: gemini-flash-latest
+  request_id: rule-compiler-fallback
+  generated_at: null
+wan_prompt: "=== IMAGE ROLES ===\n- image-01: identity_reference\n- image-02: base_image\n\
+  \n=== PRESERVE ===\nIdentity:\n  - preserve character features and clothes\nComposition:\n\
+  \  - preserve camera angle and background lighting\nBody State:\n  - preserve torso\
+  \ posture\n\n=== REMOVE FROM PREVIOUS STATE ===\n- remove previous fork position\
+  \ on table\n\n=== CHANGE ===\n- arm_and_fork: update -> The child's right hand has\
+  \ closed around the fork and lifted it just clear of the table, holding it near\
+  \ the rim of the plate with the tines not yet in any broccoli. His torso is still\
+  \ leaned back against the chair, his left hand is still on the table, his eyes are\
+  \ still off the plate and his mouth is closed and flat. The mother is unchanged\
+  \ at the left edge, touching nothing.\n\n=== MUST BE VISIBLE ===\n- [show-01]: The\
+  \ fork in the child's own right hand, lifted clear of the table near the rim of\
+  \ the plate.\n- [show-02]: Tines not yet in the food — the action is started, not\
+  \ completed.\n- [show-03]: Torso still leaned back at the angle established earlier.\n\
+  - [show-04]: No one else's hand on the fork, on the plate or on the child.\n\n===\
+  \ FORBIDDEN OUTCOMES ===\n- [avoid-01]: The torso coming forward with the arm, which\
+  \ would end the withdrawal here.\n- [avoid-02]: The gaze turning eager or the mouth\
+  \ shifting into a smile.\n- [avoid-03]: The fork already loaded with broccoli —\
+  \ that belongs to the next shot."

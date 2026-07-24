@@ -1,0 +1,48 @@
+schema_version: '1.1'
+version: 2
+status: draft
+scene_ref: reluctant-01-proto-01
+shot_plan_ref:
+  scene_id: reluctant-01-proto-01
+  version: 5
+keyframe_plan_ref:
+  scene_id: reluctant-01-proto-01
+  version: 2
+source_image_keyframe_ref:
+  scene_id: reluctant-01-proto-01
+  version: 1
+api_gate: pending
+semantic_gate: pending
+generation:
+  protocol: aliyun-token-plan
+  endpoint_kind: token-plan-beijing
+  primary_model: wan2.7-image-pro
+  fallback_model: wan2.7-image
+  requested_size: 1152*640
+  watermark: false
+  generated_at: null
+identity_reference:
+  image: data/drafts/image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-02.png
+  rationale: Single identity anchor image (shot-02-kf-02) for reluctant child.
+  scope: experiment-local
+targets:
+- keyframe_id: shot-02-kf-03
+  source_image: data/drafts/image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-03.png
+  identity_reference: data/drafts/image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-02.png
+  attempts: []
+  selected_attempt: null
+- keyframe_id: shot-02-kf-04
+  source_image: data/drafts/image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-04.png
+  identity_reference: data/drafts/image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-02.png
+  attempts: []
+  selected_attempt: null
+- keyframe_id: shot-03-kf-01
+  source_image: data/drafts/image-keyframes/reluctant-01-proto-01/v01/images/shot-03-kf-01.png
+  identity_reference: data/drafts/image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-02.png
+  attempts: []
+  selected_attempt: null
+- keyframe_id: shot-03-kf-03
+  source_image: data/drafts/image-keyframes/reluctant-01-proto-01/v01/images/shot-03-kf-03.png
+  identity_reference: data/drafts/image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-02.png
+  attempts: []
+  selected_attempt: null

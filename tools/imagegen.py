@@ -419,13 +419,19 @@ def edit(
 
     # 构造 content 列表：图片按输入顺序 → text 最后一项
     content: list[dict[str, Any]] = []
-    for idx, img_path in enumerate(input_images):
+    for img_path in input_images:
         data_uri = _encode_image(img_path)
-        item: dict[str, Any] = {"image": data_uri}
-        if bbox_list is not None and bbox_list[idx]:
-            item["bbox_list"] = bbox_list[idx]
-        content.append(item)
+        content.append({"image": data_uri})
     content.append({"text": instruction})
+
+    parameters: dict[str, Any] = {
+        "size": actual_size,
+        "n": 1,
+        "watermark": False,
+        "seed": seed,
+    }
+    if bbox_list is not None:
+        parameters["bbox_list"] = bbox_list
 
     body = {
         "model": actual_model,
@@ -437,13 +443,9 @@ def edit(
                 }
             ]
         },
-        "parameters": {
-            "size": actual_size,
-            "n": 1,
-            "watermark": False,
-            "seed": seed,
-        },
+        "parameters": parameters,
     }
+
     # 严格不写入：negative_prompt, prompt_extend, thinking_mode
 
     headers = {

@@ -1,0 +1,61 @@
+# Render Directive: data/drafts/image-keyframe-edits/reluctant-01-proto-01/v02/compiler/shot-02-kf-04/compiler-attempt-01/render-directive.yaml
+# Compiler request ID: rule-compiler-fallback
+
+=== IMAGE ROLES ===
+- image-01: identity_reference
+- image-02: base_image
+
+=== PRESERVE ===
+Identity:
+  - preserve character features and clothes
+Composition:
+  - preserve camera angle and background lighting
+Body State:
+  - preserve torso posture
+
+=== REMOVE FROM PREVIOUS STATE ===
+- remove previous fork position on table
+
+=== CHANGE ===
+- arm_and_fork: update -> The child's right hand has closed around the fork and lifted it just clear of the table, holding it near the rim of the plate with the tines not yet in any broccoli. His torso is still leaned back against the chair, his left hand is still on the table, his eyes are still off the plate and his mouth is closed and flat. The mother is unchanged at the left edge, touching nothing.
+
+=== MUST BE VISIBLE ===
+- [show-01]: The fork in the child's own right hand, lifted clear of the table near the rim of the plate.
+- [show-02]: Tines not yet in the food — the action is started, not completed.
+- [show-03]: Torso still leaned back at the angle established earlier.
+- [show-04]: No one else's hand on the fork, on the plate or on the child.
+
+=== FORBIDDEN OUTCOMES ===
+- [avoid-01]: The torso coming forward with the arm, which would end the withdrawal here.
+- [avoid-02]: The gaze turning eager or the mouth shifting into a smile.
+- [avoid-03]: The fork already loaded with broccoli — that belongs to the next shot.
+
+=== COMPILER SUMMARY PROMPT ===
+=== IMAGE ROLES ===
+- image-01: identity_reference
+- image-02: base_image
+
+=== PRESERVE ===
+Identity:
+  - preserve character features and clothes
+Composition:
+  - preserve camera angle and background lighting
+Body State:
+  - preserve torso posture
+
+=== REMOVE FROM PREVIOUS STATE ===
+- remove previous fork position on table
+
+=== CHANGE ===
+- arm_and_fork: update -> The child's right hand has closed around the fork and lifted it just clear of the table, holding it near the rim of the plate with the tines not yet in any broccoli. His torso is still leaned back against the chair, his left hand is still on the table, his eyes are still off the plate and his mouth is closed and flat. The mother is unchanged at the left edge, touching nothing.
+
+=== MUST BE VISIBLE ===
+- [show-01]: The fork in the child's own right hand, lifted clear of the table near the rim of the plate.
+- [show-02]: Tines not yet in the food — the action is started, not completed.
+- [show-03]: Torso still leaned back at the angle established earlier.
+- [show-04]: No one else's hand on the fork, on the plate or on the child.
+
+=== FORBIDDEN OUTCOMES ===
+- [avoid-01]: The torso coming forward with the arm, which would end the withdrawal here.
+- [avoid-02]: The gaze turning eager or the mouth shifting into a smile.
+- [avoid-03]: The fork already loaded with broccoli — that belongs to the next shot.

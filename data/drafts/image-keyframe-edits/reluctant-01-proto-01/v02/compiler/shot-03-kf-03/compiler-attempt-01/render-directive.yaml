@@ -1,0 +1,85 @@
+schema_version: '1.0'
+scene_ref: reluctant-01-proto-01
+keyframe_id: shot-03-kf-03
+compiler_attempt: compiler-attempt-01
+edit_mode: local_edit
+image_roles:
+- image_id: image-01
+  role: identity_reference
+- image_id: image-02
+  role: base_image
+preserve:
+  identity:
+  - preserve character features and clothes
+  composition:
+  - preserve camera angle and background lighting
+  body_state:
+  - preserve torso posture
+remove_from_previous_state:
+- remove previous fork position on table
+change:
+- subject: arm_and_fork
+  operation: update
+  target_state: The bite has been taken. The fork is back down on the plate and the
+    child's right hand has returned toward the table. His mouth is closed and his
+    expression is flat, jaw at rest or on a slow chew. He is still sitting back in
+    the chair, gaze low or to the side — he has not leaned in toward the plate and
+    is not reaching for another piece.
+must_be_visible:
+- source_id: show-01
+  physical_requirement: Fork put down on the plate — the action was completed.
+- source_id: show-02
+  physical_requirement: Body still reclined, matching the withdrawal established in
+    shot-02.
+- source_id: show-03
+  physical_requirement: Flat mouth, gaze low or averted.
+- source_id: show-04
+  physical_requirement: No reach for a second piece.
+forbidden_outcomes:
+- source_id: avoid-01
+  physical_requirement: Smiling, nodding, or leaning forward for another piece.
+- source_id: avoid-02
+  physical_requirement: Spitting the food out or a face that reads as revulsion at
+    the taste.
+- source_id: avoid-03
+  physical_requirement: Pushing the plate away.
+edit_regions:
+- semantic_region: arm and prop action area
+  image_id: image-02
+  bbox_normalized:
+  - 250
+  - 300
+  - 750
+  - 850
+  confidence: 0.95
+coverage:
+  must_show_ids:
+  - show-01
+  - show-02
+  - show-03
+  - show-04
+  must_avoid_ids:
+  - avoid-01
+  - avoid-02
+  - avoid-03
+compiler:
+  protocol: openai-chat
+  model: gemini-flash-latest
+  request_id: rule-compiler-fallback
+  generated_at: null
+wan_prompt: "=== IMAGE ROLES ===\n- image-01: identity_reference\n- image-02: base_image\n\
+  \n=== PRESERVE ===\nIdentity:\n  - preserve character features and clothes\nComposition:\n\
+  \  - preserve camera angle and background lighting\nBody State:\n  - preserve torso\
+  \ posture\n\n=== REMOVE FROM PREVIOUS STATE ===\n- remove previous fork position\
+  \ on table\n\n=== CHANGE ===\n- arm_and_fork: update -> The bite has been taken.\
+  \ The fork is back down on the plate and the child's right hand has returned toward\
+  \ the table. His mouth is closed and his expression is flat, jaw at rest or on a\
+  \ slow chew. He is still sitting back in the chair, gaze low or to the side — he\
+  \ has not leaned in toward the plate and is not reaching for another piece.\n\n\
+  === MUST BE VISIBLE ===\n- [show-01]: Fork put down on the plate — the action was\
+  \ completed.\n- [show-02]: Body still reclined, matching the withdrawal established\
+  \ in shot-02.\n- [show-03]: Flat mouth, gaze low or averted.\n- [show-04]: No reach\
+  \ for a second piece.\n\n=== FORBIDDEN OUTCOMES ===\n- [avoid-01]: Smiling, nodding,\
+  \ or leaning forward for another piece.\n- [avoid-02]: Spitting the food out or\
+  \ a face that reads as revulsion at the taste.\n- [avoid-03]: Pushing the plate\
+  \ away."

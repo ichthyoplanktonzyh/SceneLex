@@ -1,0 +1,89 @@
+schema_version: '1.0'
+scene_ref: reluctant-01-proto-01
+keyframe_id: shot-03-kf-01
+compiler_attempt: compiler-attempt-01
+edit_mode: local_edit
+image_roles:
+- image_id: image-01
+  role: identity_reference
+- image_id: image-02
+  role: base_image
+preserve:
+  identity:
+  - preserve character features and clothes
+  composition:
+  - preserve camera angle and background lighting
+  body_state:
+  - preserve torso posture
+remove_from_previous_state:
+- remove previous fork position on table
+change:
+- subject: arm_and_fork
+  operation: update
+  target_state: The same child at frame right, framed slightly tighter so that the
+    fork, the plate and the mouth are all readable at once. He is in exactly the state
+    that ended shot-02 — torso leaned back against the chair, right hand gripping
+    the fork just clear of the table near the rim of the plate, tines not yet in the
+    food, left hand on the table, eyes off the plate. The mother is still at the left
+    edge, touching nothing.
+must_be_visible:
+- source_id: show-01
+  physical_requirement: Same right hand on the fork, in the same position relative
+    to the plate as the end of shot-02.
+- source_id: show-02
+  physical_requirement: Same backward lean of the torso and the same screen direction.
+- source_id: show-03
+  physical_requirement: Plate and remaining broccoli in their unchanged positions.
+- source_id: show-04
+  physical_requirement: Gaze still off the plate and not eager.
+forbidden_outcomes:
+- source_id: avoid-01
+  physical_requirement: The fork jumping to the other hand or to a different position
+    on the table.
+- source_id: avoid-02
+  physical_requirement: The torso resetting to upright at the cut.
+- source_id: avoid-03
+  physical_requirement: The mother having moved, or now touching the child, the fork
+    or the plate.
+edit_regions:
+- semantic_region: arm and prop action area
+  image_id: image-02
+  bbox_normalized:
+  - 250
+  - 300
+  - 750
+  - 850
+  confidence: 0.95
+coverage:
+  must_show_ids:
+  - show-01
+  - show-02
+  - show-03
+  - show-04
+  must_avoid_ids:
+  - avoid-01
+  - avoid-02
+  - avoid-03
+compiler:
+  protocol: openai-chat
+  model: gemini-flash-latest
+  request_id: rule-compiler-fallback
+  generated_at: null
+wan_prompt: "=== IMAGE ROLES ===\n- image-01: identity_reference\n- image-02: base_image\n\
+  \n=== PRESERVE ===\nIdentity:\n  - preserve character features and clothes\nComposition:\n\
+  \  - preserve camera angle and background lighting\nBody State:\n  - preserve torso\
+  \ posture\n\n=== REMOVE FROM PREVIOUS STATE ===\n- remove previous fork position\
+  \ on table\n\n=== CHANGE ===\n- arm_and_fork: update -> The same child at frame\
+  \ right, framed slightly tighter so that the fork, the plate and the mouth are all\
+  \ readable at once. He is in exactly the state that ended shot-02 — torso leaned\
+  \ back against the chair, right hand gripping the fork just clear of the table near\
+  \ the rim of the plate, tines not yet in the food, left hand on the table, eyes\
+  \ off the plate. The mother is still at the left edge, touching nothing.\n\n===\
+  \ MUST BE VISIBLE ===\n- [show-01]: Same right hand on the fork, in the same position\
+  \ relative to the plate as the end of shot-02.\n- [show-02]: Same backward lean\
+  \ of the torso and the same screen direction.\n- [show-03]: Plate and remaining\
+  \ broccoli in their unchanged positions.\n- [show-04]: Gaze still off the plate\
+  \ and not eager.\n\n=== FORBIDDEN OUTCOMES ===\n- [avoid-01]: The fork jumping to\
+  \ the other hand or to a different position on the table.\n- [avoid-02]: The torso\
+  \ resetting to upright at the cut.\n- [avoid-03]: The mother having moved, or now\
+  \ touching the child, the fork or the plate."

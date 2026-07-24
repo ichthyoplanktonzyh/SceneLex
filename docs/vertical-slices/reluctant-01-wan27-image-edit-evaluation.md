@@ -1,6 +1,10 @@
 # reluctant-01 · 关键帧图像编辑生成缺陷诊断与生成链路升级报告
 
+> [!WARNING]
+> 本报告记录的是机械提示词 v01 试跑阶段的缺陷诊断历史。报告第 3 节中提出的 Visual Compiler、BBox 局域渲染及 VLM Pipeline 在当时仅为初步设计构想，尚未形成可运行、可验证的代码落地。正式的 LLM Visual Compiler 与多模态审核链路实现在 v02 阶段完成，详见 [reluctant-01-visual-compiler-v02.md](file:///Users/shadow/SceneLex/docs/vertical-slices/reluctant-01-visual-compiler-v02.md)。
+
 ## 摘要与背景
+
 
 在 SceneLex 的视频教学资源生成管线中，针对 `reluctant-01` 场景（义项: 不情愿地配合）进行了基于 **Wan 2.7 Image Pro (`wan2.7-image-pro`)** 的关键帧编辑实验（v01 试跑）。实验目标是验证生图模型能否准确执行四个冻结视觉状态，特别是呈现“手在配合但躯干后靠”的不情愿核心语义判据。
 

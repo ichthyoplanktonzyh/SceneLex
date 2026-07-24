@@ -1,0 +1,59 @@
+# Render Directive: data/drafts/image-keyframe-edits/reluctant-01-proto-01/v02/compiler/shot-02-kf-03/compiler-attempt-01/render-directive.yaml
+# Compiler request ID: rule-compiler-fallback
+
+=== IMAGE ROLES ===
+- image-01: identity_reference
+- image-02: base_image
+
+=== PRESERVE ===
+Identity:
+  - preserve character features and clothes
+Composition:
+  - preserve camera angle and background lighting
+Body State:
+  - preserve torso posture
+
+=== REMOVE FROM PREVIOUS STATE ===
+- remove previous fork position on table
+
+=== CHANGE ===
+- arm_and_fork: update -> The reach is halted mid-way. The child's right arm is extended roughly two thirds of the distance to the fork, hand open, hovering above the table without touching it. His torso has not come forward with the arm — he is still leaned back — and his gaze is still off the plate. The arm is the only thing that has moved.
+
+=== MUST BE VISIBLE ===
+- [show-01]: Hand stopped short of the fork and not touching it.
+- [show-02]: Torso still back — the body has not committed to the action.
+- [show-03]: Gaze still not on the plate.
+
+=== FORBIDDEN OUTCOMES ===
+- [avoid-01]: The hand reaching for anything other than the fork.
+- [avoid-02]: The hand recoiling backwards, which would read as refuse.
+- [avoid-03]: A fast, confident reach with the body following it.
+
+=== COMPILER SUMMARY PROMPT ===
+=== IMAGE ROLES ===
+- image-01: identity_reference
+- image-02: base_image
+
+=== PRESERVE ===
+Identity:
+  - preserve character features and clothes
+Composition:
+  - preserve camera angle and background lighting
+Body State:
+  - preserve torso posture
+
+=== REMOVE FROM PREVIOUS STATE ===
+- remove previous fork position on table
+
+=== CHANGE ===
+- arm_and_fork: update -> The reach is halted mid-way. The child's right arm is extended roughly two thirds of the distance to the fork, hand open, hovering above the table without touching it. His torso has not come forward with the arm — he is still leaned back — and his gaze is still off the plate. The arm is the only thing that has moved.
+
+=== MUST BE VISIBLE ===
+- [show-01]: Hand stopped short of the fork and not touching it.
+- [show-02]: Torso still back — the body has not committed to the action.
+- [show-03]: Gaze still not on the plate.
+
+=== FORBIDDEN OUTCOMES ===
+- [avoid-01]: The hand reaching for anything other than the fork.
+- [avoid-02]: The hand recoiling backwards, which would read as refuse.
+- [avoid-03]: A fast, confident reach with the body following it.
