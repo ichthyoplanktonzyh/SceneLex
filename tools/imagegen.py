@@ -48,6 +48,8 @@ from typing import Any
 
 import requests
 
+import subprocess
+
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_WORKFLOW = ROOT / "tools" / "workflows" / "comfyui-text2image.json"
 
@@ -350,15 +352,24 @@ def _should_retry(status_code: int) -> bool:
 
 def _download_image(url: str, timeout: int) -> bytes:
     """从临时 URL 下载图片字节。URL 不进入 trace。"""
-    resp = requests.get(url, timeout=timeout)
-    if resp.status_code != 200:
-        raise ImageGenError(
-            f"下载生成图片失败 HTTP {resp.status_code}"
+    try:
+        resp = requests.get(url, timeout=timeout)
+        if resp.status_code == 200 and resp.content:
+            return resp.content
+    except Exception:
+        pass
+    try:
+        proc = subprocess.run(
+            ["curl", "-sS", "--doh-url", "https://dns.alidns.com/dns-query", url],
+            capture_output=True,
+            timeout=timeout,
+            check=True,
         )
-    data = resp.content
-    if not data:
-        raise ImageGenError("下载的图片内容为空")
-    return data
+        if proc.stdout:
+            return proc.stdout
+    except Exception as exc:
+        raise ImageGenError(f"下载生成图片失败: {exc}") from exc
+    raise ImageGenError("下载的图片内容为空")
 
 
 def edit(
@@ -470,26 +481,40 @@ def edit(
                 json=body,
                 timeout=timeout,
             )
-        except requests.ConnectionError as exc:
+            last_status = resp.status_code
+            try:
+                resp_body = resp.json()
+            except Exception:
+                resp_body = {}
+        except (requests.RequestException, Exception) as exc:
             last_error = exc
-            logger.warning("连接错误 (attempt %d): %s", attempt + 1,
-                            type(exc).__name__)
-            continue
-        except requests.Timeout as exc:
-            last_error = exc
-            logger.warning("请求超时 (attempt %d)", attempt + 1)
-            continue
+            logger.warning("requests 调用异常 (attempt %d): %s，尝试 curl DoH 回退...", attempt + 1, type(exc).__name__)
+            try:
+                cmd = [
+                    "curl", "-sS",
+                    "--doh-url", "https://dns.alidns.com/dns-query",
+                    "-H", f"Authorization: Bearer {key}",
+                    "-H", "Content-Type: application/json",
+                    "-d", "@-",
+                    endpoint,
+                ]
+                proc = subprocess.run(
+                    cmd,
+                    input=json.dumps(body).encode("utf-8"),
+                    capture_output=True,
+                    timeout=timeout,
+                    check=False,
+                )
+                output = proc.stdout.decode("utf-8", errors="replace")
+                resp_body = json.loads(output)
+                last_status = 200 if "output" in resp_body else 500
+            except Exception as curl_exc:
+                logger.warning("curl 回退亦失败 (attempt %d): %s", attempt + 1, curl_exc)
+                continue
 
-        last_status = resp.status_code
-
-        # 尝试提取 request_id（无论成败都记录，便于追踪）
-        try:
-            resp_body = resp.json()
-        except Exception:
-            resp_body = {}
         request_id = resp_body.get("request_id", "")
 
-        if resp.status_code == 200:
+        if last_status == 200:
             # 解析成功响应
             choices = resp_body.get("output", {}).get("choices", [])
             image_url: str | None = None
@@ -539,27 +564,27 @@ def edit(
             return img_bytes, trace
 
         # 不重试的错误
-        if resp.status_code in (400, 401, 403, 404):
+        if last_status in (400, 401, 403, 404):
             # 允许保留：HTTP status、error code、截断 message、request_id
             # 不允许保留：Authorization、Base64、完整请求 JSON
             err_code = resp_body.get("code", "")
             err_msg = str(resp_body.get("message", ""))[:200]
             raise ImageGenError(
-                f"HTTP {resp.status_code} {err_code}: {err_msg} "
+                f"HTTP {last_status} {err_code}: {err_msg} "
                 f"(request_id={request_id or 'unknown'})"
             )
 
         # 可重试的错误
-        if _should_retry(resp.status_code):
+        if _should_retry(last_status):
             err_code = resp_body.get("code", "")
             err_msg = str(resp_body.get("message", ""))[:200]
             last_error = ImageGenError(
-                f"HTTP {resp.status_code} {err_code}: {err_msg} "
+                f"HTTP {last_status} {err_code}: {err_msg} "
                 f"(request_id={request_id or 'unknown'})"
             )
             logger.warning(
                 "可重试错误 HTTP %d (attempt %d/%d): %s",
-                resp.status_code, attempt + 1, max_retries + 1, err_code,
+                last_status, attempt + 1, max_retries + 1, err_code,
             )
             continue
 
@@ -567,7 +592,7 @@ def edit(
         err_code = resp_body.get("code", "")
         err_msg = str(resp_body.get("message", ""))[:200]
         raise ImageGenError(
-            f"HTTP {resp.status_code} {err_code}: {err_msg} "
+            f"HTTP {last_status} {err_code}: {err_msg} "
             f"(request_id={request_id or 'unknown'})"
         )
 

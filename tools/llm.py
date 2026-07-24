@@ -246,24 +246,27 @@ def _run_curl(
                  "all_proxy", "ALL_PROXY", "no_proxy", "NO_PROXY"):
         env.pop(name, None)
     try:
+        cmd = [
+            "curl", "-sS", *(["-N"] if stream else []),
+            "--doh-url", "https://dns.alidns.com/dns-query",
+            "-w", "\n%{http_code}", "-X", "POST", url,
+            "--max-time", str(timeout),
+            "-d", "@-",
+            *header_args,
+        ]
         result = subprocess.run(
-            [
-                "curl", "-s", *(["-N"] if stream else []),
-                "-w", "\n%{http_code}", "-X", "POST", url,
-                "--max-time", str(timeout),
-                "-d", json.dumps(payload),
-                *header_args,
-            ],
+            cmd,
+            input=json.dumps(payload).encode("utf-8"),
             capture_output=True,
-            text=True,
             timeout=timeout + 5,
             env=env,
             check=False,
         )
+        output = result.stdout.decode("utf-8", errors="replace")
+        stderr_str = result.stderr.decode("utf-8", errors="replace").strip()
+        stderr_tail = stderr_str[-200:] if stderr_str else ""
     except (OSError, subprocess.TimeoutExpired) as exc:
         raise LLMResponseError(f"curl 执行失败: {exc}") from exc
-    output = result.stdout
-    stderr_tail = result.stderr.strip()[-200:] if result.stderr else ""
     if not output:
         raise LLMResponseError(
             f"curl 无输出 (rc={result.returncode}): {stderr_tail}"

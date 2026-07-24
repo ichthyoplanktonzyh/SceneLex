@@ -478,10 +478,21 @@ def serialize_wan_prompt(
     *,
     directive_rel_path: str = "",
     compiler_request_id: str | None = None,
+    full_ir: bool = False,
 ) -> str:
     """Deterministically serialize final Wan prompt text from validated Render Directive."""
-    lines: list[str] = []
+    if not full_ir:
+        if directive.get("wan_prompt"):
+            return directive["wan_prompt"].strip()
+        changes = directive.get("change", [])
+        if changes and isinstance(changes, list):
+            for ch in changes:
+                target = ch.get("target_state") or ch.get("object")
+                if target:
+                    return str(target).strip()
+        return "Edit image keyframe according to scene specifications."
 
+    lines: list[str] = []
     if directive_rel_path or compiler_request_id:
         lines.append(f"# Render Directive: {directive_rel_path}")
         lines.append(f"# Compiler request ID: {compiler_request_id or 'unknown'}")

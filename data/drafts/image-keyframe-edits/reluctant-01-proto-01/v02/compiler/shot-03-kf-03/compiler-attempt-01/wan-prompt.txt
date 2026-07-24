@@ -1,5 +1,5 @@
 # Render Directive: data/drafts/image-keyframe-edits/reluctant-01-proto-01/v02/compiler/shot-03-kf-03/compiler-attempt-01/render-directive.yaml
-# Compiler request ID: rule-compiler-fallback
+# Compiler request ID: chatcmpl-4846b313-8057-4aa8-aa73-dc0aea0b163f
 
 === IMAGE ROLES ===
 - image-01: identity_reference
@@ -7,17 +7,17 @@
 
 === PRESERVE ===
 Identity:
-  - preserve character features and clothes
+  - preserve character identity
 Composition:
-  - preserve camera angle and background lighting
+  - preserve camera angle and framing
 Body State:
   - preserve torso posture
 
 === REMOVE FROM PREVIOUS STATE ===
-- remove previous fork position on table
+- none
 
 === CHANGE ===
-- arm_and_fork: update -> The bite has been taken. The fork is back down on the plate and the child's right hand has returned toward the table. His mouth is closed and his expression is flat, jaw at rest or on a slow chew. He is still sitting back in the chair, gaze low or to the side — he has not leaned in toward the plate and is not reaching for another piece.
+- visual_state: update -> The bite has been taken. The fork is back down on the plate and the child's right hand has returned toward the table. His mouth is closed and his expression is flat, jaw at rest or on a slow chew. He is still sitting back in the chair, gaze low or to the side — he has not leaned in toward the plate and is not reaching for another piece.
 
 === MUST BE VISIBLE ===
 - [show-01]: Fork put down on the plate — the action was completed.
@@ -31,31 +31,4 @@ Body State:
 - [avoid-03]: Pushing the plate away.
 
 === COMPILER SUMMARY PROMPT ===
-=== IMAGE ROLES ===
-- image-01: identity_reference
-- image-02: base_image
-
-=== PRESERVE ===
-Identity:
-  - preserve character features and clothes
-Composition:
-  - preserve camera angle and background lighting
-Body State:
-  - preserve torso posture
-
-=== REMOVE FROM PREVIOUS STATE ===
-- remove previous fork position on table
-
-=== CHANGE ===
-- arm_and_fork: update -> The bite has been taken. The fork is back down on the plate and the child's right hand has returned toward the table. His mouth is closed and his expression is flat, jaw at rest or on a slow chew. He is still sitting back in the chair, gaze low or to the side — he has not leaned in toward the plate and is not reaching for another piece.
-
-=== MUST BE VISIBLE ===
-- [show-01]: Fork put down on the plate — the action was completed.
-- [show-02]: Body still reclined, matching the withdrawal established in shot-02.
-- [show-03]: Flat mouth, gaze low or averted.
-- [show-04]: No reach for a second piece.
-
-=== FORBIDDEN OUTCOMES ===
-- [avoid-01]: Smiling, nodding, or leaning forward for another piece.
-- [avoid-02]: Spitting the food out or a face that reads as revulsion at the taste.
-- [avoid-03]: Pushing the plate away.
+The bite has been taken. The fork is back down on the plate and the child's right hand has returned toward the table. His mouth is closed and his expression is flat, jaw at rest or on a slow chew. He is still sitting back in the chair, gaze low or to the side — he has not leaned in toward the plate and is not reaching for another piece.

@@ -164,6 +164,7 @@ def test_wan_prompt_serializer(sample_render_directive):
         sample_render_directive,
         directive_rel_path="compiler/shot-02-kf-04/directive.yaml",
         compiler_request_id="req-123",
+        full_ir=True,
     )
     assert "# Render Directive: compiler/shot-02-kf-04/directive.yaml" in text
     assert "# Compiler request ID: req-123" in text

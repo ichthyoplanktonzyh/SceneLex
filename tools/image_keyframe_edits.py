@@ -311,7 +311,7 @@ def cmd_generate(args: argparse.Namespace) -> None:
                 instruction=serialized_prompt,
                 input_images=input_images,
                 model=run_doc.get("generation", {}).get("primary_model"),
-                requested_size=run_doc.get("generation", {}).get("requested_size"),
+                size=run_doc.get("generation", {}).get("requested_size"),
                 bbox_list=bbox_list_arg,
             )
             out_img_path.write_bytes(img_bytes)

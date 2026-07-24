@@ -1,5 +1,5 @@
 # Render Directive: data/drafts/image-keyframe-edits/reluctant-01-proto-01/v02/compiler/shot-03-kf-01/compiler-attempt-01/render-directive.yaml
-# Compiler request ID: rule-compiler-fallback
+# Compiler request ID: chatcmpl-05427e6f-c018-4020-a09a-11ff635b903d
 
 === IMAGE ROLES ===
 - image-01: identity_reference
@@ -7,17 +7,17 @@
 
 === PRESERVE ===
 Identity:
-  - preserve character features and clothes
+  - preserve character identity
 Composition:
-  - preserve camera angle and background lighting
+  - preserve camera angle and framing
 Body State:
   - preserve torso posture
 
 === REMOVE FROM PREVIOUS STATE ===
-- remove previous fork position on table
+- none
 
 === CHANGE ===
-- arm_and_fork: update -> The same child at frame right, framed slightly tighter so that the fork, the plate and the mouth are all readable at once. He is in exactly the state that ended shot-02 — torso leaned back against the chair, right hand gripping the fork just clear of the table near the rim of the plate, tines not yet in the food, left hand on the table, eyes off the plate. The mother is still at the left edge, touching nothing.
+- visual_state: update -> The same child at frame right, framed slightly tighter so that the fork, the plate and the mouth are all readable at once. He is in exactly the state that ended shot-02 — torso leaned back against the chair, right hand gripping the fork just clear of the table near the rim of the plate, tines not yet in the food, left hand on the table, eyes off the plate. The mother is still at the left edge, touching nothing.
 
 === MUST BE VISIBLE ===
 - [show-01]: Same right hand on the fork, in the same position relative to the plate as the end of shot-02.
@@ -31,31 +31,4 @@ Body State:
 - [avoid-03]: The mother having moved, or now touching the child, the fork or the plate.
 
 === COMPILER SUMMARY PROMPT ===
-=== IMAGE ROLES ===
-- image-01: identity_reference
-- image-02: base_image
-
-=== PRESERVE ===
-Identity:
-  - preserve character features and clothes
-Composition:
-  - preserve camera angle and background lighting
-Body State:
-  - preserve torso posture
-
-=== REMOVE FROM PREVIOUS STATE ===
-- remove previous fork position on table
-
-=== CHANGE ===
-- arm_and_fork: update -> The same child at frame right, framed slightly tighter so that the fork, the plate and the mouth are all readable at once. He is in exactly the state that ended shot-02 — torso leaned back against the chair, right hand gripping the fork just clear of the table near the rim of the plate, tines not yet in the food, left hand on the table, eyes off the plate. The mother is still at the left edge, touching nothing.
-
-=== MUST BE VISIBLE ===
-- [show-01]: Same right hand on the fork, in the same position relative to the plate as the end of shot-02.
-- [show-02]: Same backward lean of the torso and the same screen direction.
-- [show-03]: Plate and remaining broccoli in their unchanged positions.
-- [show-04]: Gaze still off the plate and not eager.
-
-=== FORBIDDEN OUTCOMES ===
-- [avoid-01]: The fork jumping to the other hand or to a different position on the table.
-- [avoid-02]: The torso resetting to upright at the cut.
-- [avoid-03]: The mother having moved, or now touching the child, the fork or the plate.
+The same child at frame right, framed slightly tighter so that the fork, the plate and the mouth are all readable at once. He is in exactly the state that ended shot-02 — torso leaned back against the chair, right hand gripping the fork just clear of the table near the rim of the plate, tines not yet in the food, left hand on the table, eyes off the plate. The mother is still at the left edge, touching nothing.

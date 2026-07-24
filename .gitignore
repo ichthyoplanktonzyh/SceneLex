@@ -21,3 +21,4 @@ data/drafts/**/_unparsed-*.yaml
 
 # 确定性资源导出产物（通过发布流程另行分发）
 dist/
+*.gguf

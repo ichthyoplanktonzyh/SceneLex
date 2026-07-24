@@ -11,7 +11,7 @@ keyframe_plan_ref:
 source_image_keyframe_ref:
   scene_id: reluctant-01-proto-01
   version: 1
-api_gate: pending
+api_gate: blocked
 semantic_gate: pending
 generation:
   protocol: aliyun-token-plan
