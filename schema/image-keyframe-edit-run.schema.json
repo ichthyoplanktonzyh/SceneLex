@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scenelex.org/schema/image-keyframe-edit-run.schema.json",
+  "title": "SceneLex Image Keyframe Edit Run",
+  "description": "一次 Wan 2.7 状态编辑实验的完整记录。只描述这一次实验，不是通用动画资产系统。禁止写入：API Key、Base64、Authorization Header、远程临时 URL。",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "version",
+    "status",
+    "scene_ref",
+    "shot_plan_ref",
+    "keyframe_plan_ref",
+    "source_image_keyframe_ref",
+    "api_gate",
+    "semantic_gate",
+    "generation",
+    "identity_reference",
+    "targets"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "version": { "type": "integer", "minimum": 1 },
+    "status": { "enum": ["draft", "reviewed"] },
+    "scene_ref": { "type": "string", "minLength": 1 },
+    "shot_plan_ref": { "$ref": "#/$defs/planRef" },
+    "keyframe_plan_ref": { "$ref": "#/$defs/planRef" },
+    "source_image_keyframe_ref": { "$ref": "#/$defs/planRef" },
+    "api_gate": {
+      "enum": ["pending", "pass", "blocked"],
+      "description": "Token Plan Endpoint 是否接受图片输入并成功完成 Wan 2.7 图片编辑"
+    },
+    "semantic_gate": {
+      "enum": ["pending", "pass", "revision_required", "not_run"],
+      "description": "生成结果是否准确执行 Keyframe Plan 的状态判据"
+    },
+    "generation": {
+      "type": "object",
+      "required": ["protocol", "endpoint_kind", "primary_model", "fallback_model", "requested_size", "watermark"],
+      "additionalProperties": false,
+      "properties": {
+        "protocol": { "const": "aliyun-token-plan" },
+        "endpoint_kind": { "type": "string", "minLength": 1 },
+        "primary_model": { "type": "string", "minLength": 1 },
+        "fallback_model": { "type": "string", "minLength": 1 },
+        "requested_size": { "type": "string", "minLength": 1 },
+        "watermark": { "const": false },
+        "generated_at": { "type": ["string", "null"] }
+      }
+    },
+    "identity_reference": {
+      "type": "object",
+      "required": ["image", "rationale", "scope"],
+      "additionalProperties": false,
+      "properties": {
+        "image": { "type": ["string", "null"] },
+        "rationale": { "type": ["string", "null"] },
+        "scope": { "enum": ["experiment-local", null] }
+      }
+    },
+    "smoke_test": {
+      "type": "object",
+      "description": "smoke test 结果记录（可选）",
+      "additionalProperties": false,
+      "properties": {
+        "status": { "enum": ["pass", "blocked"] },
+        "request_id": { "type": ["string", "null"] },
+        "model": { "type": ["string", "null"] },
+        "actual_size": { "type": ["string", "null"] },
+        "image": { "type": ["string", "null"] },
+        "http_status": { "type": ["integer", "null"] },
+        "message": { "type": ["string", "null"] }
+      }
+    },
+    "targets": {
+      "type": "array",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "required": ["keyframe_id", "source_image", "identity_reference", "attempts", "selected_attempt"],
+        "additionalProperties": false,
+        "properties": {
+          "keyframe_id": { "type": "string", "minLength": 1 },
+          "source_image": { "type": ["string", "null"] },
+          "identity_reference": { "type": ["string", "null"] },
+          "attempts": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/attempt" }
+          },
+          "selected_attempt": { "type": ["string", "null"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "planRef": {
+      "type": "object",
+      "required": ["scene_id", "version"],
+      "additionalProperties": false,
+      "properties": {
+        "scene_id": { "type": "string", "minLength": 1 },
+        "version": { "type": ["integer", "null"], "minimum": 1 }
+      }
+    },
+    "attempt": {
+      "type": "object",
+      "required": ["attempt", "model", "prompt", "image", "request_id", "seed", "bbox_list", "status", "review"],
+      "additionalProperties": false,
+      "properties": {
+        "attempt": { "type": "string", "pattern": "^attempt-[0-9]{2}$" },
+        "model": { "type": "string", "minLength": 1 },
+        "prompt": { "type": "string", "minLength": 1 },
+        "image": { "type": ["string", "null"] },
+        "request_id": { "type": ["string", "null"] },
+        "seed": { "type": "integer" },
+        "bbox_list": {
+          "type": ["array", "null"],
+          "description": "每张输入图的 bbox 列表，长度等于图片数量"
+        },
+        "status": { "enum": ["pending", "generated", "failed"] },
+        "review": { "$ref": "#/$defs/review" },
+        "error": {
+          "type": "object",
+          "description": "去敏后的错误记录（可选）",
+          "additionalProperties": false,
+          "properties": {
+            "http_status": { "type": ["integer", "null"] },
+            "message": { "type": ["string", "null"] }
+          }
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "required": ["semantic_readability", "state_fidelity", "character_consistency", "prop_continuity", "composition", "notes"],
+      "additionalProperties": false,
+      "properties": {
+        "semantic_readability": { "$ref": "#/$defs/verdict" },
+        "state_fidelity": { "$ref": "#/$defs/verdict" },
+        "character_consistency": { "$ref": "#/$defs/verdict" },
+        "prop_continuity": { "$ref": "#/$defs/verdict" },
+        "composition": { "$ref": "#/$defs/verdict" },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "verdict": { "enum": ["pending", "pass", "weak", "fail"] }
+  }
+}
