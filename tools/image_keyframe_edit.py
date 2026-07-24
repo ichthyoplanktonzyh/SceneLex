@@ -1,52 +1,37 @@
 #!/usr/bin/env python3
-"""Wan 2.7 状态编辑实验的领域库。
+"""Wan 2.7 状态编辑实验的领域库 (v02 Visual Compiler 与 多模态 VLM 审核链路)。
 
 职责边界:
-
-- compile_edit_instruction() 是纯机械拼装: 输入全部来自已冻结的上游字段
-  (Keyframe Plan 的 visual_state / must_show / must_avoid,
-   Shot Plan 的 composition / camera / cast / location / props)。
-  编译器不重新决定故事、动作阶段、道具状态或角色身份。
-  不调用 LLM 改写提示词。
-
-- 提示词结构固定:
-    IMAGE ROLES
-    PRESERVE EXACTLY
-    CHANGE ONLY
-    TARGET FROZEN STATE
-    MUST BE VISIBLE
-    FORBIDDEN OUTCOMES
-    NO TEACHING PACKAGING
-
-- must_avoid 进入 FORBIDDEN OUTCOMES (自然语言编辑指令)。
-  Wan 2.7 不支持独立 negative_prompt, 所以审核报告里明确写:
-  "must_avoid was expressed in the natural-language edit instruction
-   and remained an explicit human review checklist;
-   it was not a separate sampler-level negative prompt."
-
-- 这一层只回答一个问题: Token Plan wan2.7-image-pro 能否通过图片编辑
-  准确执行 Keyframe Plan 被冻结的状态。
-  它不回答运动、节奏、剪辑、音频或最终学习效果。
-
-安全约束:
-  API Key、Base64、Authorization Header、远程临时 URL 均不得出现在
-  此模块的任何输出 (YAML、HTML、日志、异常信息)。
+- SceneLex IR 是语义权威
+- LLM Visual Compiler 是视觉翻译器 (产生结构化 Render Directive)
+- Compiler Validator 是确定性验证器 (校验 Schema、语义全覆盖、无状态冲突、BBox 合法)
+- Wan 2.7 Prompt Serializer 是确定性 Prompt 序列化器
+- Wan 2.7 是渲染执行器
+- VLM 是多模态辅助审核器 (仅提供 suggested_verdict)
+- Human 决定最终 semantic_gate
 """
 
 from __future__ import annotations
 
 import html
+import json
+import os
+import sys
 from pathlib import Path
 from typing import Any
 
+import jsonschema
 import yaml
+
+import image_render_compiler as compiler_lib
 
 ROOT = Path(__file__).resolve().parent.parent
 
-SCHEMA_VERSION = "1.0"
+SCHEMA_VERSION_V10 = "1.0"
+SCHEMA_VERSION_V11 = "1.1"
 STATUS_DRAFT = "draft"
 
-# 审核层级标注 (出现在 review.html 顶部和每个 target)
+# 审核层级标注
 REVIEW_LAYER = "WAN 2.7 CLOUD IMAGE STATE-EDIT REVIEW"
 REVIEW_NOT_FULL = "NOT FULL IMAGE-KEYFRAME REVIEW"
 REVIEW_NOT_VIDEO = "NOT VIDEO MOTION REVIEW"
@@ -54,11 +39,12 @@ REVIEW_NOT_VIDEO = "NOT VIDEO MOTION REVIEW"
 # Gate 枚举
 API_GATE_VALUES = ("pending", "pass", "blocked")
 SEMANTIC_GATE_VALUES = ("pending", "pass", "revision_required", "not_run")
+VLM_SUGGESTED_VALUES = ("pending", "pass", "revision_required", None)
 
 # 每个 attempt 的状态枚举
 ATTEMPT_STATUS_VALUES = ("generated", "failed", "pending")
 
-# 人工审核维度
+# 审核维度
 REVIEW_DIMS = (
     "semantic_readability",
     "state_fidelity",
@@ -68,7 +54,7 @@ REVIEW_DIMS = (
 )
 VERDICT_VALUES = ("pending", "pass", "weak", "fail")
 
-# 跨镜连续性人工核对清单 (与 image_keyframe.py 保持一致)
+# 跨镜连续性人工核对清单
 CONTINUITY_CHECKS = (
     "same child identity",
     "same clothing",
@@ -85,7 +71,7 @@ CONTINUITY_CHECKS = (
     "mother touching nothing",
 )
 
-# 四张诊断帧的 keyframe ID (顺序严格)
+# 四张诊断帧的 keyframe ID
 DIAGNOSTIC_KEYFRAME_IDS = (
     "shot-02-kf-03",
     "shot-02-kf-04",
@@ -93,18 +79,14 @@ DIAGNOSTIC_KEYFRAME_IDS = (
     "shot-03-kf-03",
 )
 
-# 画面里不得出现教学包装
 NO_TEACHING_PACKAGING = (
     "The image contains no words, letters, subtitles, captions, definitions, "
     "vocabulary labels, narration text, speech bubbles or interface overlays. "
     "Do not show the word 'reluctant' or any other vocabulary label in the image."
 )
 
-# shot-02-kf-04 → shot-03-kf-01 是本轮验证跨镜连续性的切点
 CROSS_SHOT_PAIR = ("shot-02-kf-04", "shot-03-kf-01")
 
-
-# ------------------------------------------------------------------ 工具函数
 
 def _text(value: object) -> str:
     return value.strip() if isinstance(value, str) else ""
@@ -131,7 +113,6 @@ def _shot_index(shot_plan: dict) -> dict[str, dict]:
 
 
 def _continuity_block(shot_plan: dict) -> str:
-    """cast / location / props 的连续性描述 —— 整场共用的常量块。"""
     parts: list[str] = []
     cast = [
         f"{entry.get('id')} ({entry.get('role')}) — "
@@ -154,36 +135,18 @@ def _continuity_block(shot_plan: dict) -> str:
     return "\n\n".join(p for p in parts if p.strip(" —"))
 
 
-# ---------------------------------------------------------- 编辑指令编译
-
 def compile_edit_instruction(
     keyframe: dict,
     shot: dict,
     shot_plan: dict,
     *,
-    identity_ref: Path | None,
-    base_image: Path,
+    identity_ref: Path | None = None,
+    base_image: Path | None = None,
 ) -> str:
-    """编译编辑指令 —— 纯机械拼装，确定性，不调用 LLM。
-
-    结构固定:
-        IMAGE ROLES
-        PRESERVE EXACTLY
-        CHANGE ONLY
-        TARGET FROZEN STATE
-        MUST BE VISIBLE
-        FORBIDDEN OUTCOMES
-        NO TEACHING PACKAGING
-
-    visual_state 和 must_show 逐项进入正文。
-    must_avoid 进入 FORBIDDEN OUTCOMES。
-    不添加上游不存在的新剧情。
-    不让模型重新设计构图、改变角色服装或道具。
-    """
+    """机械拼装 Context (供 Source Packet 与兼容层使用)。"""
     composition = shot.get("composition") or {}
     camera = shot.get("camera") or {}
 
-    # IMAGE ROLES
     if identity_ref is not None and identity_ref != base_image:
         roles_text = (
             "Image 1 is an experiment-local identity reference for the child. "
@@ -196,7 +159,6 @@ def compile_edit_instruction(
             "The output must preserve the composition and aspect ratio of Image 1."
         )
 
-    # PRESERVE EXACTLY — 来自 Shot Plan cast / location / props 常量块 + 构图
     framing = " ".join(
         v for v in (
             f"{_text(composition.get('shot_size'))}, "
@@ -219,17 +181,10 @@ def compile_edit_instruction(
         "lighting, screen direction and camera position."
     )
 
-    # CHANGE ONLY — 来自 visual_state 的动作描述
     visual_state = _text(keyframe.get("visual_state"))
-    # 从 visual_state 中提取"变化"部分作为 CHANGE ONLY
-    # 保持原文，不重新解释
     change_text = visual_state
-
-    # TARGET FROZEN STATE — 来自 must_show (被冻结的结果状态)
     shows = _lines(keyframe.get("must_show"))
     state_text = _join(shows) if shows else visual_state
-
-    # FORBIDDEN OUTCOMES — 来自 must_avoid
     avoids = _lines(keyframe.get("must_avoid"))
     forbidden_text = _join(avoids) if avoids else (
         "Do not show subtitles, labels, speech bubbles, UI or teaching overlays."
@@ -242,7 +197,6 @@ def compile_edit_instruction(
         f"TARGET FROZEN STATE\n\n{state_text}",
     ]
 
-    # MUST BE VISIBLE — 同 must_show
     if shows:
         sections.append(f"MUST BE CLEARLY VISIBLE\n\n{_join(shows)}")
 
@@ -252,161 +206,37 @@ def compile_edit_instruction(
     return "\n\n".join(sections)
 
 
-# ---------------------------------------------------------- Prompt Compiler LLM 智能编译步
-
-_PROMPT_COMPILER_SYSTEM_PROMPT = """You are a Visual Prompt Compiler for Image-to-Image / Inpainting Edit Models (specifically Wan 2.7 Image Pro).
-Your job is to translate complex human/educational semantic requirements into an extremely concise, physically precise, and conflict-free visual edit prompt, along with a Bounding Box (BBox) for local inpainting if applicable.
-
-RULES:
-1. Strip ALL human psychological/educational explanation (e.g. "why", "reluctant", "semantic purpose", "must_avoid").
-2. Focus ONLY on physical geometry, object states, positions, angles, and facial micro-expressions.
-3. CONFLICT ELIMINATION (CRITICAL): If an object is moved or grabbed (e.g., picking up a fork), explicitly instruct the model to REMOVE or ERASE the object from its original position on the table/surface to avoid ghosting/duplication.
-4. BBOX ESTIMATION: Estimate a normalized 4-integer bounding box `[x1, y1, x2, y2]` (scale 0-1000) for the local edit region if only a specific area changes (e.g. hand/fork movement). If full frame changes, return null for bbox.
-5. Keep the compiled prompt under 100 words.
-6. Output JSON format strictly as:
-{
-  "compiled_prompt": "PRESERVE: ... CHANGE: ...",
-  "target_bbox": [x1, y1, x2, y2]  // or null
-}"""
-
-_VLM_REVIEWER_SYSTEM_PROMPT = """You are an automated VLM (Vision Language Model) Quality Evaluator for Keyframe Generation in an AI Educational Video Pipeline.
-Analyze the provided keyframe image against the target requirements.
-
-Target Visual State: {visual_state}
-Must Show: {must_show}
-Must Avoid: {must_avoid}
-
-Evaluate strictly for:
-1. semantic_readability (pass/weak/fail)
-2. state_fidelity (pass/weak/fail)
-3. character_consistency (pass/weak/fail)
-4. prop_continuity (pass/weak/fail)
-5. composition (pass/weak/fail)
-
-Check specifically for ghosting artifacts (e.g. duplicated props on table), noise feedback, posture mismatch, or unwanted eager facial expressions.
-
-Output JSON format strictly as:
-{
-  "semantic_readability": "pass|weak|fail",
-  "state_fidelity": "pass|weak|fail",
-  "character_consistency": "pass|weak|fail",
-  "prop_continuity": "pass|weak|fail",
-  "composition": "pass|weak|fail",
-  "overall_verdict": "pass|revision_required",
-  "notes": ["issue 1...", "issue 2..."]
-}"""
+def blank_verdict_set() -> dict[str, str]:
+    return {dim: "pending" for dim in REVIEW_DIMS}
 
 
-def compile_edit_instruction_llm(
-    keyframe: dict,
-    shot: dict,
-    shot_plan: dict,
-    *,
-    identity_ref: Path | None,
-    base_image: Path,
-) -> tuple[str, list[int] | None]:
-    """Smart Prompt Compiler:
-    Translates human/educational semantics into focused physical edit instructions and estimated BBox for Wan 2.7.
-    Returns (instruction_text, target_bbox_list_or_none).
-    """
-    raw_instruction = compile_edit_instruction(
-        keyframe,
-        shot,
-        shot_plan,
-        identity_ref=identity_ref,
-        base_image=base_image,
-    )
-
-    import llm
-    try:
-        config = llm.LLMConfig.from_env()
-    except Exception as exc:
-        raise RuntimeError(
-            "Prompt Compiler 必须配置 LLM (请设置 SCENELEX_LLM_PROTOCOL 及相关环境变量)。"
-            "没有 LLM 进行物理语义编译，机械拼接的提示词无法生成合格的关键帧。"
-        ) from exc
-
-    prompt_input = (
-        f"KEYFRAME VISUAL STATE TO ACHIEVE:\n{keyframe.get('visual_state', '')}\n\n"
-        f"MUST SHOW:\n{', '.join(keyframe.get('must_show', []))}\n\n"
-        f"MUST AVOID (What to eliminate physically):\n{', '.join(keyframe.get('must_avoid', []))}\n\n"
-        f"RAW CONTEXT:\n{raw_instruction}\n\n"
-        "Please compile this into JSON format containing compiled_prompt and target_bbox."
-    )
-
-    try:
-        res_text = llm.generate(
-            prompt_input,
-            system_prompt=_PROMPT_COMPILER_SYSTEM_PROMPT,
-        )
-        import json
-        data = {}
-        cleaned_text = res_text.strip()
-        if cleaned_text.startswith("```"):
-            cleaned_text = cleaned_text.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
-        data = json.loads(cleaned_text)
-        compiled_prompt = data.get("compiled_prompt", "").strip()
-        bbox = data.get("target_bbox")
-        if compiled_prompt and len(compiled_prompt) > 20:
-            header = "# [LLM Prompt Compiler & BBox Active]\n=== EDIT INSTRUCTION ===\n"
-            return f"{header}{compiled_prompt}", bbox
-        raise RuntimeError("LLM Prompt Compiler 返回的 compiled_prompt 内容过短")
-    except Exception as exc:
-        raise RuntimeError(
-            f"Prompt Compiler LLM 编译失败: {exc}。关键帧提示词必须由 LLM 生成。"
-        ) from exc
-
-
-def review_keyframe_vlm(
-    image_path: Path,
-    keyframe: dict,
-) -> dict:
-    """Automated VLM Vision Gate Reviewer:
-    Evaluates generated keyframe image quality and semantic compliance.
-    """
-    import llm
-    vlm_prompt = _VLM_REVIEWER_SYSTEM_PROMPT.format(
-        visual_state=keyframe.get("visual_state", ""),
-        must_show=", ".join(keyframe.get("must_show", [])),
-        must_avoid=", ".join(keyframe.get("must_avoid", [])),
-    )
-    # We construct prompt for LLM Vision call
-    prompt_input = f"Evaluate keyframe image file: {image_path.name}"
-    try:
-        res = llm.generate(prompt_input, system_prompt=vlm_prompt)
-        import json
-        cleaned = res.strip()
-        if cleaned.startswith("```"):
-            cleaned = cleaned.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
-        return json.loads(cleaned)
-    except Exception as exc:
-        print(f"⚠ VLM Reviewer call skipped/failed: {exc}", file=sys.stderr)
-        return {
-            "semantic_readability": "pending",
-            "state_fidelity": "pending",
-            "character_consistency": "pending",
-            "prop_continuity": "pending",
-            "composition": "pending",
-            "notes": [f"VLM review error: {exc}"],
-        }
-
-
-def prompt_file_text(keyframe_id: str, attempt_id: str, instruction: str) -> str:
-    """写进 prompts/*.txt 的内容 —— 提示词是可审计产物。"""
-    return (
-        f"# {keyframe_id} / {attempt_id}\n"
-        "# 由 Keyframe Plan 与 Shot Plan 机械编译; 不要手工改这里, 改上游。\n"
-        "# Wan 2.7 不支持独立 negative_prompt: must_avoid 在 FORBIDDEN OUTCOMES 节以\n"
-        "# 自然语言形式出现，并作为人工审核清单。\n\n"
-        "=== EDIT INSTRUCTION ===\n"
-        f"{instruction}\n"
-    )
-
-
-# ---------------------------------------------------------- manifest 构建
-
-def blank_attempt_review() -> dict:
+def blank_attempt_review() -> dict[str, Any]:
+    """v1.0 schema 兼容用 review 对象。"""
     return {dim: "pending" for dim in REVIEW_DIMS} | {"notes": []}
+
+
+def blank_reviews_v11() -> dict[str, Any]:
+    """v1.1 schema 用 reviews 对象。"""
+    return {
+        "vlm": {
+            "status": "pending",
+            "protocol": None,
+            "model": None,
+            "request_id": None,
+            "generated_at": None,
+            "suggested_verdict": "pending",
+            "verdicts": blank_verdict_set(),
+            "findings": [],
+            "notes": [],
+        },
+        "human": {
+            "status": "pending",
+            "reviewer": None,
+            "reviewed_at": None,
+            "verdicts": blank_verdict_set(),
+            "notes": [],
+        },
+    }
 
 
 def blank_target(keyframe_id: str) -> dict:
@@ -424,29 +254,37 @@ def build_edit_run(
     shot_plan: dict,
     source_keyframe_manifest: dict,
     *,
-    version: int,
-    scene_id: str,
-    identity_reference_image: str | None,
-    identity_reference_rationale: str | None,
+    version: int = 2,
+    scene_id: str = "reluctant-01-proto-01",
+    identity_reference_image: str | None = None,
+    identity_reference_rationale: str | None = None,
     primary_model: str = "wan2.7-image-pro",
     fallback_model: str = "wan2.7-image",
     requested_size: str = "1152*640",
 ) -> dict:
     """构造 edit-run.yaml 初始结构。"""
+    schema_ver = SCHEMA_VERSION_V11 if version >= 2 else SCHEMA_VERSION_V10
     shot_plan_ref = plan.get("shot_plan_ref") or {}
     targets = []
+
+    src_version = source_keyframe_manifest.get("version", 1)
+    src_dir = f"data/drafts/image-keyframes/{scene_id}/v{src_version:02d}"
+
     for kf_id in DIAGNOSTIC_KEYFRAME_IDS:
         target = blank_target(kf_id)
-        # 从 source_keyframe_manifest 找到对应的基础图
         for frame in source_keyframe_manifest.get("frames", []) or []:
             if frame.get("keyframe_id") == kf_id:
-                target["source_image"] = frame.get("image")
+                img_rel = frame.get("image")
+                if img_rel and not img_rel.startswith("data/"):
+                    img_rel = f"{src_dir}/{img_rel}"
+                target["source_image"] = img_rel
                 break
         target["identity_reference"] = identity_reference_image
         targets.append(target)
 
+
     return {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": schema_ver,
         "version": version,
         "status": STATUS_DRAFT,
         "scene_ref": scene_id,
@@ -482,89 +320,191 @@ def build_edit_run(
     }
 
 
-# ---------------------------------------------------------- manifest 校验
+_VLM_SYSTEM_PROMPT = """You are an automated VLM (Vision Language Model) Advisory Evaluator for keyframe generation.
+Analyze the generated keyframe against the base image and reference image.
+
+Target Visual State: {visual_state}
+Must Show Requirements: {must_show}
+Must Avoid Requirements: {must_avoid}
+
+Evaluate strictly for:
+1. semantic_readability (pass/weak/fail)
+2. state_fidelity (pass/weak/fail)
+3. character_consistency (pass/weak/fail)
+4. prop_continuity (pass/weak/fail)
+5. composition (pass/weak/fail)
+
+Check for ghosting artifacts (e.g. duplicate fork on table), bad hand anatomy, character drift, or unwanted expressions.
+
+Output JSON format strictly:
+{
+  "verdicts": {
+    "semantic_readability": "pass|weak|fail",
+    "state_fidelity": "pass|weak|fail",
+    "character_consistency": "pass|weak|fail",
+    "prop_continuity": "pass|weak|fail",
+    "composition": "pass|weak|fail"
+  },
+  "suggested_verdict": "pass|revision_required",
+  "findings": [
+    {
+      "criterion_id": "show-01",
+      "verdict": "pass|weak|fail",
+      "evidence": "..."
+    }
+  ],
+  "notes": ["note 1..."]
+}"""
+
+
+def review_keyframe_vlm(
+    output_image_path: Path,
+    base_image_path: Path,
+    identity_ref_path: Path | None,
+    keyframe: dict[str, Any],
+    *,
+    previous_pass_path: Path | None = None,
+) -> dict[str, Any]:
+    """Invoke Multimodal VLM Advisory Reviewer on generated keyframe image.
+    Returns reviews.vlm dict for schema v1.1.
+    """
+    import llm
+    input_images = []
+    if identity_ref_path and identity_ref_path.exists():
+        input_images.append(identity_ref_path)
+    if base_image_path and base_image_path.exists():
+        input_images.append(base_image_path)
+    if previous_pass_path and previous_pass_path.exists():
+        input_images.append(previous_pass_path)
+    input_images.append(output_image_path)
+
+    shows_str = json.dumps(keyframe.get("must_show", []), ensure_ascii=False)
+    avoids_str = json.dumps(keyframe.get("must_avoid", []), ensure_ascii=False)
+
+    sys_prompt = _VLM_SYSTEM_PROMPT.format(
+        visual_state=keyframe.get("visual_state", ""),
+        must_show=shows_str,
+        must_avoid=avoids_str,
+    )
+
+    prompt = (
+        f"Please evaluate generated keyframe image {output_image_path.name} "
+        "against base image and target criteria."
+    )
+
+    vlm_config = llm.LLMConfig.from_env(prefix="SCENELEX_VLM_REVIEW_")
+
+    try:
+        result = llm.invoke_multimodal(
+            prompt=prompt,
+            images=input_images,
+            config=vlm_config,
+            system_prompt=sys_prompt,
+        )
+        cleaned = result.text.strip()
+        if cleaned.startswith("```"):
+            cleaned = cleaned.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+        doc = json.loads(cleaned)
+
+        verdicts = doc.get("verdicts") or blank_verdict_set()
+        findings = doc.get("findings") or []
+        notes = doc.get("notes") or []
+        suggested = doc.get("suggested_verdict") or "revision_required"
+
+        return {
+            "status": "completed",
+            "protocol": result.protocol,
+            "model": result.model,
+            "request_id": result.request_id,
+            "generated_at": None,
+            "suggested_verdict": suggested,
+            "verdicts": verdicts,
+            "findings": findings,
+            "notes": notes,
+        }
+    except Exception as exc:
+        print(f"⚠ VLM Reviewer call failed/skipped: {exc}", file=sys.stderr)
+        return {
+            "status": "failed",
+            "protocol": getattr(vlm_config, "protocol", None),
+            "model": getattr(vlm_config, "model", None),
+            "request_id": None,
+            "generated_at": None,
+            "suggested_verdict": "revision_required",
+            "verdicts": blank_verdict_set(),
+            "findings": [],
+            "notes": [f"VLM review execution error: {exc}"],
+        }
+
 
 def validate_edit_run(
     run_doc: dict,
     plan: dict,
     shot_plan: dict,
 ) -> list[str]:
-    """检查 edit-run 的绑定、gate 枚举、keyframe ID、selected_attempt 存在性。"""
+    """Validate edit-run document against schema v1.0 or v1.1."""
     issues: list[str] = []
+    schema_ver = str(run_doc.get("schema_version"))
 
-    # gate 枚举
+    # Load appropriate schema
+    schema_path = (
+        ROOT / "schema" / "image-keyframe-edit-run-v1.1.schema.json"
+        if schema_ver == "1.1"
+        else ROOT / "schema" / "image-keyframe-edit-run.schema.json"
+    )
+
+    if schema_path.exists():
+        with open(schema_path, encoding="utf-8") as f:
+            schema = json.load(f)
+        try:
+            jsonschema.validate(instance=run_doc, schema=schema)
+        except jsonschema.ValidationError as exc:
+            issues.append(f"JSON Schema error: {exc.message}")
+
     api_gate = run_doc.get("api_gate")
     if api_gate not in API_GATE_VALUES:
-        issues.append(
-            f"api_gate {api_gate!r} 不在允许范围 {API_GATE_VALUES}"
-        )
+        issues.append(f"api_gate {api_gate!r} 不在允许范围 {API_GATE_VALUES}")
+
     sem_gate = run_doc.get("semantic_gate")
     if sem_gate not in SEMANTIC_GATE_VALUES:
-        issues.append(
-            f"semantic_gate {sem_gate!r} 不在允许范围 {SEMANTIC_GATE_VALUES}"
-        )
+        issues.append(f"semantic_gate {sem_gate!r} 不在允许范围 {SEMANTIC_GATE_VALUES}")
 
-    # scope 必须是 experiment-local
     ir = run_doc.get("identity_reference") or {}
     if ir.get("scope") not in (None, "experiment-local"):
-        issues.append(
-            "identity_reference.scope 必须是 'experiment-local'"
-        )
+        issues.append("identity_reference.scope 必须是 'experiment-local'")
 
-    # shot_plan_ref 绑定 v05
     sp_ref = run_doc.get("shot_plan_ref") or {}
     if sp_ref.get("version") != 5:
-        issues.append(
-            f"shot_plan_ref.version 应为 5, 实际为 {sp_ref.get('version')}"
-        )
+        issues.append(f"shot_plan_ref.version 应为 5, 实际为 {sp_ref.get('version')}")
 
-    # keyframe_plan_ref 绑定 v02
     kp_ref = run_doc.get("keyframe_plan_ref") or {}
     if kp_ref.get("version") != 2:
-        issues.append(
-            f"keyframe_plan_ref.version 应为 2, 实际为 {kp_ref.get('version')}"
-        )
+        issues.append(f"keyframe_plan_ref.version 应为 2, 实际为 {kp_ref.get('version')}")
 
-    # source_image_keyframe_ref 绑定 v01
     src_ref = run_doc.get("source_image_keyframe_ref") or {}
     if src_ref.get("version") != 1:
-        issues.append(
-            f"source_image_keyframe_ref.version 应为 1, 实际为 {src_ref.get('version')}"
-        )
+        issues.append(f"source_image_keyframe_ref.version 应为 1, 实际为 {src_ref.get('version')}")
 
-    # 四个诊断 keyframe ID 正确
-    target_ids = [t.get("keyframe_id") for t in run_doc.get("targets", []) or []]
-    for expected_id in DIAGNOSTIC_KEYFRAME_IDS:
-        if expected_id not in target_ids:
-            issues.append(f"缺少诊断帧 {expected_id}")
 
-    # selected_attempt 必须存在于 attempts 中
     for target in run_doc.get("targets", []) or []:
         kf_id = target.get("keyframe_id", "?")
         selected = target.get("selected_attempt")
         if selected is not None:
-            attempt_ids = [
-                a.get("attempt") for a in target.get("attempts", []) or []
-            ]
+            attempt_ids = [a.get("attempt") for a in target.get("attempts", []) or []]
             if selected not in attempt_ids:
                 issues.append(
-                    f"{kf_id}: selected_attempt={selected!r} "
-                    f"不在 attempts 列表中 {attempt_ids}"
+                    f"{kf_id}: selected_attempt={selected!r} 不在 attempts 列表中 {attempt_ids}"
                 )
 
-    # 禁止字段检查（YAML 序列化后字符串搜索）
     run_text = yaml.safe_dump(run_doc, allow_unicode=True)
     for forbidden in ("Authorization:", "sk-sp-", "data:image/"):
         if forbidden in run_text:
             issues.append(
-                f"edit-run YAML 含有禁止内容 {forbidden!r} "
-                f"(API Key / Base64 / Authorization Header)"
+                f"edit-run YAML 含有禁止内容 {forbidden!r} (API Key / Base64 / Authorization Header)"
             )
 
     return issues
 
-
-# ---------------------------------------------------------------- 审核页
 
 _STYLE = """
 :root { color-scheme: light dark; }
@@ -619,6 +559,8 @@ table.checks td:first-child { color: #9aa0a6; }
 .gate-block { background: #3a1e1e; color: #f09a9a; border: 1px solid #6e2828; }
 .gate-rev { background: #38310f; color: #e2c86a; border: 1px solid #6a5a12; }
 .gate-pend { background: #2d3440; color: #9aa0a6; border: 1px solid #3a4048; }
+.code-block { background: #0d1015; border: 1px solid #282e36; padding: 10px; border-radius: 4px;
+              font-family: ui-monospace, Menlo, monospace; font-size: 11px; white-space: pre-wrap; margin-top: 6px; color: #a6acb8; }
 """
 
 
@@ -626,19 +568,16 @@ def _esc(value: object) -> str:
     return html.escape("" if value is None else str(value))
 
 
-def _verdict_span(value: str | None) -> str:
-    v = value or "pending"
-    return f"<span class='v {_esc(v)}'>{_esc(v)}</span>"
-
-
-def _gate_class(gate: str | None) -> str:
-    if gate == "pass":
-        return "gate-pass"
-    if gate == "blocked":
-        return "gate-block"
-    if gate == "revision_required":
-        return "gate-rev"
-    return "gate-pend"
+def _rel_path(asset_path_str: str | None, base_dir: Path) -> str:
+    if not asset_path_str:
+        return ""
+    path = Path(asset_path_str)
+    if not path.is_absolute():
+        path = ROOT / path
+    try:
+        return os.path.relpath(path, base_dir)
+    except Exception:
+        return asset_path_str
 
 
 def review_html(
@@ -646,21 +585,17 @@ def review_html(
     plan: dict,
     shot_plan: dict,
     *,
-    images_rel_base: str = "images",
+    review_dir: Path | None = None,
 ) -> str:
-    """单文件审核页: 无外部 CDN、无服务器, 浏览器直接打开。确定性重建。
-
-    图片以相对路径引用, 不嵌入 base64。
-    不调用 API, 不修改 YAML, 不泄漏 API Key / Base64 / URL。
-    """
+    """Generate browser-viewable review.html with relative asset paths and VLM vs Human separation."""
+    base_dir = review_dir or (ROOT / "data" / "drafts" / "image-keyframe-edits" / run_doc.get("scene_ref", "reluctant-01-proto-01") / f"v{run_doc.get('version', 2):02d}")
     shots = _shot_index(shot_plan)
 
-    # 按 keyframe_id 索引 target 和 keyframe
     targets_by_id: dict[str, dict] = {
         t.get("keyframe_id"): t
         for t in run_doc.get("targets", []) or []
     }
-    # Keyframe 信息
+
     kf_index: dict[str, dict] = {}
     kf_shot: dict[str, str] = {}
     for entry in plan.get("shots", []) or []:
@@ -675,54 +610,45 @@ def review_html(
     ir = run_doc.get("identity_reference") or {}
     api_gate = run_doc.get("api_gate", "pending")
     sem_gate = run_doc.get("semantic_gate", "pending")
+    schema_ver = run_doc.get("schema_version", "1.0")
 
     body: list[str] = [
-        f"<h1>{_esc(run_doc.get('scene_ref'))} — Wan 2.7 状态编辑实验 "
-        f"v{run_doc.get('version', 0):02d}</h1>",
+        f"<h1>{_esc(run_doc.get('scene_ref'))} — Wan 2.7 Visual Compiler & Review Pipeline "
+        f"v{run_doc.get('version', 0):02d} (Schema {schema_ver})</h1>",
         f"<div class='sub'>Shot Plan v{(run_doc.get('shot_plan_ref') or {}).get('version')}"
         f" · Keyframe Plan v{(run_doc.get('keyframe_plan_ref') or {}).get('version')}"
         f" · Source Image Keyframes v{(run_doc.get('source_image_keyframe_ref') or {}).get('version')}"
-        f" · {_esc(gen.get('primary_model'))}"
-        f" · {_esc(gen.get('endpoint_kind'))}</div>",
+        f" · {_esc(gen.get('primary_model'))}</div>",
         "<div class='warn'>"
         f"<b>{_esc(REVIEW_LAYER)}</b>"
         f"<b>{_esc(REVIEW_NOT_FULL)}</b>"
         f"<b>{_esc(REVIEW_NOT_VIDEO)}</b>"
-        "本页只审核 Token Plan Wan 2.7 图片编辑能力，不是完整九帧审核，也不是视频运动审核。"
-        "<br>即使四张全部通过，最多只能写: READY FOR FULL WAN 2.7 IMAGE-KEYFRAME REGENERATION。"
-        "<br>不能写: READY FOR VIDEO MOTION PROTOTYPE。"
-        "</div>",
-        "<div class='note'>"
-        "must_avoid 以自然语言形式出现在 FORBIDDEN OUTCOMES 节。"
-        "Wan 2.7 不支持独立 negative_prompt；must_avoid 仍是人工审核清单，"
-        "不是采样器级约束。"
+        "本页审核 LLM Visual Compiler 与 Wan 2.7 状态编辑成果及 VLM 辅助评估。"
         "</div>",
     ]
 
-    # 身份参考图信息
-    if ir.get("image"):
+    ir_img_rel = _rel_path(ir.get("image"), base_dir) if ir.get("image") else None
+    if ir_img_rel:
         body.append(
-            f"<div class='note'>身份参考图: <code>{_esc(ir.get('image'))}</code>"
-            f" · 用途: {_esc(ir.get('rationale', '')[:200])}"
-            f" · scope: {_esc(ir.get('scope'))}</div>"
+            f"<div class='note'>身份参考图: <code>{_esc(ir_img_rel)}</code>"
+            f" · 用途: {_esc(ir.get('rationale', '')[:200])}</div>"
         )
 
-    # 各诊断帧
     for kf_id in DIAGNOSTIC_KEYFRAME_IDS:
         target = targets_by_id.get(kf_id, {})
         kf = kf_index.get(kf_id, {})
-        shot = shots.get(kf_shot.get(kf_id, ""), {})
         shows = kf.get("must_show") or []
         avoids = kf.get("must_avoid") or []
         attempts = target.get("attempts") or []
         selected = target.get("selected_attempt")
 
-        # 找选中的 attempt
         selected_attempt = None
         for att in attempts:
             if att.get("attempt") == selected:
                 selected_attempt = att
                 break
+        if not selected_attempt and attempts:
+            selected_attempt = attempts[-1]
 
         body.append("<div class='section'>")
         body.append(
@@ -731,78 +657,99 @@ def review_html(
         )
         body.append("<div class='target'>")
 
-        # 图片区: 身份参考 / 基础图 / 候选输出
         body.append("<div class='images'>")
-        if ir.get("image"):
+        if ir_img_rel:
             body.append(
                 f"<div class='imgbox'><figure>"
-                f"<figcaption>身份参考图 (experiment-local)</figcaption>"
-                f"<img src='{_esc(ir['image'])}' alt='identity-ref' loading='lazy'>"
+                f"<figcaption>身份参考图</figcaption>"
+                f"<img src='{_esc(ir_img_rel)}' alt='identity-ref' loading='lazy'>"
                 "</figure></div>"
             )
-        if target.get("source_image"):
+
+        src_rel = _rel_path(target.get("source_image"), base_dir)
+        if src_rel:
             body.append(
                 f"<div class='imgbox'><figure>"
-                f"<figcaption>基础输入图 ({_esc(target.get('source_image'))})</figcaption>"
-                f"<img src='{_esc(target['source_image'])}' alt='source' loading='lazy'>"
+                f"<figcaption>基础输入图 ({_esc(src_rel)})</figcaption>"
+                f"<img src='{_esc(src_rel)}' alt='source' loading='lazy'>"
                 "</figure></div>"
             )
+
         if selected_attempt:
-            img_path = selected_attempt.get("image", "")
+            cand_rel = _rel_path(selected_attempt.get("image"), base_dir)
             body.append(
                 f"<div class='imgbox'><figure>"
-                f"<figcaption>候选输出 (attempt {_esc(selected)})</figcaption>"
+                f"<figcaption>候选输出 ({_esc(selected_attempt.get('attempt'))})</figcaption>"
                 + (
-                    f"<img src='{_esc(img_path)}' alt='{_esc(kf_id)}' loading='lazy'>"
-                    if img_path
-                    else "<div class='missing'>图片未生成</div>"
-                )
-                + "</figure></div>"
-            )
-        elif attempts:
-            # 显示最后一次 attempt
-            last_att = attempts[-1]
-            img_path = last_att.get("image", "")
-            body.append(
-                f"<div class='imgbox'><figure>"
-                f"<figcaption>最后一次 attempt (attempt {_esc(last_att.get('attempt'))})</figcaption>"
-                + (
-                    f"<img src='{_esc(img_path)}' alt='{_esc(kf_id)}' loading='lazy'>"
-                    if img_path
+                    f"<img src='{_esc(cand_rel)}' alt='{_esc(kf_id)}' loading='lazy'>"
+                    if cand_rel
                     else "<div class='missing'>图片未生成</div>"
                 )
                 + "</figure></div>"
             )
         else:
             body.append("<div class='imgbox'><div class='missing'>尚未生成</div></div>")
-        body.append("</div>")  # .images
+        body.append("</div>")
 
-        # 元数据
-        for att in attempts:
-            review = att.get("review") or {}
-            notes_html = "".join(
-                f"<li>{_esc(n)}</li>" for n in review.get("notes") or []
-            )
+        if selected_attempt:
+            att = selected_attempt
+            directive_ref = att.get("render_directive_ref") or {}
+            directive_rel = _rel_path(directive_ref.get("path"), base_dir) if directive_ref.get("path") else ""
+
             body.append(
-                f"<div class='meta'>attempt={_esc(att.get('attempt'))}"
-                f" · model={_esc(att.get('model'))}"
-                f" · seed={_esc(att.get('seed'))}"
-                f" · request_id={_esc(att.get('request_id'))}"
-                f" · status={_esc(att.get('status'))}</div>"
-                + "<div class='verdicts'>"
-                + "".join(
-                    "<span class='v {cls}'>{label}: {val}</span>".format(
-                        cls=_esc(review.get(dim, "pending")),
-                        label=_esc(dim.replace("_", " ")),
-                        val=_esc(review.get(dim, "pending")),
-                    )
-                    for dim in REVIEW_DIMS
-                )
-                + "</div>"
-                + (f"<ul class='notes-list'>{notes_html}</ul>" if notes_html else "")
+                f"<div class='meta'>Attempt: {_esc(att.get('attempt'))}"
+                f" · Status: {_esc(att.get('status'))}"
+                f" · Request ID: {_esc(att.get('request_id'))}"
+                f" · Directive: {_esc(directive_rel)}</div>"
             )
 
-        # 语义说明
+            prompt_text = att.get("prompt", "")
+            if prompt_text:
+                body.append(
+                    f"<div class='why'><b>Wan Serialized Prompt:</b></div>"
+                    f"<div class='code-block'>{_esc(prompt_text[:800])}</div>"
+                )
+
+            bbox_list = att.get("bbox_list")
+            if bbox_list:
+                body.append(
+                    f"<div class='meta'>BBox List: {_esc(json.dumps(bbox_list))}</div>"
+                )
+
+            # Support both v1.0 review and v1.1 reviews
+            reviews = att.get("reviews") or {}
+            vlm_rev = reviews.get("vlm") or {}
+            human_rev = reviews.get("human") or {}
+
+            # Support v1.0 fallback
+            legacy_rev = att.get("review") or {}
+            if legacy_rev and not human_rev.get("verdicts"):
+                human_rev = {"status": "completed", "verdicts": legacy_rev, "notes": legacy_rev.get("notes", [])}
+
+            if vlm_rev:
+                vlm_v = vlm_rev.get("verdicts") or {}
+                body.append(
+                    f"<div class='why'><b>VLM Advisory Review</b> (Suggested: <code>{_esc(vlm_rev.get('suggested_verdict'))}</code>, Request ID: {_esc(vlm_rev.get('request_id'))}):</div>"
+                    + "<div class='verdicts'>"
+                    + "".join(
+                        f"<span class='v {_esc(vlm_v.get(dim, 'pending'))}'>vlm.{_esc(dim)}: {_esc(vlm_v.get(dim, 'pending'))}</span>"
+                        for dim in REVIEW_DIMS
+                    )
+                    + "</div>"
+                )
+
+            if human_rev:
+                hum_v = human_rev.get("verdicts") or {}
+                body.append(
+                    f"<div class='why'><b>Human Final Review Gate</b> (Status: <code>{_esc(human_rev.get('status'))}</code>):</div>"
+                    + "<div class='verdicts'>"
+                    + "".join(
+                        f"<span class='v {_esc(hum_v.get(dim, 'pending'))}'>human.{_esc(dim)}: {_esc(hum_v.get(dim, 'pending'))}</span>"
+                        for dim in REVIEW_DIMS
+                    )
+                    + "</div>"
+                )
+
         shows_html = "".join(f"<li>{_esc(s)}</li>" for s in shows)
         avoids_html = "".join(f"<li>{_esc(a)}</li>" for a in avoids)
         body.append(
@@ -813,57 +760,54 @@ def review_html(
             f"<ul class='avoid'>{avoids_html}</ul>"
         )
 
-        body.append("</div>")  # .target
-        body.append("</div>")  # .section
+        body.append("</div></div>")
 
-    # 跨镜连续性区域
+    # 跨镜区域
     body.append("<div class='section'>")
-    up_id, down_id = CROSS_SHOT_PAIR
-    body.append(
-        f"<h2>跨镜连续性对<span>{_esc(up_id)} → {_esc(down_id)} · "
-        "两帧的动作状态和道具状态必须相同，构图可以更紧</span></h2>"
-    )
+    body.append(f"<h2>跨镜连续性对<span>{_esc(CROSS_SHOT_PAIR[0])} → {_esc(CROSS_SHOT_PAIR[1])}</span></h2>")
     body.append("<div class='pair'>")
     for pair_id in CROSS_SHOT_PAIR:
         target = targets_by_id.get(pair_id, {})
         selected = target.get("selected_attempt")
-        img_path = ""
+        img_rel = ""
         for att in target.get("attempts") or []:
             if att.get("attempt") == selected:
-                img_path = att.get("image", "")
+                img_rel = _rel_path(att.get("image"), base_dir)
                 break
         body.append(
             f"<figure><figcaption>{_esc(pair_id)}</figcaption>"
             + (
-                f"<img src='{_esc(img_path)}' alt='{_esc(pair_id)}'>"
-                if img_path
+                f"<img src='{_esc(img_rel)}' alt='{_esc(pair_id)}'>"
+                if img_rel
                 else "<div class='missing'>尚未生成</div>"
             )
             + "</figure>"
         )
-    body.append("</div>")  # .pair
+    body.append("</div>")
     body.append(
         "<table class='checks'>"
-        + "".join(
-            f"<tr><td>{_esc(check)}</td><td>逐项人工核对</td></tr>"
-            for check in CONTINUITY_CHECKS
-        )
-        + "</table>"
+        + "".join(f"<tr><td>{_esc(check)}</td><td>逐项人工核对</td></tr>" for check in CONTINUITY_CHECKS)
+        + "</table></div>"
     )
-    body.append("</div>")  # .section
 
-    # Gate 总结
+    def _gate_class(gate: str | None) -> str:
+        if gate == "pass":
+            return "gate-pass"
+        if gate == "blocked":
+            return "gate-block"
+        if gate == "revision_required":
+            return "gate-rev"
+        return "gate-pend"
+
     body.append(
-        f"<div class='gate-box {_gate_class(api_gate)}'>"
-        f"api_gate: {_esc(api_gate)}</div>"
-        f"<div class='gate-box {_gate_class(sem_gate)}' style='margin-top:8px'>"
-        f"semantic_gate: {_esc(sem_gate)}</div>"
+        f"<div class='gate-box {_gate_class(api_gate)}'>api_gate: {_esc(api_gate)}</div>"
+        f"<div class='gate-box {_gate_class(sem_gate)}' style='margin-top:8px'>semantic_gate (Human): {_esc(sem_gate)}</div>"
     )
 
     return (
         "<!DOCTYPE html>\n<html lang='zh'>\n<head>\n<meta charset='utf-8'>\n"
         "<meta name='viewport' content='width=device-width, initial-scale=1'>\n"
-        f"<title>{_esc(run_doc.get('scene_ref'))} Wan 2.7 edit review</title>\n"
+        f"<title>{_esc(run_doc.get('scene_ref'))} Wan 2.7 Visual Compiler review</title>\n"
         f"<style>{_STYLE}</style>\n</head>\n<body>\n"
         + "\n".join(body)
         + "\n</body>\n</html>\n"

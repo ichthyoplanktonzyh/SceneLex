@@ -1,0 +1,79 @@
+schema_version: '1.0'
+scene_ref: reluctant-01-proto-01
+keyframe_id: shot-02-kf-03
+compiler_attempt: compiler-attempt-01
+edit_mode: local_edit
+image_roles:
+- image_id: image-01
+  role: identity_reference
+- image_id: image-02
+  role: base_image
+preserve:
+  identity:
+  - preserve character features and clothes
+  composition:
+  - preserve camera angle and background lighting
+  body_state:
+  - preserve torso posture
+remove_from_previous_state:
+- remove previous fork position on table
+change:
+- subject: arm_and_fork
+  operation: update
+  target_state: The reach is halted mid-way. The child's right arm is extended roughly
+    two thirds of the distance to the fork, hand open, hovering above the table without
+    touching it. His torso has not come forward with the arm — he is still leaned
+    back — and his gaze is still off the plate. The arm is the only thing that has
+    moved.
+must_be_visible:
+- source_id: show-01
+  physical_requirement: Hand stopped short of the fork and not touching it.
+- source_id: show-02
+  physical_requirement: Torso still back — the body has not committed to the action.
+- source_id: show-03
+  physical_requirement: Gaze still not on the plate.
+forbidden_outcomes:
+- source_id: avoid-01
+  physical_requirement: The hand reaching for anything other than the fork.
+- source_id: avoid-02
+  physical_requirement: The hand recoiling backwards, which would read as refuse.
+- source_id: avoid-03
+  physical_requirement: A fast, confident reach with the body following it.
+edit_regions:
+- semantic_region: arm and prop action area
+  image_id: image-02
+  bbox_normalized:
+  - 250
+  - 300
+  - 750
+  - 850
+  confidence: 0.95
+coverage:
+  must_show_ids:
+  - show-01
+  - show-02
+  - show-03
+  must_avoid_ids:
+  - avoid-01
+  - avoid-02
+  - avoid-03
+compiler:
+  protocol: openai-chat
+  model: gemini-flash-latest
+  request_id: rule-compiler-fallback
+  generated_at: null
+wan_prompt: "=== IMAGE ROLES ===\n- image-01: identity_reference\n- image-02: base_image\n\
+  \n=== PRESERVE ===\nIdentity:\n  - preserve character features and clothes\nComposition:\n\
+  \  - preserve camera angle and background lighting\nBody State:\n  - preserve torso\
+  \ posture\n\n=== REMOVE FROM PREVIOUS STATE ===\n- remove previous fork position\
+  \ on table\n\n=== CHANGE ===\n- arm_and_fork: update -> The reach is halted mid-way.\
+  \ The child's right arm is extended roughly two thirds of the distance to the fork,\
+  \ hand open, hovering above the table without touching it. His torso has not come\
+  \ forward with the arm — he is still leaned back — and his gaze is still off the\
+  \ plate. The arm is the only thing that has moved.\n\n=== MUST BE VISIBLE ===\n\
+  - [show-01]: Hand stopped short of the fork and not touching it.\n- [show-02]: Torso\
+  \ still back — the body has not committed to the action.\n- [show-03]: Gaze still\
+  \ not on the plate.\n\n=== FORBIDDEN OUTCOMES ===\n- [avoid-01]: The hand reaching\
+  \ for anything other than the fork.\n- [avoid-02]: The hand recoiling backwards,\
+  \ which would read as refuse.\n- [avoid-03]: A fast, confident reach with the body\
+  \ following it."

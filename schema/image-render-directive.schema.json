@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scenelex.org/schema/image-render-directive.schema.json",
+  "title": "SceneLex Image Render Directive",
+  "description": "LLM Visual Compiler 编译后的结构化 Render Directive 中间产物规格。",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "scene_ref",
+    "keyframe_id",
+    "compiler_attempt",
+    "edit_mode",
+    "image_roles",
+    "preserve",
+    "remove_from_previous_state",
+    "change",
+    "must_be_visible",
+    "forbidden_outcomes",
+    "edit_regions",
+    "wan_prompt",
+    "coverage",
+    "compiler"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "scene_ref": { "type": "string", "minLength": 1 },
+    "keyframe_id": { "type": "string", "minLength": 1 },
+    "compiler_attempt": { "type": "string", "pattern": "^compiler-attempt-[0-9]{2}$" },
+    "edit_mode": { "enum": ["local_edit", "full_frame_edit"] },
+    "image_roles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["image_id", "role"],
+        "additionalProperties": false,
+        "properties": {
+          "image_id": { "type": "string", "minLength": 1 },
+          "role": { "enum": ["identity_reference", "base_image", "previous_keyframe_pass"] }
+        }
+      }
+    },
+    "preserve": {
+      "type": "object",
+      "required": ["identity", "composition", "body_state"],
+      "additionalProperties": false,
+      "properties": {
+        "identity": { "type": "array", "items": { "type": "string" } },
+        "composition": { "type": "array", "items": { "type": "string" } },
+        "body_state": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "remove_from_previous_state": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "change": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["subject", "operation"],
+        "additionalProperties": false,
+        "properties": {
+          "subject": { "type": "string", "minLength": 1 },
+          "operation": { "type": "string", "minLength": 1 },
+          "object": { "type": ["string", "null"] },
+          "target_state": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "must_be_visible": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_id", "physical_requirement"],
+        "additionalProperties": false,
+        "properties": {
+          "source_id": { "type": "string", "minLength": 1 },
+          "physical_requirement": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "forbidden_outcomes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_id", "physical_requirement"],
+        "additionalProperties": false,
+        "properties": {
+          "source_id": { "type": "string", "minLength": 1 },
+          "physical_requirement": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "edit_regions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["semantic_region", "image_id", "bbox_normalized", "confidence"],
+        "additionalProperties": false,
+        "properties": {
+          "semantic_region": { "type": "string", "minLength": 1 },
+          "image_id": { "type": "string", "minLength": 1 },
+          "bbox_normalized": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": { "type": "integer", "minimum": 0, "maximum": 1000 }
+          },
+          "confidence": { "type": "number", "minimum": 0.0, "maximum": 1.0 }
+        }
+      }
+    },
+    "wan_prompt": { "type": "string", "minLength": 1 },
+    "coverage": {
+      "type": "object",
+      "required": ["must_show_ids", "must_avoid_ids"],
+      "additionalProperties": false,
+      "properties": {
+        "must_show_ids": { "type": "array", "items": { "type": "string" } },
+        "must_avoid_ids": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "compiler": {
+      "type": "object",
+      "required": ["protocol", "model", "request_id", "generated_at"],
+      "additionalProperties": false,
+      "properties": {
+        "protocol": { "type": "string", "minLength": 1 },
+        "model": { "type": ["string", "null"] },
+        "request_id": { "type": ["string", "null"] },
+        "generated_at": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

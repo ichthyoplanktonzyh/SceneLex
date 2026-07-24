@@ -1,0 +1,49 @@
+schema_version: '1.0'
+scene_ref: reluctant-01-proto-01
+keyframe_id: shot-02-kf-03
+source_refs:
+  shot_plan_version: 5
+  keyframe_plan_version: 2
+  source_image_version: 1
+image_roles:
+- id: image-01
+  role: identity_reference
+  path: /Users/shadow/SceneLex/data/drafts/image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-02.png
+- id: image-02
+  role: base_image
+  path: /Users/shadow/SceneLex/data/drafts/image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-03.png
+target:
+  visual_state: The reach is halted mid-way. The child's right arm is extended roughly
+    two thirds of the distance to the fork, hand open, hovering above the table without
+    touching it. His torso has not come forward with the arm — he is still leaned
+    back — and his gaze is still off the plate. The arm is the only thing that has
+    moved.
+  must_show:
+  - id: show-01
+    text: Hand stopped short of the fork and not touching it.
+  - id: show-02
+    text: Torso still back — the body has not committed to the action.
+  - id: show-03
+    text: Gaze still not on the plate.
+  must_avoid:
+  - id: avoid-01
+    text: The hand reaching for anything other than the fork.
+  - id: avoid-02
+    text: The hand recoiling backwards, which would read as refuse.
+  - id: avoid-03
+    text: A fast, confident reach with the body following it.
+source_state:
+  previous_keyframe_id: null
+  previous_visual_state: null
+  continuity_from_previous: null
+scene_constants:
+  cast:
+  - reluctant child
+  location: dining room, wooden table
+  props:
+  - broccoli plate
+  - metal fork
+render_context:
+  provider: aliyun-token-plan
+  model: wan2.7-image-pro
+  requested_size: 1152*640

@@ -1,0 +1,52 @@
+schema_version: '1.0'
+scene_ref: reluctant-01-proto-01
+keyframe_id: shot-02-kf-04
+source_refs:
+  shot_plan_version: 5
+  keyframe_plan_version: 2
+  source_image_version: 1
+image_roles:
+- id: image-01
+  role: identity_reference
+  path: /Users/shadow/SceneLex/data/drafts/image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-02.png
+- id: image-02
+  role: base_image
+  path: /Users/shadow/SceneLex/data/drafts/image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-04.png
+target:
+  visual_state: The child's right hand has closed around the fork and lifted it just
+    clear of the table, holding it near the rim of the plate with the tines not yet
+    in any broccoli. His torso is still leaned back against the chair, his left hand
+    is still on the table, his eyes are still off the plate and his mouth is closed
+    and flat. The mother is unchanged at the left edge, touching nothing.
+  must_show:
+  - id: show-01
+    text: The fork in the child's own right hand, lifted clear of the table near the
+      rim of the plate.
+  - id: show-02
+    text: Tines not yet in the food — the action is started, not completed.
+  - id: show-03
+    text: Torso still leaned back at the angle established earlier.
+  - id: show-04
+    text: No one else's hand on the fork, on the plate or on the child.
+  must_avoid:
+  - id: avoid-01
+    text: The torso coming forward with the arm, which would end the withdrawal here.
+  - id: avoid-02
+    text: The gaze turning eager or the mouth shifting into a smile.
+  - id: avoid-03
+    text: The fork already loaded with broccoli — that belongs to the next shot.
+source_state:
+  previous_keyframe_id: null
+  previous_visual_state: null
+  continuity_from_previous: null
+scene_constants:
+  cast:
+  - reluctant child
+  location: dining room, wooden table
+  props:
+  - broccoli plate
+  - metal fork
+render_context:
+  provider: aliyun-token-plan
+  model: wan2.7-image-pro
+  requested_size: 1152*640

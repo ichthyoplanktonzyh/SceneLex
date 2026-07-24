@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang='zh'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>reluctant-01-proto-01 Wan 2.7 Visual Compiler review</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 24px; font: 15px/1.55 -apple-system, "Helvetica Neue",
+       "PingFang SC", "Microsoft YaHei", sans-serif; background: #14161a; color: #e8eaed; }
+h1 { font-size: 19px; margin: 0 0 4px; }
+.sub { color: #9aa0a6; font-size: 13px; margin-bottom: 16px; }
+.warn { border: 1px solid #b3541e; background: #2a1a0d; color: #ffb782;
+        padding: 12px 14px; border-radius: 6px; margin-bottom: 18px; font-size: 13px; }
+.warn b { display: block; letter-spacing: .04em; margin-bottom: 4px; color: #ffd0a3; font-size: 14px; }
+.note { border: 1px solid #2d4a6e; background: #0d1e30; color: #a8caf0;
+        padding: 10px 14px; border-radius: 6px; margin-bottom: 14px; font-size: 12px; }
+.section { border-top: 2px solid #3a4048; margin-top: 24px; padding-top: 12px; }
+.section h2 { font-size: 15px; margin: 0 0 12px; }
+.section h2 span { color: #9aa0a6; font-weight: 400; font-size: 13px; margin-left: 8px; }
+.target { background: #1b1f25; border: 1px solid #333940; border-radius: 6px;
+          padding: 16px; margin-bottom: 16px; }
+.target-id { font-family: ui-monospace, Menlo, monospace; font-size: 13px; color: #7aa2f7;
+             margin-bottom: 10px; }
+.images { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.imgbox { flex: 1 1 300px; }
+.imgbox figcaption { font-size: 11px; color: #9aa0a6; margin-bottom: 4px;
+                     font-family: ui-monospace, Menlo, monospace; }
+.imgbox img { width: 100%; border-radius: 4px; display: block; background: #0e1013; }
+.missing { border: 1px dashed #b3541e; color: #ffb782; padding: 24px; text-align: center;
+           border-radius: 4px; font-size: 13px; }
+.meta { font-size: 12px; color: #9aa0a6; margin-bottom: 10px; font-family: ui-monospace, Menlo, monospace; }
+.why { font-size: 12.5px; color: #9aa0a6; margin-top: 10px; }
+.why b { color: #b8c0cc; font-weight: 600; }
+ul { margin: 4px 0 0; padding-left: 18px; font-size: 12.5px; color: #9aa0a6; }
+ul.avoid { color: #d99a9a; }
+.verdicts { margin-top: 10px; font-size: 12px; }
+.v { display: inline-block; padding: 1px 7px; border-radius: 10px; margin-right: 5px;
+     background: #2d3440; color: #b8c0cc; }
+.v.pass { background: #1d3324; color: #93d3a6; }
+.v.weak { background: #38310f; color: #e2c86a; }
+.v.fail { background: #3a1e1e; color: #f09a9a; }
+.v.pending { background: #2d3440; color: #7f868e; }
+.notes-list { font-size: 12px; color: #cdd2d8; margin-top: 6px; padding-left: 18px; }
+.pair { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; }
+.pair figure { flex: 1 1 380px; margin: 0; }
+.pair img { width: 100%; border-radius: 4px; display: block; }
+.pair figcaption { font-family: ui-monospace, Menlo, monospace; font-size: 12px;
+                   color: #7aa2f7; margin-bottom: 6px; }
+table.checks { border-collapse: collapse; margin-top: 12px; font-size: 12.5px; }
+table.checks td { border: 1px solid #333940; padding: 4px 10px; color: #b8c0cc; }
+table.checks td:first-child { color: #9aa0a6; }
+.gate-box { margin-top: 20px; padding: 12px 16px; border-radius: 6px;
+            font-size: 14px; font-weight: 600; letter-spacing: .03em; }
+.gate-pass { background: #1d3324; color: #93d3a6; border: 1px solid #2a5c38; }
+.gate-block { background: #3a1e1e; color: #f09a9a; border: 1px solid #6e2828; }
+.gate-rev { background: #38310f; color: #e2c86a; border: 1px solid #6a5a12; }
+.gate-pend { background: #2d3440; color: #9aa0a6; border: 1px solid #3a4048; }
+.code-block { background: #0d1015; border: 1px solid #282e36; padding: 10px; border-radius: 4px;
+              font-family: ui-monospace, Menlo, monospace; font-size: 11px; white-space: pre-wrap; margin-top: 6px; color: #a6acb8; }
+</style>
+</head>
+<body>
+<h1>reluctant-01-proto-01 — Wan 2.7 Visual Compiler & Review Pipeline v02 (Schema 1.1)</h1>
+<div class='sub'>Shot Plan v5 · Keyframe Plan v2 · Source Image Keyframes v1 · wan2.7-image-pro</div>
+<div class='warn'><b>WAN 2.7 CLOUD IMAGE STATE-EDIT REVIEW</b><b>NOT FULL IMAGE-KEYFRAME REVIEW</b><b>NOT VIDEO MOTION REVIEW</b>本页审核 LLM Visual Compiler 与 Wan 2.7 状态编辑成果及 VLM 辅助评估。</div>
+<div class='note'>身份参考图: <code>../../../image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-02.png</code> · 用途: Single identity anchor image (shot-02-kf-02) for reluctant child.</div>
+<div class='section'>
+<h2><span class='target-id'>shot-02-kf-03</span><span> · 把 reluctant 与普通服从分开的那一帧。从“后靠”直接过渡到“握着叉子”，插值与视频模型都会生成一次平滑、正常的伸手，中途那半秒的停顿会被抹掉——而启动延迟正是不情愿的核心证据。身体没有跟上手</span></h2>
+<div class='target'>
+<div class='images'>
+<div class='imgbox'><figure><figcaption>身份参考图</figcaption><img src='../../../image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-02.png' alt='identity-ref' loading='lazy'></figure></div>
+<div class='imgbox'><figure><figcaption>基础输入图 (../../../image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-03.png)</figcaption><img src='../../../image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-03.png' alt='source' loading='lazy'></figure></div>
+<div class='imgbox'><div class='missing'>尚未生成</div></div>
+</div>
+<div class='why'><b>Semantic purpose:</b> 把 reluctant 与普通服从分开的那一帧。从“后靠”直接过渡到“握着叉子”，插值与视频模型都会生成一次平滑、正常的伸手，中途那半秒的停顿会被抹掉——而启动延迟正是不情愿的核心证据。身体没有跟上手，也让“只有手在配合”直接可见。</div><div class='why'><b>Visual state:</b> The reach is halted mid-way. The child&#x27;s right arm is extended roughly two thirds of the distance to the fork, hand open, hovering above the table without touching it. His torso has not come forward with the arm — he is still leaned back — and his gaze is still off the plate. The arm is the only thing that has moved.</div><div class='why'><b>Must show</b></div><ul><li>Hand stopped short of the fork and not touching it.</li><li>Torso still back — the body has not committed to the action.</li><li>Gaze still not on the plate.</li></ul><div class='why'><b>Must avoid (→ FORBIDDEN OUTCOMES)</b></div><ul class='avoid'><li>The hand reaching for anything other than the fork.</li><li>The hand recoiling backwards, which would read as refuse.</li><li>A fast, confident reach with the body following it.</li></ul>
+</div></div>
+<div class='section'>
+<h2><span class='target-id'>shot-02-kf-04</span><span> · 本镜头的结束状态，也是交给 shot-03 的连续性契约。它证明孩子最终**自己**握住了叉子（不是拒绝，也不是被喂），同时躯干仍然后靠——低意愿没有随着动作开始而消失。删掉它，握住叉子这个动作就发生</span></h2>
+<div class='target'>
+<div class='images'>
+<div class='imgbox'><figure><figcaption>身份参考图</figcaption><img src='../../../image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-02.png' alt='identity-ref' loading='lazy'></figure></div>
+<div class='imgbox'><figure><figcaption>基础输入图 (../../../image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-04.png)</figcaption><img src='../../../image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-04.png' alt='source' loading='lazy'></figure></div>
+<div class='imgbox'><div class='missing'>尚未生成</div></div>
+</div>
+<div class='why'><b>Semantic purpose:</b> 本镜头的结束状态，也是交给 shot-03 的连续性契约。它证明孩子最终**自己**握住了叉子（不是拒绝，也不是被喂），同时躯干仍然后靠——低意愿没有随着动作开始而消失。删掉它，握住叉子这个动作就发生在剪辑点之间，观众看不到他是自己拿的；shot-03 的首帧也失去了可对齐的上游状态，跨镜连续性只剩一句口头承诺。</div><div class='why'><b>Visual state:</b> The child&#x27;s right hand has closed around the fork and lifted it just clear of the table, holding it near the rim of the plate with the tines not yet in any broccoli. His torso is still leaned back against the chair, his left hand is still on the table, his eyes are still off the plate and his mouth is closed and flat. The mother is unchanged at the left edge, touching nothing.</div><div class='why'><b>Must show</b></div><ul><li>The fork in the child&#x27;s own right hand, lifted clear of the table near the rim of the plate.</li><li>Tines not yet in the food — the action is started, not completed.</li><li>Torso still leaned back at the angle established earlier.</li><li>No one else&#x27;s hand on the fork, on the plate or on the child.</li></ul><div class='why'><b>Must avoid (→ FORBIDDEN OUTCOMES)</b></div><ul class='avoid'><li>The torso coming forward with the arm, which would end the withdrawal here.</li><li>The gaze turning eager or the mouth shifting into a smile.</li><li>The fork already loaded with broccoli — that belongs to the next shot.</li></ul>
+</div></div>
+<div class='section'>
+<h2><span class='target-id'>shot-03-kf-01</span><span> · 跨镜头首帧本身就是连续性契约，不能因为与上一镜末帧接近就删掉：它是新镜头里唯一能被检查“叉子有没有跳位、手有没有换边、躯干角度有没有复位”的那张图。0.5s 它到下一帧有 1.5s，其中开头约 0.5</span></h2>
+<div class='target'>
+<div class='images'>
+<div class='imgbox'><figure><figcaption>身份参考图</figcaption><img src='../../../image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-02.png' alt='identity-ref' loading='lazy'></figure></div>
+<div class='imgbox'><figure><figcaption>基础输入图 (../../../image-keyframes/reluctant-01-proto-01/v01/images/shot-03-kf-01.png)</figcaption><img src='../../../image-keyframes/reluctant-01-proto-01/v01/images/shot-03-kf-01.png' alt='source' loading='lazy'></figure></div>
+<div class='imgbox'><div class='missing'>尚未生成</div></div>
+</div>
+<div class='why'><b>Semantic purpose:</b> 跨镜头首帧本身就是连续性契约，不能因为与上一镜末帧接近就删掉：它是新镜头里唯一能被检查“叉子有没有跳位、手有没有换边、躯干角度有没有复位”的那张图。0.5s 它到下一帧有 1.5s，其中开头约 0.5s 是不动的——先让观众确认阻力状态被带过了剪辑点，再由这只手把西兰花叉起并抬到嘴边。抵抗不是在切镜后重新建立的。</div><div class='why'><b>Visual state:</b> The same child at frame right, framed slightly tighter so that the fork, the plate and the mouth are all readable at once. He is in exactly the state that ended shot-02 — torso leaned back against the chair, right hand gripping the fork just clear of the table near the rim of the plate, tines not yet in the food, left hand on the table, eyes off the plate. The mother is still at the left edge, touching nothing.</div><div class='why'><b>Must show</b></div><ul><li>Same right hand on the fork, in the same position relative to the plate as the end of shot-02.</li><li>Same backward lean of the torso and the same screen direction.</li><li>Plate and remaining broccoli in their unchanged positions.</li><li>Gaze still off the plate and not eager.</li></ul><div class='why'><b>Must avoid (→ FORBIDDEN OUTCOMES)</b></div><ul class='avoid'><li>The fork jumping to the other hand or to a different position on the table.</li><li>The torso resetting to upright at the cut.</li><li>The mother having moved, or now touching the child, the fork or the plate.</li></ul>
+</div></div>
+<div class='section'>
+<h2><span class='target-id'>shot-03-kf-03</span><span> · 证明两件事同时成立：动作确实发生并由孩子自己完成（不是 refuse），而意愿始终没有转正（不是主动配合）。动作完成后身体仍维持后撤姿态，是“低意愿贯穿到底”的收尾证据。它到镜头结束还有 1.6s，咀</span></h2>
+<div class='target'>
+<div class='images'>
+<div class='imgbox'><figure><figcaption>身份参考图</figcaption><img src='../../../image-keyframes/reluctant-01-proto-01/v01/images/shot-02-kf-02.png' alt='identity-ref' loading='lazy'></figure></div>
+<div class='imgbox'><figure><figcaption>基础输入图 (../../../image-keyframes/reluctant-01-proto-01/v01/images/shot-03-kf-03.png)</figcaption><img src='../../../image-keyframes/reluctant-01-proto-01/v01/images/shot-03-kf-03.png' alt='source' loading='lazy'></figure></div>
+<div class='imgbox'><div class='missing'>尚未生成</div></div>
+</div>
+<div class='why'><b>Semantic purpose:</b> 证明两件事同时成立：动作确实发生并由孩子自己完成（不是 refuse），而意愿始终没有转正（不是主动配合）。动作完成后身体仍维持后撤姿态，是“低意愿贯穿到底”的收尾证据。它到镜头结束还有 1.6s，咀嚼、吞咽与最后的静止都在这段里发生——它们与本帧的差别只是下颌位置，本身不改变任何语义推断，所以不单独成帧。</div><div class='why'><b>Visual state:</b> The bite has been taken. The fork is back down on the plate and the child&#x27;s right hand has returned toward the table. His mouth is closed and his expression is flat, jaw at rest or on a slow chew. He is still sitting back in the chair, gaze low or to the side — he has not leaned in toward the plate and is not reaching for another piece.</div><div class='why'><b>Must show</b></div><ul><li>Fork put down on the plate — the action was completed.</li><li>Body still reclined, matching the withdrawal established in shot-02.</li><li>Flat mouth, gaze low or averted.</li><li>No reach for a second piece.</li></ul><div class='why'><b>Must avoid (→ FORBIDDEN OUTCOMES)</b></div><ul class='avoid'><li>Smiling, nodding, or leaning forward for another piece.</li><li>Spitting the food out or a face that reads as revulsion at the taste.</li><li>Pushing the plate away.</li></ul>
+</div></div>
+<div class='section'>
+<h2>跨镜连续性对<span>shot-02-kf-04 → shot-03-kf-01</span></h2>
+<div class='pair'>
+<figure><figcaption>shot-02-kf-04</figcaption><div class='missing'>尚未生成</div></figure>
+<figure><figcaption>shot-03-kf-01</figcaption><div class='missing'>尚未生成</div></figure>
+</div>
+<table class='checks'><tr><td>same child identity</td><td>逐项人工核对</td></tr><tr><td>same clothing</td><td>逐项人工核对</td></tr><tr><td>same right hand on fork</td><td>逐项人工核对</td></tr><tr><td>same fork orientation</td><td>逐项人工核对</td></tr><tr><td>same fork position near plate</td><td>逐项人工核对</td></tr><tr><td>tines not inserted into food</td><td>逐项人工核对</td></tr><tr><td>same torso recline</td><td>逐项人工核对</td></tr><tr><td>same gaze direction</td><td>逐项人工核对</td></tr><tr><td>same screen direction</td><td>逐项人工核对</td></tr><tr><td>same plate position</td><td>逐项人工核对</td></tr><tr><td>same food arrangement</td><td>逐项人工核对</td></tr><tr><td>mother still at left</td><td>逐项人工核对</td></tr><tr><td>mother touching nothing</td><td>逐项人工核对</td></tr></table></div>
+<div class='gate-box gate-pend'>api_gate: pending</div><div class='gate-box gate-pend' style='margin-top:8px'>semantic_gate (Human): pending</div>
+</body>
+</html>

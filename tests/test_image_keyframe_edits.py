@@ -382,10 +382,10 @@ class TestAdapterProtocol:
         ):
             imagegen.edit("test", [fake_png], bbox_list=[[[0, 0, 100, 200]]])
 
-        content = captured["body"]["input"]["messages"][0]["content"]
-        img_item = content[0]
-        assert "bbox_list" in img_item
-        assert img_item["bbox_list"] == [[0, 0, 100, 200]]
+        params = captured["body"]["parameters"]
+        assert "bbox_list" in params
+        assert params["bbox_list"] == [[[0, 0, 100, 200]]]
+
 
     def test_success_returns_image_bytes_and_trace(self, monkeypatch, fake_png):
         import imagegen
