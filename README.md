@@ -1,10 +1,12 @@
 # SceneLex
 
-> 可验证的词义边界 + 能证明学习迁移的场景证据。
+> 经验即词义，微世界即体验。
 
-SceneLex 是一套可独立发布、版本化和复用的**词义语义资源与教学证据库**。它为每个可教学词义建立机器可验证的语义规格，并用原型、对比、反例、边界和迁移场景提供可观察证据。
+SceneLex 是一个**语义教学引擎 (Semantic Teaching Engine)**。语言是对经验的符号化编码，词义是人类对经验范畴化后的结果。SceneLex 放弃用苍白的形式化语言描述词义，而是利用大语言模型（LLM）作为**语义编译器**，结合词汇的经验分类与学习者状态，将词义即时编译为可体验的**微世界 (Micro-world)** 呈现给学习者。
 
-SceneLex 不是某个学习 App 的内部素材目录，也不由某个词典、播放器、课程或模型厂商定义。“场景即释义”是本产品已确立的核心方法与卖点，不是待验证的研究假设；学习产品是资源消费者之一。
+SceneLex 的核心资产不仅是孤立的素材，而是基于经验模型的词义语义资源与教学证据库。它为每一个可教学词义建立机器可验证的语义规格，并用原型、对比、反例、边界和迁移场景提供可观察的微世界实例。
+
+SceneLex 不是某个学习 App 的内部素材目录，也不由某个词典或模型厂商定义；学习产品是这些微世界与语义资源的消费者。
 
 理论全文见 [一、先明确系统最终要解决什么问题.md](一、先明确系统最终要解决什么问题.md)。仓库约束见 [AGENT.md](AGENT.md)。
 跨层统一术语与 Gate 含义见 [CONTEXT.md](CONTEXT.md)。
@@ -52,7 +54,28 @@ reviewed / published resource bundle
 
 渲染模型、TTS、图片、视频、HTTP 服务和学习者数据都在适配器或消费者侧。它们可以引用稳定的 `sense_id`、`scene_id` 和资源版本，但不能反过来改变核心词义。
 
-## 从语义到视频：Beat 与 Shot
+## 系统架构：语义编译引擎
+
+```text
+词汇 + 词汇类别 + 学习者状态
+         ↓
+    LLM（语义编译器）
+         ↓
+   微世界构建指令
+         ↓
+    渲染/呈现引擎
+```
+
+SceneLex 采用上述核心三层解耦架构：
+1. **抽象层**：经验的范畴化（词义）。
+2. **语义层**：经验的具体实例（场景 / 微世界）。
+3. **呈现层**：场景的载体（多媒体）。
+
+系统根据 10 种核心经验分类（如实体型、动作型、意图与行为型等），采用不同的编译策略，将语义转化为合适的微世界形态，不再局限于单一的视频管线。
+
+## Legacy：视频管线（从语义到视频）
+
+> **Legacy Note**: 随着理论转向“语义教学引擎”和通用微世界架构，以下基于 Shot Plan / Keyframe 的固定视频生产管线已降级为特定类型的微世界（视频类）的一种具体实现细节。原有 SceneSpec 作为语义层基础设施依然有效。
 
 ```text
 Dictionary Evidence
@@ -95,7 +118,7 @@ Shot Plan 只能从语义修订状态为 `CURRENT` 的 SceneSpec 1.1 编译；�
 `data/drafts/shot-plans/{scene_id}/v{NN}/shot-plan.yaml`，永不覆盖。权威说明见
 [docs/production-workflow.md](docs/production-workflow.md)。
 
-## Keyframe Plan 与 Animatic
+## Legacy：Keyframe Plan 与 Animatic
 
 Shot Plan 的下游是 **Keyframe Plan**（`schema/keyframe-plan.schema.json`）：在已定好的
 镜头里，选出并描述那些**缺了它观众的语义推断就会改变**的画面状态，并给出它们在镜头
@@ -412,23 +435,13 @@ export SCENELEX_LLM_MODEL=deepseek-v4-pro
 
 ## 当前状态与近期路线
 
-- 正式义项 4 条：`messy-01`、`reluctant-01`、`almost-01`、`dirty-01`，共 21 个场景。
-- 草稿区 6 个义项（filthy / nearly / barely / refuse / grimy / hesitant）及其场景组待审。
-- 当前正式资源状态为 `reviewed`，尚未宣称 `published`。
-- 整词级 Sense Inventory 已打通 draft → reviewed → approved 全流程；
-  `data/inventories/` 与 `data/dictionary-evidence/` 是批准后的权威目录。
-- WordSense 起草已改为 inventory-driven：`tools/draft.py sense <sense_id>` 与
-  `senses <word>` 只接受已批准 Inventory 中的 sense，旧的 `--num` 词典序号路径
-  已弃用。
+系统目前正经历重大的底层架构与理论升级：从基于固定视频工作流的“场景即释义”资源库，演进为基于 LLM 和经验分类的**语义教学引擎**和多模态**微世界**架构。
 
-“场景即释义”方法已确立为产品前提，学习实验不再是规模化的前置条件。近期路线：
+- 原有的 WordSense、SceneSpec、五类场景证据系统作为坚实的语义层基础设施，依然有效且被保留。
+- 基于 Shot / Keyframe / Video 的旧生产管线（Phase 1.4）被降级为“视频类”微世界的实现细节。
+- 10 种经验分类（实体型、动作型、状态变化型、空间与关系型、心理状态型、意图与行为型、事件逻辑型、时间结构型、认知与话语型等）被确立为语义编译的核心策略依据。
 
-```text
-Shot Plan（语义节拍 → 可审核的执行镜头，已建立）
-→ Keyframe Plan + Animatic 审核（已建立首条真实样本）
-→ Image Keyframe Generation（下一步）
-→ 本地 ComfyUI 或云端视频模型快速生成、查看与修正
-→ 模型审核（可选质量参考，工作台一键运行）
-→ 批量扩产（candidates 队列 + batch 起草）
-→ 资源包导出与最小消费端 demo
-```
+近期路线：
+1. 实现并验证基于 LLM 语义编译器的多模态微世界生成。
+2. 针对 10 种核心经验分类，分别研发并实装独立的编译策略和呈现模式。
+3. 构建全新的微世界渲染引擎，支持视频之外的交互式、图文、动态媒体等多元展现。

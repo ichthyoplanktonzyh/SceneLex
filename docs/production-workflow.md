@@ -1,7 +1,6 @@
 # SceneLex 生产工作流：从语义节拍到可执行镜头
 
-> 状态：Phase 1.4 权威说明（2026-07-20）。Shot Plan 取代旧的 Director Prompt
-> 成为 Scene 之后的执行权威。
+> 状态：Legacy。系统已演进为“语义教学引擎”，原视频生产管线降级为视频型微世界的实现细节之一。（保留原注：Phase 1.4 权威说明（2026-07-20）。Shot Plan 取代旧的 Director Prompt 成为 Scene 之后的执行权威。）
 
 ## 生产链
 

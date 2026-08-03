@@ -1,9 +1,9 @@
 ---
 gsd_state_version: 1.0
 milestone: m1
-milestone_name: reluctant 首个媒体纵向切片
+milestone_name: 理论框架与系统架构重设计
 status: active
-last_updated: "2026-07-24T23:30:00.000+08:00"
+last_updated: "2026-08-02T20:58:05.000+08:00"
 ---
 
 # SceneLex — 项目活记忆
@@ -13,109 +13,73 @@ last_updated: "2026-07-24T23:30:00.000+08:00"
 
 ## 当前判断
 
-SceneLex 已完成核心语义基础设施，正在完成第一个
-`reluctant-01-proto-01` 媒体纵向切片。工程已经进入图片执行链路后段，
-但尚无通过图片语义门的完整关键帧集合，也尚无通过视频语义门的成片。
+SceneLex 已经历重大理论转向：由早期的“场景即释义”及“视频生成链路”演变为“经验即词义，微世界即体验”的语义教学引擎。
 
-项目阶段是 **pre-MVP 的纵向切片验证**，不是规模化生产阶段。
+语言被定义为一种符号系统，词义是人类经验的范畴化。系统的新核心是**三层解耦**：
+1. **抽象层**：词义 ≈ 经验的范畴化
+2. **语义层**：场景 = 经验的具体实例
+3. **呈现层**：媒体 = 场景的载体
 
-## 当前权威生产链
+当前阶段的重点不再是死磕视频渲染，而是**理论框架的全面文档对齐**，并将架构转向 LLM 语义编译器与微世界构建指令。视频生成被归为 legacy，作为“视频型微世界”的一种具体实现予以保留。
+
+## 理论重构下的核心链路
 
 ```text
-Approved Sense Inventory
-→ WordSense
-→ SceneSpec
-→ Shot Plan
-→ Keyframe Plan
-→ Animatic Review
-→ Source Packet
-→ Visual Compiler
-→ Render Directive
-→ Image Edit Generation
-→ Human Image Semantic Gate
-→ Motion Directive
-→ Cloud I2V Motion Segments
-→ Human Video Semantic Gate
-→ Edit / Audio / Final Video
+词汇 + 10大经验类别 + 学习者状态
+↓
+LLM（语义编译器：依赖隐式语义理解，不使用形式化语言）
+↓
+微世界构建指令 (Micro-world Specification)
+↓
+多媒体/渲染呈现引擎
 ```
-
-旧 `Director Prompt` 与 `render.py` 是 legacy 原型，不参与新主线。
 
 ## 已成立的事实
 
-### 语义资源层
+### 语义资源层（依然有效）
 
-- M0 已完成：Schema、Inventory、起草、校验、可选模型审核、原子 promote、导出与工作台可用。
-- 正式库有 4 个 WordSense、21 个 SceneSpec。
-- `reluctant` 是第一个 approved Inventory。
-- `reluctant-01` 是 Inventory 驱动的 WordSense 1.1。
-- `reluctant-01-proto-01` 是当前纵向切片的 SceneSpec 1.1；其余 20 个场景仍是 legacy 1.0。
+- M0 建设的语义基础设施（WordSense, SceneSpec）作为**语义层基础设施**完全保留并继续有效。
+- 5 种场景类型（原型、对比、反例、边界、迁移）依然是核心的证据功能。
+- 语义骨架、L1 混淆对比、学习单元设计、质量审核框架继续有效。
+- 正式库包含 4 个 WordSense、21 个 SceneSpec。
 
-### Shot / Keyframe 层
+### 遗留视频层 (Legacy)
 
-- Shot Plan v04 经 Animatic 暴露动作预算不足，保留为失败证据。
-- Shot Plan v05 是当前执行版本：3 个 Shot，总时长 10.8s。
-- Keyframe Plan v02 绑定 Shot Plan v05：9 帧（2 / 4 / 3）。
-- Animatic v02 通过时序与状态覆盖审核，可进入图片生成。
+- 曾经推进的 `reluctant-01-proto-01` 视频纵向切片（包括 Shot Plan, Keyframe Plan, Image Generation, Wan 2.7 实验等）已归档为 `M1.legacy`。
+- 这些工作验证了媒体呈现的困难度，促成了系统向“多媒体、微世界”及“媒体无关”的底层逻辑转向。
+- 这些组件不再是当前主线任务。
 
-### 图片层
+### 经验分类
 
-- Image Keyframes v01 真实生成 9 张图，但人工结论为
-  `IMAGE KEYFRAME REVISION REQUIRED`。
-- 失败集中在身体抗拒、动作阶段和道具状态；构图大体可执行。
-- 这 9 张图不是可进入 I2V 的输入。
-
-### Visual Compiler / Wan 2.7 实验
-
-- 4 个诊断关键帧都有 Qwen3.6-Flash 生成且通过 Validator 的 Render Directive。
-- v02 目录存在 `shot-02-kf-03` 的两张 Wan 2.7 图片，说明该 API 与编辑路线曾产出可视结果。
-- 这两张图片没有对应的 manifest attempt、request/seed 绑定和 Human Gate；
-  因此按 `CONTEXT.md` 属于 **unbound artifacts**，不能计为已完成生成或已通过语义门。
-- v02 当前规范状态：
-  - `api_gate: pending`：4 个 target 尚未全部绑定成功产物；
-  - `semantic_gate: not_run`：没有 manifest 绑定候选可供整批人工判决。
-
-### 视频层
-
-- 本地 Wan 2.2 / ComfyUI / MPS 路径经多轮诊断后判定不可用，不再投入。
-- 目标路径是通过图片语义门的关键帧 → 云端 I2V。
-- 尚无通过语义验收的视频候选，也没有最终剪辑/音频产物。
-
-## Gate 的唯一含义
-
-- `api_gate` 是历史字段名，语义是 Generation Gate，不表示“网络是否通”。
-- `pass`：每个 target 都选择了一个 manifest 绑定的 `generated` attempt。
-- `blocked`：存在记录化 failed attempt，且整批尚未完成。
-- `pending`：整批未完成，但没有记录化失败。
-- `semantic_gate: not_run`：没有绑定候选。
-- `semantic_gate: pending`：已有绑定候选，等待整批人工审核。
-- `semantic_gate: pass`：只允许在 Generation Gate pass 后由人工给出。
-- VLM 只能写 advisory review，不能改变 Human Semantic Gate。
+10 大经验类别依然是系统基石：
+1. 实体型 (entity)
+2. 动作型 (action)
+3. 属性型 (attribute)
+4. 状态变化型 (state_change)
+5. 空间与关系型 (spatial_relation)
+6. 心理状态型 (mental_state)
+7. 意图与行为型 (intentional_behavior)
+8. 事件逻辑型 (causal_logic)
+9. 时间结构型 (temporal_relation)
+10. 认知与话语型 (cognitive_change / discourse_function)
 
 ## 当前唯一 P0
 
-完成 `reluctant-01-proto-01` 的图片语义门：
+**全面对齐项目文档**以反映最新的理论转向：
 
-1. 从现有 4 份已验证 Render Directive 重新执行 Wan 2.7。
-2. 每次调用结束后立即写入 manifest attempt；失败也必须记录。
-3. 4 个诊断 target 都选择绑定产物后，执行 VLM advisory review。
-4. 用 `review-human` 记录 semantic readability、state fidelity、
-   character consistency、prop continuity 和 composition。
-5. 只有整批 `api_gate: pass` 且 `semantic_gate: pass` 才能进入云端 I2V。
+1. 清理现有开发与设计文档中“强制视频输出”的旧假设。
+2. 明确 LLM 作为隐式知识语义编译器的角色，无需引入人为的、单薄的形式化描述语言。
+3. 为“微世界”及微世界指令设计架构文档。
+4. 确保团队对 10 大经验类别及其对应微世界类型的差异化编译策略形成共识。
 
 ## P0 之后
 
-1. 为 3 个 Shot 编译 Motion Directive；按语义需要拆成一个或多个 Motion Segment。
-2. 审核动作阶段、停顿、速度、跨镜连续性，以及 reluctant / refuse / hesitant /
-   dislike / slow 的边界。
-3. 以最小硬切方式拼接，随后补音频与目标声音时序。
-4. 完成首个可播放、可追溯、语义正确的 vertical slice。
-5. 再用 `messy` 与 `almost` 验证跨语义类型泛化。
+1. 设计微世界构建指令 Schema。
+2. 重构从 WordSense/SceneSpec 到微世界指令的 LLM 编译器逻辑。
+3. 挑选特定经验类别，完成首个与具体承载媒体解耦的“微世界”原型的纵向切片 (M2)。
 
 ## 暂不做
 
-- 批量媒体生成、调度与消费者集成；
-- 大规模迁移 legacy SceneSpec；
-- 独立多 Agent Reviewer 或复杂自动修正状态机；
-- 通用 Character Bible、Asset Registry、依赖 DAG；
-- 为消除 backlog 而虚构悬空义项。
+- 继续死磕未完成的遗留 Wan 2.7 视频动作生成与关键帧重绘。
+- 建立复杂的自研渲染管线。
+- 虚构形式化的语义描述语言。
