@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: m1
 milestone_name: 理论框架与系统架构重设计
 status: active
-last_updated: "2026-08-10T17:14:05+08:00"
+last_updated: "2026-08-10T22:50:00+08:00"
 ---
 
 # SceneLex — 项目活记忆
@@ -91,3 +91,27 @@ LLM（语义编译器：依赖隐式语义理解，不使用形式化语言）
 - 继续死磕未完成的遗留 Wan 2.7 视频动作生成与关键帧重绘。
 - 建立复杂的自研渲染管线。
 - 虚构形式化的语义描述语言。
+
+## 产品应用层（v1 重写，2026-08-10 启动）
+
+决定用 **Flutter + Rust** 自建学习产品（应用层），行为基线参考
+`flashcards-open-source-app`（MIT），学习内容替换为 SceneLex 语义资源。
+规划文档：`docs/v1/`（rewrite-plan / behavior-spec-flashcards / data-model-mapping）。
+
+已确认决策：
+
+- 只复刻背单词核心行为（AI chat / MCP / guest / admin / 社区排行榜不进入 v1）。
+- 先本地 Docker 全栈，后上云。
+- ExperienceProgram 离线导入 server + 预留 Compiler 接口。
+- 认证自研 email OTP（不引入 Cognito）。
+- 第一阶段 Rust = server + core，Flutter 侧纯 Dart，暂不引入 flutter_rust_bridge。
+
+当前进度（Phase 1 完成）：
+
+- monorepo 骨架：`core/`（domain types）、`server/`（Axum + health + 迁移）、
+  `app/`（Flutter 五端 4-Tab 壳）、`contracts/`、`db/`（迁移）、`docker/`。
+- 本地全栈可跑：Postgres 18（docker compose）+ server（迁移 + /health）。
+- CI：PR 检查（cargo check/test + flutter analyze/test）。
+
+下一步：Phase 2 — Rust server 核心（OTP 认证、workspaces、LearningState、
+FSRS-6 黄金向量、同步 API、Program 导入）。

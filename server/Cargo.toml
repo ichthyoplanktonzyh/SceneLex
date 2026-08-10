@@ -1,0 +1,21 @@
+[package]
+name = "scenelex-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "SceneLex API server (modular monolith)"
+
+[dependencies]
+scenelex-core = { path = "../core" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }
+tokio = { workspace = true }
+axum = { workspace = true }
+sqlx = { workspace = true, features = ["migrate"] }
+anyhow = "1"
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+dotenvy = { workspace = true }

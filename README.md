@@ -443,6 +443,21 @@ export SCENELEX_LLM_MODEL=deepseek-v4-pro
 
 协议实现参考官方文档：[OpenAI Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create)、[Anthropic Messages API](https://platform.claude.com/docs/en/api/messages)、[Gemini 的 OpenAI compatibility](https://ai.google.dev/gemini-api/docs/openai)。兼容层只承诺当前内容起草所需的单轮文本生成；多模态、工具调用和厂商特有能力需要单独的能力测试。
 
+## 产品应用层（v1 重写，进行中）
+
+SceneLex 正在构建自己的学习产品（应用层），以本仓库的语义资源为内容来源。
+产品行为基线参考 `flashcards-open-source-app`（MIT），技术栈为 Flutter + Rust：
+
+- `app/`：Flutter 客户端（iOS / Android / Web / macOS / Windows / Linux）
+- `core/`：Rust 共享核心（domain types、FSRS、同步协议）
+- `server/`：Rust API 服务（Axum + PostgreSQL）
+- `contracts/`：跨端契约
+- `db/`：PostgreSQL 迁移（唯一 schema 权威）
+- `docker/`：本地全栈（PostgreSQL）
+
+产品规划、行为规格与数据模型映射见 `docs/v1/`。语义层（schema/data/prompts/tools）
+不受影响，继续作为内容权威。
+
 ## 当前状态与近期路线
 
 系统目前正经历重大的底层架构与理论升级：从基于固定视频工作流的“场景即释义”资源库，演进为基于 LLM 和经验分类的**语义教学引擎**和多模态**微世界**架构。
