@@ -1,7 +1,7 @@
 #!/bin/bash
 # End-to-end sync protocol verification against a running server on :8080.
 set -e
-BASE=http://127.0.0.1:8080/v1
+BASE=http://127.0.0.1:8081/v1
 EMAIL="sync-$(date +%s)@scenelex.app"
 
 echo "== auth =="

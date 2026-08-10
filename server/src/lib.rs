@@ -10,6 +10,7 @@ pub mod db;
 pub mod entities;
 pub mod error;
 pub mod extractors;
+pub mod reviews;
 pub mod routes;
 pub mod state;
 pub mod sync;

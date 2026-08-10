@@ -130,5 +130,17 @@ Phase 2 完成（Rust server 核心）：
 - e2e 验证脚本：`scripts/sync-e2e.sh`（认证 → bootstrap → push → pull → 幂等 →
   review 提交 → review-history → 全量 bootstrap，8 步全过）。
 
-下一步：Phase 3 — Flutter 客户端（登录 → 今日队列 → Experience Player →
-复习流程 → 词表）。
+Phase 3 完成（Flutter 客户端核心学习闭环，在线模式）：
+
+- server 新增 `POST /v1/workspaces/{id}/review`（服务端算 FSRS + 双写 review_event/
+  learning_state + hot change）；默认端口改 8081（8080 被本地 python http.server 占用）。
+- app：Riverpod + http + shared_preferences。
+  - 登录页（邮箱 + 8 位验证码，错误场景展示）
+  - 词表页（senses 目录 + 添加学习 → push learning_state）
+  - 今日队列（bootstrap 水合 → 按 due/new 排序，新词优先）
+  - Experience Player（按 stage 播放 units：原型/变式/边界扰动/区分/词义揭示/
+    语言用法/迁移判断，含 learning_tasks 判断与选项）
+  - 评分（Again/Hard/Good/Easy → POST /review → 队列推进）
+- 手动验证指引：`docs/v1/manual-test-phase3.md`。
+
+下一步：Phase 4 — 离线优先（Drift/SQLite + outbox + 同步引擎 + 双游标）。

@@ -6,7 +6,6 @@ import '../features/review/review_page.dart';
 import '../features/settings/settings_page.dart';
 
 /// Top-level shell: 4 tabs (Review / Progress / Cards / Settings).
-/// Mirrors the flashcards 5-tab layout minus the AI tab (v1 cut).
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
 

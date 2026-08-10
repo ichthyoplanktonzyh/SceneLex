@@ -11,4 +11,5 @@ pub fn router() -> Router<AppState> {
         .merge(super::workspaces::router())
         .merge(super::sync::router())
         .merge(super::content::router())
+        .merge(super::review::router())
 }
