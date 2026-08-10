@@ -1,6 +1,14 @@
-use axum::{routing::get, Router};
-use sqlx::PgPool;
+use axum::routing::get;
+use axum::Router;
 
-pub fn router() -> Router<PgPool> {
-    Router::new().route("/health", get(super::health::get))
+use crate::state::AppState;
+
+pub fn router() -> Router<AppState> {
+    Router::new()
+        .route("/health", get(super::health::get))
+        .merge(super::auth::router())
+        .merge(super::me::router())
+        .merge(super::workspaces::router())
+        .merge(super::sync::router())
+        .merge(super::content::router())
 }

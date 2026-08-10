@@ -5,6 +5,7 @@ use std::env;
 pub struct Config {
     pub database_url: String,
     pub listen_addr: String,
+    pub token_secret: String,
 }
 
 impl Config {
@@ -13,9 +14,12 @@ impl Config {
             .unwrap_or_else(|_| "postgres://scenelex:scenelex@localhost:5432/scenelex".to_string());
         let host = env::var("HOST").unwrap_or_else(|_| "127.0.0.1".to_string());
         let port = env::var("PORT").unwrap_or_else(|_| "8080".to_string());
+        let token_secret = env::var("TOKEN_SECRET")
+            .unwrap_or_else(|_| "scenelex-dev-secret-do-not-use-in-production".to_string());
         Self {
             database_url,
             listen_addr: format!("{host}:{port}"),
+            token_secret,
         }
     }
 }

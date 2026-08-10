@@ -1,4 +1,10 @@
-use scenelex_server::{config::Config, db, routes};
+use std::sync::Arc;
+
+use scenelex_server::auth::email::LogEmailSender;
+use scenelex_server::config::Config;
+use scenelex_server::db;
+use scenelex_server::routes;
+use scenelex_server::state::AppState;
 use sqlx::PgPool;
 use sqlx::migrate::Migrator;
 use tracing_subscriber::EnvFilter;
@@ -21,13 +27,21 @@ async fn main() -> anyhow::Result<()> {
             config.database_url
         )
     })?;
+
     let migrations_dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../db/migrations");
-    tracing::info!("migrations dir: {}", migrations_dir.display());
     let migrator = Migrator::new(migrations_dir.as_path()).await?;
     tracing::info!("found {} migrations", migrator.migrations.len());
     migrator.run(&pool).await?;
 
-    let app = routes::v1::router().with_state(pool);
+    let state = AppState {
+        pool,
+        token_secret: Arc::new(config.token_secret),
+        email_sender: Arc::new(LogEmailSender),
+    };
+
+    let app = axum::Router::new()
+        .nest("/v1", routes::v1::router())
+        .with_state(state);
 
     let listener = tokio::net::TcpListener::bind(&config.listen_addr).await?;
     tracing::info!("scenelex-server listening on http://{}", config.listen_addr);

@@ -4,6 +4,7 @@
 //! Phase 2 adds: FSRS-6 scheduling, LWW conflict resolution, sync protocol validation.
 
 pub mod domain;
+pub mod fsrs;
 
 pub mod error {
     use thiserror::Error;

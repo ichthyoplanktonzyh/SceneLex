@@ -113,5 +113,22 @@ LLM（语义编译器：依赖隐式语义理解，不使用形式化语言）
 - 本地全栈可跑：Postgres 18（docker compose）+ server（迁移 + /health）。
 - CI：PR 检查（cargo check/test + flutter analyze/test）。
 
-下一步：Phase 2 — Rust server 核心（OTP 认证、workspaces、LearningState、
-FSRS-6 黄金向量、同步 API、Program 导入）。
+Phase 2 完成（Rust server 核心）：
+
+- FSRS-6 在 core 实现，15 条黄金向量全过（`core/tests/fsrs_vectors.rs`）。
+- 迁移链：org/content/sync/auth 核心表（workspaces、user_settings、learning_states、
+  review_events、word_senses、programs、units、lists、installations、replicas、
+  hot_changes、applied_operations、OTP 表）。
+- 认证：email OTP（自动注册、8 位码、3 分钟过期、5 次锁定、限流、防枚举延迟）。
+- me/bootstrap：首次请求自动创建 user_settings + Personal workspace。
+- workspaces：列表/创建/选择。
+- 同步协议全套：push（幂等 + LWW 三字段）、pull（hot 增量）、bootstrap（pull/push
+  双模式 + 不透明游标）、review-history pull（append-only）。
+- 内容通道：GET /v1/content/senses + GET /v1/content/programs/{id}。
+- Program 导入：`scripts/import_content.py`（幂等 UUIDv5 派生），已导入
+  4 词义 / 4 program / 21 单元。
+- e2e 验证脚本：`scripts/sync-e2e.sh`（认证 → bootstrap → push → pull → 幂等 →
+  review 提交 → review-history → 全量 bootstrap，8 步全过）。
+
+下一步：Phase 3 — Flutter 客户端（登录 → 今日队列 → Experience Player →
+复习流程 → 词表）。
