@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SceneLex — reluctant 经验微世界</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-card: #14141f;
+      --bg-card-hover: #1a1a2e;
+      --bg-glass: rgba(20, 20, 35, 0.85);
+      --surface-1: #1e1e30;
+      --surface-2: #252540;
+      --surface-3: #2d2d4a;
+      --text-primary: #e8e8f0;
+      --text-secondary: #9898b0;
+      --text-muted: #6868880;
+      --accent: #6c5ce7;
+      --accent-light: #a29bfe;
+      --accent-glow: rgba(108, 92, 231, 0.3);
+      --green: #00cec9;
+      --green-soft: rgba(0, 206, 201, 0.15);
+      --orange: #fdcb6e;
+      --orange-soft: rgba(253, 203, 110, 0.15);
+      --red: #fd79a8;
+      --red-soft: rgba(253, 121, 168, 0.15);
+      --blue: #74b9ff;
+      --blue-soft: rgba(116, 185, 255, 0.15);
+      --border: rgba(255, 255, 255, 0.06);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-xs: 6px;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --max-width: 420px;
+    }
+
+    html { font-size: 16px; }
+    body {
+      font-family: 'Noto Sans SC', 'Inter', -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* ── App Shell ── */
+    .app {
+      width: 100%;
+      max-width: var(--max-width);
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    .header {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(20px);
+      background: var(--bg-glass);
+      z-index: 10;
+      border-bottom: 1px solid var(--border);
+    }
+    .header-brand {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-light);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .header-close {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: var(--surface-1);
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: var(--transition);
+    }
+    .header-close:hover { background: var(--surface-2); color: var(--text-primary); }
+
+    /* ── Progress Bar ── */
+    .progress-bar {
+      padding: 0 20px;
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      z-index: 10;
+    }
+    .progress-track {
+      height: 3px;
+      background: var(--surface-2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      border-radius: 2px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0 8px;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+    }
+
+    /* ── Card Container ── */
+    .cards-viewport {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+    .cards-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card {
+      min-width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      padding: 24px 20px 100px;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+    }
+    .card::-webkit-scrollbar { display: none; }
+
+    /* ── Card Content Styles ── */
+    .card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+    }
+    .badge-proto { background: var(--green-soft); color: var(--green); }
+    .badge-contrast { background: var(--blue-soft); color: var(--blue); }
+    .badge-counter { background: var(--red-soft); color: var(--red); }
+    .badge-boundary { background: var(--orange-soft); color: var(--orange); }
+    .badge-transfer { background: rgba(108, 92, 231, 0.15); color: var(--accent-light); }
+    .badge-origin { background: rgba(255,255,255,0.06); color: var(--text-secondary); }
+    .badge-l1 { background: rgba(253, 203, 110, 0.15); color: var(--orange); }
+    .badge-quiz { background: var(--green-soft); color: var(--green); }
+
+    .card-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .card-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .narrative {
+      font-size: 0.92rem;
+      line-height: 1.85;
+      color: var(--text-primary);
+    }
+    .narrative p { margin-bottom: 14px; }
+    .narrative strong { color: var(--accent-light); font-weight: 600; }
+    .narrative em { color: var(--orange); font-style: normal; font-weight: 500; }
+
+    .insight-box {
+      background: var(--surface-1);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 14px 16px;
+      margin: 18px 0;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+    .insight-box strong { color: var(--accent-light); }
+    .insight-box .label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .warning-box {
+      background: var(--orange-soft);
+      border-left: 3px solid var(--orange);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 14px 16px;
+      margin: 18px 0;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 18px 0;
+    }
+    .compare-card {
+      background: var(--surface-1);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      border: 1px solid var(--border);
+    }
+    .compare-card .compare-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .compare-card p {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .compare-same { border-top: 2px solid var(--text-secondary); }
+    .compare-same .compare-label { color: var(--text-secondary); }
+    .compare-diff { border-top: 2px solid var(--green); }
+    .compare-diff .compare-label { color: var(--green); }
+
+    .scene-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 22px 0 16px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: 0.05em;
+    }
+    .scene-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .en-quote {
+      background: var(--surface-1);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      margin: 14px 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      font-style: italic;
+      color: var(--accent-light);
+      border: 1px solid var(--border);
+    }
+
+    /* ── Word Header Card ── */
+    .word-hero {
+      text-align: center;
+      padding: 30px 0 10px;
+    }
+    .word-hero .word {
+      font-family: 'Inter', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, var(--accent-light), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .word-hero .ipa {
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin: 6px 0 4px;
+      font-weight: 300;
+    }
+    .word-hero .pos {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .word-meta {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    .meta-chip {
+      padding: 5px 12px;
+      border-radius: 20px;
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .collocations {
+      background: var(--surface-1);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      margin: 16px 0;
+      border: 1px solid var(--border);
+    }
+    .collocations h4 {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .collocation-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      margin: 3px 4px 3px 0;
+      border-radius: 6px;
+      background: var(--surface-2);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      color: var(--accent-light);
+    }
+    .cta-hint {
+      text-align: center;
+      margin-top: 28px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      animation: pulse-opacity 2s ease-in-out infinite;
+    }
+    @keyframes pulse-opacity {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* ── Quiz Card ── */
+    .quiz-options { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+    .quiz-option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      line-height: 1.6;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    .quiz-option:hover { background: var(--surface-2); border-color: var(--accent); }
+    .quiz-option.correct {
+      background: var(--green-soft);
+      border-color: var(--green);
+      color: var(--green);
+    }
+    .quiz-option.wrong {
+      background: var(--red-soft);
+      border-color: var(--red);
+      color: var(--red);
+      opacity: 0.7;
+    }
+    .quiz-option .option-letter {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-right: 10px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+    .quiz-option.correct .option-letter { background: var(--green); color: var(--bg-primary); }
+    .quiz-option.wrong .option-letter { background: var(--red); color: var(--bg-primary); }
+
+    .quiz-feedback {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.83rem;
+      line-height: 1.7;
+      display: none;
+    }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.correct-feedback { background: var(--green-soft); color: var(--green); }
+    .quiz-feedback.wrong-feedback { background: var(--red-soft); color: var(--red); }
+
+    /* ── L1 diagram ── */
+    .l1-diagram {
+      background: var(--surface-1);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      margin: 16px 0;
+      border: 1px solid var(--border);
+      font-size: 0.82rem;
+      line-height: 1.7;
+    }
+    .l1-item {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .l1-item:last-child { border-bottom: none; }
+    .l1-term {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .l1-covers {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+    .l1-note { color: var(--text-secondary); font-size: 0.8rem; margin-top: 4px; }
+
+    /* ── Bottom Nav ── */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 12px 20px;
+      padding-bottom: max(12px, env(safe-area-inset-bottom));
+      display: flex;
+      gap: 10px;
+      backdrop-filter: blur(20px);
+      background: var(--bg-glass);
+      border-top: 1px solid var(--border);
+      z-index: 10;
+    }
+    .nav-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-1);
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .nav-btn:hover { background: var(--surface-2); }
+    .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .nav-btn.primary {
+      background: linear-gradient(135deg, var(--accent), #7c6cf0);
+      border-color: transparent;
+      color: white;
+      font-weight: 600;
+    }
+    .nav-btn.primary:hover { filter: brightness(1.1); }
+
+    /* ── Dots ── */
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 0 4px;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .dot.active {
+      width: 20px;
+      border-radius: 3px;
+      background: var(--accent);
+    }
+
+    /* ── Parallax Scenes ── */
+    .split-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin: 16px 0;
+    }
+    .split-side {
+      padding: 16px 12px;
+      text-align: center;
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+    .split-side .emoji { font-size: 1.8rem; margin-bottom: 8px; display: block; }
+    .split-side .label { font-weight: 600; margin-bottom: 4px; font-size: 0.75rem; letter-spacing: 0.05em; }
+    .split-left { background: var(--red-soft); }
+    .split-left .label { color: var(--red); }
+    .split-right { background: var(--green-soft); }
+    .split-right .label { color: var(--green); }
+
+    .triple-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin: 16px 0;
+    }
+    .triple-side {
+      padding: 14px 8px;
+      text-align: center;
+      font-size: 0.72rem;
+      line-height: 1.5;
+      background: var(--surface-1);
+    }
+    .triple-side .emoji { font-size: 1.5rem; margin-bottom: 6px; display: block; }
+    .triple-side .label { font-weight: 600; margin-bottom: 4px; font-size: 0.68rem; color: var(--accent-light); }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .card.active .card-badge,
+    .card.active .card-title,
+    .card.active .card-subtitle,
+    .card.active .narrative {
+      animation: fadeInUp 0.5s ease-out both;
+    }
+    .card.active .card-title { animation-delay: 0.05s; }
+    .card.active .card-subtitle { animation-delay: 0.1s; }
+    .card.active .narrative { animation-delay: 0.15s; }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Header -->
+  <div class="header">
+    <span class="header-brand">SceneLex</span>
+    <button class="header-close" title="关闭">✕</button>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-bar">
+    <div class="progress-labels">
+      <span id="progress-label">词卡首页</span>
+      <span id="progress-count">1 / 8</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width: 12.5%"></div>
+    </div>
+  </div>
+
+  <!-- Dots -->
+  <div class="dots" id="dots"></div>
+
+  <!-- Cards -->
+  <div class="cards-viewport">
+    <div class="cards-track" id="cards-track">
+
+      <!-- Card 0: Word Hero -->
+      <div class="card active" data-index="0">
+        <div class="word-hero">
+          <div class="word">reluctant</div>
+          <div class="ipa">/rɪˈlʌktənt/</div>
+          <div class="pos">adjective</div>
+        </div>
+        <div class="word-meta">
+          <span class="meta-chip">🧠 心理状态型</span>
+          <span class="meta-chip">📊 中级</span>
+          <span class="meta-chip">#9349</span>
+        </div>
+        <div class="collocations">
+          <h4>常见搭配</h4>
+          <span class="collocation-tag">reluctant to [verb]</span>
+          <span class="collocation-tag">reluctant participant</span>
+          <span class="collocation-tag">reluctant hero</span>
+          <span class="collocation-tag">reluctant agreement</span>
+        </div>
+        <div class="collocations" style="margin-top: 10px;">
+          <h4>典型句型</h4>
+          <span class="collocation-tag">[noun] is reluctant to [verb]</span>
+          <span class="collocation-tag">[noun] gave a reluctant nod</span>
+        </div>
+        <div class="cta-hint">← 滑动探索经验世界 →</div>
+      </div>
+
+      <!-- Card 1: 经验溯源 -->
+      <div class="card" data-index="1">
+        <span class="card-badge badge-origin">📖 经验溯源</span>
+        <h2 class="card-title">这个词从什么经验中长出来？</h2>
+        <div class="narrative">
+          <p>想象这样一个处境：</p>
+          <p>有人请你做一件事——这件事你完全<strong>做得到</strong>，没有人拦你，没有什么阻挡。但你心里就是<strong>不想做</strong>。</p>
+          <p>你没有直接说"不"。你也没有逃走。你只是……<strong>迟迟不动</strong>。</p>
+          <p>也许你往后靠了靠，也许你的手在半空中停了一下，也许你叹了口气才开始。最后你可能真的做了——但从头到尾，你的<strong>不情愿都写在身上</strong>。</p>
+          <p>这种"能做、但不想做、可能还是做了、但抵触始终可见"的内在状态，就是 <strong>reluctant</strong>。</p>
+        </div>
+        <div class="insight-box">
+          <span class="label">💡 核心结构</span>
+          它不是拒绝——你没说"不"。它不是犹豫——你不是在"做还是不做"之间摇摆。它是一种清晰的<strong>不想要</strong>，但这个不想要被你自己压着，行动可能照样发生。
+        </div>
+      </div>
+
+      <!-- Card 2: 原型场景 -->
+      <div class="card" data-index="2">
+        <span class="card-badge badge-proto">🥦 原型场景</span>
+        <h2 class="card-title">勉强吃西兰花</h2>
+        <p class="card-subtitle">最典型的 reluctant 是什么感觉？</p>
+        <div class="narrative">
+          <p>饭桌上，妈妈指着孩子盘子里的西兰花说："来，吃一口。"</p>
+          <p>孩子<strong>停住了</strong>。身体微微<strong>往后靠</strong>，眼睛<strong>看向别处</strong>。</p>
+          <p>过了几秒，他慢慢伸手去拿叉子——手在半途<strong>停了一下</strong>——动作明显比平时慢。</p>
+          <p>他叉起西兰花，举到嘴边，<strong>又停了一下</strong>，然后自己吃了下去。</p>
+          <p>咀嚼的时候，他的表情平淡，没有转为享受。放下叉子后，身体仍然微微后靠。</p>
+        </div>
+        <div class="insight-box">
+          <span class="label">💡 关键体验</span>
+          孩子对"吃这一口"缺乏意愿——停顿、后靠、视线回避、伸手迟疑。但他最终自己完成了动作，全程没有转为主动。<br><br>
+          <strong>reluctant 的核心</strong>：有一个明确的行动机会 → 内心抵触 → 行动可能发生但抵触始终可见
+        </div>
+      </div>
+
+      <!-- Card 3: 对比场景 -->
+      <div class="card" data-index="3">
+        <span class="card-badge badge-contrast">🏊 对比场景</span>
+        <h2 class="card-title">reluctant vs hesitant</h2>
+        <p class="card-subtitle">同一座跳水台上的两个人</p>
+        <div class="narrative">
+          <div class="scene-divider">人物 A — hesitant</div>
+          <p>她自己走上跳台，走到边缘又退了半步。探头看看水面，又退回来。目光在水面和梯子之间<strong>来回看</strong>。</p>
+          <p>她不是不想跳——她是<em>拿不定主意</em>。跳？还是不跳？</p>
+          <div class="scene-divider">人物 B — reluctant</div>
+          <p>教练吹着哨子让他跳。他<strong>仰头闭眼叹气</strong>，极慢地起身，磨磨蹭蹭爬上梯子。站在跳台边缘，他没有摇摆、没有回头——然后闭眼跳了下去。</p>
+          <p>他不是拿不定主意——他非常清楚自己<em>不想跳</em>。但他还是跳了。</p>
+        </div>
+        <div class="compare-grid">
+          <div class="compare-card compare-diff">
+            <span class="compare-label">hesitant</span>
+            <p>不确定要不要做<br>在选项之间来回</p>
+          </div>
+          <div class="compare-card compare-diff">
+            <span class="compare-label">reluctant</span>
+            <p>不想做<br>拖延但方向确定</p>
+          </div>
+        </div>
+        <div class="warning-box">
+          ⚠️ 这两个词<strong>可以同时出现</strong>。一个人可以既不确定又不情愿——被催上跳台后，既摇头叹气，又反复犹豫。
+        </div>
+      </div>
+
+      <!-- Card 4: 反例场景 -->
+      <div class="card" data-index="4">
+        <span class="card-badge badge-counter">🚫 反例场景</span>
+        <h2 class="card-title">refuse ≠ reluctant</h2>
+        <p class="card-subtitle">看到拒绝，能确定是 reluctant 吗？</p>
+        <div class="narrative">
+          <p>办公室里，经理把一叠文件放到员工桌上："今晚之前做完。"</p>
+          <p>员工看了一眼文件，又看了一眼经理，<strong>表情平静而坚决</strong>。</p>
+          <p>他摇摇头，把文件<strong>轻轻推回</strong>经理面前，拿起外套。</p>
+          <div class="en-quote">"No. I'm going home."</div>
+          <p>门关上，文件原封未动。</p>
+          <p>这是 <em>refuse</em>，但是 reluctant 吗？<strong>我们不知道。</strong></p>
+          <p>他拒绝得干净利落，没有叹气、没有拖延、没有回避。</p>
+        </div>
+        <div class="insight-box">
+          <span class="label">💡 关键区分</span>
+          <strong>refuse</strong> 是一个行为（拒绝了）；<strong>reluctant</strong> 是一个内心状态（不想做）。它们可以同时发生，但看到一个不能自动推出另一个。
+        </div>
+      </div>
+
+      <!-- Card 5: 边界场景 -->
+      <div class="card" data-index="5">
+        <span class="card-badge badge-boundary">🌸 边界场景</span>
+        <h2 class="card-title">慢 ≠ reluctant</h2>
+        <p class="card-subtitle">动作慢，就是 reluctant 吗？</p>
+        <div class="narrative">
+          <p>清晨的花园。一位老人<strong>极慢地</strong>拧开水龙头，<strong>极慢地</strong>提起喷壶，一步一步挪向花丛。</p>
+          <p>如果只看速度——这和原型场景里那个孩子几乎一样慢。</p>
+          <p>但你再看他的脸：<strong>微笑着</strong>，眼神落在花上，嘴里<strong>哼着小曲</strong>。他在一朵花前停下来，俯身闻了闻。</p>
+          <p>花园里只有他一个人。没有人催他。</p>
+          <p>他慢吗？慢。他 reluctant 吗？<strong>不。他只是享受这件事。</strong></p>
+        </div>
+        <div class="split-compare">
+          <div class="split-side split-left">
+            <span class="emoji">😠</span>
+            <div class="label">RELUCTANT</div>
+            <p>少年拖步倒垃圾<br>皱眉 · 回望游戏</p>
+          </div>
+          <div class="split-side split-right">
+            <span class="emoji">😊</span>
+            <div class="label">NOT RELUCTANT</div>
+            <p>老人慢步浇花<br>微笑 · 注视花朵</p>
+          </div>
+        </div>
+        <div class="insight-box">
+          <span class="label">💡 判断要点</span>
+          "慢"是 reluctant 最常见的外在信号，但<strong>慢本身不等于 reluctant</strong>。要看的是：速度背后有没有"不想做"。
+        </div>
+      </div>
+
+      <!-- Card 6: 迁移场景 -->
+      <div class="card" data-index="6">
+        <span class="card-badge badge-transfer">🔄 迁移场景</span>
+        <h2 class="card-title">换个世界还是它</h2>
+        <p class="card-subtitle">把人换成狗，把动作换成说话</p>
+        <div class="narrative">
+          <div class="scene-divider">场景 A — 洗澡的狗 🐕</div>
+          <p>主人牵着狗绳往浴室走。狗<strong>四爪撑住地板</strong>，身体后倾，被一点点拖着滑过地面。它没有咬绳，没有挣脱——最终自己<strong>慢慢跨进了浴缸</strong>。</p>
+          <div class="en-quote">"Look at him... so reluctant to get in."</div>
+          <div class="scene-divider">场景 B — 道歉的人 💬</div>
+          <p>朋友举着摔裂的手办问："谁弄的？"那个人<strong>低头搓手</strong>，张嘴又闭上，视线躲向窗外。</p>
+          <p>很久之后，他长叹一口气，终于抬头。</p>
+          <div class="en-quote">"...Fine. It was me." — He was SO reluctant to admit it.</div>
+        </div>
+        <div class="triple-compare">
+          <div class="triple-side">
+            <span class="emoji">🧒</span>
+            <div class="label">拖步吃菜</div>
+            <p>物理动作</p>
+          </div>
+          <div class="triple-side">
+            <span class="emoji">🐕</span>
+            <div class="label">撑地抗拒</div>
+            <p>动物行为</p>
+          </div>
+          <div class="triple-side">
+            <span class="emoji">🙇</span>
+            <div class="label">勉强承认</div>
+            <p>言语行为</p>
+          </div>
+        </div>
+        <div class="insight-box">
+          <span class="label">💡 迁移验证</span>
+          表面完全不同，但经验结构一样：有一件事可以做 → 不想做 → 最终做了 → 抵触始终可见。<strong>reluctant</strong> 不绑定任何特定情境。
+        </div>
+      </div>
+
+      <!-- Card 7: L1 对比 -->
+      <div class="card" data-index="7">
+        <span class="card-badge badge-l1">🇨🇳 母语对比</span>
+        <h2 class="card-title">中文怎么切割这片经验？</h2>
+        <p class="card-subtitle">不情愿 ≠ reluctant</p>
+        <div class="l1-diagram">
+          <div class="l1-item">
+            <div class="l1-term" style="color: var(--orange);">不情愿</div>
+            <div class="l1-covers">覆盖 → reluctant + unwilling + hesitant</div>
+            <div class="l1-note">范围最广，是一个<strong>过度简化</strong>的翻译。说"不情愿"的时候，你可能在说三种不同的经验。</div>
+          </div>
+          <div class="l1-item">
+            <div class="l1-term" style="color: var(--blue);">不愿意</div>
+            <div class="l1-covers">覆盖 → reluctant + unwilling</div>
+            <div class="l1-note">更偏意志层面的"不要"，语气更强硬，closer to <strong>unwilling</strong>。</div>
+          </div>
+          <div class="l1-item">
+            <div class="l1-term" style="color: var(--green);">犹豫</div>
+            <div class="l1-covers">覆盖 → hesitant</div>
+            <div class="l1-note">是"拿不定主意"，不是"不想做"。对应 <strong>hesitant</strong>。</div>
+          </div>
+        </div>
+        <div class="insight-box">
+          <span class="label">💡 区分技巧</span>
+          <strong>reluctant</strong> → 可能最终做了，但你能看到一路上的抵触<br>
+          <strong>unwilling</strong> → 更可能直接拒绝，不带太多情绪波澜<br>
+          <strong>hesitant</strong> → 在做和不做之间摇摆，不一定有明确抗拒
+        </div>
+      </div>
+
+      <!-- Card 8: 自测 -->
+      <div class="card" data-index="8">
+        <span class="card-badge badge-quiz">✅ 自测</span>
+        <h2 class="card-title">检验你的理解</h2>
+        <p class="card-subtitle">下面三个场景，哪一个是 reluctant？</p>
+        <div class="quiz-options">
+          <button class="quiz-option" data-answer="wrong" onclick="handleQuiz(this)">
+            <span class="option-letter">A</span>
+            妈妈让孩子吃西兰花，孩子立刻说"我不吃！"然后把盘子推开。
+          </button>
+          <button class="quiz-option" data-answer="correct" onclick="handleQuiz(this)">
+            <span class="option-letter">B</span>
+            妈妈让孩子吃西兰花，孩子停了一下、身体后靠，慢慢伸手拿叉子，最后还是吃了。
+          </button>
+          <button class="quiz-option" data-answer="wrong" onclick="handleQuiz(this)">
+            <span class="option-letter">C</span>
+            妈妈让孩子吃西兰花，孩子高兴地说"好！"然后大口吃起来。
+          </button>
+        </div>
+        <div class="quiz-feedback correct-feedback" id="feedback-correct">
+          ✅ <strong>正确！</strong><br><br>
+          只有 B 同时包含两个要素：<br>
+          • 对行动缺乏意愿（停顿、后靠、动作慢）<br>
+          • 行动最终发生且抵触未消失<br><br>
+          A 是 <strong>refuse</strong>（行动没有发生），C 意愿是正向的。
+        </div>
+        <div class="quiz-feedback wrong-feedback" id="feedback-wrong">
+          ❌ <strong>再想想。</strong><br><br>
+          reluctant 需要同时看到"不想做" <strong>和</strong> "行动最终发生且抵触未消失"。<br><br>
+          A 是 refuse（直接拒绝了），C 是积极主动的。<br>
+          答案是 <strong>B</strong>。
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <div class="bottom-nav">
+    <button class="nav-btn" id="btn-prev" onclick="navigate(-1)" disabled>
+      ← 上一页
+    </button>
+    <button class="nav-btn primary" id="btn-next" onclick="navigate(1)">
+      下一页 →
+    </button>
+  </div>
+</div>
+
+<script>
+  const TOTAL_CARDS = 9;
+  let currentIndex = 0;
+
+  const cardLabels = [
+    '词卡首页', '经验溯源', '原型场景', '对比场景',
+    '反例场景', '边界场景', '迁移场景', '母语对比', '自测'
+  ];
+
+  // Generate dots
+  const dotsContainer = document.getElementById('dots');
+  for (let i = 0; i < TOTAL_CARDS; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => goTo(i);
+    dotsContainer.appendChild(dot);
+  }
+
+  function navigate(dir) {
+    const next = currentIndex + dir;
+    if (next < 0 || next >= TOTAL_CARDS) return;
+    goTo(next);
+  }
+
+  function goTo(index) {
+    currentIndex = index;
+    const track = document.getElementById('cards-track');
+    track.style.transform = `translateX(-${index * 100}%)`;
+
+    // Update progress
+    document.getElementById('progress-fill').style.width = `${((index + 1) / TOTAL_CARDS) * 100}%`;
+    document.getElementById('progress-label').textContent = cardLabels[index];
+    document.getElementById('progress-count').textContent = `${index + 1} / ${TOTAL_CARDS}`;
+
+    // Update nav buttons
+    document.getElementById('btn-prev').disabled = index === 0;
+    const btnNext = document.getElementById('btn-next');
+    if (index === TOTAL_CARDS - 1) {
+      btnNext.textContent = '✓ 完成';
+      btnNext.onclick = () => alert('🎉 太棒了！你已经完成了 reluctant 的经验探索。');
+    } else {
+      btnNext.innerHTML = '下一页 →';
+      btnNext.onclick = () => navigate(1);
+    }
+
+    // Update dots
+    document.querySelectorAll('.dot').forEach((d, i) => {
+      d.className = 'dot' + (i === index ? ' active' : '');
+    });
+
+    // Animate card
+    document.querySelectorAll('.card').forEach((c, i) => {
+      c.classList.toggle('active', i === index);
+    });
+
+    // Scroll card to top
+    const cards = document.querySelectorAll('.card');
+    if (cards[index]) cards[index].scrollTop = 0;
+  }
+
+  // Touch swipe support
+  let touchStartX = 0;
+  let touchEndX = 0;
+  const viewport = document.querySelector('.cards-viewport');
+
+  viewport.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  viewport.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      navigate(diff > 0 ? 1 : -1);
+    }
+  }, { passive: true });
+
+  // Keyboard support
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') navigate(-1);
+    if (e.key === 'ArrowRight') navigate(1);
+  });
+
+  // Quiz
+  function handleQuiz(btn) {
+    const options = document.querySelectorAll('.quiz-option');
+    const answered = Array.from(options).some(o => o.classList.contains('correct') || o.classList.contains('wrong'));
+    if (answered) return;
+
+    const isCorrect = btn.dataset.answer === 'correct';
+    options.forEach(o => {
+      o.classList.add(o.dataset.answer === 'correct' ? 'correct' : 'wrong');
+    });
+
+    document.getElementById('feedback-correct').classList.toggle('show', isCorrect);
+    document.getElementById('feedback-wrong').classList.toggle('show', !isCorrect);
+  }
+</script>
+
+</body>
+</html>
