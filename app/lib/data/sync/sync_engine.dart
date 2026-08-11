@@ -1,10 +1,16 @@
 import 'dart:convert';
+import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:drift/drift.dart' show Value;
 
 import '../../api/api_client.dart';
 import '../local/database.dart';
 import '../local/local_repository.dart';
+
+/// Platform reported to the sync API on every request (single source of
+/// truth): the browser on web, the OS name on native (ios/android/...).
+String get syncPlatform => kIsWeb ? 'web' : Platform.operatingSystem;
 
 /// Sync engine: bootstrap hydration, outbox push, hot pull, review-history pull.
 /// Mirrors the reference flow: bootstrap -> push -> pull hot -> pull history.
@@ -50,7 +56,7 @@ class SyncEngine {
           'cursor': cursor,
           'limit': 1000,
           'installationId': _installationId,
-          'platform': 'web',
+          'platform': syncPlatform,
         },
       );
       bootstrapHotChangeId =
@@ -85,7 +91,7 @@ class SyncEngine {
       'mode': 'pull',
       'limit': 1,
       'installationId': _installationId,
-      'platform': 'web',
+      'platform': syncPlatform,
     });
     final entries = (settings['entries'] as List<dynamic>?) ?? const [];
     for (final entry in entries) {
@@ -108,7 +114,7 @@ class SyncEngine {
         '/workspaces/$workspaceId/sync/push',
         body: {
           'installationId': _installationId,
-          'platform': 'web',
+          'platform': syncPlatform,
           'operations': [
             for (final op in batch)
               {
@@ -140,6 +146,21 @@ class SyncEngine {
           await local.markOutboxFailure(op.operationId, 'rejected by server');
         }
       }
+
+      // Any rejection aborts the whole sync run: later batches and the pull
+      // phases must not execute (reference CloudSyncPush throws after
+      // marking the failed operations). The exception propagates through
+      // runSync to the syncTriggerProvider catch, surfacing as offline.
+      final rejected = batch
+          .where((op) => outcomeByOp[op.operationId] == 'rejected')
+          .toList();
+      if (rejected.isNotEmpty) {
+        final message = rejected
+            .map((op) =>
+                '${op.operationId} (${op.entityType}/${op.entityId})')
+            .join('; ');
+        throw StateError('Cloud sync rejected one or more operations: $message');
+      }
     }
   }
 
@@ -153,7 +174,7 @@ class SyncEngine {
           'afterHotChangeId': after,
           'limit': 500,
           'installationId': _installationId,
-          'platform': 'web',
+          'platform': syncPlatform,
         },
       );
       for (final change in (res['changes'] as List<dynamic>?) ?? const []) {
@@ -180,7 +201,7 @@ class SyncEngine {
           'afterReviewSequenceId': after,
           'limit': 500,
           'installationId': _installationId,
-          'platform': 'web',
+          'platform': syncPlatform,
         },
       );
       for (final event in (res['reviewEvents'] as List<dynamic>?) ?? const []) {

@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../api/models.dart';
+import '../sync/lww.dart';
 import 'database.dart';
 
 const _uuidGen = Uuid();
@@ -40,17 +41,22 @@ class LocalRepository {
     required String wordSenseId,
     required String nowIso,
   }) async {
+    // One id triple shared by the local row and the outbox payload, so the
+    // server-side LWW merge never sees two different identities/replicas for
+    // the same creation.
     final operationId = _uuidGen.v4();
+    final learningStateId = _uuidGen.v4();
+    final replicaId = _uuidGen.v4();
     await db.transaction(() async {
       await db.into(db.localLearningStates).insertOnConflictUpdate(
             LocalLearningStatesCompanion.insert(
               wordSenseId: wordSenseId,
-              learningStateId: _uuidGen.v4(),
+              learningStateId: learningStateId,
               reps: 0,
               lapses: 0,
               fsrsCardState: 'new',
               clientUpdatedAt: nowIso,
-              lastModifiedByReplicaId: _uuidGen.v4(),
+              lastModifiedByReplicaId: replicaId,
               lastOperationId: operationId,
             ),
           );
@@ -62,7 +68,7 @@ class LocalRepository {
         action: 'upsert',
         clientUpdatedAt: nowIso,
         payload: {
-          'learningStateId': _uuidGen.v4(),
+          'learningStateId': learningStateId,
           'wordSenseId': wordSenseId,
           'dueAt': null,
           'reps': 0,
@@ -74,7 +80,7 @@ class LocalRepository {
           'fsrsCardState': 'new',
           'fsrsStepIndex': null,
           'clientUpdatedAt': nowIso,
-          'lastModifiedByReplicaId': _uuidGen.v4(),
+          'lastModifiedByReplicaId': replicaId,
           'lastOperationId': operationId,
           'deletedAt': null,
         },
@@ -83,11 +89,33 @@ class LocalRepository {
   }
 
   /// Locally apply a learning-state snapshot (from bootstrap/pull).
+  /// LWW: when the existing local row (tombstoned rows included) is newer
+  /// than the remote payload, the snapshot is skipped; equal values apply.
   Future<void> applyLearningState({
     required String wordSenseId,
     required String payloadJson,
   }) async {
     final p = jsonDecode(payloadJson) as Map<String, dynamic>;
+    final existing = await (db.select(db.localLearningStates)
+          ..where((t) => t.wordSenseId.equals(wordSenseId)))
+        .getSingleOrNull();
+    if (existing != null &&
+        compareLww(
+              LwwMetadata(
+                clientUpdatedAt: existing.clientUpdatedAt,
+                lastModifiedByReplicaId: existing.lastModifiedByReplicaId,
+                lastOperationId: existing.lastOperationId,
+              ),
+              LwwMetadata(
+                clientUpdatedAt: p['clientUpdatedAt']?.toString() ?? '',
+                lastModifiedByReplicaId:
+                    p['lastModifiedByReplicaId']?.toString() ?? '',
+                lastOperationId: p['lastOperationId']?.toString() ?? '',
+              ),
+            ) >
+            0) {
+      return;
+    }
     await db.into(db.localLearningStates).insertOnConflictUpdate(
           LocalLearningStatesCompanion.insert(
             wordSenseId: wordSenseId,
@@ -457,11 +485,33 @@ class LocalRepository {
   }
 
   /// Locally apply a list snapshot (from bootstrap/pull).
+  /// LWW: when the existing local row (tombstoned rows included) is newer
+  /// than the remote payload, the snapshot is skipped; equal values apply.
   Future<void> applyList({
     required String listId,
     required String payloadJson,
   }) async {
     final p = jsonDecode(payloadJson) as Map<String, dynamic>;
+    final existing = await (db.select(db.localLists)
+          ..where((t) => t.listId.equals(listId)))
+        .getSingleOrNull();
+    if (existing != null &&
+        compareLww(
+              LwwMetadata(
+                clientUpdatedAt: existing.clientUpdatedAt,
+                lastModifiedByReplicaId: existing.lastModifiedByReplicaId,
+                lastOperationId: existing.lastOperationId,
+              ),
+              LwwMetadata(
+                clientUpdatedAt: p['clientUpdatedAt']?.toString() ?? '',
+                lastModifiedByReplicaId:
+                    p['lastModifiedByReplicaId']?.toString() ?? '',
+                lastOperationId: p['lastOperationId']?.toString() ?? '',
+              ),
+            ) >
+            0) {
+      return;
+    }
     final filter = (p['filterDefinition'] as Map<String, dynamic>?) ??
         const <String, dynamic>{};
     await db.into(db.localLists).insertOnConflictUpdate(
