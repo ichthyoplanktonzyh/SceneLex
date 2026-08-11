@@ -83,6 +83,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get cardMetaDue => 'Due';
+
+  @override
   String cardStatDue(int count) {
     return '$count due';
   }
@@ -670,4 +673,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationChannelName => 'Daily review reminder';
+
+  @override
+  String get reviewHardReminderTitle => 'Quick reminder';
+
+  @override
+  String get reviewHardReminderBody =>
+      'If you did not know the answer, choose \"Again\". \"Hard\" is only for answers you knew but it was difficult to recall.';
+
+  @override
+  String get reviewHardReminderDismiss => 'Got it';
+
+  @override
+  String reviewBadgeTooltip(int days) {
+    return 'Review streak $days days. Not reviewed today.';
+  }
+
+  @override
+  String reviewBadgeTooltipReviewed(int days) {
+    return 'Review streak $days days. Reviewed today.';
+  }
 }

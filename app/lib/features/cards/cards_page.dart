@@ -277,7 +277,7 @@ class _SenseRow extends StatelessWidget {
           children: [
             Text(sense.lemma, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 16),
-            _DetailRow(label: l10n.cardStateNext(''), value: dueText),
+            _DetailRow(label: l10n.cardMetaDue, value: dueText),
             _DetailRow(label: l10n.cardStateReview, value: s.fsrsCardState),
             _DetailRow(label: l10n.cardStatReps(s.reps), value: s.reps.toString()),
             _DetailRow(label: l10n.cardStatLapses(s.lapses), value: s.lapses.toString()),

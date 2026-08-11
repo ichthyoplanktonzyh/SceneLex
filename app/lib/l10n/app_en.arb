@@ -37,6 +37,7 @@
       "date": {"type": "String"}
     }
   },
+  "cardMetaDue": "Due",
   "cardStatDue": "{count} due",
   "@cardStatDue": {
     "placeholders": {
@@ -297,5 +298,22 @@
   "settingsComingSoon": "Coming soon",
 
   "notificationDailyBody": "Time for today's SceneLex review session.",
-  "notificationChannelName": "Daily review reminder"
+  "notificationChannelName": "Daily review reminder",
+
+  "reviewHardReminderTitle": "Quick reminder",
+  "reviewHardReminderBody": "If you did not know the answer, choose \"Again\". \"Hard\" is only for answers you knew but it was difficult to recall.",
+  "reviewHardReminderDismiss": "Got it",
+
+  "reviewBadgeTooltip": "Review streak {days} days. Not reviewed today.",
+  "@reviewBadgeTooltip": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "reviewBadgeTooltipReviewed": "Review streak {days} days. Reviewed today.",
+  "@reviewBadgeTooltipReviewed": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  }
 }

@@ -195,3 +195,27 @@ cd app && flutter run -d chrome --web-port 8090   # web
 - Settings → 关于:开源(含 flashcards MIT 与 Lottie 资产归属)、法律信息、
   支持说明、服务器信息(API 地址/账号)、设备信息(平台/版本)、
   分享应用。
+
+### 21. 队列种子与补充(P7-D)
+- 有 20+ 到期/新卡的库:进入 Review,队列只显示前 8 张(页面右上角
+  有 streak 徽章;当前卡标题/词义为队列第一张)。
+- 连续评分:每评一张队列前移;剩余 ≤4 张时后台静默补充回 8(不打断)。
+- 本会话已评的卡不再出现(即使 Again/Hard 后仍 due);重启 app 后
+  学习中的卡重新进入队列。
+- 全部评完 → 空态(无"完成页")。
+
+### 22. Hard 用法提醒(P7-D)
+- 连续 8 次评分中 Hard ≥ 5(冷却期内未显示过):弹非阻塞对话框
+  "Quick reminder"(中:"快速提醒")。
+- 文案:en "If you did not know the answer, choose \"Again\"..." /
+  zh "如果您不知道答案,请选择「重来」…";"Got it / 知道了" 关闭。
+- 关闭后 3 天内不再弹出;会话重启后评分窗口重置。
+
+### 23. Review 徽章 → Progress 联动(P7-D)
+- Review AppBar 右侧火焰徽章:显示当前连续天数;今天已复习时高亮。
+- 点击徽章 → 跳到 Progress tab 并自动滚动到 Streak 卡。
+- 桌面 hover 显示 tooltip(连续 X 天;已/未复习)。
+
+### 24. 词表详情元数据(P7-D)
+- Cards → 点击词义行 → 详情:Due(到期)/ State / Reps / Lapses 只读
+  元数据,文案与参考一致(Due/Reps/Lapses)。

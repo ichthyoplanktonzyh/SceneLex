@@ -82,6 +82,9 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get cardMetaDue => '到期';
+
+  @override
   String cardStatDue(int count) {
     return '$count 张到期';
   }
@@ -649,4 +652,24 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get notificationChannelName => '每日复习提醒';
+
+  @override
+  String get reviewHardReminderTitle => '快速提醒';
+
+  @override
+  String get reviewHardReminderBody =>
+      '如果您不知道答案,请选择「重来」。「困难」只适用于您知道答案但回忆起来较困难的情况。';
+
+  @override
+  String get reviewHardReminderDismiss => '知道了';
+
+  @override
+  String reviewBadgeTooltip(int days) {
+    return '连续复习 $days 天。今天还没复习。';
+  }
+
+  @override
+  String reviewBadgeTooltipReviewed(int days) {
+    return '连续复习 $days 天。今天已复习。';
+  }
 }

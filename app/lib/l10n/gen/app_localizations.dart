@@ -236,6 +236,12 @@ abstract class AppLocalizations {
   /// **'next {date}'**
   String cardStateNext(String date);
 
+  /// No description provided for @cardMetaDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Due'**
+  String get cardMetaDue;
+
   /// No description provided for @cardStatDue.
   ///
   /// In en, this message translates to:
@@ -1303,6 +1309,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Daily review reminder'**
   String get notificationChannelName;
+
+  /// No description provided for @reviewHardReminderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick reminder'**
+  String get reviewHardReminderTitle;
+
+  /// No description provided for @reviewHardReminderBody.
+  ///
+  /// In en, this message translates to:
+  /// **'If you did not know the answer, choose \"Again\". \"Hard\" is only for answers you knew but it was difficult to recall.'**
+  String get reviewHardReminderBody;
+
+  /// No description provided for @reviewHardReminderDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get reviewHardReminderDismiss;
+
+  /// No description provided for @reviewBadgeTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Review streak {days} days. Not reviewed today.'**
+  String reviewBadgeTooltip(int days);
+
+  /// No description provided for @reviewBadgeTooltipReviewed.
+  ///
+  /// In en, this message translates to:
+  /// **'Review streak {days} days. Reviewed today.'**
+  String reviewBadgeTooltipReviewed(int days);
 }
 
 class _AppLocalizationsDelegate

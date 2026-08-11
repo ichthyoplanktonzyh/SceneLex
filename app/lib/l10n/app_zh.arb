@@ -27,6 +27,7 @@
   "cardStateRelearning": "复习中",
   "cardStateReview": "复习",
   "cardStateNext": "下一步 {date}",
+  "cardMetaDue": "到期",
   "cardStatDue": "{count} 张到期",
   "cardStatReps": "复习 {count} 次",
   "cardStatLapses": "失误 {count} 次",
@@ -211,5 +212,22 @@
   "settingsComingSoon": "即将上线",
 
   "notificationDailyBody": "该进行今天的 SceneLex 复习了。",
-  "notificationChannelName": "每日复习提醒"
+  "notificationChannelName": "每日复习提醒",
+
+  "reviewHardReminderTitle": "快速提醒",
+  "reviewHardReminderBody": "如果您不知道答案,请选择「重来」。「困难」只适用于您知道答案但回忆起来较困难的情况。",
+  "reviewHardReminderDismiss": "知道了",
+
+  "reviewBadgeTooltip": "连续复习 {days} 天。今天还没复习。",
+  "@reviewBadgeTooltip": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "reviewBadgeTooltipReviewed": "连续复习 {days} 天。今天已复习。",
+  "@reviewBadgeTooltipReviewed": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  }
 }

@@ -217,6 +217,8 @@ Future<void> submitReview(
     newStateJson: jsonEncode(newState),
   );
 
+  ref.read(reviewHardReminderProvider.notifier).appendRating(rating);
+
   await recordActivity();
   final trigger = ref.read(syncTriggerProvider);
   trigger();
@@ -257,6 +259,67 @@ ReviewRating _ratingOf(int rating) => switch (rating) {
       _ => ReviewRating.easy,
     };
 
+/// Review hard-usage reminder: non-blocking dialog after repeated Hard
+/// answers (port of the reference reviewHardReminder: a rolling window of the
+/// last 8 ratings; shows once Hard >= 5 in that window, with a 3-day cooldown
+/// persisted across sessions).
+class ReviewHardReminderController extends Notifier<bool> {
+  static const _windowSize = 8;
+  static const _hardThreshold = 5;
+  static const _cooldown = Duration(days: 3);
+  static const _storageKey = 'flashcards-review-hard-reminder-last-shown-at';
+
+  final List<int> _recentRatings = [];
+  DateTime? _lastShownAt;
+
+  @override
+  bool build() {
+    _loadShownAt();
+    return false;
+  }
+
+  void appendRating(int rating) {
+    _recentRatings.add(rating);
+    if (_recentRatings.length > _windowSize) {
+      _recentRatings.removeRange(0, _recentRatings.length - _windowSize);
+    }
+    if (_recentRatings.length < _windowSize || state) return;
+
+    final hardCount =
+        _recentRatings.where((r) => r == ReviewRating.hard.index).length;
+    if (hardCount < _hardThreshold) return;
+
+    final lastShown = _lastShownAt;
+    if (lastShown != null &&
+        DateTime.now().difference(lastShown) < _cooldown) {
+      return;
+    }
+
+    state = true;
+    _saveShownAt();
+  }
+
+  void dismiss() => state = false;
+
+  Future<void> _loadShownAt() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_storageKey);
+    if (raw != null) {
+      _lastShownAt = DateTime.tryParse(raw)?.toUtc();
+    }
+  }
+
+  Future<void> _saveShownAt() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+        _storageKey, DateTime.now().toUtc().toIso8601String());
+  }
+}
+
+final reviewHardReminderProvider =
+    NotifierProvider<ReviewHardReminderController, bool>(
+        ReviewHardReminderController.new);
+
 /// Selected bottom-tab index (lets the lists page jump to the Review tab).
 class SelectedTabController extends Notifier<int> {
   @override
@@ -267,6 +330,24 @@ class SelectedTabController extends Notifier<int> {
 
 final selectedTabProvider =
     NotifierProvider<SelectedTabController, int>(SelectedTabController.new);
+
+/// Progress section the user asked to jump to (e.g. from the Review streak
+/// badge); consumed by ProgressPage which scrolls the section into view.
+enum ProgressScrollTarget { streak, reviews, schedule }
+
+class ProgressScrollTargetController
+    extends Notifier<ProgressScrollTarget?> {
+  @override
+  ProgressScrollTarget? build() => null;
+
+  void set(ProgressScrollTarget target) => state = target;
+
+  void consume() => state = null;
+}
+
+final progressScrollTargetProvider =
+    NotifierProvider<ProgressScrollTargetController, ProgressScrollTarget?>(
+        ProgressScrollTargetController.new);
 
 /// Review queue filter: All Cards / a word list / a tag set (persisted).
 sealed class ReviewFilter {

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../api/models.dart';
+import '../../data/progress/progress_aggregation.dart';
+import '../../data/progress/progress_providers.dart';
 import '../../data/providers.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../lists/lists_page.dart';
@@ -12,6 +14,10 @@ import 'reactions/review_reactions_controller.dart';
 
 /// Today queue: due/new learning states, played through the Experience Player.
 /// The queue can be filtered (All Cards / a word list / tags), persisted.
+///
+/// Queue shape mirrors the reference: it starts seeded with up to 8 cards,
+/// cards reviewed in this session are excluded from the queue, and when the
+/// queue drops to 4 or fewer cards it is silently replenished back to 8.
 class ReviewPage extends ConsumerStatefulWidget {
   const ReviewPage({super.key, this.active = true});
 
@@ -19,11 +25,21 @@ class ReviewPage extends ConsumerStatefulWidget {
   /// web/desktop when returning to the tab).
   final bool active;
 
+  static const queueSeedSize = 8;
+  static const queueReplenishBelow = 4;
+
   @override
   ConsumerState<ReviewPage> createState() => _ReviewPageState();
 }
 
 class _ReviewPageState extends ConsumerState<ReviewPage> {
+  /// Session queue of wordSenseIds (capped at [ReviewPage.queueSeedSize]).
+  final List<String> _queue = [];
+
+  /// wordSenseIds already reviewed in this session; they never re-enter the
+  /// queue until the next session (mirrors the reference excluded-card set).
+  final Set<String> _reviewedThisSession = {};
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +52,28 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
     final library = ref.watch(libraryProvider);
     final reactions = ref.watch(reviewReactionsControllerProvider);
     final filter = ref.watch(reviewFilterProvider);
+    final hardReminder = ref.watch(reviewHardReminderProvider);
+
+    if (hardReminder) {
+      // Non-blocking reminder after repeated Hard answers; shown once per
+      // 3-day cooldown (reference "Quick reminder" dialog).
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(reviewHardReminderProvider.notifier).dismiss();
+        showDialog<void>(
+          context: context,
+          builder: (dialogContext) => AlertDialog(
+            title: Text(l10n.reviewHardReminderTitle),
+            content: Text(l10n.reviewHardReminderBody),
+            actions: [
+              FilledButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: Text(l10n.reviewHardReminderDismiss),
+              ),
+            ],
+          ),
+        );
+      });
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -44,6 +82,7 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
           onPressed: () => showReviewFilterSheet(context, ref),
         ),
         title: Text(l10n.reviewTitle),
+        actions: const [_ReviewStreakBadge()],
       ),
       // Touch to cancel: any touch on the review surface dismisses the
       // active rating reactions (reference behavior).
@@ -81,6 +120,7 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
                     fsrsCardState: 'new',
                   ),
                   onCompleted: () {
+                    _reviewedThisSession.add(sense.wordSenseId);
                     ref.invalidate(libraryProvider);
                   },
                 );
@@ -97,8 +137,35 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
   }
 
   /// Queue order mirrors the reference: recently reviewed due -> due -> new,
-  /// restricted to the active filter.
+  /// restricted to the active filter. Maintains the session queue: up to 8
+  /// seeded cards, replenished (silently) once it drops to 4 or fewer.
   List<Sense> _buildQueue(Library lib, ReviewFilter filter) {
+    final candidates = _orderedCandidates(lib, filter)
+        .where((sense) => !_reviewedThisSession.contains(sense.wordSenseId))
+        .toList();
+    final candidateIds = {for (final s in candidates) s.wordSenseId};
+
+    // Drop cards that left the candidates (reviewed / state changed).
+    _queue.removeWhere((id) => !candidateIds.contains(id));
+
+    // Seed or replenish back to 8 (replenish triggers below 4, matching the
+    // reference "seed 8, top up when the queue runs low" behavior).
+    if (_queue.isEmpty || _queue.length < ReviewPage.queueReplenishBelow) {
+      final need = ReviewPage.queueSeedSize - _queue.length;
+      _queue.addAll(candidates
+          .where((s) => !_queue.contains(s.wordSenseId))
+          .take(need)
+          .map((s) => s.wordSenseId));
+    }
+
+    return [
+      for (final id in _queue)
+        if (candidateIds.contains(id))
+          lib.senses.firstWhere((s) => s.wordSenseId == id),
+    ];
+  }
+
+  List<Sense> _orderedCandidates(Library lib, ReviewFilter filter) {
     final filtered = lib.senses.where((sense) {
       if (!lib.states.containsKey(sense.wordSenseId)) return false;
       return switch (filter) {
@@ -129,6 +196,71 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
       return da.compareTo(db);
     });
     return [...due.map((e) => e.$1), ...newItems];
+  }
+}
+
+/// Streak badge in the Review app bar: flame icon + current streak days.
+/// Highlighted when reviewed today; tapping jumps to the Progress streak card.
+class _ReviewStreakBadge extends ConsumerWidget {
+  const _ReviewStreakBadge();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final colors = Theme.of(context).colorScheme;
+    final data = ref.watch(progressDataProvider);
+    final streak = data.value?.streak;
+    final days = streak?.currentStreakDays ?? 0;
+    final hasReviewedToday = streak != null &&
+        streak.statesByDate[todayLocalDate()] == StreakDayState.reviewed;
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: Tooltip(
+        message: hasReviewedToday
+            ? l10n.reviewBadgeTooltipReviewed(days)
+            : l10n.reviewBadgeTooltip(days),
+        child: Material(
+          color: hasReviewedToday
+              ? colors.primaryContainer
+              : colors.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(16),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: () {
+              ref
+                  .read(progressScrollTargetProvider.notifier)
+                  .set(ProgressScrollTarget.streak);
+              ref.read(selectedTabProvider.notifier).setTab(1);
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.local_fire_department,
+                    size: 18,
+                    color: hasReviewedToday
+                        ? colors.primary
+                        : colors.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '$days',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: hasReviewedToday
+                              ? colors.primary
+                              : colors.onSurfaceVariant,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
