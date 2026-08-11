@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../api/models.dart';
 import '../../data/providers.dart';
+import '../../l10n/gen/app_localizations.dart';
 import 'experience_player.dart';
 
 /// Today queue: due/new learning states, played through the Experience Player.
@@ -16,13 +17,14 @@ class ReviewPage extends ConsumerStatefulWidget {
 class _ReviewPageState extends ConsumerState<ReviewPage> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final library = ref.watch(libraryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('今日学习')),
+      appBar: AppBar(title: Text(l10n.reviewTitle)),
       body: library.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('加载失败: $e')),
+        error: (e, _) => Center(child: Text(l10n.loadingFailed('$e'))),
         data: (lib) {
           final queue = _buildQueue(lib);
           if (queue.isEmpty) {
@@ -76,16 +78,17 @@ class _EmptyQueue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(Icons.coffee, size: 48, color: Theme.of(context).colorScheme.outline),
           const SizedBox(height: 16),
-          Text(senseCount == 0 ? '还没有学习中的词义' : '今天没有到期内容'),
+          Text(senseCount == 0 ? l10n.reviewEmptyNoSenses : l10n.reviewEmptyNoDue),
           const SizedBox(height: 8),
           Text(
-            senseCount == 0 ? '去「词表」添加要学的词义' : '全部完成,明天再来',
+            senseCount == 0 ? l10n.reviewEmptyGoAdd : l10n.reviewEmptyAllDone,
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],

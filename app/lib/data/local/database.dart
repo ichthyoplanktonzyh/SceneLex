@@ -34,6 +34,7 @@ class LocalReviewEvents extends Table {
   IntColumn get rating => integer()();
   DateTimeColumn get reviewedAtClient => dateTime()();
   TextColumn get reviewedTimeZone => text().nullable()();
+  TextColumn get reviewedLocalDate => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {reviewEventId};
@@ -117,8 +118,24 @@ class LocalWorkspaceSettings extends Table {
   ],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(driftDatabase(name: 'scenelex'));
+  AppDatabase({QueryExecutor? executor})
+      : super(executor ?? driftDatabase(name: 'scenelex'));
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (migrator, from, to) async {
+          if (from < 2) {
+            await migrator.addColumn(
+              localReviewEvents,
+              localReviewEvents.reviewedLocalDate,
+            );
+          }
+        },
+        beforeOpen: (details) async {
+          await customStatement('PRAGMA foreign_keys = ON');
+        },
+      );
 }

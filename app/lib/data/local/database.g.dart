@@ -1021,6 +1021,18 @@ class $LocalReviewEventsTable extends LocalReviewEvents
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _reviewedLocalDateMeta = const VerificationMeta(
+    'reviewedLocalDate',
+  );
+  @override
+  late final GeneratedColumn<String> reviewedLocalDate =
+      GeneratedColumn<String>(
+        'reviewed_local_date',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   @override
   List<GeneratedColumn> get $columns => [
     reviewEventId,
@@ -1030,6 +1042,7 @@ class $LocalReviewEventsTable extends LocalReviewEvents
     rating,
     reviewedAtClient,
     reviewedTimeZone,
+    reviewedLocalDate,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1115,6 +1128,15 @@ class $LocalReviewEventsTable extends LocalReviewEvents
         ),
       );
     }
+    if (data.containsKey('reviewed_local_date')) {
+      context.handle(
+        _reviewedLocalDateMeta,
+        reviewedLocalDate.isAcceptableOrUnknown(
+          data['reviewed_local_date']!,
+          _reviewedLocalDateMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -1152,6 +1174,10 @@ class $LocalReviewEventsTable extends LocalReviewEvents
         DriftSqlType.string,
         data['${effectivePrefix}reviewed_time_zone'],
       ),
+      reviewedLocalDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reviewed_local_date'],
+      ),
     );
   }
 
@@ -1170,6 +1196,7 @@ class LocalReviewEvent extends DataClass
   final int rating;
   final DateTime reviewedAtClient;
   final String? reviewedTimeZone;
+  final String? reviewedLocalDate;
   const LocalReviewEvent({
     required this.reviewEventId,
     required this.wordSenseId,
@@ -1178,6 +1205,7 @@ class LocalReviewEvent extends DataClass
     required this.rating,
     required this.reviewedAtClient,
     this.reviewedTimeZone,
+    this.reviewedLocalDate,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1190,6 +1218,9 @@ class LocalReviewEvent extends DataClass
     map['reviewed_at_client'] = Variable<DateTime>(reviewedAtClient);
     if (!nullToAbsent || reviewedTimeZone != null) {
       map['reviewed_time_zone'] = Variable<String>(reviewedTimeZone);
+    }
+    if (!nullToAbsent || reviewedLocalDate != null) {
+      map['reviewed_local_date'] = Variable<String>(reviewedLocalDate);
     }
     return map;
   }
@@ -1205,6 +1236,9 @@ class LocalReviewEvent extends DataClass
       reviewedTimeZone: reviewedTimeZone == null && nullToAbsent
           ? const Value.absent()
           : Value(reviewedTimeZone),
+      reviewedLocalDate: reviewedLocalDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reviewedLocalDate),
     );
   }
 
@@ -1221,6 +1255,9 @@ class LocalReviewEvent extends DataClass
       rating: serializer.fromJson<int>(json['rating']),
       reviewedAtClient: serializer.fromJson<DateTime>(json['reviewedAtClient']),
       reviewedTimeZone: serializer.fromJson<String?>(json['reviewedTimeZone']),
+      reviewedLocalDate: serializer.fromJson<String?>(
+        json['reviewedLocalDate'],
+      ),
     );
   }
   @override
@@ -1234,6 +1271,7 @@ class LocalReviewEvent extends DataClass
       'rating': serializer.toJson<int>(rating),
       'reviewedAtClient': serializer.toJson<DateTime>(reviewedAtClient),
       'reviewedTimeZone': serializer.toJson<String?>(reviewedTimeZone),
+      'reviewedLocalDate': serializer.toJson<String?>(reviewedLocalDate),
     };
   }
 
@@ -1245,6 +1283,7 @@ class LocalReviewEvent extends DataClass
     int? rating,
     DateTime? reviewedAtClient,
     Value<String?> reviewedTimeZone = const Value.absent(),
+    Value<String?> reviewedLocalDate = const Value.absent(),
   }) => LocalReviewEvent(
     reviewEventId: reviewEventId ?? this.reviewEventId,
     wordSenseId: wordSenseId ?? this.wordSenseId,
@@ -1255,6 +1294,9 @@ class LocalReviewEvent extends DataClass
     reviewedTimeZone: reviewedTimeZone.present
         ? reviewedTimeZone.value
         : this.reviewedTimeZone,
+    reviewedLocalDate: reviewedLocalDate.present
+        ? reviewedLocalDate.value
+        : this.reviewedLocalDate,
   );
   LocalReviewEvent copyWithCompanion(LocalReviewEventsCompanion data) {
     return LocalReviewEvent(
@@ -1277,6 +1319,9 @@ class LocalReviewEvent extends DataClass
       reviewedTimeZone: data.reviewedTimeZone.present
           ? data.reviewedTimeZone.value
           : this.reviewedTimeZone,
+      reviewedLocalDate: data.reviewedLocalDate.present
+          ? data.reviewedLocalDate.value
+          : this.reviewedLocalDate,
     );
   }
 
@@ -1289,7 +1334,8 @@ class LocalReviewEvent extends DataClass
           ..write('experienceUnitId: $experienceUnitId, ')
           ..write('rating: $rating, ')
           ..write('reviewedAtClient: $reviewedAtClient, ')
-          ..write('reviewedTimeZone: $reviewedTimeZone')
+          ..write('reviewedTimeZone: $reviewedTimeZone, ')
+          ..write('reviewedLocalDate: $reviewedLocalDate')
           ..write(')'))
         .toString();
   }
@@ -1303,6 +1349,7 @@ class LocalReviewEvent extends DataClass
     rating,
     reviewedAtClient,
     reviewedTimeZone,
+    reviewedLocalDate,
   );
   @override
   bool operator ==(Object other) =>
@@ -1314,7 +1361,8 @@ class LocalReviewEvent extends DataClass
           other.experienceUnitId == this.experienceUnitId &&
           other.rating == this.rating &&
           other.reviewedAtClient == this.reviewedAtClient &&
-          other.reviewedTimeZone == this.reviewedTimeZone);
+          other.reviewedTimeZone == this.reviewedTimeZone &&
+          other.reviewedLocalDate == this.reviewedLocalDate);
 }
 
 class LocalReviewEventsCompanion extends UpdateCompanion<LocalReviewEvent> {
@@ -1325,6 +1373,7 @@ class LocalReviewEventsCompanion extends UpdateCompanion<LocalReviewEvent> {
   final Value<int> rating;
   final Value<DateTime> reviewedAtClient;
   final Value<String?> reviewedTimeZone;
+  final Value<String?> reviewedLocalDate;
   final Value<int> rowid;
   const LocalReviewEventsCompanion({
     this.reviewEventId = const Value.absent(),
@@ -1334,6 +1383,7 @@ class LocalReviewEventsCompanion extends UpdateCompanion<LocalReviewEvent> {
     this.rating = const Value.absent(),
     this.reviewedAtClient = const Value.absent(),
     this.reviewedTimeZone = const Value.absent(),
+    this.reviewedLocalDate = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   LocalReviewEventsCompanion.insert({
@@ -1344,6 +1394,7 @@ class LocalReviewEventsCompanion extends UpdateCompanion<LocalReviewEvent> {
     required int rating,
     required DateTime reviewedAtClient,
     this.reviewedTimeZone = const Value.absent(),
+    this.reviewedLocalDate = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : reviewEventId = Value(reviewEventId),
        wordSenseId = Value(wordSenseId),
@@ -1359,6 +1410,7 @@ class LocalReviewEventsCompanion extends UpdateCompanion<LocalReviewEvent> {
     Expression<int>? rating,
     Expression<DateTime>? reviewedAtClient,
     Expression<String>? reviewedTimeZone,
+    Expression<String>? reviewedLocalDate,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1369,6 +1421,7 @@ class LocalReviewEventsCompanion extends UpdateCompanion<LocalReviewEvent> {
       if (rating != null) 'rating': rating,
       if (reviewedAtClient != null) 'reviewed_at_client': reviewedAtClient,
       if (reviewedTimeZone != null) 'reviewed_time_zone': reviewedTimeZone,
+      if (reviewedLocalDate != null) 'reviewed_local_date': reviewedLocalDate,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1381,6 +1434,7 @@ class LocalReviewEventsCompanion extends UpdateCompanion<LocalReviewEvent> {
     Value<int>? rating,
     Value<DateTime>? reviewedAtClient,
     Value<String?>? reviewedTimeZone,
+    Value<String?>? reviewedLocalDate,
     Value<int>? rowid,
   }) {
     return LocalReviewEventsCompanion(
@@ -1391,6 +1445,7 @@ class LocalReviewEventsCompanion extends UpdateCompanion<LocalReviewEvent> {
       rating: rating ?? this.rating,
       reviewedAtClient: reviewedAtClient ?? this.reviewedAtClient,
       reviewedTimeZone: reviewedTimeZone ?? this.reviewedTimeZone,
+      reviewedLocalDate: reviewedLocalDate ?? this.reviewedLocalDate,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1419,6 +1474,9 @@ class LocalReviewEventsCompanion extends UpdateCompanion<LocalReviewEvent> {
     if (reviewedTimeZone.present) {
       map['reviewed_time_zone'] = Variable<String>(reviewedTimeZone.value);
     }
+    if (reviewedLocalDate.present) {
+      map['reviewed_local_date'] = Variable<String>(reviewedLocalDate.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1435,6 +1493,7 @@ class LocalReviewEventsCompanion extends UpdateCompanion<LocalReviewEvent> {
           ..write('rating: $rating, ')
           ..write('reviewedAtClient: $reviewedAtClient, ')
           ..write('reviewedTimeZone: $reviewedTimeZone, ')
+          ..write('reviewedLocalDate: $reviewedLocalDate, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3989,6 +4048,7 @@ typedef $$LocalReviewEventsTableCreateCompanionBuilder =
       required int rating,
       required DateTime reviewedAtClient,
       Value<String?> reviewedTimeZone,
+      Value<String?> reviewedLocalDate,
       Value<int> rowid,
     });
 typedef $$LocalReviewEventsTableUpdateCompanionBuilder =
@@ -4000,6 +4060,7 @@ typedef $$LocalReviewEventsTableUpdateCompanionBuilder =
       Value<int> rating,
       Value<DateTime> reviewedAtClient,
       Value<String?> reviewedTimeZone,
+      Value<String?> reviewedLocalDate,
       Value<int> rowid,
     });
 
@@ -4044,6 +4105,11 @@ class $$LocalReviewEventsTableFilterComposer
 
   ColumnFilters<String> get reviewedTimeZone => $composableBuilder(
     column: $table.reviewedTimeZone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get reviewedLocalDate => $composableBuilder(
+    column: $table.reviewedLocalDate,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -4091,6 +4157,11 @@ class $$LocalReviewEventsTableOrderingComposer
     column: $table.reviewedTimeZone,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get reviewedLocalDate => $composableBuilder(
+    column: $table.reviewedLocalDate,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$LocalReviewEventsTableAnnotationComposer
@@ -4132,6 +4203,11 @@ class $$LocalReviewEventsTableAnnotationComposer
 
   GeneratedColumn<String> get reviewedTimeZone => $composableBuilder(
     column: $table.reviewedTimeZone,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get reviewedLocalDate => $composableBuilder(
+    column: $table.reviewedLocalDate,
     builder: (column) => column,
   );
 }
@@ -4183,6 +4259,7 @@ class $$LocalReviewEventsTableTableManager
                 Value<int> rating = const Value.absent(),
                 Value<DateTime> reviewedAtClient = const Value.absent(),
                 Value<String?> reviewedTimeZone = const Value.absent(),
+                Value<String?> reviewedLocalDate = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LocalReviewEventsCompanion(
                 reviewEventId: reviewEventId,
@@ -4192,6 +4269,7 @@ class $$LocalReviewEventsTableTableManager
                 rating: rating,
                 reviewedAtClient: reviewedAtClient,
                 reviewedTimeZone: reviewedTimeZone,
+                reviewedLocalDate: reviewedLocalDate,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -4203,6 +4281,7 @@ class $$LocalReviewEventsTableTableManager
                 required int rating,
                 required DateTime reviewedAtClient,
                 Value<String?> reviewedTimeZone = const Value.absent(),
+                Value<String?> reviewedLocalDate = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LocalReviewEventsCompanion.insert(
                 reviewEventId: reviewEventId,
@@ -4212,6 +4291,7 @@ class $$LocalReviewEventsTableTableManager
                 rating: rating,
                 reviewedAtClient: reviewedAtClient,
                 reviewedTimeZone: reviewedTimeZone,
+                reviewedLocalDate: reviewedLocalDate,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

@@ -195,6 +195,7 @@ class SyncEngine {
                 reviewedAtClient:
                     DateTime.parse(e['reviewedAtClient'] as String).toUtc(),
                 reviewedTimeZone: Value(e['reviewedTimeZone'] as String?),
+                reviewedLocalDate: Value(e['reviewedLocalDate'] as String?),
               ),
             );
       }

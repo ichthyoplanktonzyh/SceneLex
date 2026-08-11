@@ -173,3 +173,34 @@ Phase 4 完成（离线优先）：
   P5/P6 任务清单、4 个待用户决策点、验证方式）。
 - 待用户决策（P5/P6 期间拍板）：多语言范围、通知是否进 v1、上云选型、
   Streak Freeze 是否进 v1。
+
+## 会话收尾（2026-08-11，P5 结束后）
+
+- **P5 全部完成并提交**（git：4e3127e → 新提交）。
+- 用户决策已拍板：多语言 en + zh-Hans；本地通知进 v1；Streak Freeze 进 v1。
+- P5 交付内容：
+  - 多语言：flutter_localizations + gen-l10n（en/zh 全量字符串表），web 应用内
+    语言选择器（Auto/English/中文，持久化），移动端跟随系统
+    （`app/l10n/`、`app/lib/app/locale_controller.dart`）。
+  - 进度界面（本地聚合，`app/lib/data/progress/` + `features/progress/`）：
+    Streak（flashcards streakFreeze 算法 Dart 移植，容量 2、10 units=1 冻结额度、
+    5 周周历火焰/雪花/今天描边）、Reviews 四色堆叠柱状图（周分页、点柱选日、
+    图例过滤）、Review Schedule 8 桶环形图（点扇区/图例选中）、下拉刷新
+    （先同步后聚合）。本地 review_events 新增 reviewedLocalDate
+    （Drift schema v2 + 迁移，写入/拉取路径全接）。
+  - 设置界面：FSRS 调度设置（desired retention / learning steps /
+    relearning steps / max interval / fuzz，本地写 + outbox
+    workspace_scheduler_settings upsert，保存确认"仅影响未来复习"、重置默认）、
+    账号（邮箱 + 退出确认弹窗）、通知（开关 + 时间选择）、语言、Danger Zone
+    （占位，server 无 reset/delete 端点，后置）。
+  - 本地通知：flutter_local_notifications 每日固定时间提醒（iOS/Android/macOS），
+    Android desugaring + receivers + POST_NOTIFICATIONS 权限已配；web 设置页降级
+    说明。偏好持久化，重启自动重调度。
+  - 词表增强：本地搜索、行内统计 chips（状态/到期/reps/lapses）、空态、详情弹窗。
+- 验证：server sync-e2e.sh 8 步全过；`flutter analyze` 0 问题；
+  `flutter test` 25 全过（FSRS 黄金向量 15/15 + streak/freeze parity 9 例，parity
+  测试按"核心算法例外"保留为 `test/streak_parity_test.dart`）；web 构建 + 运行正常；
+  手动验证指引：`docs/v1/manual-test-phase5.md`。
+- 待 P6：Web 打磨（键盘快捷键）、桌面端构建检查、上云部署（Fly.io/VPS 自选，
+  不用 CDK）、移动端打包（图标/签名/商店元数据）。
+- 剩余用户决策：上云选型（P6 期间问）。

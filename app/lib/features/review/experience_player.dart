@@ -5,26 +5,7 @@ import '../../api/api_client.dart';
 import '../../api/models.dart';
 import '../../data/providers.dart';
 import '../../data/sync/sync_providers.dart';
-
-const _stageLabels = {
-  'anchor': '经验原型',
-  'variation': '变式',
-  'perturbation': '边界扰动',
-  'discrimination': '区分',
-  'symbol_binding': '词义揭示',
-  'l2_grounding': '语言用法',
-  'transfer': '迁移判断',
-};
-
-const _stageHints = {
-  'anchor': '先经历:这是这个词生长的典型经验。',
-  'variation': '情境变了,经验结构不变——找到不变的东西。',
-  'perturbation': '只改变一个变量:它还是同一个词吗?',
-  'discrimination': '两种心理状态,是同一种吗?',
-  'symbol_binding': '你反复识别的这种经验,英语里这样说。',
-  'l2_grounding': '这个词在真实语言里怎么用。',
-  'transfer': '一个全新的经验:这个词成立吗?',
-};
+import '../../l10n/gen/app_localizations.dart';
 
 /// Plays the Experience Program for one word sense, then rates the review.
 class ExperiencePlayer extends ConsumerStatefulWidget {
@@ -101,11 +82,12 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return FutureBuilder<ExperienceProgram>(
       future: _programFuture,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return Center(child: Text('Program 加载失败: ${snapshot.error}'));
+          return Center(child: Text(l10n.playerLoadFailed('${snapshot.error}')));
         }
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
@@ -113,7 +95,7 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
         _program = snapshot.data;
         final program = snapshot.data!;
         if (program.units.isEmpty) {
-          return const Center(child: Text('这个词义还没有可播放的经验。'));
+          return Center(child: Text(l10n.playerNoUnits));
         }
         return _ratingMode
             ? _RatingView(
@@ -160,7 +142,8 @@ class _UnitView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final label = _stageLabels[unit.stage] ?? unit.stage;
+    final l10n = AppLocalizations.of(context);
+    final label = _stageLabel(l10n, unit.stage);
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -185,14 +168,16 @@ class _UnitView extends StatelessWidget {
                 color: theme.colorScheme.secondaryContainer,
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Text('$label · ${_stageHints[unit.stage] ?? ''}'),
+              child: Text(
+                '$label · ${_stageHint(l10n, unit.stage)}',
+              ),
             ),
             const SizedBox(height: 24),
             if (unit.title.isNotEmpty)
               Text(unit.title, style: theme.textTheme.titleLarge),
             const SizedBox(height: 12),
             Text(
-              unit.synopsis.isEmpty ? '(无叙事内容)' : unit.synopsis,
+              unit.synopsis.isEmpty ? l10n.playerNoSynopsis : unit.synopsis,
               style: theme.textTheme.bodyLarge?.copyWith(height: 1.6),
             ),
             if (unit.learningTasks.isNotEmpty) ...[
@@ -202,7 +187,7 @@ class _UnitView extends StatelessWidget {
             const SizedBox(height: 32),
             FilledButton(
               onPressed: onNext,
-              child: Text(isLast ? '完成经验之旅' : '继续'),
+              child: Text(isLast ? l10n.playerFinish : l10n.playerContinue),
             ),
           ],
         ),
@@ -211,6 +196,28 @@ class _UnitView extends StatelessWidget {
   }
 }
 
+String _stageLabel(AppLocalizations l10n, String stage) => switch (stage) {
+      'anchor' => l10n.stageAnchor,
+      'variation' => l10n.stageVariation,
+      'perturbation' => l10n.stagePerturbation,
+      'discrimination' => l10n.stageDiscrimination,
+      'symbol_binding' => l10n.stageSymbolBinding,
+      'l2_grounding' => l10n.stageL2Grounding,
+      'transfer' => l10n.stageTransfer,
+      _ => stage,
+    };
+
+String _stageHint(AppLocalizations l10n, String stage) => switch (stage) {
+      'anchor' => l10n.hintAnchor,
+      'variation' => l10n.hintVariation,
+      'perturbation' => l10n.hintPerturbation,
+      'discrimination' => l10n.hintDiscrimination,
+      'symbol_binding' => l10n.hintSymbolBinding,
+      'l2_grounding' => l10n.hintL2Grounding,
+      'transfer' => l10n.hintTransfer,
+      _ => '',
+    };
+
 class _TaskView extends StatelessWidget {
   const _TaskView(this.task);
 
@@ -218,6 +225,7 @@ class _TaskView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final map = task is Map<String, dynamic> ? task as Map<String, dynamic> : const <String, dynamic>{};
     final prompt = map['prompt']?.toString() ?? '';
     final options = (map['options'] as List<dynamic>?) ?? const [];
@@ -228,9 +236,10 @@ class _TaskView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('判断', style: Theme.of(context).textTheme.labelLarge),
+            Text(l10n.playerTaskJudge,
+                style: Theme.of(context).textTheme.labelLarge),
             const SizedBox(height: 8),
-            Text(prompt.isEmpty ? '(任务)' : prompt),
+            Text(prompt.isEmpty ? l10n.playerTaskPlaceholder : prompt),
             if (options.isNotEmpty) ...[
               const SizedBox(height: 12),
               Wrap(
@@ -268,6 +277,7 @@ class _RatingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -282,7 +292,7 @@ class _RatingView extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              '刚才的经历,你记得多牢?',
+              l10n.playerRatingQuestion,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 40),
@@ -301,10 +311,10 @@ class _RatingView extends StatelessWidget {
               crossAxisSpacing: 12,
               childAspectRatio: 2.4,
               children: [
-                _RatingButton(label: 'Again', color: Colors.red, onTap: () => onRate(0), enabled: !submitting),
-                _RatingButton(label: 'Hard', color: Colors.orange, onTap: () => onRate(1), enabled: !submitting),
-                _RatingButton(label: 'Good', color: Colors.green, onTap: () => onRate(2), enabled: !submitting),
-                _RatingButton(label: 'Easy', color: Colors.teal, onTap: () => onRate(3), enabled: !submitting),
+                _RatingButton(label: l10n.ratingAgain, color: Colors.red, onTap: () => onRate(0), enabled: !submitting),
+                _RatingButton(label: l10n.ratingHard, color: Colors.orange, onTap: () => onRate(1), enabled: !submitting),
+                _RatingButton(label: l10n.ratingGood, color: Colors.green, onTap: () => onRate(2), enabled: !submitting),
+                _RatingButton(label: l10n.ratingEasy, color: Colors.teal, onTap: () => onRate(3), enabled: !submitting),
               ],
             ),
             const SizedBox(height: 16),

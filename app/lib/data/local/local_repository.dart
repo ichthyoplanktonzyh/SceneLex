@@ -22,6 +22,11 @@ class LocalRepository {
         .get();
   }
 
+  /// All review events in local order (single-workspace client: no workspace
+  /// filter; the sync engine only pulls the selected workspace's history).
+  Future<List<LocalReviewEvent>> allReviewEvents() =>
+      db.select(db.localReviewEvents).get();
+
   Future<LocalLearningState?> stateFor(String wordSenseId) {
     return (db.select(db.localLearningStates)
           ..where((t) => t.wordSenseId.equals(wordSenseId)))
@@ -118,6 +123,7 @@ class LocalRepository {
   }) async {
     final reviewEventId = _uuidGen.v4();
     final stateOpId = _uuidGen.v4();
+    final reviewedLocalDate = _localDateString(DateTime.now());
 
     await db.transaction(() async {
       await db.into(db.localReviewEvents).insert(
@@ -128,7 +134,8 @@ class LocalRepository {
               experienceUnitId: experienceUnitId,
               rating: rating,
               reviewedAtClient: DateTime.parse(reviewedAtClientIso).toUtc(),
-              reviewedTimeZone: Value('Asia/Shanghai'),
+              reviewedTimeZone: Value(DateTime.now().timeZoneName),
+              reviewedLocalDate: Value(reviewedLocalDate),
             ),
           );
 
@@ -168,7 +175,8 @@ class LocalRepository {
           'clientEventId': reviewEventId,
           'rating': rating,
           'reviewedAtClient': reviewedAtClientIso,
-          'reviewedTimeZone': 'Asia/Shanghai',
+          'reviewedTimeZone': DateTime.now().timeZoneName,
+          'reviewedLocalDate': reviewedLocalDate,
         },
       );
       await _enqueueOutbox(
@@ -353,7 +361,42 @@ class LocalRepository {
     if (row == null) return null;
     return jsonDecode(row.json) as Map<String, dynamic>;
   }
+
+  /// Update workspace scheduler settings locally and queue an outbox upsert
+  /// (entity + outbox in the same transaction).
+  Future<void> updateWorkspaceSettings({
+    required String workspaceId,
+    required Map<String, dynamic> settings,
+  }) async {
+    final nowIso = DateTime.now().toUtc().toIso8601String();
+    final operationId = _uuidGen.v4();
+    final settingsJson = jsonEncode(settings);
+
+    await db.transaction(() async {
+      await db.into(db.localWorkspaceSettings).insertOnConflictUpdate(
+            LocalWorkspaceSettingsCompanion.insert(
+              workspaceId: workspaceId,
+              json: settingsJson,
+            ),
+          );
+      await _enqueueOutbox(
+        workspaceId: workspaceId,
+        operationId: operationId,
+        entityType: 'workspace_scheduler_settings',
+        entityId: workspaceId,
+        action: 'upsert',
+        clientUpdatedAt: nowIso,
+        payload: {...settings, 'clientUpdatedAt': nowIso},
+      );
+    });
+  }
 }
 
 DateTime? _dt(dynamic v) =>
     v == null ? null : DateTime.parse(v.toString()).toUtc();
+
+/// YYYY-MM-DD in the device-local timezone (streak/progress bucket key).
+String _localDateString(DateTime local) =>
+    '${local.year.toString().padLeft(4, '0')}-'
+    '${local.month.toString().padLeft(2, '0')}-'
+    '${local.day.toString().padLeft(2, '0')}';

@@ -1,0 +1,189 @@
+{
+  "@@locale": "en",
+  "appTitle": "SceneLex",
+  "appTagline": "Meaning is experience; micro-worlds are experience.",
+
+  "tabReview": "Review",
+  "tabProgress": "Progress",
+  "tabCards": "Cards",
+  "tabSettings": "Settings",
+
+  "loadingFailed": "Failed to load: {error}",
+  "@loadingFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+
+  "loginEmailLabel": "Email",
+  "loginOtpLabel": "8-digit code",
+  "loginSendCode": "Send code",
+  "loginSignIn": "Sign in",
+
+  "cardsTitle": "Cards",
+  "cardsSearchHint": "Search senses",
+  "cardsEmptyLibrary": "Empty library. Run import_content.py first.",
+  "cardsEmptySearch": "No matching senses",
+  "cardsStudy": "Study",
+  "cardsAdded": "Added",
+  "cardStateNotAdded": "Not added",
+  "cardStateNew": "New",
+  "cardStateLearning": "Learning",
+  "cardStateRelearning": "Relearning",
+  "cardStateReview": "Review",
+  "cardStateNext": "next {date}",
+  "@cardStateNext": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "cardStatDue": "{count} due",
+  "@cardStatDue": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "cardStatReps": "{count} reps",
+  "@cardStatReps": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "cardStatLapses": "{count} lapses",
+  "@cardStatLapses": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+
+  "reviewTitle": "Today",
+  "reviewEmptyNoSenses": "No senses being studied yet",
+  "reviewEmptyNoDue": "Nothing due today",
+  "reviewEmptyGoAdd": "Add senses from the Cards tab",
+  "reviewEmptyAllDone": "All done. See you tomorrow.",
+
+  "stageAnchor": "Prototype",
+  "stageVariation": "Variation",
+  "stagePerturbation": "Perturbation",
+  "stageDiscrimination": "Discrimination",
+  "stageSymbolBinding": "Symbol binding",
+  "stageL2Grounding": "L2 grounding",
+  "stageTransfer": "Transfer",
+  "hintAnchor": "First, experience the typical experience this word grows from.",
+  "hintVariation": "The situation changed, the experience structure did not — find what stayed the same.",
+  "hintPerturbation": "Change one variable: is it still the same word?",
+  "hintDiscrimination": "Two mental states — are they the same?",
+  "hintSymbolBinding": "The experience you keep recognizing is expressed like this in English.",
+  "hintL2Grounding": "How this word is used in real language.",
+  "hintTransfer": "A brand new experience: does the word hold?",
+  "playerLoadFailed": "Failed to load program: {error}",
+  "@playerLoadFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "playerNoUnits": "No playable experience for this sense yet.",
+  "playerNoSynopsis": "(no synopsis)",
+  "playerTaskJudge": "Judgment",
+  "playerTaskPlaceholder": "(task)",
+  "playerFinish": "Finish the experience",
+  "playerContinue": "Continue",
+  "playerRatingQuestion": "How well do you remember this experience?",
+  "ratingAgain": "Again",
+  "ratingHard": "Hard",
+  "ratingGood": "Good",
+  "ratingEasy": "Easy",
+
+  "progressTitle": "Progress",
+  "progressNoData": "No review data yet",
+  "streakCardTitle": "Streak",
+  "streakDaysLabel": "{count} days",
+  "@streakDaysLabel": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "streakLongest": "Longest: {count} days",
+  "@streakLongest": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "streakFreezeLabel": "Freeze",
+  "streakFreezeCount": "{credits}/{capacity}",
+  "@streakFreezeCount": {
+    "placeholders": {
+      "credits": {"type": "int"},
+      "capacity": {"type": "int"}
+    }
+  },
+  "streakFreezeInfo": "Review {needed} days to earn a freeze credit. A freeze keeps your streak alive for one missed day.",
+  "@streakFreezeInfo": {
+    "placeholders": {
+      "needed": {"type": "int"}
+    }
+  },
+  "streakFreezeFull": "Freeze credits full",
+  "reviewsCardTitle": "Reviews",
+  "reviewsDayTotal": "{count} reviews",
+  "@reviewsDayTotal": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "reviewScheduleTitle": "Review Schedule",
+  "bucketNew": "New",
+  "bucketToday": "Today",
+  "bucket1to7": "1-7 days",
+  "bucket8to30": "8-30 days",
+  "bucket31to90": "31-90 days",
+  "bucket91to360": "91-360 days",
+  "bucket1to2y": "1-2 years",
+  "bucketLater": "Later",
+  "scheduleEmpty": "No cards in the schedule",
+
+  "settingsTitle": "Settings",
+  "settingsAccountSection": "Account",
+  "settingsAccountEmail": "Email",
+  "settingsSyncStatus": "Sync status",
+  "syncStatusSynced": "Synced",
+  "syncStatusSyncing": "Syncing…",
+  "syncStatusOffline": "Offline",
+  "settingsSignOut": "Log out",
+  "signOutTitle": "Log out?",
+  "signOutBody": "Local data on this device will be cleared.",
+  "signOutConfirm": "Log out",
+  "signOutCancel": "Cancel",
+  "settingsSchedulingSection": "Scheduling",
+  "settingsDesiredRetention": "Desired retention",
+  "settingsLearningSteps": "Learning steps (minutes)",
+  "settingsRelearningSteps": "Relearning steps (minutes)",
+  "settingsMaxInterval": "Maximum interval (days)",
+  "settingsEnableFuzz": "Enable fuzz",
+  "settingsSave": "Save",
+  "settingsSaved": "Settings saved",
+  "settingsSaveHint": "Changes affect future reviews only",
+  "settingsResetDefaults": "Reset to defaults",
+  "settingsInvalidValue": "Please check the values",
+  "settingsNotificationsSection": "Notifications",
+  "settingsEnableNotifications": "Enable daily reminder",
+  "settingsNotificationTime": "Reminder time",
+  "settingsPickTime": "Pick time",
+  "settingsNotificationsUnsupported": "Notifications are not supported on this platform",
+  "settingsNotificationsDenied": "Notification permission denied",
+  "settingsLanguageSection": "Language",
+  "settingsLanguageAuto": "Auto (system)",
+  "settingsLanguageFollowsSystem": "Follows system language",
+  "settingsDangerSection": "Danger Zone",
+  "settingsResetProgress": "Reset study progress",
+  "settingsResetProgressBody": "This clears all study progress on this device and on the server. It cannot be undone.",
+  "settingsDeleteWorkspace": "Delete current workspace",
+  "settingsWorkspaceSection": "Workspace",
+  "settingsReset": "Reset",
+  "settingsDelete": "Delete",
+  "settingsVersion": "Version",
+  "settingsComingSoon": "Coming soon",
+
+  "notificationDailyBody": "Time for today's SceneLex review session.",
+  "notificationChannelName": "Daily review reminder"
+}
