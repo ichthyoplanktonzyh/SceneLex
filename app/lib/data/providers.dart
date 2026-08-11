@@ -40,12 +40,21 @@ class Library {
     required this.states,
     required this.lists,
     required this.tagCounts,
+    required this.tagPool,
   });
 
   final List<Sense> senses;
   final Map<String, LearningState> states;
   final List<WordList> lists;
+
+  /// Per-tag counts over *studied* senses only (matches the reference
+  /// workspace tag summary: tags that actually exist on studied cards).
   final Map<String, int> tagCounts;
+
+  /// Every preset tag present in the catalog, studied or not. Used as the
+  /// selectable pool in the list editor (the reference lets users type any
+  /// tag; the catalog-derived pool is our closed-world equivalent).
+  final Set<String> tagPool;
 
   /// Preset tags of a sense (empty when the sense is unknown).
   Set<String> tagsOf(String wordSenseId) {
@@ -129,8 +138,14 @@ final libraryProvider = FutureProvider<Library>((ref) async {
       }),
   ];
 
+  final tagPool = <String>{};
+  for (final sense in senses) {
+    tagPool.addAll(presetTagsForSense(sense));
+  }
+
   final tagCounts = <String, int>{};
   for (final sense in senses) {
+    if (!states.containsKey(sense.wordSenseId)) continue;
     for (final tag in presetTagsForSense(sense)) {
       tagCounts[tag] = (tagCounts[tag] ?? 0) + 1;
     }
@@ -141,6 +156,7 @@ final libraryProvider = FutureProvider<Library>((ref) async {
     states: states,
     lists: lists,
     tagCounts: tagCounts,
+    tagPool: tagPool,
   );
 });
 

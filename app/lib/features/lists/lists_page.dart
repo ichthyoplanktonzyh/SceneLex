@@ -289,7 +289,10 @@ class _ListEditorPageState extends ConsumerState<ListEditorPage> {
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (e, _) => Text(l10n.loadingFailed('$e')),
             data: (lib) {
-              final tags = lib.tagCounts.keys.toList()..sort();
+              // Editable pool = every catalog tag (studied or not); counts
+              // shown are studied senses only, matching the review filter
+              // panel so both surfaces agree.
+              final tags = lib.tagPool.toList()..sort();
               if (tags.isEmpty) {
                 return Text(l10n.listsNoTags, style: Theme.of(context).textTheme.bodySmall);
               }
@@ -299,7 +302,7 @@ class _ListEditorPageState extends ConsumerState<ListEditorPage> {
                 children: [
                   for (final tag in tags)
                     FilterChip(
-                      label: Text('$tag (${lib.tagCounts[tag]})'),
+                      label: Text('$tag (${lib.tagCounts[tag] ?? 0})'),
                       selected: _selectedTags.contains(tag),
                       onSelected: (selected) => setState(() {
                         if (selected) {

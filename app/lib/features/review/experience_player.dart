@@ -195,14 +195,11 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
   }
 
   Future<void> _submitRating(int rating) async {
-    // Reference behavior: emit the rating reaction, then submit. Reaction
-    // failures must never block the review submission itself.
-    try {
-      ref.read(reviewReactionsControllerProvider.notifier).emit(
-            rating,
-            reducedMotion: MediaQuery.disableAnimationsOf(context),
-          );
-    } catch (_) {}
+    // Reference behavior: emit the rating reaction, then submit.
+    ref.read(reviewReactionsControllerProvider.notifier).emit(
+          rating,
+          reducedMotion: MediaQuery.disableAnimationsOf(context),
+        );
     _tts.stop();
     setState(() {
       _submitting = true;
