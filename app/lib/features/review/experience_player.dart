@@ -46,11 +46,15 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
   List<RatingOption>? _ratingOptions;
   bool _ratingOptionsFailed = false;
 
-  TtsService get _tts => ref.read(ttsServiceProvider);
+  /// Cached in initState: dispose() must not touch `ref` (the provider
+  /// container is already disposed by then), so the TTS service is held in
+  /// a field instead of a `ref.read` getter.
+  late final TtsService _tts;
 
   @override
   void initState() {
     super.initState();
+    _tts = ref.read(ttsServiceProvider);
     _programFuture = _loadProgram();
     _tts.isSpeaking.addListener(_onSpeakingChanged);
   }

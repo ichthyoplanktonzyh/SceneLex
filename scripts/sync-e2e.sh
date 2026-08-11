@@ -18,6 +18,35 @@ CT="Content-Type: application/json"
 echo "== 0. session renewal: refresh-token / revoke-token =="
 WS=$(curl -s $BASE/me -H "$AUTH" | python3 -c "import json,sys; print(json.load(sys.stdin)['selectedWorkspaceId'])")
 echo "workspace: $WS"
+
+echo "== 0a. otp errors carry {code, message} =="
+USED=$(curl -s -X POST $BASE/auth/verify-code -H "$CT" -d "{\"email\":\"$EMAIL\",\"code\":\"$CODE\"}")
+echo "$USED" | python3 -c "
+import json, sys
+d = json.load(sys.stdin)
+assert set(d) == {'code', 'message'}, d
+assert d['code'] == 'CODE_ALREADY_USED', d
+print('shape ok:', d)
+"
+curl -s -X POST $BASE/auth/send-code -H "$CT" -d "{\"email\":\"$EMAIL\"}" -o /dev/null
+CODE2=$(grep -o "code=[0-9]\{8\}" /tmp/scenelex-server.log | tail -1 | cut -d= -f2)
+WRONG=$(curl -s -X POST $BASE/auth/verify-code -H "$CT" -d "{\"email\":\"$EMAIL\",\"code\":\"00000000\"}")
+echo "$WRONG" | python3 -c "
+import json, sys
+d = json.load(sys.stdin)
+assert set(d) == {'code', 'message'}, d
+assert d['code'] == 'INVALID_CODE', d
+print('shape ok:', d)
+"
+curl -s -X POST $BASE/auth/send-code -H "$CT" -d "{\"email\":\"$EMAIL\"}" -o /dev/null
+RATE=$(curl -s -o /tmp/rate.json -w "%{http_code}" -X POST $BASE/auth/send-code -H "$CT" -d "{\"email\":\"$EMAIL\"}")
+echo "third send-code (rate limited): HTTP $RATE body: $(cat /tmp/rate.json)"
+python3 -c "
+import json
+d = json.load(open('/tmp/rate.json'))
+assert d['code'] == 'RATE_LIMITED', d
+print('rate shape ok:', d)
+"
 ID2=$(curl -s -X POST $BASE/auth/refresh-token -H "$CT" -d "{\"refreshToken\":\"$REFRESH\"}" | python3 -c "import json,sys; print(json.load(sys.stdin)['idToken'])")
 echo "refresh-token -> new idToken (expiresIn: $(curl -s -X POST $BASE/auth/refresh-token -H "$CT" -d "{\"refreshToken\":\"$REFRESH\"}" | python3 -c "import json,sys; print(json.load(sys.stdin)['expiresIn'])"))"
 curl -s $BASE/me -H "Authorization: Bearer $ID2" | python3 -c "import json,sys; d=json.load(sys.stdin); print('new idToken works, workspace:', d['selectedWorkspaceId'])"

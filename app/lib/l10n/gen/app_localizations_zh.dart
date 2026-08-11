@@ -44,6 +44,44 @@ class AppLocalizationsZh extends AppLocalizations {
   String get loginSignIn => '登录';
 
   @override
+  String get loginCodePrompt => '请输入邮件中的 8 位验证码。没看到?检查一下垃圾邮件文件夹。';
+
+  @override
+  String get loginResendCode => '重新发送验证码';
+
+  @override
+  String loginResendIn(int seconds) {
+    return '重新发送($seconds 秒)';
+  }
+
+  @override
+  String get loginChangeEmail => '换个邮箱';
+
+  @override
+  String get loginErrorRateLimited => '请求过于频繁,请稍后再试。';
+
+  @override
+  String get loginErrorAccountDeleted => '该账户已被删除。';
+
+  @override
+  String get loginErrorCodeExpired => '验证码已过期,请重新获取。';
+
+  @override
+  String get loginErrorCodeAlreadyUsed => '验证码已被使用,请重新获取。';
+
+  @override
+  String get loginErrorTooManyAttempts => '尝试次数过多,请重新获取验证码。';
+
+  @override
+  String get loginErrorInvalidCode => '验证码不正确。';
+
+  @override
+  String get loginErrorInternalError => '出了点问题,请重试。';
+
+  @override
+  String get loginErrorUnknown => '登录失败,请重试。';
+
+  @override
   String get cardsTitle => '词表';
 
   @override

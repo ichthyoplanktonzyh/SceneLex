@@ -46,12 +46,43 @@ struct RevokeTokenRequest {
 
 impl IntoResponse for OtpError {
     fn into_response(self) -> Response {
-        let status = match self {
-            OtpError::RateLimited => StatusCode::TOO_MANY_REQUESTS,
-            OtpError::AccountDeleted => StatusCode::GONE,
-            _ => StatusCode::BAD_REQUEST,
+        // Structured {code, message}: the code is the stable, client-facing
+        // key (localized by clients, see C 段), the message a plain-English
+        // fallback. HTTP status codes are unchanged from before.
+        let (status, code, message) = match self {
+            OtpError::RateLimited => (
+                StatusCode::TOO_MANY_REQUESTS,
+                "RATE_LIMITED",
+                "Too many requests. Try again later.",
+            ),
+            OtpError::AccountDeleted => {
+                (StatusCode::GONE, "ACCOUNT_DELETED", "Account deleted.")
+            }
+            OtpError::Expired => (
+                StatusCode::BAD_REQUEST,
+                "CODE_EXPIRED",
+                "This code expired. Request a new code.",
+            ),
+            OtpError::AlreadyUsed => (
+                StatusCode::BAD_REQUEST,
+                "CODE_ALREADY_USED",
+                "This code was already used. Request a new code.",
+            ),
+            OtpError::TooManyAttempts => (
+                StatusCode::BAD_REQUEST,
+                "TOO_MANY_ATTEMPTS",
+                "Too many invalid attempts. Request a new code.",
+            ),
+            OtpError::InvalidCode => {
+                (StatusCode::BAD_REQUEST, "INVALID_CODE", "Invalid code.")
+            }
+            OtpError::Db(_) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "INTERNAL_ERROR",
+                "Something went wrong. Try again.",
+            ),
         };
-        (status, Json(json!({ "error": self.to_string() }))).into_response()
+        (status, Json(json!({ "code": code, "message": message }))).into_response()
     }
 }
 

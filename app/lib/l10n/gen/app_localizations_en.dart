@@ -45,6 +45,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginSignIn => 'Sign in';
 
   @override
+  String get loginCodePrompt =>
+      'Enter the 8-digit code from your email. If you don\'t see it, check your spam folder.';
+
+  @override
+  String get loginResendCode => 'Resend code';
+
+  @override
+  String loginResendIn(int seconds) {
+    return 'Resend code (${seconds}s)';
+  }
+
+  @override
+  String get loginChangeEmail => 'Use a different email';
+
+  @override
+  String get loginErrorRateLimited => 'Too many requests. Try again later.';
+
+  @override
+  String get loginErrorAccountDeleted => 'This account has been deleted.';
+
+  @override
+  String get loginErrorCodeExpired => 'This code expired. Request a new code.';
+
+  @override
+  String get loginErrorCodeAlreadyUsed =>
+      'This code was already used. Request a new code.';
+
+  @override
+  String get loginErrorTooManyAttempts =>
+      'Too many invalid attempts. Request a new code.';
+
+  @override
+  String get loginErrorInvalidCode => 'Invalid code.';
+
+  @override
+  String get loginErrorInternalError =>
+      'Something went wrong. Please try again.';
+
+  @override
+  String get loginErrorUnknown => 'Sign-in failed. Please try again.';
+
+  @override
   String get cardsTitle => 'Cards';
 
   @override

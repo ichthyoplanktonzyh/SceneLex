@@ -19,6 +19,23 @@
   "loginOtpLabel": "8-digit code",
   "loginSendCode": "Send code",
   "loginSignIn": "Sign in",
+  "loginCodePrompt": "Enter the 8-digit code from your email. If you don't see it, check your spam folder.",
+  "loginResendCode": "Resend code",
+  "loginResendIn": "Resend code ({seconds}s)",
+  "@loginResendIn": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
+  "loginChangeEmail": "Use a different email",
+  "loginErrorRateLimited": "Too many requests. Try again later.",
+  "loginErrorAccountDeleted": "This account has been deleted.",
+  "loginErrorCodeExpired": "This code expired. Request a new code.",
+  "loginErrorCodeAlreadyUsed": "This code was already used. Request a new code.",
+  "loginErrorTooManyAttempts": "Too many invalid attempts. Request a new code.",
+  "loginErrorInvalidCode": "Invalid code.",
+  "loginErrorInternalError": "Something went wrong. Please try again.",
+  "loginErrorUnknown": "Sign-in failed. Please try again.",
 
   "cardsTitle": "Cards",
   "cardsSearchHint": "Search senses",

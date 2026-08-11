@@ -164,6 +164,78 @@ abstract class AppLocalizations {
   /// **'Sign in'**
   String get loginSignIn;
 
+  /// No description provided for @loginCodePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 8-digit code from your email. If you don\'t see it, check your spam folder.'**
+  String get loginCodePrompt;
+
+  /// No description provided for @loginResendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code'**
+  String get loginResendCode;
+
+  /// No description provided for @loginResendIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code ({seconds}s)'**
+  String loginResendIn(int seconds);
+
+  /// No description provided for @loginChangeEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a different email'**
+  String get loginChangeEmail;
+
+  /// No description provided for @loginErrorRateLimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many requests. Try again later.'**
+  String get loginErrorRateLimited;
+
+  /// No description provided for @loginErrorAccountDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'This account has been deleted.'**
+  String get loginErrorAccountDeleted;
+
+  /// No description provided for @loginErrorCodeExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'This code expired. Request a new code.'**
+  String get loginErrorCodeExpired;
+
+  /// No description provided for @loginErrorCodeAlreadyUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'This code was already used. Request a new code.'**
+  String get loginErrorCodeAlreadyUsed;
+
+  /// No description provided for @loginErrorTooManyAttempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many invalid attempts. Request a new code.'**
+  String get loginErrorTooManyAttempts;
+
+  /// No description provided for @loginErrorInvalidCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid code.'**
+  String get loginErrorInvalidCode;
+
+  /// No description provided for @loginErrorInternalError.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get loginErrorInternalError;
+
+  /// No description provided for @loginErrorUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in failed. Please try again.'**
+  String get loginErrorUnknown;
+
   /// No description provided for @cardsTitle.
   ///
   /// In en, this message translates to:

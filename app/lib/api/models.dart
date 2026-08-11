@@ -145,14 +145,24 @@ class LearningState {
 }
 
 class AuthSession {
-  const AuthSession({required this.token, required this.userId, required this.email});
+  const AuthSession({
+    required this.idToken,
+    required this.refreshToken,
+    required this.expiresIn,
+    required this.userId,
+    required this.email,
+  });
 
-  final String token;
+  final String idToken;
+  final String refreshToken;
+  final int expiresIn;
   final String userId;
   final String email;
 
   factory AuthSession.fromJson(Map<String, dynamic> json) => AuthSession(
-        token: json['token'] as String,
+        idToken: json['idToken'] as String,
+        refreshToken: json['refreshToken'] as String,
+        expiresIn: (json['expiresIn'] as num).toInt(),
         userId: json['user']['userId'] as String,
         email: json['user']['email'] as String,
       );

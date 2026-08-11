@@ -327,3 +327,11 @@ SceneLex 可向词典、播放器或课程应用提供两类能力：
 - 没有把模型名、渲染参数、下游应用专有字段或未审核素材路径写进正式 scene spec。
 - 对比关系没有把包含、重叠、程度差异或不同维度误写成互斥。
 - `git status --short` 已检查，未覆盖无关改动。
+
+## Web 集成测试（实机检查点）
+
+需要给"手工检查点/实机行为"出证据（而非仅单元测试）时，读
+`docs/web-e2e-testing.md`：`scripts/run-checkpoints.sh` 起真实 Chrome +
+真实本地 server 跑 `app/integration_test/sync_flow_test.dart` 的四个检查点。
+涉及 flutter web 集成测试（flutter drive / chromedriver / dwds / 验证码
+竞态 / locale）的已知坑都在该文档，先读再动手。
