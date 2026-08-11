@@ -143,4 +143,17 @@ Phase 3 完成（Flutter 客户端核心学习闭环，在线模式）：
   - 评分（Again/Hard/Good/Easy → POST /review → 队列推进）
 - 手动验证指引：`docs/v1/manual-test-phase3.md`。
 
-下一步：Phase 4 — 离线优先（Drift/SQLite + outbox + 同步引擎 + 双游标）。
+Phase 4 完成（离线优先）：
+
+- Dart FSRS 端口（`app/lib/data/fsrs.dart`），黄金向量 15/15 通过（与 Rust core 一致）。
+- Drift/SQLite 本地库：learning_states / review_events / outbox / sync_state（双游标）/
+  senses / programs / workspace_settings 缓存。
+- 本地优先写入：实体 + outbox 同事务；review 提交产生两条 outbox 记录
+  （review_event append + learning_state upsert），FSRS 本地计算。
+- SyncEngine：bootstrap 水合（分页+不透明游标）→ push outbox（100/批、幂等 ack）→
+  pull hot（DISTINCT ON 增量、推进游标）→ pull review history（keyset）。
+- 内容缓存：program 本地缓存优先（离线可播放 Experience Program）。
+- 同步触发：mutation 后 + 页面加载时 best-effort（离线安全）。
+- 手动验证指引：`docs/v1/manual-test-phase4.md`（断网学习 → 联网收敛 → 多端一致）。
+
+下一步：Phase 5 — 进度/统计（streak、图表、日程分桶）、设置 20+ 项、多语言、本地通知。

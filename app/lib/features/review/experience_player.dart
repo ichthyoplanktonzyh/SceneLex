@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../api/api_client.dart';
 import '../../api/models.dart';
 import '../../data/providers.dart';
+import '../../data/sync/sync_providers.dart';
 
 const _stageLabels = {
   'anchor': '经验原型',
@@ -56,12 +57,18 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
   }
 
   Future<ExperienceProgram> _loadProgram() async {
-    final api = ref.read(apiClientProvider);
     final programId = widget.sense.programId;
     if (programId == null) {
       throw ApiException(0, 'sense ${widget.sense.senseKey} has no program');
     }
+    // Offline-first: local program cache first, then network + cache.
+    final local = ref.read(localRepositoryProvider);
+    final cached = await local.cachedProgram(programId);
+    if (cached != null) return ExperienceProgram.fromJson(cached);
+
+    final api = ref.read(apiClientProvider);
     final res = await api.get('/content/programs/$programId');
+    await local.cacheProgram(programId, res);
     return ExperienceProgram.fromJson(res);
   }
 
@@ -74,6 +81,7 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
       await submitReview(
         ref,
         wordSenseId: widget.sense.wordSenseId,
+        learningStateId: widget.state.learningStateId ?? widget.sense.wordSenseId,
         experienceUnitId: _currentUnit.experienceUnitId,
         programVersion: widget.sense.programVersion ?? 1,
         rating: rating,

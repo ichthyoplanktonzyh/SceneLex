@@ -91,6 +91,7 @@ class LearningState {
     required this.reps,
     required this.lapses,
     required this.fsrsCardState,
+    this.learningStateId,
     this.dueAt,
     this.fsrsStepIndex,
     this.fsrsStability,
@@ -99,6 +100,7 @@ class LearningState {
   });
 
   final String wordSenseId;
+  final String? learningStateId;
   final DateTime? dueAt;
   final int reps;
   final int lapses;
@@ -119,6 +121,7 @@ class LearningState {
 
   factory LearningState.fromJson(Map<String, dynamic> json) => LearningState(
         wordSenseId: json['entityId'] as String,
+        learningStateId: json['payload']?['learningStateId'] as String?,
         dueAt: json['payload']?['dueAt'] == null
             ? null
             : DateTime.parse(json['payload']['dueAt'] as String),
