@@ -32,6 +32,7 @@ impl IntoResponse for OtpError {
     fn into_response(self) -> Response {
         let status = match self {
             OtpError::RateLimited => StatusCode::TOO_MANY_REQUESTS,
+            OtpError::AccountDeleted => StatusCode::GONE,
             _ => StatusCode::BAD_REQUEST,
         };
         (status, Json(json!({ "error": self.to_string() }))).into_response()

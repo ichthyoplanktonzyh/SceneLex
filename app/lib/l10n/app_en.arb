@@ -216,6 +216,32 @@
   "settingsPickTime": "Pick time",
   "settingsNotificationsUnsupported": "Notifications are not supported on this platform",
   "settingsNotificationsDenied": "Notification permission denied",
+  "settingsNotificationsMode": "Mode",
+  "settingsNotificationsModeDaily": "Once daily",
+  "settingsNotificationsModeInactivity": "Inactivity",
+  "settingsNotificationsInactivityBody": "The first reminder arrives after inactivity during this window. Later reminders repeat at the chosen interval.",
+  "settingsNotificationsFrom": "From",
+  "settingsNotificationsTo": "To",
+  "settingsNotificationsRepeatEvery": "Repeat every",
+  "settingsNotificationsOneHour": "1 hour",
+  "settingsNotificationsHours": "{count} hours",
+  "@settingsNotificationsHours": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "settingsNotificationsMinutes": "{count} minutes",
+  "@settingsNotificationsMinutes": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "settingsNotificationsBadge": "Show app icon badge",
+  "settingsNotificationsBadgeBody": "Show a red 1 on the app icon when a reminder fires and you have not reviewed today.",
+  "settingsNotificationsStrict": "Enable streak reminders",
+  "settingsNotificationsStrictBody": "If you have not reviewed today, SceneLex reminds you 4, 3, and 2 hours before midnight so you can keep your streak.",
+  "settingsNotificationsFooter": "Study reminders stay on this device.",
+  "settingsNotificationsOff": "Off",
   "settingsReviewSection": "Review",
   "settingsReviewAnimations": "Review Animations",
   "settingsReviewAnimationsBody": "Show animations after rating a card",
@@ -227,7 +253,42 @@
   "settingsResetProgress": "Reset study progress",
   "settingsResetProgressBody": "This clears all study progress on this device and on the server. It cannot be undone.",
   "settingsDeleteWorkspace": "Delete current workspace",
+  "settingsDeleteWorkspaceBody": "Type \"delete workspace\" to confirm. The workspace and all its study progress are deleted.",
+  "settingsDeleteAccount": "Delete account",
+  "settingsDeleteAccountBody": "Permanently delete your account and all data",
+  "settingsDeleteAccountPhrase": "Type \"delete my account\" to confirm. This cannot be undone.",
+  "settingsDeleteAccountConfirm": "Delete account",
+  "settingsTypeToConfirm": "Type {phrase} to confirm",
+  "@settingsTypeToConfirm": {
+    "placeholders": {
+      "phrase": {"type": "String"}
+    }
+  },
+  "settingsAboutSection": "About",
+  "settingsOpenSource": "Open Source",
+  "settingsOpenSourceBody": "SceneLex is open source and builds on flashcards-open-source-app (MIT). Review reaction animations use Lottie assets from the same project (MIT).",
+  "settingsLegal": "Legal",
+  "settingsLegalBody": "SceneLex is a local-first study tool. Study data syncs to your own server. See the project license for details.",
+  "settingsSupport": "Support",
+  "settingsSupportBody": "For help and bug reports, open an issue in the project repository. Feedback helps shape the next version.",
+  "settingsServerInfo": "Server info",
+  "settingsServerInfoApi": "API endpoint",
+  "settingsServerInfoAccount": "Account",
+  "settingsDeviceInfo": "Device info",
+  "settingsDevicePlatform": "Platform",
+  "settingsShareApp": "Share app",
   "settingsWorkspaceSection": "Workspace",
+  "settingsWorkspaceCurrent": "Workspace",
+  "settingsWorkspaceSwitch": "Switch or create a workspace",
+  "settingsWorkspaceRename": "Rename",
+  "settingsWorkspaceCreate": "Create workspace",
+  "settingsWorkspaceSelected": "Selected",
+  "settingsWorkspaceCreated": "Workspace created: {name}",
+  "@settingsWorkspaceCreated": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
   "settingsWorkspaceLists": "Lists",
   "settingsWorkspaceListsBody": "Create smart lists to filter your reviews",
   "settingsReset": "Reset",

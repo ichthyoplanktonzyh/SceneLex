@@ -149,6 +149,24 @@ class AuthSession {
       );
 }
 
+class Workspace {
+  const Workspace({
+    required this.workspaceId,
+    required this.name,
+    required this.isSelected,
+  });
+
+  final String workspaceId;
+  final String name;
+  final bool isSelected;
+
+  factory Workspace.fromJson(Map<String, dynamic> json) => Workspace(
+        workspaceId: json['workspaceId'] as String,
+        name: json['name']?.toString() ?? 'Untitled',
+        isSelected: json['isSelected'] as bool? ?? false,
+      );
+}
+
 /// Word list: a smart filter (name + tag rule, at least one tag).
 /// Mirrors the sync `list` entity (filterDefinition {version: 2, tags: [...]}).
 class WordList {

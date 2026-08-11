@@ -188,3 +188,173 @@ async fn list_workspace(pool: &PgPool, workspace_id: Uuid) -> Result<WorkspaceRo
     .fetch_one(pool)
     .await
 }
+
+/// Confirmation texts (reference behavior).
+pub const DELETE_WORKSPACE_CONFIRMATION: &str = "delete workspace";
+pub const RESET_PROGRESS_CONFIRMATION: &str =
+    "reset all progress for all cards in this workspace";
+
+/// Member count + role of the user in the workspace (None when not a member).
+async fn member_role(
+    pool: &PgPool,
+    user_id: Uuid,
+    workspace_id: Uuid,
+) -> Result<Option<(String, i64)>, sqlx::Error> {
+    sqlx::query_as::<_, (String, i64)>(
+        "SELECT m.role, wm.member_count
+         FROM (
+            SELECT count(*) AS member_count
+            FROM org.workspace_memberships
+            WHERE workspace_id = $1
+         ) wm
+         JOIN org.workspace_memberships m
+           ON m.workspace_id = $1 AND m.user_id = $2",
+    )
+    .bind(workspace_id)
+    .bind(user_id)
+    .fetch_optional(pool)
+    .await
+}
+
+pub async fn rename_workspace(
+    pool: &PgPool,
+    user_id: Uuid,
+    workspace_id: Uuid,
+    name: &str,
+) -> Result<Option<WorkspaceRow>, sqlx::Error> {
+    let role = member_role(pool, user_id, workspace_id).await?;
+    let Some((role_name, _)) = role else {
+        return Ok(None);
+    };
+    if role_name != "owner" {
+        return Err(sqlx::Error::Protocol("only the workspace owner can rename it".into()));
+    }
+    sqlx::query("UPDATE org.workspaces SET name = $1 WHERE workspace_id = $2")
+        .bind(name)
+        .bind(workspace_id)
+        .execute(pool)
+        .await?;
+    Ok(Some(list_workspace(pool, workspace_id).await?))
+}
+
+/// Delete a workspace (owner + sole member + confirmation text).
+/// Returns (deleted_workspace, selected_workspace_after, deleted_cards_count).
+pub async fn delete_workspace(
+    pool: &PgPool,
+    user_id: Uuid,
+    workspace_id: Uuid,
+    confirmation: &str,
+) -> Result<Option<(Uuid, Option<Uuid>, i64)>, sqlx::Error> {
+    if confirmation != DELETE_WORKSPACE_CONFIRMATION {
+        return Err(sqlx::Error::Protocol("confirmation text mismatch".into()));
+    }
+    let role = member_role(pool, user_id, workspace_id).await?;
+    let Some((role_name, member_count)) = role else {
+        return Ok(None);
+    };
+    if role_name != "owner" {
+        return Err(sqlx::Error::Protocol("only the workspace owner can delete it".into()));
+    }
+    if member_count != 1 {
+        return Err(sqlx::Error::Protocol(
+            "workspace with other members cannot be deleted".into(),
+        ));
+    }
+
+    let deleted_cards: i64 = sqlx::query_scalar(
+        "SELECT count(*) FROM content.learning_states WHERE workspace_id = $1",
+    )
+    .bind(workspace_id)
+    .fetch_one(pool)
+    .await?;
+
+    let mut tx = pool.begin().await?;
+    sqlx::query("DELETE FROM org.workspaces WHERE workspace_id = $1")
+        .bind(workspace_id)
+        .execute(&mut *tx)
+        .await?;
+
+    // If the deleted workspace was selected, fall back to the earliest
+    // remaining workspace (or None; /me re-bootstraps a new "Personal").
+    let was_selected: bool = sqlx::query_scalar(
+        "SELECT COALESCE(selected_workspace_id = $1, false) FROM org.user_settings WHERE user_id = $2",
+    )
+    .bind(workspace_id)
+    .bind(user_id)
+    .fetch_optional(&mut *tx)
+    .await?
+    .unwrap_or(false);
+    let next_selected: Option<Uuid> = if was_selected {
+        let earliest: Option<Uuid> = sqlx::query_scalar(
+            "SELECT w.workspace_id
+             FROM org.workspace_memberships m
+             JOIN org.workspaces w ON w.workspace_id = m.workspace_id
+             WHERE m.user_id = $1 AND w.workspace_id <> $2
+             ORDER BY w.created_at ASC
+             LIMIT 1",
+        )
+        .bind(user_id)
+        .bind(workspace_id)
+        .fetch_optional(&mut *tx)
+        .await?;
+        sqlx::query(
+            "UPDATE org.user_settings SET selected_workspace_id = $1 WHERE user_id = $2",
+        )
+        .bind(earliest)
+        .bind(user_id)
+        .execute(&mut *tx)
+        .await?;
+        earliest
+    } else {
+        None
+    };
+    tx.commit().await?;
+
+    Ok(Some((workspace_id, next_selected, deleted_cards)))
+}
+
+/// Reset study progress in a workspace (owner + sole member + confirmation).
+/// Deletes learning states and review events; sync metadata and content are
+/// untouched.
+pub async fn reset_workspace_progress(
+    pool: &PgPool,
+    user_id: Uuid,
+    workspace_id: Uuid,
+    confirmation: &str,
+) -> Result<Option<i64>, sqlx::Error> {
+    if confirmation != RESET_PROGRESS_CONFIRMATION {
+        return Err(sqlx::Error::Protocol("confirmation text mismatch".into()));
+    }
+    let role = member_role(pool, user_id, workspace_id).await?;
+    let Some((role_name, member_count)) = role else {
+        return Ok(None);
+    };
+    if role_name != "owner" {
+        return Err(sqlx::Error::Protocol(
+            "only the workspace owner can reset progress".into(),
+        ));
+    }
+    if member_count != 1 {
+        return Err(sqlx::Error::Protocol(
+            "workspace with other members cannot be reset".into(),
+        ));
+    }
+
+    let mut tx = pool.begin().await?;
+    let deleted: i64 = sqlx::query_scalar(
+        "SELECT count(*) FROM content.learning_states WHERE workspace_id = $1",
+    )
+    .bind(workspace_id)
+    .fetch_one(&mut *tx)
+    .await?;
+    sqlx::query("DELETE FROM content.learning_states WHERE workspace_id = $1")
+        .bind(workspace_id)
+        .execute(&mut *tx)
+        .await?;
+    sqlx::query("DELETE FROM content.review_events WHERE workspace_id = $1")
+        .bind(workspace_id)
+        .execute(&mut *tx)
+        .await?;
+    tx.commit().await?;
+    Ok(Some(deleted))
+}

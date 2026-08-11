@@ -22,6 +22,8 @@ const MAX_VERIFY_ATTEMPTS: i64 = 5;
 pub enum OtpError {
     #[error("rate limited")]
     RateLimited,
+    #[error("account deleted")]
+    AccountDeleted,
     #[error("code expired. Request a new one.")]
     Expired,
     #[error("code already used. Request a new one.")]
@@ -94,6 +96,18 @@ pub async fn send_code(
     ip: Option<&str>,
 ) -> Result<(), OtpError> {
     let email = email.trim().to_lowercase();
+
+    // Deleted accounts cannot re-register (tombstone check first so the
+    // rate-limit counters stay untouched by deleted-account probes).
+    let deleted: Option<Uuid> = sqlx::query_scalar(
+        "SELECT subject_key FROM auth.deleted_subjects WHERE email = $1",
+    )
+    .bind(&email)
+    .fetch_optional(pool)
+    .await?;
+    if deleted.is_some() {
+        return Err(OtpError::AccountDeleted);
+    }
 
     rate_limit_email(pool, &email).await?;
     rate_limit_ip(pool, ip).await?;

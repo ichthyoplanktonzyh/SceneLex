@@ -466,6 +466,62 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsNotificationsDenied => 'Notification permission denied';
 
   @override
+  String get settingsNotificationsMode => 'Mode';
+
+  @override
+  String get settingsNotificationsModeDaily => 'Once daily';
+
+  @override
+  String get settingsNotificationsModeInactivity => 'Inactivity';
+
+  @override
+  String get settingsNotificationsInactivityBody =>
+      'The first reminder arrives after inactivity during this window. Later reminders repeat at the chosen interval.';
+
+  @override
+  String get settingsNotificationsFrom => 'From';
+
+  @override
+  String get settingsNotificationsTo => 'To';
+
+  @override
+  String get settingsNotificationsRepeatEvery => 'Repeat every';
+
+  @override
+  String get settingsNotificationsOneHour => '1 hour';
+
+  @override
+  String settingsNotificationsHours(int count) {
+    return '$count hours';
+  }
+
+  @override
+  String settingsNotificationsMinutes(int count) {
+    return '$count minutes';
+  }
+
+  @override
+  String get settingsNotificationsBadge => 'Show app icon badge';
+
+  @override
+  String get settingsNotificationsBadgeBody =>
+      'Show a red 1 on the app icon when a reminder fires and you have not reviewed today.';
+
+  @override
+  String get settingsNotificationsStrict => 'Enable streak reminders';
+
+  @override
+  String get settingsNotificationsStrictBody =>
+      'If you have not reviewed today, SceneLex reminds you 4, 3, and 2 hours before midnight so you can keep your streak.';
+
+  @override
+  String get settingsNotificationsFooter =>
+      'Study reminders stay on this device.';
+
+  @override
+  String get settingsNotificationsOff => 'Off';
+
+  @override
   String get settingsReviewSection => 'Review';
 
   @override
@@ -502,7 +558,92 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsDeleteWorkspace => 'Delete current workspace';
 
   @override
+  String get settingsDeleteWorkspaceBody =>
+      'Type \"delete workspace\" to confirm. The workspace and all its study progress are deleted.';
+
+  @override
+  String get settingsDeleteAccount => 'Delete account';
+
+  @override
+  String get settingsDeleteAccountBody =>
+      'Permanently delete your account and all data';
+
+  @override
+  String get settingsDeleteAccountPhrase =>
+      'Type \"delete my account\" to confirm. This cannot be undone.';
+
+  @override
+  String get settingsDeleteAccountConfirm => 'Delete account';
+
+  @override
+  String settingsTypeToConfirm(String phrase) {
+    return 'Type $phrase to confirm';
+  }
+
+  @override
+  String get settingsAboutSection => 'About';
+
+  @override
+  String get settingsOpenSource => 'Open Source';
+
+  @override
+  String get settingsOpenSourceBody =>
+      'SceneLex is open source and builds on flashcards-open-source-app (MIT). Review reaction animations use Lottie assets from the same project (MIT).';
+
+  @override
+  String get settingsLegal => 'Legal';
+
+  @override
+  String get settingsLegalBody =>
+      'SceneLex is a local-first study tool. Study data syncs to your own server. See the project license for details.';
+
+  @override
+  String get settingsSupport => 'Support';
+
+  @override
+  String get settingsSupportBody =>
+      'For help and bug reports, open an issue in the project repository. Feedback helps shape the next version.';
+
+  @override
+  String get settingsServerInfo => 'Server info';
+
+  @override
+  String get settingsServerInfoApi => 'API endpoint';
+
+  @override
+  String get settingsServerInfoAccount => 'Account';
+
+  @override
+  String get settingsDeviceInfo => 'Device info';
+
+  @override
+  String get settingsDevicePlatform => 'Platform';
+
+  @override
+  String get settingsShareApp => 'Share app';
+
+  @override
   String get settingsWorkspaceSection => 'Workspace';
+
+  @override
+  String get settingsWorkspaceCurrent => 'Workspace';
+
+  @override
+  String get settingsWorkspaceSwitch => 'Switch or create a workspace';
+
+  @override
+  String get settingsWorkspaceRename => 'Rename';
+
+  @override
+  String get settingsWorkspaceCreate => 'Create workspace';
+
+  @override
+  String get settingsWorkspaceSelected => 'Selected';
+
+  @override
+  String settingsWorkspaceCreated(String name) {
+    return 'Workspace created: $name';
+  }
 
   @override
   String get settingsWorkspaceLists => 'Lists';

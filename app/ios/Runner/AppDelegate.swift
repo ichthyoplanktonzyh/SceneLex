@@ -23,6 +23,22 @@ private class PowerModePlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
       name: .NSProcessInfoPowerStateDidChange,
       object: nil
     )
+
+    // App icon badge control (channel `scenelex/app_badge`).
+    let badgeChannel = FlutterMethodChannel(
+      name: "scenelex/app_badge",
+      binaryMessenger: registrar.messenger()
+    )
+    badgeChannel.setMethodCallHandler { call, result in
+      if call.method == "clear" {
+        DispatchQueue.main.async {
+          UIApplication.shared.applicationIconBadgeNumber = 0
+          result(nil)
+        }
+      } else {
+        result(FlutterMethodNotImplemented)
+      }
+    }
   }
 
   private func handleMethod(_ call: FlutterMethodCall, result: @escaping FlutterResult) {

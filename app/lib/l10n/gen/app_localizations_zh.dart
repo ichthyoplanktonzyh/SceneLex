@@ -455,6 +455,60 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsNotificationsDenied => '通知权限被拒绝';
 
   @override
+  String get settingsNotificationsMode => '模式';
+
+  @override
+  String get settingsNotificationsModeDaily => '每天一次';
+
+  @override
+  String get settingsNotificationsModeInactivity => '不活动时';
+
+  @override
+  String get settingsNotificationsInactivityBody =>
+      '在该时间窗内,超过设定间隔未学习后收到第一次提醒,之后按间隔重复提醒。';
+
+  @override
+  String get settingsNotificationsFrom => '从';
+
+  @override
+  String get settingsNotificationsTo => '至';
+
+  @override
+  String get settingsNotificationsRepeatEvery => '重复间隔';
+
+  @override
+  String get settingsNotificationsOneHour => '1 小时';
+
+  @override
+  String settingsNotificationsHours(int count) {
+    return '$count 小时';
+  }
+
+  @override
+  String settingsNotificationsMinutes(int count) {
+    return '$count 分钟';
+  }
+
+  @override
+  String get settingsNotificationsBadge => '显示应用角标';
+
+  @override
+  String get settingsNotificationsBadgeBody => '提醒发出时,如果今天还没学习,应用图标显示红色 1。';
+
+  @override
+  String get settingsNotificationsStrict => '启用连续学习提醒';
+
+  @override
+  String get settingsNotificationsStrictBody =>
+      '如果今天还没学习,SceneLex 会在午夜前 4、3、2 小时提醒你,帮你保住连续记录。';
+
+  @override
+  String get settingsNotificationsFooter => '学习提醒仅保存在本设备。';
+
+  @override
+  String get settingsNotificationsOff => '已关闭';
+
+  @override
   String get settingsReviewSection => '复习';
 
   @override
@@ -488,7 +542,89 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsDeleteWorkspace => '删除当前工作区';
 
   @override
+  String get settingsDeleteWorkspaceBody =>
+      '输入 \"delete workspace\" 确认。工作区及其全部学习进度将被删除。';
+
+  @override
+  String get settingsDeleteAccount => '删除账号';
+
+  @override
+  String get settingsDeleteAccountBody => '永久删除账号与全部数据';
+
+  @override
+  String get settingsDeleteAccountPhrase =>
+      '输入 \"delete my account\" 确认。此操作不可恢复。';
+
+  @override
+  String get settingsDeleteAccountConfirm => '删除账号';
+
+  @override
+  String settingsTypeToConfirm(String phrase) {
+    return '输入 $phrase 以确认';
+  }
+
+  @override
+  String get settingsAboutSection => '关于';
+
+  @override
+  String get settingsOpenSource => '开源';
+
+  @override
+  String get settingsOpenSourceBody =>
+      'SceneLex 是开源项目,行为基线参考 flashcards-open-source-app(MIT);复习反应动画使用同项目的 Lottie 资产(MIT)。';
+
+  @override
+  String get settingsLegal => '法律信息';
+
+  @override
+  String get settingsLegalBody => 'SceneLex 是本地优先的学习工具,学习数据同步到自己的服务器。详见项目许可证。';
+
+  @override
+  String get settingsSupport => '支持';
+
+  @override
+  String get settingsSupportBody => '如有问题或建议,请在项目仓库提交 issue,帮助我们改进下一个版本。';
+
+  @override
+  String get settingsServerInfo => '服务器信息';
+
+  @override
+  String get settingsServerInfoApi => 'API 地址';
+
+  @override
+  String get settingsServerInfoAccount => '账号';
+
+  @override
+  String get settingsDeviceInfo => '设备信息';
+
+  @override
+  String get settingsDevicePlatform => '平台';
+
+  @override
+  String get settingsShareApp => '分享应用';
+
+  @override
   String get settingsWorkspaceSection => '工作区';
+
+  @override
+  String get settingsWorkspaceCurrent => '工作区';
+
+  @override
+  String get settingsWorkspaceSwitch => '切换或创建工作区';
+
+  @override
+  String get settingsWorkspaceRename => '重命名';
+
+  @override
+  String get settingsWorkspaceCreate => '新建工作区';
+
+  @override
+  String get settingsWorkspaceSelected => '当前使用';
+
+  @override
+  String settingsWorkspaceCreated(String name) {
+    return '已创建工作区:$name';
+  }
 
   @override
   String get settingsWorkspaceLists => '词单';

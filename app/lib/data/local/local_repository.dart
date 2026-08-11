@@ -392,6 +392,19 @@ class LocalRepository {
     });
   }
 
+  /// Wipe all study data for the current device (workspace switch, reset,
+  /// workspace delete, account delete). The installation identity and the
+  /// content cache (senses/programs) are kept.
+  Future<void> wipeStudyData() async {
+    await db.transaction(() async {
+      await db.delete(db.localLearningStates).go();
+      await db.delete(db.localReviewEvents).go();
+      await db.delete(db.outboxRecords).go();
+      await db.delete(db.syncStateTable).go();
+      await db.delete(db.localLists).go();
+    });
+  }
+
   // ------------------------------------------------------------------
   // Word lists (smart filters)
   // ------------------------------------------------------------------

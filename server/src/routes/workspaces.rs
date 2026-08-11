@@ -14,6 +14,26 @@ pub fn router() -> Router<AppState> {
     Router::new()
         .route("/workspaces", get(list).post(create))
         .route("/workspaces/{workspace_id}/select", post(select))
+        .route("/workspaces/{workspace_id}/rename", post(rename))
+        .route("/workspaces/{workspace_id}/delete", post(delete_workspace))
+        .route(
+            "/workspaces/{workspace_id}/reset-progress",
+            post(reset_progress),
+        )
+}
+
+fn bad_request(message: &str) -> (StatusCode, Json<Value>) {
+    (
+        StatusCode::BAD_REQUEST,
+        Json(json!({ "error": message })),
+    )
+}
+
+fn internal_error(error: impl std::fmt::Display) -> (StatusCode, Json<Value>) {
+    (
+        StatusCode::INTERNAL_SERVER_ERROR,
+        Json(json!({ "error": error.to_string() })),
+    )
 }
 
 async fn list(
@@ -88,9 +108,102 @@ async fn select(
             StatusCode::NOT_FOUND,
             Json(json!({ "error": "workspace not found" })),
         )),
-        Err(e) => Err((
-            StatusCode::INTERNAL_SERVER_ERROR,
-            Json(json!({ "error": e.to_string() })),
+        Err(e) => Err(internal_error(e)),
+    }
+}
+
+#[derive(Debug, Deserialize)]
+struct RenameWorkspaceRequest {
+    name: String,
+}
+
+async fn rename(
+    State(state): State<AppState>,
+    Authenticated(user): Authenticated,
+    Path(workspace_id): Path<uuid::Uuid>,
+    Json(req): Json<RenameWorkspaceRequest>,
+) -> Result<Json<Value>, (StatusCode, Json<Value>)> {
+    let name = req.name.trim();
+    if name.is_empty() {
+        return Err(bad_request("workspace name must not be empty"));
+    }
+    match workspaces::rename_workspace(&state.pool, user.user_id, workspace_id, name).await {
+        Ok(Some(w)) => Ok(Json(json!({
+            "workspaceId": w.workspace_id,
+            "name": w.name,
+            "createdAt": w.created_at,
+        }))),
+        Ok(None) => Err((
+            StatusCode::NOT_FOUND,
+            Json(json!({ "error": "workspace not found" })),
         )),
+        Err(e) => Err(internal_error(e)),
+    }
+}
+
+#[derive(Debug, Deserialize)]
+struct WorkspaceConfirmationRequest {
+    #[serde(rename = "confirmationText")]
+    confirmation_text: String,
+}
+
+async fn delete_workspace(
+    State(state): State<AppState>,
+    Authenticated(user): Authenticated,
+    Path(workspace_id): Path<uuid::Uuid>,
+    Json(req): Json<WorkspaceConfirmationRequest>,
+) -> Result<Json<Value>, (StatusCode, Json<Value>)> {
+    if req.confirmation_text != workspaces::DELETE_WORKSPACE_CONFIRMATION {
+        return Err(bad_request("type \"delete workspace\" exactly to confirm"));
+    }
+    match workspaces::delete_workspace(
+        &state.pool,
+        user.user_id,
+        workspace_id,
+        &req.confirmation_text,
+    )
+    .await
+    {
+        Ok(Some((workspace_id, next_selected, deleted_cards))) => Ok(Json(json!({
+            "workspaceId": workspace_id,
+            "deletedCardsCount": deleted_cards,
+            "selectedWorkspaceId": next_selected,
+        }))),
+        Ok(None) => Err((
+            StatusCode::NOT_FOUND,
+            Json(json!({ "error": "workspace not found" })),
+        )),
+        Err(e) => Err(internal_error(e)),
+    }
+}
+
+async fn reset_progress(
+    State(state): State<AppState>,
+    Authenticated(user): Authenticated,
+    Path(workspace_id): Path<uuid::Uuid>,
+    Json(req): Json<WorkspaceConfirmationRequest>,
+) -> Result<Json<Value>, (StatusCode, Json<Value>)> {
+    if req.confirmation_text != workspaces::RESET_PROGRESS_CONFIRMATION {
+        return Err(bad_request(
+            "type \"reset all progress for all cards in this workspace\" exactly to confirm",
+        ));
+    }
+    match workspaces::reset_workspace_progress(
+        &state.pool,
+        user.user_id,
+        workspace_id,
+        &req.confirmation_text,
+    )
+    .await
+    {
+        Ok(Some(cards_reset)) => Ok(Json(json!({
+            "workspaceId": workspace_id,
+            "cardsResetCount": cards_reset,
+        }))),
+        Ok(None) => Err((
+            StatusCode::NOT_FOUND,
+            Json(json!({ "error": "workspace not found" })),
+        )),
+        Err(e) => Err(internal_error(e)),
     }
 }

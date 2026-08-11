@@ -938,6 +938,102 @@ abstract class AppLocalizations {
   /// **'Notification permission denied'**
   String get settingsNotificationsDenied;
 
+  /// No description provided for @settingsNotificationsMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Mode'**
+  String get settingsNotificationsMode;
+
+  /// No description provided for @settingsNotificationsModeDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Once daily'**
+  String get settingsNotificationsModeDaily;
+
+  /// No description provided for @settingsNotificationsModeInactivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactivity'**
+  String get settingsNotificationsModeInactivity;
+
+  /// No description provided for @settingsNotificationsInactivityBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The first reminder arrives after inactivity during this window. Later reminders repeat at the chosen interval.'**
+  String get settingsNotificationsInactivityBody;
+
+  /// No description provided for @settingsNotificationsFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get settingsNotificationsFrom;
+
+  /// No description provided for @settingsNotificationsTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get settingsNotificationsTo;
+
+  /// No description provided for @settingsNotificationsRepeatEvery.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat every'**
+  String get settingsNotificationsRepeatEvery;
+
+  /// No description provided for @settingsNotificationsOneHour.
+  ///
+  /// In en, this message translates to:
+  /// **'1 hour'**
+  String get settingsNotificationsOneHour;
+
+  /// No description provided for @settingsNotificationsHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} hours'**
+  String settingsNotificationsHours(int count);
+
+  /// No description provided for @settingsNotificationsMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} minutes'**
+  String settingsNotificationsMinutes(int count);
+
+  /// No description provided for @settingsNotificationsBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Show app icon badge'**
+  String get settingsNotificationsBadge;
+
+  /// No description provided for @settingsNotificationsBadgeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Show a red 1 on the app icon when a reminder fires and you have not reviewed today.'**
+  String get settingsNotificationsBadgeBody;
+
+  /// No description provided for @settingsNotificationsStrict.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable streak reminders'**
+  String get settingsNotificationsStrict;
+
+  /// No description provided for @settingsNotificationsStrictBody.
+  ///
+  /// In en, this message translates to:
+  /// **'If you have not reviewed today, SceneLex reminds you 4, 3, and 2 hours before midnight so you can keep your streak.'**
+  String get settingsNotificationsStrictBody;
+
+  /// No description provided for @settingsNotificationsFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Study reminders stay on this device.'**
+  String get settingsNotificationsFooter;
+
+  /// No description provided for @settingsNotificationsOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get settingsNotificationsOff;
+
   /// No description provided for @settingsReviewSection.
   ///
   /// In en, this message translates to:
@@ -1004,11 +1100,161 @@ abstract class AppLocalizations {
   /// **'Delete current workspace'**
   String get settingsDeleteWorkspace;
 
+  /// No description provided for @settingsDeleteWorkspaceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Type \"delete workspace\" to confirm. The workspace and all its study progress are deleted.'**
+  String get settingsDeleteWorkspaceBody;
+
+  /// No description provided for @settingsDeleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get settingsDeleteAccount;
+
+  /// No description provided for @settingsDeleteAccountBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanently delete your account and all data'**
+  String get settingsDeleteAccountBody;
+
+  /// No description provided for @settingsDeleteAccountPhrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Type \"delete my account\" to confirm. This cannot be undone.'**
+  String get settingsDeleteAccountPhrase;
+
+  /// No description provided for @settingsDeleteAccountConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get settingsDeleteAccountConfirm;
+
+  /// No description provided for @settingsTypeToConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Type {phrase} to confirm'**
+  String settingsTypeToConfirm(String phrase);
+
+  /// No description provided for @settingsAboutSection.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get settingsAboutSection;
+
+  /// No description provided for @settingsOpenSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Source'**
+  String get settingsOpenSource;
+
+  /// No description provided for @settingsOpenSourceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'SceneLex is open source and builds on flashcards-open-source-app (MIT). Review reaction animations use Lottie assets from the same project (MIT).'**
+  String get settingsOpenSourceBody;
+
+  /// No description provided for @settingsLegal.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal'**
+  String get settingsLegal;
+
+  /// No description provided for @settingsLegalBody.
+  ///
+  /// In en, this message translates to:
+  /// **'SceneLex is a local-first study tool. Study data syncs to your own server. See the project license for details.'**
+  String get settingsLegalBody;
+
+  /// No description provided for @settingsSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get settingsSupport;
+
+  /// No description provided for @settingsSupportBody.
+  ///
+  /// In en, this message translates to:
+  /// **'For help and bug reports, open an issue in the project repository. Feedback helps shape the next version.'**
+  String get settingsSupportBody;
+
+  /// No description provided for @settingsServerInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Server info'**
+  String get settingsServerInfo;
+
+  /// No description provided for @settingsServerInfoApi.
+  ///
+  /// In en, this message translates to:
+  /// **'API endpoint'**
+  String get settingsServerInfoApi;
+
+  /// No description provided for @settingsServerInfoAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get settingsServerInfoAccount;
+
+  /// No description provided for @settingsDeviceInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Device info'**
+  String get settingsDeviceInfo;
+
+  /// No description provided for @settingsDevicePlatform.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform'**
+  String get settingsDevicePlatform;
+
+  /// No description provided for @settingsShareApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Share app'**
+  String get settingsShareApp;
+
   /// No description provided for @settingsWorkspaceSection.
   ///
   /// In en, this message translates to:
   /// **'Workspace'**
   String get settingsWorkspaceSection;
+
+  /// No description provided for @settingsWorkspaceCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Workspace'**
+  String get settingsWorkspaceCurrent;
+
+  /// No description provided for @settingsWorkspaceSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch or create a workspace'**
+  String get settingsWorkspaceSwitch;
+
+  /// No description provided for @settingsWorkspaceRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get settingsWorkspaceRename;
+
+  /// No description provided for @settingsWorkspaceCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create workspace'**
+  String get settingsWorkspaceCreate;
+
+  /// No description provided for @settingsWorkspaceSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected'**
+  String get settingsWorkspaceSelected;
+
+  /// No description provided for @settingsWorkspaceCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Workspace created: {name}'**
+  String settingsWorkspaceCreated(String name);
 
   /// No description provided for @settingsWorkspaceLists.
   ///

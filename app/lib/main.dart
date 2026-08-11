@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app/locale_controller.dart';
 import 'auth/auth_controller.dart';
+import 'data/providers.dart';
 import 'features/login/login_page.dart';
+import 'features/settings/notifications_service.dart';
 import 'l10n/gen/app_localizations.dart';
 import 'shell/app_shell.dart';
 
@@ -19,6 +21,14 @@ class SceneLexApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(authControllerProvider);
     final locale = ref.watch(localeControllerProvider);
+
+    // Record app activity (inactivity reminders) and clear delivered badges.
+    ref.listen(authControllerProvider, (previous, next) {
+      if (next.isSignedIn && !(previous?.isSignedIn ?? false)) {
+        NotificationsService().clearBadge();
+        recordActivity();
+      }
+    });
 
     return MaterialApp(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,

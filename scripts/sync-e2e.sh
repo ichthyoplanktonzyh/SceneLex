@@ -102,4 +102,39 @@ curl -s -X POST $BASE/workspaces/$WS/sync/pull -H "$AUTH" -H "$CT" -d "{\"instal
 echo "== 8. bootstrap again (full hydration) =="
 curl -s -X POST $BASE/workspaces/$WS/sync/bootstrap -H "$AUTH" -H "$CT" -d "{\"mode\":\"pull\",\"installationId\":\"$INST\",\"platform\":\"web\"}" | python3 -c "import json,sys; d=json.load(sys.stdin); print('entries:', [(e['entityType']) for e in d['entries']], 'hasMore:', d['hasMore'])"
 
+echo "== 9. workspace rename =="
+curl -s -X POST $BASE/workspaces/$WS/rename -H "$AUTH" -H "$CT" -d "{\"name\":\"Renamed WS\"}" | python3 -c "import json,sys; d=json.load(sys.stdin); print('name:', d['name'])"
+
+echo "== 10. reset-progress (wrong confirmation -> 400) =="
+curl -s -o /dev/null -w "%{http_code}\n" -X POST $BASE/workspaces/$WS/reset-progress -H "$AUTH" -H "$CT" -d "{\"confirmationText\":\"nope\"}"
+
+echo "== 11. reset-progress (correct confirmation) =="
+curl -s -X POST $BASE/workspaces/$WS/reset-progress -H "$AUTH" -H "$CT" -d "{\"confirmationText\":\"reset all progress for all cards in this workspace\"}" | python3 -c "import json,sys; d=json.load(sys.stdin); print('cardsResetCount:', d['cardsResetCount'])"
+
+echo "== 12. bootstrap after reset (learning_state gone, list/settings remain) =="
+curl -s -X POST $BASE/workspaces/$WS/sync/bootstrap -H "$AUTH" -H "$CT" -d "{\"mode\":\"pull\",\"installationId\":\"$INST\",\"platform\":\"web\"}" | python3 -c "import json,sys; d=json.load(sys.stdin); print('entries:', [(e['entityType']) for e in d['entries']])"
+
+echo "== 13. workspace delete (wrong confirmation -> 400) =="
+curl -s -o /dev/null -w "%{http_code}\n" -X POST $BASE/workspaces/$WS/delete -H "$AUTH" -H "$CT" -d "{\"confirmationText\":\"nope\"}"
+
+echo "== 14. workspace delete (correct confirmation) =="
+curl -s -X POST $BASE/workspaces/$WS/delete -H "$AUTH" -H "$CT" -d "{\"confirmationText\":\"delete workspace\"}" | python3 -c "import json,sys; d=json.load(sys.stdin); print('deletedCardsCount:', d['deletedCardsCount'])"
+
+echo "== 15. /me re-bootstraps a new Personal workspace =="
+WS2=$(curl -s $BASE/me -H "$AUTH" | python3 -c "import json,sys; print(json.load(sys.stdin)['selectedWorkspaceId'])")
+echo "new workspace: $WS2"
+
+echo "== 16. account delete (wrong confirmation -> 400) =="
+curl -s -o /dev/null -w "%{http_code}\n" -X POST $BASE/account/delete -H "$AUTH" -H "$CT" -d "{\"confirmationText\":\"nope\"}"
+
+echo "== 17. account delete (correct confirmation) =="
+curl -s -o /dev/null -w "%{http_code}\n" -X POST $BASE/account/delete -H "$AUTH" -H "$CT" -d "{\"confirmationText\":\"delete my account\"}"
+
+echo "== 18. stale token -> 410 ACCOUNT_DELETED =="
+curl -s -o /tmp/after_delete.json -w "%{http_code}\n" $BASE/me -H "$AUTH"
+cat /tmp/after_delete.json
+
+echo "== 19. deleted email cannot re-register (send-code -> 410) =="
+curl -s -o /dev/null -w "%{http_code}\n" -X POST $BASE/auth/send-code -H "$CT" -d "{\"email\":\"$EMAIL\"}"
+
 echo "ALL DONE"

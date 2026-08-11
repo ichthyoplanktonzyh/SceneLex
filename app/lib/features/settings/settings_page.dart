@@ -3,18 +3,26 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../app/locale_controller.dart';
+import '../../api/api_client.dart';
 import '../../auth/auth_controller.dart';
+import '../../data/providers.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../lists/lists_page.dart';
 import '../review/reactions/review_reactions_controller.dart';
+import 'notifications_page.dart';
 import 'notifications_service.dart';
 import 'scheduling_settings_page.dart';
+import 'workspace_page.dart';
 
-/// Settings surface: account, notifications, scheduling, language, danger zone.
+/// Settings surface: account, workspace, notifications, review, scheduling,
+/// language, information items, danger zone.
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
+
+  static const _appVersion = '0.1.0';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,7 +30,6 @@ class SettingsPage extends ConsumerWidget {
     final auth = ref.watch(authControllerProvider);
     final locale = ref.watch(localeControllerProvider);
     final notifications = ref.watch(notificationsControllerProvider);
-    final notificationsSupported = NotificationsService.isSupported;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settingsTitle)),
@@ -42,6 +49,18 @@ class SettingsPage extends ConsumerWidget {
           const Divider(),
           _SectionHeader(l10n.settingsWorkspaceSection),
           ListTile(
+            leading: const Icon(Icons.workspaces_outlined),
+            title: Text(l10n.settingsWorkspaceCurrent),
+            subtitle: Text(l10n.settingsWorkspaceSwitch),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => const WorkspacePage(),
+              ),
+            ),
+          ),
+          ListTile(
             leading: const Icon(Icons.playlist_play),
             title: Text(l10n.settingsWorkspaceLists),
             subtitle: Text(l10n.settingsWorkspaceListsBody),
@@ -55,56 +74,28 @@ class SettingsPage extends ConsumerWidget {
           ),
           const Divider(),
           _SectionHeader(l10n.settingsNotificationsSection),
-          if (!notificationsSupported)
-            ListTile(
-              leading: const Icon(Icons.notifications_off_outlined),
-              title: Text(l10n.settingsNotificationsUnsupported),
-              enabled: false,
-            )
-          else ...[
-            SwitchListTile(
-              secondary: const Icon(Icons.notifications_active_outlined),
-              title: Text(l10n.settingsEnableNotifications),
-              value: notifications.enabled,
-              onChanged: (enabled) async {
-                final ok = await ref
-                    .read(notificationsControllerProvider.notifier)
-                    .setEnabled(
-                      enabled,
-                      title: l10n.appTitle,
-                      body: l10n.notificationDailyBody,
-                    );
-                if (!ok && context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.settingsNotificationsDenied)),
-                  );
-                }
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.schedule),
-              title: Text(l10n.settingsNotificationTime),
-              trailing: Text(
-                '${notifications.hour.toString().padLeft(2, '0')}:'
-                '${notifications.minute.toString().padLeft(2, '0')}',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              onTap: () async {
-                final picked = await showTimePicker(
-                  context: context,
-                  initialTime: TimeOfDay(
-                    hour: notifications.hour,
-                    minute: notifications.minute,
+          ListTile(
+            leading: const Icon(Icons.notifications_active_outlined),
+            title: Text(l10n.settingsNotificationsSection),
+            subtitle: notifications.enabled
+                ? Text(
+                    notifications.mode == 'daily'
+                        ? l10n.settingsNotificationsModeDaily
+                        : l10n.settingsNotificationsModeInactivity,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  )
+                : Text(
+                    l10n.settingsNotificationsOff,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
-                );
-                if (picked != null) {
-                  await ref
-                      .read(notificationsControllerProvider.notifier)
-                      .setTime(hour: picked.hour, minute: picked.minute);
-                }
-              },
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => const NotificationsPage(),
+              ),
             ),
-          ],
+          ),
           const Divider(),
           _SectionHeader(l10n.settingsReviewSection),
           SwitchListTile(
@@ -169,22 +160,111 @@ class SettingsPage extends ConsumerWidget {
               subtitle: Text(l10n.settingsLanguageFollowsSystem),
             ),
           const Divider(),
+          _SectionHeader(l10n.settingsAboutSection),
+          ListTile(
+            leading: const Icon(Icons.code),
+            title: Text(l10n.settingsOpenSource),
+            onTap: () => _showInfoDialog(
+              context,
+              title: l10n.settingsOpenSource,
+              body: l10n.settingsOpenSourceBody,
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.gavel_outlined),
+            title: Text(l10n.settingsLegal),
+            onTap: () => _showInfoDialog(
+              context,
+              title: l10n.settingsLegal,
+              body: l10n.settingsLegalBody,
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.support_agent_outlined),
+            title: Text(l10n.settingsSupport),
+            onTap: () => _showInfoDialog(
+              context,
+              title: l10n.settingsSupport,
+              body: l10n.settingsSupportBody,
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.dns_outlined),
+            title: Text(l10n.settingsServerInfo),
+            onTap: () => _showInfoDialog(
+              context,
+              title: l10n.settingsServerInfo,
+              body: '${l10n.settingsServerInfoApi}: '
+                  '${ref.read(apiClientProvider).baseUrl}\n'
+                  '${l10n.settingsServerInfoAccount}: ${auth.email ?? '-'}',
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.phone_android),
+            title: Text(l10n.settingsDeviceInfo),
+            onTap: () => _showInfoDialog(
+              context,
+              title: l10n.settingsDeviceInfo,
+              body: '${l10n.settingsDevicePlatform}: '
+                  '${kIsWeb ? 'web' : Platform.operatingSystem} '
+                  '${kIsWeb ? '' : Platform.operatingSystemVersion}\n'
+                  '${l10n.settingsVersion}: $_appVersion',
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.share_outlined),
+            title: Text(l10n.settingsShareApp),
+            onTap: () => SharePlus.instance.share(
+              ShareParams(
+                text: '${l10n.appTitle} — ${l10n.appTagline}',
+              ),
+            ),
+          ),
+          const Divider(),
           _SectionHeader(l10n.settingsDangerSection),
           ListTile(
             leading: const Icon(Icons.restart_alt),
             title: Text(l10n.settingsResetProgress),
-            enabled: false,
+            onTap: () => _confirmDangerAction(
+              context,
+              title: l10n.settingsResetProgress,
+              description: l10n.settingsResetProgressBody,
+              confirmPhrase: 'reset all progress for all cards in this workspace',
+              confirmLabel: l10n.settingsReset,
+              onConfirm: () => _resetProgress(context, ref),
+            ),
           ),
           ListTile(
             leading: const Icon(Icons.delete_forever_outlined),
             title: Text(l10n.settingsDeleteWorkspace),
-            enabled: false,
+            onTap: () => _confirmDangerAction(
+              context,
+              title: l10n.settingsDeleteWorkspace,
+              description: l10n.settingsDeleteWorkspaceBody,
+              confirmPhrase: 'delete workspace',
+              confirmLabel: l10n.settingsDelete,
+              onConfirm: () => _deleteWorkspace(context, ref),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.person_off_outlined),
+            title: Text(l10n.settingsDeleteAccount),
+            subtitle: Text(l10n.settingsDeleteAccountBody,
+                style: Theme.of(context).textTheme.bodySmall),
+            onTap: () => _confirmDangerAction(
+              context,
+              title: l10n.settingsDeleteAccount,
+              description: l10n.settingsDeleteAccountPhrase,
+              confirmPhrase: 'delete my account',
+              confirmLabel: l10n.settingsDeleteAccountConfirm,
+              onConfirm: () => _deleteAccount(context, ref),
+            ),
           ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.info_outline),
             title: Text(l10n.settingsVersion),
-            trailing: const Text('0.1.0'),
+            trailing: const Text(_appVersion),
           ),
         ],
       ),
@@ -213,6 +293,137 @@ class SettingsPage extends ConsumerWidget {
     if (confirmed == true) {
       ref.read(authControllerProvider.notifier).signOut();
     }
+  }
+
+  /// Danger-zone confirm dialog: the user must type the phrase exactly.
+  Future<void> _confirmDangerAction(
+    BuildContext context, {
+    required String title,
+    required String description,
+    required String confirmPhrase,
+    required String confirmLabel,
+    required Future<void> Function() onConfirm,
+  }) async {
+    final l10n = AppLocalizations.of(context);
+    final controller = TextEditingController();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: Text(title),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(description),
+              const SizedBox(height: 12),
+              TextField(
+                controller: controller,
+                autofocus: true,
+                decoration: InputDecoration(
+                  labelText: l10n.settingsTypeToConfirm(confirmPhrase),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onChanged: (_) => setDialogState(() {}),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(l10n.signOutCancel),
+            ),
+            FilledButton(
+              onPressed: controller.text.trim() == confirmPhrase
+                  ? () => Navigator.pop(context, true)
+                  : null,
+              child: Text(confirmLabel),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (confirmed != true) return;
+    await onConfirm();
+  }
+
+  Future<void> _resetProgress(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
+    try {
+      final ws = await ref.read(workspaceProvider.future);
+      await ref.read(apiClientProvider).post(
+            '/workspaces/$ws/reset-progress',
+            body: {
+              'confirmationText':
+                  'reset all progress for all cards in this workspace',
+            },
+          );
+      await reloadWorkspaceData(ref);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.loadingFailed(''))),
+        );
+      }
+    }
+  }
+
+  Future<void> _deleteWorkspace(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
+    try {
+      final ws = await ref.read(workspaceProvider.future);
+      await ref.read(apiClientProvider).post(
+            '/workspaces/$ws/delete',
+            body: {'confirmationText': 'delete workspace'},
+          );
+      await reloadWorkspaceData(ref);
+      ref.invalidate(workspacesProvider);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.loadingFailed(''))),
+        );
+      }
+    }
+  }
+
+  Future<void> _deleteAccount(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
+    try {
+      await ref.read(apiClientProvider).post(
+            '/account/delete',
+            body: {'confirmationText': 'delete my account'},
+          );
+      await handleAccountDeleted(ref.container);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.loadingFailed(''))),
+        );
+      }
+    }
+  }
+
+  void _showInfoDialog(
+    BuildContext context, {
+    required String title,
+    required String body,
+  }) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: SelectableText(body),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(AppLocalizations.of(context).reviewFilterDone),
+          ),
+        ],
+      ),
+    );
   }
 }
 

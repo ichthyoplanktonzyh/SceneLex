@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 
 import '../api/api_client.dart';
 import '../api/models.dart';
+import '../auth/auth_controller.dart';
 import 'local/database.dart';
 import 'sync/sync_providers.dart';
 import 'fsrs.dart';
@@ -79,8 +80,11 @@ final libraryProvider = FutureProvider<Library>((ref) async {
   final engine = await ref.watch(syncEngineProvider.future);
   try {
     await engine.runSync();
-  } catch (_) {
-    // Offline: proceed with local data.
+  } catch (e) {
+    // Offline: proceed with local data. Account deleted: clear the session.
+    if (isAccountDeletedError(e)) {
+      await handleAccountDeleted(ref.container);
+    }
   }
 
   final senseRows = await local.cachedSenses();
@@ -213,6 +217,7 @@ Future<void> submitReview(
     newStateJson: jsonEncode(newState),
   );
 
+  await recordActivity();
   final trigger = ref.read(syncTriggerProvider);
   trigger();
 }
@@ -339,3 +344,49 @@ class ReviewFilterController extends Notifier<ReviewFilter> {
     state = filter;
   }
 }
+
+/// All workspaces of the signed-in user (from GET /workspaces).
+final workspacesProvider = FutureProvider<List<Workspace>>((ref) async {
+  final api = ref.watch(apiClientProvider);
+  final res = await api.get('/workspaces');
+  return ((res['workspaces'] as List<dynamic>?) ?? const [])
+      .map((w) => Workspace.fromJson(w as Map<String, dynamic>))
+      .toList();
+});
+
+/// Records a study-activity heartbeat (notifications "inactivity" mode and
+/// streak reminders).
+Future<void> recordActivity() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString(
+    'last_activity_at',
+    DateTime.now().toUtc().toIso8601String(),
+  );
+  await prefs.setString('last_reviewed_local_date', _localDate(DateTime.now()));
+}
+
+String _localDate(DateTime local) =>
+    '${local.year.toString().padLeft(4, '0')}-'
+    '${local.month.toString().padLeft(2, '0')}-'
+    '${local.day.toString().padLeft(2, '0')}';
+
+/// Clears local study data and re-syncs from the selected workspace
+/// (workspace switch / delete / reset-progress).
+Future<void> reloadWorkspaceData(WidgetRef ref) async {
+  final local = ref.read(localRepositoryProvider);
+  await local.wipeStudyData();
+  ref.invalidate(workspaceProvider);
+  ref.invalidate(syncEngineProvider);
+  ref.invalidate(libraryProvider);
+}
+
+/// Handles 410 ACCOUNT_DELETED: wipe local study data, clear the session.
+Future<void> handleAccountDeleted(ProviderContainer container) async {
+  final local = container.read(localRepositoryProvider);
+  await local.wipeStudyData();
+  await container.read(authControllerProvider.notifier).signOut();
+  container.invalidate(libraryProvider);
+}
+
+bool isAccountDeletedError(Object error) =>
+    error is ApiException && error.statusCode == 410;
