@@ -100,6 +100,26 @@
   "ratingGood": "良好",
   "ratingEasy": "轻松",
 
+  "reviewIntervalLessThanMinute": "不到 1 分钟后",
+  "reviewIntervalMinutes": "{count, plural, other{{count} 分钟后}}",
+  "@reviewIntervalMinutes": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "reviewIntervalHours": "{count, plural, other{{count} 小时后}}",
+  "@reviewIntervalHours": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "reviewIntervalDays": "{count, plural, other{{count} 天后}}",
+  "@reviewIntervalDays": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+
   "progressTitle": "进度",
   "progressNoData": "还没有复习数据",
   "streakCardTitle": "连续学习",

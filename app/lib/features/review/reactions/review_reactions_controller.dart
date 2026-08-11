@@ -124,10 +124,17 @@ class ReviewReactionsController extends Notifier<ReviewReactionsState> {
 
   final _random = Random();
 
-  int _randomRoll(int totalWeight) => _random.nextInt(totalWeight);
+  int _randomRoll(int totalWeight) {
+    if (totalWeight <= 0) return 0;
+    return _random.nextInt(totalWeight);
+  }
+
+  // `1 << 32` evaluates to 0 on the JS runtimes (web), which makes
+  // Random.nextInt throw; use a literal that is valid everywhere.
+  static const int _maxEventIdSuffix = 0x7FFFFFFF;
 
   String _newEventId() =>
-      '${DateTime.now().microsecondsSinceEpoch}-${_random.nextInt(1 << 32)}';
+      '${DateTime.now().microsecondsSinceEpoch}-${_random.nextInt(_maxEventIdSuffix)}';
 }
 
 final reviewReactionsControllerProvider =

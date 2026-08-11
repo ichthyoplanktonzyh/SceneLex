@@ -140,6 +140,26 @@
   "ratingGood": "Good",
   "ratingEasy": "Easy",
 
+  "reviewIntervalLessThanMinute": "in less than a minute",
+  "reviewIntervalMinutes": "{count, plural, =1{in {count} minute} other{in {count} minutes}}",
+  "@reviewIntervalMinutes": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "reviewIntervalHours": "{count, plural, =1{in {count} hour} other{in {count} hours}}",
+  "@reviewIntervalHours": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "reviewIntervalDays": "{count, plural, =1{in {count} day} other{in {count} days}}",
+  "@reviewIntervalDays": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+
   "progressTitle": "Progress",
   "progressNoData": "No review data yet",
   "streakCardTitle": "Streak",

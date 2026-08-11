@@ -184,28 +184,28 @@ class _StreakDayCell extends StatelessWidget {
     }
     final todayBorder = day.isToday ? Border.all(color: theme.colorScheme.primary, width: 2) : null;
 
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(2),
-        child: Container(
-          height: 34,
-          decoration: BoxDecoration(
-            color: bg?.withValues(alpha: 0.25) ?? (day.isFuture ? null : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4)),
-            borderRadius: BorderRadius.circular(8),
-            border: todayBorder,
-          ),
-          alignment: Alignment.center,
-          child: icon != null
-              ? Icon(icon, size: 16, color: bg)
-              : Text(
-                  day.dayLabel,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: day.isFuture
-                        ? theme.colorScheme.outline.withValues(alpha: 0.4)
-                        : theme.colorScheme.outline,
-                  ),
-                ),
+    // The caller wraps this cell in Expanded; nesting another one here would
+    // trigger "Incorrect use of ParentDataWidget" at runtime.
+    return Padding(
+      padding: const EdgeInsets.all(2),
+      child: Container(
+        height: 34,
+        decoration: BoxDecoration(
+          color: bg?.withValues(alpha: 0.25) ?? (day.isFuture ? null : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4)),
+          borderRadius: BorderRadius.circular(8),
+          border: todayBorder,
         ),
+        alignment: Alignment.center,
+        child: icon != null
+            ? Icon(icon, size: 16, color: bg)
+            : Text(
+                day.dayLabel,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: day.isFuture
+                      ? theme.colorScheme.outline.withValues(alpha: 0.4)
+                      : theme.colorScheme.outline,
+                ),
+              ),
       ),
     );
   }

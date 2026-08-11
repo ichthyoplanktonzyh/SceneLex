@@ -298,6 +298,39 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ratingEasy => '轻松';
 
   @override
+  String get reviewIntervalLessThanMinute => '不到 1 分钟后';
+
+  @override
+  String reviewIntervalMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 分钟后',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String reviewIntervalHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 小时后',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String reviewIntervalDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 天后',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get progressTitle => '进度';
 
   @override

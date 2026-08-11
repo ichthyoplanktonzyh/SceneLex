@@ -308,6 +308,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ratingEasy => 'Easy';
 
   @override
+  String get reviewIntervalLessThanMinute => 'in less than a minute';
+
+  @override
+  String reviewIntervalMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'in $count minutes',
+      one: 'in $count minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String reviewIntervalHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'in $count hours',
+      one: 'in $count hour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String reviewIntervalDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'in $count days',
+      one: 'in $count day',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get progressTitle => 'Progress';
 
   @override

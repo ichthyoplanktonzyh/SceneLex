@@ -131,7 +131,6 @@ final libraryProvider = FutureProvider<Library>((ref) async {
 
   final tagCounts = <String, int>{};
   for (final sense in senses) {
-    if (!states.containsKey(sense.wordSenseId)) continue;
     for (final tag in presetTagsForSense(sense)) {
       tagCounts[tag] = (tagCounts[tag] ?? 0) + 1;
     }
@@ -156,6 +155,44 @@ Future<void> addSenseToStudy(WidgetRef ref, String wordSenseId) async {
   trigger();
 }
 
+/// Parse persisted workspace scheduler settings into [SchedulerSettings].
+/// Falls back to defaults when settings are missing; that is a deliberate
+/// deviation from the reference app (which surfaces a schedulerUnavailable
+/// error state instead).
+SchedulerSettings schedulerSettingsFromJson(Map<String, dynamic>? json) {
+  if (json == null) return const SchedulerSettings();
+  return SchedulerSettings(
+    desiredRetention:
+        (json['desiredRetention'] as num?)?.toDouble() ?? 0.90,
+    learningStepsMinutes: ((json['learningStepsMinutes'] as List<dynamic>?) ??
+            const [])
+        .map((e) => (e as num).toInt())
+        .toList(),
+    relearningStepsMinutes: ((json['relearningStepsMinutes']
+                as List<dynamic>?) ??
+            const [10])
+        .map((e) => (e as num).toInt())
+        .toList(),
+    maximumIntervalDays:
+        (json['maximumIntervalDays'] as num?)?.toInt() ?? 36500,
+    enableFuzz: json['enableFuzz'] as bool? ?? true,
+  );
+}
+
+ScheduleState scheduleStateFromRow(LocalLearningState? row) {
+  if (row == null) return const ScheduleState();
+  return ScheduleState(
+    reps: row.reps,
+    lapses: row.lapses,
+    state: _stateOf(row.fsrsCardState),
+    stepIndex: row.fsrsStepIndex,
+    stability: row.fsrsStability,
+    difficulty: row.fsrsDifficulty,
+    lastReviewedAt: row.fsrsLastReviewedAt,
+    scheduledDays: row.fsrsScheduledDays,
+  );
+}
+
 /// Local review submission: compute FSRS with the Dart port, write locally
 /// (event + state + two outbox records), then trigger sync.
 Future<void> submitReview(
@@ -172,27 +209,9 @@ Future<void> submitReview(
 
   final stateRow = await local.stateFor(wordSenseId);
   final settingsJson = await local.cachedWorkspaceSettings(ws);
-  final settings = settingsJson == null
-      ? const SchedulerSettings()
-      : SchedulerSettings(
-          desiredRetention:
-              (settingsJson['desiredRetention'] as num?)?.toDouble() ?? 0.90,
-          learningStepsMinutes: ((settingsJson['learningStepsMinutes']
-                      as List<dynamic>?) ??
-                  const [])
-              .map((e) => (e as num).toInt())
-              .toList(),
-          relearningStepsMinutes: ((settingsJson['relearningStepsMinutes']
-                      as List<dynamic>?) ??
-                  const [10])
-              .map((e) => (e as num).toInt())
-              .toList(),
-          maximumIntervalDays:
-              (settingsJson['maximumIntervalDays'] as num?)?.toInt() ?? 36500,
-          enableFuzz: settingsJson['enableFuzz'] as bool? ?? true,
-        );
+  final settings = schedulerSettingsFromJson(settingsJson);
 
-  final scheduleState = _toScheduleState(stateRow);
+  final scheduleState = scheduleStateFromRow(stateRow);
   final next = computeReviewSchedule(
       scheduleState, settings, _ratingOf(rating), reviewedAtClient.toUtc());
 
@@ -224,20 +243,6 @@ Future<void> submitReview(
   await recordActivity();
   final trigger = ref.read(syncTriggerProvider);
   trigger();
-}
-
-ScheduleState _toScheduleState(LocalLearningState? row) {
-  if (row == null) return const ScheduleState();
-  return ScheduleState(
-    reps: row.reps,
-    lapses: row.lapses,
-    state: _stateOf(row.fsrsCardState),
-    stepIndex: row.fsrsStepIndex,
-    stability: row.fsrsStability,
-    difficulty: row.fsrsDifficulty,
-    lastReviewedAt: row.fsrsLastReviewedAt,
-    scheduledDays: row.fsrsScheduledDays,
-  );
 }
 
 FsrsCardState _stateOf(String name) => switch (name) {

@@ -644,6 +644,30 @@ abstract class AppLocalizations {
   /// **'Easy'**
   String get ratingEasy;
 
+  /// No description provided for @reviewIntervalLessThanMinute.
+  ///
+  /// In en, this message translates to:
+  /// **'in less than a minute'**
+  String get reviewIntervalLessThanMinute;
+
+  /// No description provided for @reviewIntervalMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{in {count} minute} other{in {count} minutes}}'**
+  String reviewIntervalMinutes(int count);
+
+  /// No description provided for @reviewIntervalHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{in {count} hour} other{in {count} hours}}'**
+  String reviewIntervalHours(int count);
+
+  /// No description provided for @reviewIntervalDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{in {count} day} other{in {count} days}}'**
+  String reviewIntervalDays(int count);
+
   /// No description provided for @progressTitle.
   ///
   /// In en, this message translates to:

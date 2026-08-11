@@ -11,6 +11,7 @@ import '../../data/providers.dart';
 import '../../data/sync/sync_providers.dart';
 import '../../l10n/gen/app_localizations.dart';
 import 'markdown/content_text.dart';
+import 'rating_interval.dart';
 import 'reactions/review_reactions_controller.dart';
 import 'speech/tts_service.dart';
 
@@ -42,6 +43,8 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
   bool _submitting = false;
   String? _error;
   bool _speaking = false;
+  List<RatingOption>? _ratingOptions;
+  bool _ratingOptionsFailed = false;
 
   TtsService get _tts => ref.read(ttsServiceProvider);
 
@@ -128,6 +131,35 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
         _ratingMode = true;
       }
     });
+    if (_ratingMode) _prepareRatingOptions();
+  }
+
+  /// Computes the four rating-button schedules once, at the moment the rating
+  /// view is entered. The preview and the actual submission share the same
+  /// inputs (schedule state from the drift row, scheduler settings from the
+  /// cached workspace settings) so the shown intervals match the written
+  /// dueAt. `now` is captured here on purpose: the fuzz seed contains
+  /// now.getTime(), and recomputing in build() would make numbers jump.
+  Future<void> _prepareRatingOptions() async {
+    try {
+      final local = ref.read(localRepositoryProvider);
+      final ws = await ref.read(workspaceProvider.future);
+      final stateRow = await local.stateFor(widget.sense.wordSenseId);
+      final settingsJson = await local.cachedWorkspaceSettings(ws);
+      if (!mounted) return;
+      setState(() {
+        _ratingOptions = buildRatingOptions(
+          state: scheduleStateFromRow(stateRow),
+          settings: schedulerSettingsFromJson(settingsJson),
+          now: DateTime.now(),
+          l10n: AppLocalizations.of(context),
+        );
+        _ratingOptionsFailed = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _ratingOptionsFailed = true);
+    }
   }
 
   Future<ExperienceProgram> _loadProgram() async {
@@ -163,11 +195,14 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
   }
 
   Future<void> _submitRating(int rating) async {
-    // Reference behavior: emit the rating reaction, then submit.
-    ref.read(reviewReactionsControllerProvider.notifier).emit(
-          rating,
-          reducedMotion: MediaQuery.disableAnimationsOf(context),
-        );
+    // Reference behavior: emit the rating reaction, then submit. Reaction
+    // failures must never block the review submission itself.
+    try {
+      ref.read(reviewReactionsControllerProvider.notifier).emit(
+            rating,
+            reducedMotion: MediaQuery.disableAnimationsOf(context),
+          );
+    } catch (_) {}
     _tts.stop();
     setState(() {
       _submitting = true;
@@ -226,6 +261,8 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
                 onToggleSpeech: () => _toggleSpeech(widget.sense.lemma),
                 submitting: _submitting,
                 error: _error,
+                options: _ratingOptions,
+                optionsFailed: _ratingOptionsFailed,
                 onRate: _submitRating,
               )
             : _UnitView(
@@ -427,6 +464,8 @@ class _RatingView extends StatelessWidget {
     required this.onToggleSpeech,
     required this.submitting,
     required this.error,
+    required this.options,
+    required this.optionsFailed,
     required this.onRate,
   });
 
@@ -435,11 +474,14 @@ class _RatingView extends StatelessWidget {
   final VoidCallback onToggleSpeech;
   final bool submitting;
   final String? error;
+  final List<RatingOption>? options;
+  final bool optionsFailed;
   final ValueChanged<int> onRate;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -456,7 +498,7 @@ class _RatingView extends StatelessWidget {
             Text(
               sense.lemma,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headlineMedium,
+              style: theme.textTheme.headlineMedium,
             ),
             const SizedBox(height: 8),
             Text(
@@ -468,23 +510,38 @@ class _RatingView extends StatelessWidget {
               Text(
                 error!,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
+                style: TextStyle(color: theme.colorScheme.error),
               ),
               const SizedBox(height: 16),
             ],
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 2.4,
-              children: [
-                _RatingButton(label: l10n.ratingAgain, color: Colors.red, onTap: () => onRate(0), enabled: !submitting),
-                _RatingButton(label: l10n.ratingHard, color: Colors.orange, onTap: () => onRate(1), enabled: !submitting),
-                _RatingButton(label: l10n.ratingGood, color: Colors.green, onTap: () => onRate(2), enabled: !submitting),
-                _RatingButton(label: l10n.ratingEasy, color: Colors.teal, onTap: () => onRate(3), enabled: !submitting),
-              ],
-            ),
+            if (optionsFailed)
+              Text(
+                l10n.reviewSubmitError,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: theme.colorScheme.error,
+                  fontWeight: FontWeight.w600,
+                ),
+              )
+            else if (options == null)
+              const Center(child: CircularProgressIndicator())
+            else
+              GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                mainAxisExtent: 76,
+                children: [
+                  for (final option in options!)
+                    _RatingButton(
+                      option: option,
+                      color: _ratingColor(option.rating),
+                      onTap: () => onRate(option.rating),
+                      enabled: !submitting,
+                    ),
+                ],
+              ),
             const SizedBox(height: 16),
             if (submitting) const Center(child: CircularProgressIndicator()),
           ],
@@ -494,25 +551,52 @@ class _RatingView extends StatelessWidget {
   }
 }
 
+Color _ratingColor(int rating) => switch (rating) {
+      0 => Colors.red,
+      1 => Colors.orange,
+      2 => Colors.green,
+      _ => Colors.teal,
+    };
+
 class _RatingButton extends StatelessWidget {
   const _RatingButton({
-    required this.label,
+    required this.option,
     required this.color,
     required this.onTap,
     required this.enabled,
   });
 
-  final String label;
+  final RatingOption option;
   final Color color;
   final VoidCallback onTap;
   final bool enabled;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return FilledButton(
       style: FilledButton.styleFrom(backgroundColor: color),
       onPressed: enabled ? onTap : null,
-      child: Text(label),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            option.title,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+            maxLines: 1,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            option.interval,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.textTheme.labelSmall?.color?.withValues(alpha: 0.8),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
