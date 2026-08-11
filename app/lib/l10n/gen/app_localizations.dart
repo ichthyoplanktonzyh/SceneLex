@@ -662,6 +662,60 @@ abstract class AppLocalizations {
   /// **'(no synopsis)'**
   String get playerNoSynopsis;
 
+  /// No description provided for @reviewTagSummaryNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No tags'**
+  String get reviewTagSummaryNone;
+
+  /// No description provided for @reviewRepetitionNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get reviewRepetitionNew;
+
+  /// No description provided for @reviewRepetitionCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} reps'**
+  String reviewRepetitionCount(int count);
+
+  /// No description provided for @reviewQueueBadgeTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} words due'**
+  String reviewQueueBadgeTooltip(int count);
+
+  /// No description provided for @reviewEmptyBrowseCards.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse words'**
+  String get reviewEmptyBrowseCards;
+
+  /// No description provided for @cardsFilterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by tags'**
+  String get cardsFilterTitle;
+
+  /// No description provided for @cardsFilterClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get cardsFilterClear;
+
+  /// No description provided for @cardsFilterApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get cardsFilterApply;
+
+  /// No description provided for @cardsFilterEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No words match the selected tags'**
+  String get cardsFilterEmpty;
+
   /// No description provided for @playerTaskJudge.
   ///
   /// In en, this message translates to:
@@ -1244,6 +1298,58 @@ abstract class AppLocalizations {
   /// **'Type \"delete workspace\" to confirm. The workspace and all its study progress are deleted.'**
   String get settingsDeleteWorkspaceBody;
 
+  /// No description provided for @settingsDeletePreviewBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This will delete {learningStates} word states, {reviewEvents} review records, and {lists} lists.'**
+  String settingsDeletePreviewBody(
+    int learningStates,
+    int reviewEvents,
+    int lists,
+  );
+
+  /// No description provided for @settingsResetProgressPreviewBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This will clear {learningStates} word states and delete {reviewEvents} review records.'**
+  String settingsResetProgressPreviewBody(int learningStates, int reviewEvents);
+
+  /// No description provided for @settingsPreviewLearningStates.
+  ///
+  /// In en, this message translates to:
+  /// **'Word states'**
+  String get settingsPreviewLearningStates;
+
+  /// No description provided for @settingsPreviewReviewEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Review records'**
+  String get settingsPreviewReviewEvents;
+
+  /// No description provided for @settingsPreviewLists.
+  ///
+  /// In en, this message translates to:
+  /// **'Lists'**
+  String get settingsPreviewLists;
+
+  /// No description provided for @settingsDangerLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking what will be affected…'**
+  String get settingsDangerLoading;
+
+  /// No description provided for @settingsDangerRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get settingsDangerRetry;
+
+  /// No description provided for @settingsWorkspaceNotSoleMember.
+  ///
+  /// In en, this message translates to:
+  /// **'This workspace has other members, so it cannot be {action}.'**
+  String settingsWorkspaceNotSoleMember(String action);
+
   /// No description provided for @settingsDeleteAccount.
   ///
   /// In en, this message translates to:
@@ -1405,6 +1511,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create smart lists to filter your reviews'**
   String get settingsWorkspaceListsBody;
+
+  /// No description provided for @settingsWorkspaceTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get settingsWorkspaceTags;
+
+  /// No description provided for @settingsWorkspaceTagsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse read-only tags derived from word metadata'**
+  String get settingsWorkspaceTagsBody;
+
+  /// No description provided for @tagsScreenSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags are read-only labels derived from each word\'s metadata (type and part of speech). Tap a tag to review the words that carry it.'**
+  String get tagsScreenSubtitle;
+
+  /// No description provided for @tagsScreenCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} tags'**
+  String tagsScreenCountLabel(int count);
+
+  /// No description provided for @tagsScreenEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No tags yet. Tags appear once words are added to study.'**
+  String get tagsScreenEmpty;
+
+  /// No description provided for @tagsScreenLearnedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} words'**
+  String tagsScreenLearnedCount(int count);
 
   /// No description provided for @settingsReset.
   ///

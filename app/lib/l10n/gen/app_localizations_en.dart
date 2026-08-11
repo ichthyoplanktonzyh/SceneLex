@@ -322,6 +322,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get playerNoSynopsis => '(no synopsis)';
 
   @override
+  String get reviewTagSummaryNone => 'No tags';
+
+  @override
+  String get reviewRepetitionNew => 'New';
+
+  @override
+  String reviewRepetitionCount(int count) {
+    return '$count reps';
+  }
+
+  @override
+  String reviewQueueBadgeTooltip(int count) {
+    return '$count words due';
+  }
+
+  @override
+  String get reviewEmptyBrowseCards => 'Browse words';
+
+  @override
+  String get cardsFilterTitle => 'Filter by tags';
+
+  @override
+  String get cardsFilterClear => 'Clear';
+
+  @override
+  String get cardsFilterApply => 'Apply';
+
+  @override
+  String get cardsFilterEmpty => 'No words match the selected tags';
+
+  @override
   String get playerTaskJudge => 'Judgment';
 
   @override
@@ -663,6 +694,43 @@ class AppLocalizationsEn extends AppLocalizations {
       'Type \"delete workspace\" to confirm. The workspace and all its study progress are deleted.';
 
   @override
+  String settingsDeletePreviewBody(
+    int learningStates,
+    int reviewEvents,
+    int lists,
+  ) {
+    return 'This will delete $learningStates word states, $reviewEvents review records, and $lists lists.';
+  }
+
+  @override
+  String settingsResetProgressPreviewBody(
+    int learningStates,
+    int reviewEvents,
+  ) {
+    return 'This will clear $learningStates word states and delete $reviewEvents review records.';
+  }
+
+  @override
+  String get settingsPreviewLearningStates => 'Word states';
+
+  @override
+  String get settingsPreviewReviewEvents => 'Review records';
+
+  @override
+  String get settingsPreviewLists => 'Lists';
+
+  @override
+  String get settingsDangerLoading => 'Checking what will be affected…';
+
+  @override
+  String get settingsDangerRetry => 'Retry';
+
+  @override
+  String settingsWorkspaceNotSoleMember(String action) {
+    return 'This workspace has other members, so it cannot be $action.';
+  }
+
+  @override
   String get settingsDeleteAccount => 'Delete account';
 
   @override
@@ -752,6 +820,31 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsWorkspaceListsBody =>
       'Create smart lists to filter your reviews';
+
+  @override
+  String get settingsWorkspaceTags => 'Tags';
+
+  @override
+  String get settingsWorkspaceTagsBody =>
+      'Browse read-only tags derived from word metadata';
+
+  @override
+  String get tagsScreenSubtitle =>
+      'Tags are read-only labels derived from each word\'s metadata (type and part of speech). Tap a tag to review the words that carry it.';
+
+  @override
+  String tagsScreenCountLabel(int count) {
+    return '$count tags';
+  }
+
+  @override
+  String get tagsScreenEmpty =>
+      'No tags yet. Tags appear once words are added to study.';
+
+  @override
+  String tagsScreenLearnedCount(int count) {
+    return '$count words';
+  }
 
   @override
   String get settingsReset => 'Reset';

@@ -195,7 +195,7 @@ pub const RESET_PROGRESS_CONFIRMATION: &str =
     "reset all progress for all cards in this workspace";
 
 /// Member count + role of the user in the workspace (None when not a member).
-async fn member_role(
+pub(crate) async fn member_role(
     pool: &PgPool,
     user_id: Uuid,
     workspace_id: Uuid,
@@ -235,6 +235,57 @@ pub async fn rename_workspace(
         .execute(pool)
         .await?;
     Ok(Some(list_workspace(pool, workspace_id).await?))
+}
+
+/// Preview counts for the delete action, with the same access semantics as
+/// [delete_workspace]: only reachable by the owner gate in the route layer.
+/// Returns (learning_states, review_events, lists) affected by the delete.
+pub async fn delete_preview(
+    pool: &PgPool,
+    workspace_id: Uuid,
+) -> Result<(i64, i64, i64), sqlx::Error> {
+    let learning_states: i64 = sqlx::query_scalar(
+        "SELECT count(*) FROM content.learning_states WHERE workspace_id = $1",
+    )
+    .bind(workspace_id)
+    .fetch_one(pool)
+    .await?;
+    let review_events: i64 = sqlx::query_scalar(
+        "SELECT count(*) FROM content.review_events WHERE workspace_id = $1",
+    )
+    .bind(workspace_id)
+    .fetch_one(pool)
+    .await?;
+    let lists: i64 = sqlx::query_scalar(
+        "SELECT count(*) FROM content.lists
+         WHERE workspace_id = $1 AND deleted_at IS NULL",
+    )
+    .bind(workspace_id)
+    .fetch_one(pool)
+    .await?;
+    Ok((learning_states, review_events, lists))
+}
+
+/// Preview counts for the reset-progress action, with the same access
+/// semantics as [reset_workspace_progress]. Returns (learning_states to be
+/// cleared, review_events to be deleted).
+pub async fn reset_progress_preview(
+    pool: &PgPool,
+    workspace_id: Uuid,
+) -> Result<(i64, i64), sqlx::Error> {
+    let learning_states: i64 = sqlx::query_scalar(
+        "SELECT count(*) FROM content.learning_states WHERE workspace_id = $1",
+    )
+    .bind(workspace_id)
+    .fetch_one(pool)
+    .await?;
+    let review_events: i64 = sqlx::query_scalar(
+        "SELECT count(*) FROM content.review_events WHERE workspace_id = $1",
+    )
+    .bind(workspace_id)
+    .fetch_one(pool)
+    .await?;
+    Ok((learning_states, review_events))
 }
 
 /// Delete a workspace (owner + sole member + confirmation text).

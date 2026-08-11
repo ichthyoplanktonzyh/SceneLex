@@ -16,6 +16,7 @@ import '../review/reactions/review_reactions_controller.dart';
 import 'notifications_page.dart';
 import 'notifications_service.dart';
 import 'scheduling_settings_page.dart';
+import 'tags_page.dart';
 import 'workspace_page.dart';
 
 /// Settings surface: account, workspace, notifications, review, scheduling,
@@ -93,9 +94,7 @@ class SettingsPage extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute<void>(
-                builder: (_) => const WorkspacePage(),
-              ),
+              MaterialPageRoute<void>(builder: (_) => const WorkspacePage()),
             ),
           ),
           ListTile(
@@ -105,9 +104,17 @@ class SettingsPage extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute<void>(
-                builder: (_) => const ListsPage(),
-              ),
+              MaterialPageRoute<void>(builder: (_) => const ListsPage()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.sell_outlined),
+            title: Text(l10n.settingsWorkspaceTags),
+            subtitle: Text(l10n.settingsWorkspaceTagsBody),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(builder: (_) => const TagsPage()),
             ),
           ),
           const Divider(),
@@ -151,8 +158,8 @@ class SettingsPage extends ConsumerWidget {
               child: Text(
                 l10n.settingsReviewAnimationsLowPowerHint,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             ),
           const Divider(),
@@ -232,7 +239,8 @@ class SettingsPage extends ConsumerWidget {
             onTap: () => _showInfoDialog(
               context,
               title: l10n.settingsServerInfo,
-              body: '${l10n.settingsServerInfoApi}: '
+              body:
+                  '${l10n.settingsServerInfoApi}: '
                   '${ref.read(apiClientProvider).baseUrl}\n'
                   '${l10n.settingsServerInfoAccount}: ${auth.email ?? '-'}',
             ),
@@ -243,7 +251,8 @@ class SettingsPage extends ConsumerWidget {
             onTap: () => _showInfoDialog(
               context,
               title: l10n.settingsDeviceInfo,
-              body: '${l10n.settingsDevicePlatform}: '
+              body:
+                  '${l10n.settingsDevicePlatform}: '
                   '${kIsWeb ? 'web' : Platform.operatingSystem} '
                   '${kIsWeb ? '' : Platform.operatingSystemVersion}\n'
                   '${l10n.settingsVersion}: $_appVersion',
@@ -253,9 +262,7 @@ class SettingsPage extends ConsumerWidget {
             leading: const Icon(Icons.share_outlined),
             title: Text(l10n.settingsShareApp),
             onTap: () => SharePlus.instance.share(
-              ShareParams(
-                text: '${l10n.appTitle} — ${l10n.appTagline}',
-              ),
+              ShareParams(text: '${l10n.appTitle} — ${l10n.appTagline}'),
             ),
           ),
           const Divider(),
@@ -263,32 +270,72 @@ class SettingsPage extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.restart_alt),
             title: Text(l10n.settingsResetProgress),
-            onTap: () => _confirmDangerAction(
+            onTap: () => _confirmWorkspaceDangerAction(
               context,
+              ref,
               title: l10n.settingsResetProgress,
               description: l10n.settingsResetProgressBody,
-              confirmPhrase: 'reset all progress for all cards in this workspace',
+              confirmPhrase:
+                  'reset all progress for all cards in this workspace',
               confirmLabel: l10n.settingsReset,
+              previewPath: 'reset-progress-preview',
+              previewBody: (l10n, preview) =>
+                  l10n.settingsResetProgressPreviewBody(
+                    (preview['learningStatesToReset'] as num?)?.toInt() ?? 0,
+                    (preview['reviewEventsToDelete'] as num?)?.toInt() ?? 0,
+                  ),
+              rows: (l10n, preview) => [
+                (
+                  l10n.settingsPreviewLearningStates,
+                  '${preview['learningStatesToReset']}',
+                ),
+                (
+                  l10n.settingsPreviewReviewEvents,
+                  '${preview['reviewEventsToDelete']}',
+                ),
+              ],
+              blockedAction: l10n.settingsWorkspaceNotSoleMember('reset'),
               onConfirm: () => _resetProgress(context, ref),
             ),
           ),
           ListTile(
             leading: const Icon(Icons.delete_forever_outlined),
             title: Text(l10n.settingsDeleteWorkspace),
-            onTap: () => _confirmDangerAction(
+            onTap: () => _confirmWorkspaceDangerAction(
               context,
+              ref,
               title: l10n.settingsDeleteWorkspace,
               description: l10n.settingsDeleteWorkspaceBody,
               confirmPhrase: 'delete workspace',
               confirmLabel: l10n.settingsDelete,
+              previewPath: 'delete-preview',
+              previewBody: (l10n, preview) => l10n.settingsDeletePreviewBody(
+                (preview['learningStates'] as num?)?.toInt() ?? 0,
+                (preview['reviewEvents'] as num?)?.toInt() ?? 0,
+                (preview['lists'] as num?)?.toInt() ?? 0,
+              ),
+              rows: (l10n, preview) => [
+                (
+                  l10n.settingsPreviewLearningStates,
+                  '${preview['learningStates']}',
+                ),
+                (
+                  l10n.settingsPreviewReviewEvents,
+                  '${preview['reviewEvents']}',
+                ),
+                (l10n.settingsPreviewLists, '${preview['lists']}'),
+              ],
+              blockedAction: l10n.settingsWorkspaceNotSoleMember('deleted'),
               onConfirm: () => _deleteWorkspace(context, ref),
             ),
           ),
           ListTile(
             leading: const Icon(Icons.person_off_outlined),
             title: Text(l10n.settingsDeleteAccount),
-            subtitle: Text(l10n.settingsDeleteAccountBody,
-                style: Theme.of(context).textTheme.bodySmall),
+            subtitle: Text(
+              l10n.settingsDeleteAccountBody,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
             onTap: () => _confirmDangerAction(
               context,
               title: l10n.settingsDeleteAccount,
@@ -387,11 +434,181 @@ class SettingsPage extends ConsumerWidget {
     await onConfirm();
   }
 
+  /// Workspace danger confirm dialog (delete / reset): the server preview is
+  /// loaded first and the affected counts are shown before the user is asked
+  /// to type the confirmation phrase. When the workspace has other members
+  /// ([preview]'s `isSoleMember` is false) the action is blocked and only a
+  /// hint is shown, mirroring the reference preview flow.
+  Future<void> _confirmWorkspaceDangerAction(
+    BuildContext context,
+    WidgetRef ref, {
+    required String title,
+    required String description,
+    required String confirmPhrase,
+    required String confirmLabel,
+    required String previewPath,
+    required String Function(
+      AppLocalizations l10n,
+      Map<String, dynamic> preview,
+    )
+    previewBody,
+    required List<(String, String)> Function(
+      AppLocalizations l10n,
+      Map<String, dynamic> preview,
+    )
+    rows,
+    required String blockedAction,
+    required Future<void> Function() onConfirm,
+  }) async {
+    final l10n = AppLocalizations.of(context);
+    final controller = TextEditingController();
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        Map<String, dynamic>? preview;
+        String? error;
+        var loading = true;
+
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            Future<void> load() async {
+              setDialogState(() {
+                loading = true;
+                error = null;
+              });
+              try {
+                final ws = await ref.read(workspaceProvider.future);
+                final result = await ref
+                    .read(apiClientProvider)
+                    .get('/workspaces/$ws/$previewPath');
+                if (!context.mounted) return;
+                setDialogState(() {
+                  preview = result;
+                  loading = false;
+                });
+              } catch (e) {
+                if (!context.mounted) return;
+                setDialogState(() {
+                  error = e is ApiException
+                      ? (e.message.isNotEmpty ? e.message : '$e')
+                      : '$e';
+                  loading = false;
+                });
+              }
+            }
+
+            return AlertDialog(
+              title: Text(title),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(description),
+                  const SizedBox(height: 12),
+                  if (loading)
+                    Row(
+                      children: [
+                        const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(l10n.settingsDangerLoading),
+                      ],
+                    )
+                  else if (error != null) ...[
+                    Text(
+                      error!,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextButton.icon(
+                      onPressed: () => load(),
+                      icon: const Icon(Icons.refresh),
+                      label: Text(l10n.settingsDangerRetry),
+                    ),
+                  ] else if (preview != null) ...[
+                    Text(
+                      previewBody(l10n, preview!),
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 8),
+                    for (final (label, value) in rows(l10n, preview!))
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              label,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            Text(
+                              value,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                    const SizedBox(height: 8),
+                    if (preview!['isSoleMember'] == false)
+                      Text(
+                        blockedAction,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      )
+                    else
+                      TextField(
+                        controller: controller,
+                        autofocus: true,
+                        decoration: InputDecoration(
+                          labelText: l10n.settingsTypeToConfirm(confirmPhrase),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onChanged: (_) => setDialogState(() {}),
+                      ),
+                  ],
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: Text(l10n.signOutCancel),
+                ),
+                FilledButton(
+                  onPressed:
+                      preview != null &&
+                          preview!['isSoleMember'] != false &&
+                          controller.text.trim() == confirmPhrase
+                      ? () => Navigator.pop(context, true)
+                      : null,
+                  child: Text(confirmLabel),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+    if (confirmed != true) return;
+    await onConfirm();
+  }
+
   Future<void> _resetProgress(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context);
     try {
       final ws = await ref.read(workspaceProvider.future);
-      await ref.read(apiClientProvider).post(
+      await ref
+          .read(apiClientProvider)
+          .post(
             '/workspaces/$ws/reset-progress',
             body: {
               'confirmationText':
@@ -401,9 +618,9 @@ class SettingsPage extends ConsumerWidget {
       await reloadWorkspaceData(ref);
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.loadingFailed(''))),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.loadingFailed(''))));
       }
     }
   }
@@ -412,7 +629,9 @@ class SettingsPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     try {
       final ws = await ref.read(workspaceProvider.future);
-      await ref.read(apiClientProvider).post(
+      await ref
+          .read(apiClientProvider)
+          .post(
             '/workspaces/$ws/delete',
             body: {'confirmationText': 'delete workspace'},
           );
@@ -420,9 +639,9 @@ class SettingsPage extends ConsumerWidget {
       ref.invalidate(workspacesProvider);
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.loadingFailed(''))),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.loadingFailed(''))));
       }
     }
   }
@@ -430,16 +649,18 @@ class SettingsPage extends ConsumerWidget {
   Future<void> _deleteAccount(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context);
     try {
-      await ref.read(apiClientProvider).post(
+      await ref
+          .read(apiClientProvider)
+          .post(
             '/account/delete',
             body: {'confirmationText': 'delete my account'},
           );
       await handleAccountDeleted(ref.container);
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.loadingFailed(''))),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.loadingFailed(''))));
       }
     }
   }
@@ -477,8 +698,8 @@ class _SectionHeader extends StatelessWidget {
       child: Text(
         label,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-            ),
+          color: Theme.of(context).colorScheme.primary,
+        ),
       ),
     );
   }

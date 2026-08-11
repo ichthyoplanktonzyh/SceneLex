@@ -306,12 +306,13 @@ class LocalRepository {
     );
   }
 
+  /// Advances the hot cursor only; the hydration flag is owned by
+  /// [setHydrated] (bootstrap pull calls setHotCursor then setHydrated).
   Future<void> setHotCursor(String workspaceId, int changeId) async {
     await db.into(db.syncStateTable).insertOnConflictUpdate(
           SyncStateTableCompanion.insert(
             workspaceId: workspaceId,
             lastAppliedHotChangeId: Value(changeId),
-            hasHydratedHotState: const Value(true),
             updatedAt: Value(DateTime.now().toUtc()),
           ),
         );

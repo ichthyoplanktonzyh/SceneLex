@@ -25,7 +25,7 @@ rejected 中止 / 登出后 refresh 401）建立的方案，2026-08 实跑通过
 | --- | --- |
 | `app/integration_test/sync_flow_test.dart` | 4 个检查点本体，`CHECKPOINT=1..4` 各自独立登录运行 |
 | `app/test_driver/integration_test.dart` | flutter drive 标准 driver（截图落盘用） |
-| `scripts/code-relay.py` | 127.0.0.1:9001 小服务：`GET /request-code?email=` 触发 send-code 并从 server log 抓最新码返回；`GET /log?msg=` 供测试上报进度 |
+| `scripts/code-relay.py` | 127.0.0.1:9001 小服务：`GET /request-code?email=` 触发 send-code 并从 server log 抓最新码返回；`GET /log?msg=` 供测试上报进度。**安全守卫**：目标 server（`RELAY_BASE`，默认 `http://127.0.0.1:8081/v1`）必须解析到 loopback（127.0.0.1 / localhost / ::1），否则拒绝启动并报错——因为该服务把 OTP 明文（登录凭证）通过 HTTP 吐给测试页面，**只允许钉死在本地开发**，绝不能指向远程环境 |
 | `scripts/run-checkpoints.sh` | 编排：起 relay → 生成新邮箱 → `flutter drive -d web-server` → 等 dev server 就绪 → `open` Chrome 打开页面 → 收结果 |
 
 ## 怎么跑

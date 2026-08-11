@@ -102,6 +102,25 @@
   "speechUnavailable": "无法朗读",
   "playerNoUnits": "这个词义还没有可播放的经验。",
   "playerNoSynopsis": "(无叙事内容)",
+  "reviewTagSummaryNone": "无标签",
+  "reviewRepetitionNew": "新卡",
+  "reviewRepetitionCount": "{count} 次",
+  "@reviewRepetitionCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "reviewQueueBadgeTooltip": "{count} 个词待复习",
+  "@reviewQueueBadgeTooltip": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "reviewEmptyBrowseCards": "浏览词库",
+  "cardsFilterTitle": "按标签筛选",
+  "cardsFilterClear": "清除",
+  "cardsFilterApply": "应用",
+  "cardsFilterEmpty": "没有词匹配所选标签",
   "playerTaskJudge": "判断",
   "playerTaskPlaceholder": "(任务)",
   "playerFinish": "完成经验之旅",
@@ -222,6 +241,32 @@
   "settingsResetProgressBody": "将清除本设备与服务端的所有学习进度,不可恢复。",
   "settingsDeleteWorkspace": "删除当前工作区",
   "settingsDeleteWorkspaceBody": "输入 \"delete workspace\" 确认。工作区及其全部学习进度将被删除。",
+  "settingsDeletePreviewBody": "将删除 {learningStates} 个学习状态、{reviewEvents} 条复习记录和 {lists} 个词表。",
+  "@settingsDeletePreviewBody": {
+    "placeholders": {
+      "learningStates": {"type": "int"},
+      "reviewEvents": {"type": "int"},
+      "lists": {"type": "int"}
+    }
+  },
+  "settingsResetProgressPreviewBody": "将清零 {learningStates} 个学习状态并删除 {reviewEvents} 条复习记录。",
+  "@settingsResetProgressPreviewBody": {
+    "placeholders": {
+      "learningStates": {"type": "int"},
+      "reviewEvents": {"type": "int"}
+    }
+  },
+  "settingsPreviewLearningStates": "学习状态",
+  "settingsPreviewReviewEvents": "复习记录",
+  "settingsPreviewLists": "词表",
+  "settingsDangerLoading": "正在统计受影响的数据…",
+  "settingsDangerRetry": "重试",
+  "settingsWorkspaceNotSoleMember": "此工作区还有其他成员,无法{action}。",
+  "@settingsWorkspaceNotSoleMember": {
+    "placeholders": {
+      "action": {"type": "String"}
+    }
+  },
   "settingsDeleteAccount": "删除账号",
   "settingsDeleteAccountBody": "永久删除账号与全部数据",
   "settingsDeleteAccountPhrase": "输入 \"delete my account\" 确认。此操作不可恢复。",
@@ -249,6 +294,22 @@
   "settingsWorkspaceCreated": "已创建工作区:{name}",
   "settingsWorkspaceLists": "词单",
   "settingsWorkspaceListsBody": "创建智能词单,筛选复习内容",
+  "settingsWorkspaceTags": "标签",
+  "settingsWorkspaceTagsBody": "浏览从词义元数据派生的只读标签",
+  "tagsScreenSubtitle": "标签是由每个词的元数据(类型与词性)派生的只读标签。点按标签即可复习带有该标签的词。",
+  "tagsScreenCountLabel": "{count} 个标签",
+  "@tagsScreenCountLabel": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "tagsScreenEmpty": "暂无标签。词加入学习后会出现标签。",
+  "tagsScreenLearnedCount": "{count} 个词",
+  "@tagsScreenLearnedCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
   "settingsReset": "重置",
   "settingsDelete": "删除",
   "settingsVersion": "版本",

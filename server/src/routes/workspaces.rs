@@ -15,7 +15,15 @@ pub fn router() -> Router<AppState> {
         .route("/workspaces", get(list).post(create))
         .route("/workspaces/{workspace_id}/select", post(select))
         .route("/workspaces/{workspace_id}/rename", post(rename))
+        .route(
+            "/workspaces/{workspace_id}/delete-preview",
+            get(delete_preview),
+        )
         .route("/workspaces/{workspace_id}/delete", post(delete_workspace))
+        .route(
+            "/workspaces/{workspace_id}/reset-progress-preview",
+            get(reset_progress_preview),
+        )
         .route(
             "/workspaces/{workspace_id}/reset-progress",
             post(reset_progress),
@@ -147,6 +155,81 @@ struct WorkspaceConfirmationRequest {
     confirmation_text: String,
 }
 
+/// Owner + membership gate shared by the delete/reset actions and their
+/// preview endpoints: the caller must be a member, and only the owner may
+/// proceed. Returns `(is_sole_member)` for previews, and is a hard gate for
+/// the mutating actions (owner AND sole member, mirroring the reference).
+async fn gate_workspace_owner(
+    state: &AppState,
+    user_id: uuid::Uuid,
+    workspace_id: uuid::Uuid,
+) -> Result<bool, (StatusCode, Json<Value>)> {
+    let role = workspaces::member_role(&state.pool, user_id, workspace_id)
+        .await
+        .map_err(internal_error)?;
+    let Some((role_name, member_count)) = role else {
+        return Err((
+            StatusCode::NOT_FOUND,
+            Json(json!({ "error": "workspace not found" })),
+        ));
+    };
+    if role_name != "owner" {
+        return Err((
+            StatusCode::FORBIDDEN,
+            Json(json!({ "error": "only the workspace owner can do this" })),
+        ));
+    }
+    Ok(member_count == 1)
+}
+
+async fn require_owner_and_sole_member(
+    state: &AppState,
+    user_id: uuid::Uuid,
+    workspace_id: uuid::Uuid,
+) -> Result<(), (StatusCode, Json<Value>)> {
+    let is_sole = gate_workspace_owner(state, user_id, workspace_id).await?;
+    if !is_sole {
+        return Err((
+            StatusCode::FORBIDDEN,
+            Json(json!({ "error": "workspace with other members cannot be modified" })),
+        ));
+    }
+    Ok(())
+}
+
+async fn delete_preview(
+    State(state): State<AppState>,
+    Authenticated(user): Authenticated,
+    Path(workspace_id): Path<uuid::Uuid>,
+) -> Result<Json<Value>, (StatusCode, Json<Value>)> {
+    let is_sole_member = gate_workspace_owner(&state, user.user_id, workspace_id).await?;
+    match workspaces::delete_preview(&state.pool, workspace_id).await {
+        Ok((learning_states, review_events, lists)) => Ok(Json(json!({
+            "learningStates": learning_states,
+            "reviewEvents": review_events,
+            "lists": lists,
+            "isSoleMember": is_sole_member,
+        }))),
+        Err(e) => Err(internal_error(e)),
+    }
+}
+
+async fn reset_progress_preview(
+    State(state): State<AppState>,
+    Authenticated(user): Authenticated,
+    Path(workspace_id): Path<uuid::Uuid>,
+) -> Result<Json<Value>, (StatusCode, Json<Value>)> {
+    let is_sole_member = gate_workspace_owner(&state, user.user_id, workspace_id).await?;
+    match workspaces::reset_progress_preview(&state.pool, workspace_id).await {
+        Ok((learning_states, review_events)) => Ok(Json(json!({
+            "learningStatesToReset": learning_states,
+            "reviewEventsToDelete": review_events,
+            "isSoleMember": is_sole_member,
+        }))),
+        Err(e) => Err(internal_error(e)),
+    }
+}
+
 async fn delete_workspace(
     State(state): State<AppState>,
     Authenticated(user): Authenticated,
@@ -156,6 +239,7 @@ async fn delete_workspace(
     if req.confirmation_text != workspaces::DELETE_WORKSPACE_CONFIRMATION {
         return Err(bad_request("type \"delete workspace\" exactly to confirm"));
     }
+    require_owner_and_sole_member(&state, user.user_id, workspace_id).await?;
     match workspaces::delete_workspace(
         &state.pool,
         user.user_id,
@@ -188,6 +272,7 @@ async fn reset_progress(
             "type \"reset all progress for all cards in this workspace\" exactly to confirm",
         ));
     }
+    require_owner_and_sole_member(&state, user.user_id, workspace_id).await?;
     match workspaces::reset_workspace_progress(
         &state.pool,
         user.user_id,

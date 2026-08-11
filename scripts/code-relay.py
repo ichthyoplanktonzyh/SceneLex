@@ -16,13 +16,30 @@ Listens on 127.0.0.1:9001 with permissive CORS for the test page origin.
 import datetime
 import http.server
 import json
+import os
 import re
 import subprocess
 import time
 import urllib.parse
 
 SERVER_LOG = "/tmp/scenelex-server.log"
-BASE = "http://127.0.0.1:8081/v1"
+BASE = os.environ.get("RELAY_BASE", "http://127.0.0.1:8081/v1")
+
+
+def _guard_base() -> None:
+    """Refuse to start when the server base is not a loopback address.
+
+    The relay forwards OTP codes (login credentials) over plain HTTP, so it
+    must never target anything but the local dev server.
+    """
+    host = urllib.parse.urlparse(BASE).hostname or ""
+    if host not in ("127.0.0.1", "localhost", "::1"):
+        raise SystemExit(
+            f"refusing to start: RELAY_BASE host {host!r} is not a loopback "
+            f"address; the code relay exposes OTP codes over plain HTTP and "
+            f"must stay pinned to local development"
+        )
+    print(f"relay guarding: BASE={BASE} (loopback OK)", flush=True)
 
 
 def _ts() -> str:
@@ -92,6 +109,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    _guard_base()
     server = http.server.ThreadingHTTPServer(("127.0.0.1", 9001), Handler)
     print("relay listening on 127.0.0.1:9001", flush=True)
     server.serve_forever()

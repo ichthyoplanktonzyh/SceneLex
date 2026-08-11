@@ -309,6 +309,37 @@ class AppLocalizationsZh extends AppLocalizations {
   String get playerNoSynopsis => '(无叙事内容)';
 
   @override
+  String get reviewTagSummaryNone => '无标签';
+
+  @override
+  String get reviewRepetitionNew => '新卡';
+
+  @override
+  String reviewRepetitionCount(int count) {
+    return '$count 次';
+  }
+
+  @override
+  String reviewQueueBadgeTooltip(int count) {
+    return '$count 个词待复习';
+  }
+
+  @override
+  String get reviewEmptyBrowseCards => '浏览词库';
+
+  @override
+  String get cardsFilterTitle => '按标签筛选';
+
+  @override
+  String get cardsFilterClear => '清除';
+
+  @override
+  String get cardsFilterApply => '应用';
+
+  @override
+  String get cardsFilterEmpty => '没有词匹配所选标签';
+
+  @override
   String get playerTaskJudge => '判断';
 
   @override
@@ -640,6 +671,43 @@ class AppLocalizationsZh extends AppLocalizations {
       '输入 \"delete workspace\" 确认。工作区及其全部学习进度将被删除。';
 
   @override
+  String settingsDeletePreviewBody(
+    int learningStates,
+    int reviewEvents,
+    int lists,
+  ) {
+    return '将删除 $learningStates 个学习状态、$reviewEvents 条复习记录和 $lists 个词表。';
+  }
+
+  @override
+  String settingsResetProgressPreviewBody(
+    int learningStates,
+    int reviewEvents,
+  ) {
+    return '将清零 $learningStates 个学习状态并删除 $reviewEvents 条复习记录。';
+  }
+
+  @override
+  String get settingsPreviewLearningStates => '学习状态';
+
+  @override
+  String get settingsPreviewReviewEvents => '复习记录';
+
+  @override
+  String get settingsPreviewLists => '词表';
+
+  @override
+  String get settingsDangerLoading => '正在统计受影响的数据…';
+
+  @override
+  String get settingsDangerRetry => '重试';
+
+  @override
+  String settingsWorkspaceNotSoleMember(String action) {
+    return '此工作区还有其他成员,无法$action。';
+  }
+
+  @override
   String get settingsDeleteAccount => '删除账号';
 
   @override
@@ -725,6 +793,28 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsWorkspaceListsBody => '创建智能词单,筛选复习内容';
+
+  @override
+  String get settingsWorkspaceTags => '标签';
+
+  @override
+  String get settingsWorkspaceTagsBody => '浏览从词义元数据派生的只读标签';
+
+  @override
+  String get tagsScreenSubtitle => '标签是由每个词的元数据(类型与词性)派生的只读标签。点按标签即可复习带有该标签的词。';
+
+  @override
+  String tagsScreenCountLabel(int count) {
+    return '$count 个标签';
+  }
+
+  @override
+  String get tagsScreenEmpty => '暂无标签。词加入学习后会出现标签。';
+
+  @override
+  String tagsScreenLearnedCount(int count) {
+    return '$count 个词';
+  }
 
   @override
   String get settingsReset => '重置';

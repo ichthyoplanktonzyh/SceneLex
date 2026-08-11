@@ -153,11 +153,30 @@ curl -s -X POST $BASE/workspaces/$WS/sync/bootstrap -H "$AUTH" -H "$CT" -d "{\"m
 echo "== 9. workspace rename =="
 curl -s -X POST $BASE/workspaces/$WS/rename -H "$AUTH" -H "$CT" -d "{\"name\":\"Renamed WS\"}" | python3 -c "import json,sys; d=json.load(sys.stdin); print('name:', d['name'])"
 
+echo "== 9a. reset-progress-preview (learning_state + review_event exist) =="
+curl -s $BASE/workspaces/$WS/reset-progress-preview -H "$AUTH" | python3 -c "
+import json, sys
+d = json.load(sys.stdin)
+assert d['learningStatesToReset'] == 1, d
+assert d['reviewEventsToDelete'] == 1, d
+assert d['isSoleMember'] is True, d
+print('reset preview ok:', d)
+"
+
 echo "== 10. reset-progress (wrong confirmation -> 400) =="
 curl -s -o /dev/null -w "%{http_code}\n" -X POST $BASE/workspaces/$WS/reset-progress -H "$AUTH" -H "$CT" -d "{\"confirmationText\":\"nope\"}"
 
 echo "== 11. reset-progress (correct confirmation) =="
 curl -s -X POST $BASE/workspaces/$WS/reset-progress -H "$AUTH" -H "$CT" -d "{\"confirmationText\":\"reset all progress for all cards in this workspace\"}" | python3 -c "import json,sys; d=json.load(sys.stdin); print('cardsResetCount:', d['cardsResetCount'])"
+
+echo "== 11a. reset-progress-preview after reset (both counts zero) =="
+curl -s $BASE/workspaces/$WS/reset-progress-preview -H "$AUTH" | python3 -c "
+import json, sys
+d = json.load(sys.stdin)
+assert d['learningStatesToReset'] == 0, d
+assert d['reviewEventsToDelete'] == 0, d
+print('reset preview after reset ok:', d)
+"
 
 echo "== 12. bootstrap after reset (learning_state gone, list/settings remain) =="
 curl -s -X POST $BASE/workspaces/$WS/sync/bootstrap -H "$AUTH" -H "$CT" -d "{\"mode\":\"pull\",\"installationId\":\"$INST\",\"platform\":\"web\"}" | python3 -c "import json,sys; d=json.load(sys.stdin); print('entries:', [(e['entityType']) for e in d['entries']])"
@@ -165,8 +184,24 @@ curl -s -X POST $BASE/workspaces/$WS/sync/bootstrap -H "$AUTH" -H "$CT" -d "{\"m
 echo "== 13. workspace delete (wrong confirmation -> 400) =="
 curl -s -o /dev/null -w "%{http_code}\n" -X POST $BASE/workspaces/$WS/delete -H "$AUTH" -H "$CT" -d "{\"confirmationText\":\"nope\"}"
 
+echo "== 13a. delete-preview (list remains, study data gone) =="
+curl -s $BASE/workspaces/$WS/delete-preview -H "$AUTH" | python3 -c "
+import json, sys
+d = json.load(sys.stdin)
+assert d['learningStates'] == 0, d
+assert d['reviewEvents'] == 0, d
+assert d['lists'] == 1, d
+assert d['isSoleMember'] is True, d
+print('delete preview ok:', d)
+"
+
 echo "== 14. workspace delete (correct confirmation) =="
 curl -s -X POST $BASE/workspaces/$WS/delete -H "$AUTH" -H "$CT" -d "{\"confirmationText\":\"delete workspace\"}" | python3 -c "import json,sys; d=json.load(sys.stdin); print('deletedCardsCount:', d['deletedCardsCount'])"
+
+echo "== 14a. delete-preview on deleted workspace -> 404 =="
+curl -s -o /tmp/deleted_ws_preview.json -w "%{http_code}\n" $BASE/workspaces/$WS/delete-preview -H "$AUTH"
+cat /tmp/deleted_ws_preview.json
+echo
 
 echo "== 15. /me re-bootstraps a new Personal workspace =="
 WS2=$(curl -s $BASE/me -H "$AUTH" | python3 -c "import json,sys; print(json.load(sys.stdin)['selectedWorkspaceId'])")

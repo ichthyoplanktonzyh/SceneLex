@@ -147,6 +147,25 @@
   "speechUnavailable": "Speech is not available",
   "playerNoUnits": "No playable experience for this sense yet.",
   "playerNoSynopsis": "(no synopsis)",
+  "reviewTagSummaryNone": "No tags",
+  "reviewRepetitionNew": "New",
+  "reviewRepetitionCount": "{count} reps",
+  "@reviewRepetitionCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "reviewQueueBadgeTooltip": "{count} words due",
+  "@reviewQueueBadgeTooltip": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "reviewEmptyBrowseCards": "Browse words",
+  "cardsFilterTitle": "Filter by tags",
+  "cardsFilterClear": "Clear",
+  "cardsFilterApply": "Apply",
+  "cardsFilterEmpty": "No words match the selected tags",
   "playerTaskJudge": "Judgment",
   "playerTaskPlaceholder": "(task)",
   "playerFinish": "Finish the experience",
@@ -303,6 +322,32 @@
   "settingsResetProgressBody": "This clears all study progress on this device and on the server. It cannot be undone.",
   "settingsDeleteWorkspace": "Delete current workspace",
   "settingsDeleteWorkspaceBody": "Type \"delete workspace\" to confirm. The workspace and all its study progress are deleted.",
+  "settingsDeletePreviewBody": "This will delete {learningStates} word states, {reviewEvents} review records, and {lists} lists.",
+  "@settingsDeletePreviewBody": {
+    "placeholders": {
+      "learningStates": {"type": "int"},
+      "reviewEvents": {"type": "int"},
+      "lists": {"type": "int"}
+    }
+  },
+  "settingsResetProgressPreviewBody": "This will clear {learningStates} word states and delete {reviewEvents} review records.",
+  "@settingsResetProgressPreviewBody": {
+    "placeholders": {
+      "learningStates": {"type": "int"},
+      "reviewEvents": {"type": "int"}
+    }
+  },
+  "settingsPreviewLearningStates": "Word states",
+  "settingsPreviewReviewEvents": "Review records",
+  "settingsPreviewLists": "Lists",
+  "settingsDangerLoading": "Checking what will be affected…",
+  "settingsDangerRetry": "Retry",
+  "settingsWorkspaceNotSoleMember": "This workspace has other members, so it cannot be {action}.",
+  "@settingsWorkspaceNotSoleMember": {
+    "placeholders": {
+      "action": {"type": "String"}
+    }
+  },
   "settingsDeleteAccount": "Delete account",
   "settingsDeleteAccountBody": "Permanently delete your account and all data",
   "settingsDeleteAccountPhrase": "Type \"delete my account\" to confirm. This cannot be undone.",
@@ -340,6 +385,22 @@
   },
   "settingsWorkspaceLists": "Lists",
   "settingsWorkspaceListsBody": "Create smart lists to filter your reviews",
+  "settingsWorkspaceTags": "Tags",
+  "settingsWorkspaceTagsBody": "Browse read-only tags derived from word metadata",
+  "tagsScreenSubtitle": "Tags are read-only labels derived from each word's metadata (type and part of speech). Tap a tag to review the words that carry it.",
+  "tagsScreenCountLabel": "{count} tags",
+  "@tagsScreenCountLabel": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "tagsScreenEmpty": "No tags yet. Tags appear once words are added to study.",
+  "tagsScreenLearnedCount": "{count} words",
+  "@tagsScreenLearnedCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
   "settingsReset": "Reset",
   "settingsDelete": "Delete",
   "settingsVersion": "Version",
