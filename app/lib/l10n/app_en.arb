@@ -82,6 +82,9 @@
       "error": {"type": "String"}
     }
   },
+  "speechListen": "Listen",
+  "speechStop": "Stop",
+  "speechUnavailable": "Speech is not available",
   "playerNoUnits": "No playable experience for this sense yet.",
   "playerNoSynopsis": "(no synopsis)",
   "playerTaskJudge": "Judgment",
@@ -171,6 +174,10 @@
   "settingsPickTime": "Pick time",
   "settingsNotificationsUnsupported": "Notifications are not supported on this platform",
   "settingsNotificationsDenied": "Notification permission denied",
+  "settingsReviewSection": "Review",
+  "settingsReviewAnimations": "Review Animations",
+  "settingsReviewAnimationsBody": "Show animations after rating a card",
+  "settingsReviewAnimationsLowPowerHint": "Low Power Mode temporarily disables review animations without changing this setting.",
   "settingsLanguageSection": "Language",
   "settingsLanguageAuto": "Auto (system)",
   "settingsLanguageFollowsSystem": "Follows system language",

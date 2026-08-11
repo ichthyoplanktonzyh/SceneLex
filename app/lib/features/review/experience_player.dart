@@ -10,6 +10,9 @@ import '../../api/models.dart';
 import '../../data/providers.dart';
 import '../../data/sync/sync_providers.dart';
 import '../../l10n/gen/app_localizations.dart';
+import 'markdown/content_text.dart';
+import 'reactions/review_reactions_controller.dart';
+import 'speech/tts_service.dart';
 
 /// Plays the Experience Program for one word sense, then rates the review.
 class ExperiencePlayer extends ConsumerStatefulWidget {
@@ -38,11 +41,23 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
   bool _ratingMode = false;
   bool _submitting = false;
   String? _error;
+  bool _speaking = false;
+
+  TtsService get _tts => ref.read(ttsServiceProvider);
 
   @override
   void initState() {
     super.initState();
     _programFuture = _loadProgram();
+    _tts.isSpeaking.addListener(_onSpeakingChanged);
+  }
+
+  void _onSpeakingChanged() {
+    if (!mounted) return;
+    final speaking = _tts.isSpeaking.value;
+    if (speaking != _speaking) {
+      setState(() => _speaking = speaking);
+    }
   }
 
   @override
@@ -55,6 +70,8 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
 
   @override
   void dispose() {
+    _tts.isSpeaking.removeListener(_onSpeakingChanged);
+    _tts.stop();
     _focusNode.dispose();
     super.dispose();
   }
@@ -103,6 +120,7 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
   void _advance() {
     final program = _program;
     if (program == null) return;
+    _tts.stop();
     setState(() {
       if (_unitIndex < program.units.length - 1) {
         _unitIndex++;
@@ -128,7 +146,29 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
     return ExperienceProgram.fromJson(res);
   }
 
+  Future<void> _toggleSpeech(String text) async {
+    if (_speaking) {
+      await _tts.stop();
+      return;
+    }
+    final errorKey = await _tts.speak(
+      text,
+      fallbackLanguageTag: Localizations.localeOf(context).toLanguageTag(),
+    );
+    if (errorKey != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context).speechUnavailable)),
+      );
+    }
+  }
+
   Future<void> _submitRating(int rating) async {
+    // Reference behavior: emit the rating reaction, then submit.
+    ref.read(reviewReactionsControllerProvider.notifier).emit(
+          rating,
+          reducedMotion: MediaQuery.disableAnimationsOf(context),
+        );
+    _tts.stop();
     setState(() {
       _submitting = true;
       _error = null;
@@ -179,6 +219,8 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
         return _ratingMode
             ? _RatingView(
                 sense: widget.sense,
+                speaking: _speaking,
+                onToggleSpeech: () => _toggleSpeech(widget.sense.lemma),
                 submitting: _submitting,
                 error: _error,
                 onRate: _submitRating,
@@ -188,10 +230,30 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
                 unit: program.units[_unitIndex],
                 isFirst: _unitIndex == 0,
                 isLast: _unitIndex == program.units.length - 1,
+                speaking: _speaking,
+                onToggleSpeech: _toggleSpeech,
                 onNext: _advance,
               );
       },
       ),
+    );
+  }
+}
+
+class _SpeechButton extends StatelessWidget {
+  const _SpeechButton({required this.speaking, required this.onTap});
+
+  final bool speaking;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return IconButton(
+      tooltip: speaking ? l10n.speechStop : l10n.speechListen,
+      icon: Icon(speaking ? Icons.volume_up : Icons.volume_up_outlined),
+      color: Theme.of(context).colorScheme.primary,
+      onPressed: onTap,
     );
   }
 }
@@ -202,6 +264,8 @@ class _UnitView extends StatelessWidget {
     required this.unit,
     required this.isFirst,
     required this.isLast,
+    required this.speaking,
+    required this.onToggleSpeech,
     required this.onNext,
   });
 
@@ -209,6 +273,8 @@ class _UnitView extends StatelessWidget {
   final ExperienceUnit unit;
   final bool isFirst;
   final bool isLast;
+  final bool speaking;
+  final void Function(String text) onToggleSpeech;
   final VoidCallback onNext;
 
   @override
@@ -234,24 +300,38 @@ class _UnitView extends StatelessWidget {
                 Text(sense.pos, style: theme.textTheme.labelMedium),
               const SizedBox(height: 8),
             ],
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.secondaryContainer,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Text(
-                '$label · ${_stageHint(l10n, unit.stage)}',
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.secondaryContainer,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Text(
+                      '$label · ${_stageHint(l10n, unit.stage)}',
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                  ),
+                ),
+                if (unit.synopsis.isNotEmpty || unit.title.isNotEmpty)
+                  _SpeechButton(
+                    speaking: speaking,
+                    onTap: () => onToggleSpeech(
+                      [unit.title, unit.synopsis].join('\n\n'),
+                    ),
+                  ),
+              ],
             ),
             const SizedBox(height: 24),
             if (unit.title.isNotEmpty)
               Text(unit.title, style: theme.textTheme.titleLarge),
             const SizedBox(height: 12),
-            Text(
-              unit.synopsis.isEmpty ? l10n.playerNoSynopsis : unit.synopsis,
-              style: theme.textTheme.bodyLarge?.copyWith(height: 1.6),
-            ),
+            if (unit.synopsis.isNotEmpty)
+              ContentText(unit.synopsis)
+            else
+              Text(l10n.playerNoSynopsis),
             if (unit.learningTasks.isNotEmpty) ...[
               const SizedBox(height: 24),
               ...unit.learningTasks.map((task) => _TaskView(task)),
@@ -311,7 +391,10 @@ class _TaskView extends StatelessWidget {
             Text(l10n.playerTaskJudge,
                 style: Theme.of(context).textTheme.labelLarge),
             const SizedBox(height: 8),
-            Text(prompt.isEmpty ? l10n.playerTaskPlaceholder : prompt),
+            if (prompt.isEmpty)
+              Text(l10n.playerTaskPlaceholder)
+            else
+              ContentText(prompt),
             if (options.isNotEmpty) ...[
               const SizedBox(height: 12),
               Wrap(
@@ -337,12 +420,16 @@ class _TaskView extends StatelessWidget {
 class _RatingView extends StatelessWidget {
   const _RatingView({
     required this.sense,
+    required this.speaking,
+    required this.onToggleSpeech,
     required this.submitting,
     required this.error,
     required this.onRate,
   });
 
   final Sense sense;
+  final bool speaking;
+  final VoidCallback onToggleSpeech;
   final bool submitting;
   final String? error;
   final ValueChanged<int> onRate;
@@ -357,6 +444,12 @@ class _RatingView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Row(
+              children: [
+                const Spacer(),
+                _SpeechButton(speaking: speaking, onTap: onToggleSpeech),
+              ],
+            ),
             Text(
               sense.lemma,
               textAlign: TextAlign.center,

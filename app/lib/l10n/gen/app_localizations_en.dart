@@ -164,6 +164,15 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get speechListen => 'Listen';
+
+  @override
+  String get speechStop => 'Stop';
+
+  @override
+  String get speechUnavailable => 'Speech is not available';
+
+  @override
   String get playerNoUnits => 'No playable experience for this sense yet.';
 
   @override
@@ -357,6 +366,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsNotificationsDenied => 'Notification permission denied';
+
+  @override
+  String get settingsReviewSection => 'Review';
+
+  @override
+  String get settingsReviewAnimations => 'Review Animations';
+
+  @override
+  String get settingsReviewAnimationsBody =>
+      'Show animations after rating a card';
+
+  @override
+  String get settingsReviewAnimationsLowPowerHint =>
+      'Low Power Mode temporarily disables review animations without changing this setting.';
 
   @override
   String get settingsLanguageSection => 'Language';

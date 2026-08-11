@@ -374,6 +374,24 @@ abstract class AppLocalizations {
   /// **'Failed to load program: {error}'**
   String playerLoadFailed(String error);
 
+  /// No description provided for @speechListen.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen'**
+  String get speechListen;
+
+  /// No description provided for @speechStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get speechStop;
+
+  /// No description provided for @speechUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Speech is not available'**
+  String get speechUnavailable;
+
   /// No description provided for @playerNoUnits.
   ///
   /// In en, this message translates to:
@@ -739,6 +757,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Notification permission denied'**
   String get settingsNotificationsDenied;
+
+  /// No description provided for @settingsReviewSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get settingsReviewSection;
+
+  /// No description provided for @settingsReviewAnimations.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Animations'**
+  String get settingsReviewAnimations;
+
+  /// No description provided for @settingsReviewAnimationsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Show animations after rating a card'**
+  String get settingsReviewAnimationsBody;
+
+  /// No description provided for @settingsReviewAnimationsLowPowerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Low Power Mode temporarily disables review animations without changing this setting.'**
+  String get settingsReviewAnimationsLowPowerHint;
 
   /// No description provided for @settingsLanguageSection.
   ///

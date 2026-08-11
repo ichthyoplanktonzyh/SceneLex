@@ -159,6 +159,15 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get speechListen => '朗读';
+
+  @override
+  String get speechStop => '停止';
+
+  @override
+  String get speechUnavailable => '无法朗读';
+
+  @override
   String get playerNoUnits => '这个词义还没有可播放的经验。';
 
   @override
@@ -350,6 +359,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsNotificationsDenied => '通知权限被拒绝';
+
+  @override
+  String get settingsReviewSection => '复习';
+
+  @override
+  String get settingsReviewAnimations => '复习动画';
+
+  @override
+  String get settingsReviewAnimationsBody => '评分后显示动画';
+
+  @override
+  String get settingsReviewAnimationsLowPowerHint => '低电量模式会临时禁用复习动画,不改变此设置。';
 
   @override
   String get settingsLanguageSection => '语言';

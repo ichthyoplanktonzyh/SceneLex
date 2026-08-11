@@ -5,6 +5,9 @@ import '../../api/models.dart';
 import '../../data/providers.dart';
 import '../../l10n/gen/app_localizations.dart';
 import 'experience_player.dart';
+import 'reactions/power_mode_service.dart';
+import 'reactions/review_reaction_layer.dart';
+import 'reactions/review_reactions_controller.dart';
 
 /// Today queue: due/new learning states, played through the Experience Player.
 class ReviewPage extends ConsumerStatefulWidget {
@@ -20,36 +23,58 @@ class ReviewPage extends ConsumerStatefulWidget {
 
 class _ReviewPageState extends ConsumerState<ReviewPage> {
   @override
+  void initState() {
+    super.initState();
+    PowerModeService.instance.start();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final library = ref.watch(libraryProvider);
+    final reactions = ref.watch(reviewReactionsControllerProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.reviewTitle)),
-      body: library.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text(l10n.loadingFailed('$e'))),
-        data: (lib) {
-          final queue = _buildQueue(lib);
-          if (queue.isEmpty) {
-            return _EmptyQueue(senseCount: lib.states.length);
-          }
-          final sense = queue.first;
-          return ExperiencePlayer(
-            key: ValueKey('${sense.wordSenseId}-${lib.states[sense.wordSenseId]?.reps}'),
-            active: widget.active,
-            sense: sense,
-            state: lib.states[sense.wordSenseId] ?? const LearningState(
-              wordSenseId: '',
-              reps: 0,
-              lapses: 0,
-              fsrsCardState: 'new',
+      // Touch to cancel: any touch on the review surface dismisses the
+      // active rating reactions (reference behavior).
+      body: Listener(
+        onPointerDown: (_) =>
+            ref.read(reviewReactionsControllerProvider.notifier).dismissAll(),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            library.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => Center(child: Text(l10n.loadingFailed('$e'))),
+              data: (lib) {
+                final queue = _buildQueue(lib);
+                if (queue.isEmpty) {
+                  return _EmptyQueue(senseCount: lib.states.length);
+                }
+                final sense = queue.first;
+                return ExperiencePlayer(
+                  key: ValueKey('${sense.wordSenseId}-${lib.states[sense.wordSenseId]?.reps}'),
+                  active: widget.active,
+                  sense: sense,
+                  state: lib.states[sense.wordSenseId] ?? const LearningState(
+                    wordSenseId: '',
+                    reps: 0,
+                    lapses: 0,
+                    fsrsCardState: 'new',
+                  ),
+                  onCompleted: () {
+                    ref.invalidate(libraryProvider);
+                  },
+                );
+              },
             ),
-            onCompleted: () {
-              ref.invalidate(libraryProvider);
-            },
-          );
-        },
+            ReviewReactionLayer(
+              events: reactions.events,
+              reducedMotion: MediaQuery.disableAnimationsOf(context),
+            ),
+          ],
+        ),
       ),
     );
   }

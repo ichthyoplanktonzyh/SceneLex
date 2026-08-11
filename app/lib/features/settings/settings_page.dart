@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/locale_controller.dart';
 import '../../auth/auth_controller.dart';
 import '../../l10n/gen/app_localizations.dart';
+import '../review/reactions/review_reactions_controller.dart';
 import 'notifications_service.dart';
 import 'scheduling_settings_page.dart';
 
@@ -87,6 +90,27 @@ class SettingsPage extends ConsumerWidget {
               },
             ),
           ],
+          const Divider(),
+          _SectionHeader(l10n.settingsReviewSection),
+          SwitchListTile(
+            secondary: const Icon(Icons.auto_awesome),
+            title: Text(l10n.settingsReviewAnimations),
+            subtitle: Text(l10n.settingsReviewAnimationsBody),
+            value: ref.watch(reviewReactionsControllerProvider).enabled,
+            onChanged: (enabled) => ref
+                .read(reviewReactionsControllerProvider.notifier)
+                .setEnabled(enabled),
+          ),
+          if (!kIsWeb && (Platform.isIOS || Platform.isAndroid))
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Text(
+                l10n.settingsReviewAnimationsLowPowerHint,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              ),
+            ),
           const Divider(),
           _SectionHeader(l10n.settingsSchedulingSection),
           ListTile(
