@@ -119,7 +119,16 @@ class LocalWorkspaceSettings extends Table {
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase({QueryExecutor? executor})
-      : super(executor ?? driftDatabase(name: 'scenelex'));
+      : super(executor ??
+            driftDatabase(
+              name: 'scenelex',
+              // Web assets (sqlite3.wasm + drift_worker.js) live in web/.
+              // Ignored on native platforms.
+              web: DriftWebOptions(
+                sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+                driftWorker: Uri.parse('drift_worker.js'),
+              ),
+            ));
 
   @override
   int get schemaVersion => 2;
