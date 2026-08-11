@@ -41,6 +41,11 @@ async fn main() -> anyhow::Result<()> {
 
     let app = axum::Router::new()
         .nest("/v1", routes::v1::router())
+        .layer(
+            // Local development CORS: any origin/method/header. Tighten this
+            // to the web origin when deploying to the cloud (P6 follow-up).
+            tower_http::cors::CorsLayer::permissive(),
+        )
         .with_state(state);
 
     let listener = tokio::net::TcpListener::bind(&config.listen_addr).await?;
