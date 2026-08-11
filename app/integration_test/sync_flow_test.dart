@@ -32,6 +32,8 @@ const _testEmail = String.fromEnvironment('TEST_EMAIL');
 const _deadBase = 'http://127.0.0.1:9/v1';
 const _liveBase = 'http://127.0.0.1:8081/v1';
 const _checkpoint = int.fromEnvironment('CHECKPOINT', defaultValue: 1);
+const _shot = String.fromEnvironment('SHOT');
+const _shotLang = String.fromEnvironment('SHOT_LANG', defaultValue: 'en');
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -267,21 +269,66 @@ void main() {
         // fire-and-forget, and a cycle finishing after a manual dispose
         // would write to disposed providers (process exit reaps it).
       });
+    case 5:
+      testWidgets('screenshot mode: review card head / cards filter sheet',
+          (tester) async {
+        final container = await _boot(tester, lang: _shotLang);
+        await _signIn(tester, container, zh: _shotLang == 'zh');
+        final ws = await container.read(workspaceProvider.future);
+
+        // One studied sense so the card head (tags + reps badge) and the tag
+        // filter sheet have real data.
+        await tester.tap(find.byType(NavigationDestination).at(2));
+        await tester.pump(const Duration(milliseconds: 400));
+        await tester
+            .tap(find.text(_shotLang == 'zh' ? '学习' : 'Study').first);
+        await _waitSyncedAndDrained(tester, container, ws);
+
+        if (_shot == 'cards-filter') {
+          await tester.tap(find.byTooltip(
+              _shotLang == 'zh' ? '按标签筛选' : 'Filter by tags'));
+          await tester.pump(const Duration(milliseconds: 800));
+        } else {
+          // Review tab: stay on the first unit so the header row with the
+          // tag summary and the repetition badge is visible.
+          await tester.tap(find.byType(NavigationDestination).at(0));
+          await tester.pump(const Duration(milliseconds: 600));
+          await _waitFor(
+              tester, () => find.byType(FilledButton).evaluate().isNotEmpty,
+              timeout: const Duration(seconds: 30));
+        }
+        await _holdForScreenshot(tester, _shot);
+      });
     default:
-      throw ArgumentError.value(_checkpoint, 'CHECKPOINT', 'must be 1..4');
+      throw ArgumentError.value(_checkpoint, 'CHECKPOINT', 'must be 1..5');
+  }
+}
+
+/// Renders the current screen and hands it to the driver for onScreenshot
+/// capture (web: rendered frame through the driver channel).
+Future<void> _holdForScreenshot(WidgetTester tester, String name) async {
+  await _report('SHOT-READY', ok: true, detail: name);
+  final binding = IntegrationTestWidgetsFlutterBinding.instance;
+  final bytes = await binding.takeScreenshot(name);
+  debugPrint('== screenshot $name: ${bytes.length} bytes ==');
+  // Keep the frame on screen briefly so a human can see what was captured.
+  for (var i = 0; i < 8; i++) {
+    await tester.pump(const Duration(milliseconds: 500));
   }
 }
 
 /// Boots the real app with a test-owned [ApiClient] (so baseUrl can be
 /// toggled to simulate connectivity loss) over the real local storage. The
-/// locale is pinned to English: the text finders assume English, while the
-/// app defaults to following the system language (and LocaleController's
-/// async _restore would race a runtime setLocale call).
-Future<ProviderContainer> _boot(WidgetTester tester) async {
+/// locale is pinned ([lang] = en|zh): the text finders assume that language,
+/// while the app defaults to following the system language (and
+/// LocaleController's async _restore would race a runtime setLocale call).
+Future<ProviderContainer> _boot(WidgetTester tester, {String lang = 'en'}) async {
   final client = ApiClient();
   final container = ProviderContainer(overrides: [
     apiClientProvider.overrideWithValue(client),
-    localeControllerProvider.overrideWith(_FixedLocaleController.new),
+    localeControllerProvider.overrideWith(
+      () => _FixedLocaleController(Locale(lang)),
+    ),
   ]);
   await tester.pumpWidget(UncontrolledProviderScope(
     container: container,
@@ -292,28 +339,35 @@ Future<ProviderContainer> _boot(WidgetTester tester) async {
 }
 
 class _FixedLocaleController extends LocaleController {
+  _FixedLocaleController(this.locale);
+
+  final Locale locale;
+
   @override
-  AppLocale build() => const AppLocale(Locale('en'));
+  AppLocale build() => AppLocale(locale);
 }
 
 /// Real UI sign-in. The harness cannot know the OTP in advance: clicking
 /// "Send code" in the UI creates a fresh challenge that invalidates any
 /// pre-generated code, so the fresh code is fetched from the code relay
-/// (see scripts/code-relay.py) right after the click.
-Future<void> _signIn(WidgetTester tester, ProviderContainer container) async {
-  await _waitFor(
-      tester, () => find.text('Send code').evaluate().isNotEmpty);
+/// (see scripts/code-relay.py) right after the click. [zh] switches the text
+/// finders to the Chinese UI.
+Future<void> _signIn(WidgetTester tester, ProviderContainer container,
+    {bool zh = false}) async {
+  final sendCode = zh ? '发送验证码' : 'Send code';
+  final signIn = zh ? '登录' : 'Sign in';
+  await _waitFor(tester, () => find.text(sendCode).evaluate().isNotEmpty);
   await tester.enterText(find.byType(TextField).first, _testEmail);
-  await tester.tap(find.text('Send code'));
+  await tester.tap(find.text(sendCode));
   await _report('test-step', ok: true, detail: 'ui send-code tapped');
   await _waitFor(
-      tester, () => find.text('Sign in').evaluate().isNotEmpty,
+      tester, () => find.text(signIn).evaluate().isNotEmpty,
       timeout: const Duration(seconds: 20));
   await _report('test-step', ok: true, detail: 'ui shows sign-in step');
 
   final code = await _fetchCode(_testEmail);
   await tester.enterText(find.byType(TextField).last, code);
-  await tester.tap(find.text('Sign in'));
+  await tester.tap(find.text(signIn));
   await _report('test-step', ok: true, detail: 'ui verify tapped with $code');
   await _waitFor(
       tester, () => container.read(authControllerProvider).isSignedIn,

@@ -64,13 +64,31 @@ bash scripts/run-checkpoints.sh all
   切 baseUrl 模拟断网）与 locale（固定 en）。
 - **login 流程**：UI 填邮箱 → 点 Send code → 等 Sign in 出现 → 请求
   code relay 拿最新验证码 → 填码登录 → 等 `authControllerProvider` signedIn
-  → 等库 hydration。
+  → 等库 hydration。中文 UI 用 `_signIn(..., zh: true)`（finder 切
+  「发送验证码」/「登录」）。
 - **hydration 兜底**：登录后 `libraryProvider` 首次结果可能与 hydration
   竞态（缓存空结果）。`_waitHydrated` 先手动 `ApiClient.get('/content/senses')`
   写入 drift 缓存（真实路径），再 `invalidate(libraryProvider)` 重读。
 - **不要手动 `container.dispose()`**：sync 触发是 fire-and-forget，周期在
   dispose 后完成会写已销毁的 provider（UnmountedRefException）。进程退出
   自行回收。
+
+## 截图模式（CHECKPOINT=5）
+
+真实浏览器帧的截图证据：`SHOT=review-en|review-zh|cards-filter` 配合
+`SHOT_LANG=en|zh`，由 `scripts/take-screenshots.sh` 编排，三个目标一次跑完：
+
+```bash
+bash scripts/take-screenshots.sh /tmp/scenelex-shots
+```
+
+- 测试内 `binding.takeScreenshot(name)` 经 driver 通道落盘
+  `app/screenshots/<name>.png`（web 上可用，无需屏幕录制权限），脚本再拷到
+  输出目录。
+- `review-en/review-zh`：登录 + 添加一个学习词 → Review tab 第一屏
+  （卡片头部：标签摘要 + 次数徽章）；`cards-filter`：Cards tab 筛选面板。
+- 已知限制：macOS 上无辅助功能/屏幕录制权限时，外部窗口截图
+  （screencapture/Quartz/AppleScript）都不可用，driver 截图是唯一通道。
 
 ## 踩坑记录（按时间序）
 
@@ -81,13 +99,15 @@ bash scripts/run-checkpoints.sh all
    模式。
 4. 每次 flutter drive 全新 Chrome profile（localStorage 空）→ 检查点必须
    各自登录，不能共享 session。
-5. app 跟随系统语言（zh）→ override locale 为 en。
+5. app 跟随系统语言（zh）→ override locale 为 en（截图/检查点按需 zh）。
 6. OTP 挑战被 UI 重发作废 → code relay 在点击后取码。
 7. lifecycle 模拟必须走合法迁移链（`AppLifecycleListener` 断言相邻迁移）。
 8. **真实产品 bug（本方案逼出）**：`experience_player.dart` 的 `dispose()`
    读 `ref`（riverpod 禁止），树卸载时崩溃 → 改为 initState 缓存字段。
 9. 遗留观察：`local_repository.dart` 的 `setHotCursor` 无条件写
    `hasHydratedHotState: true`（疑似产品缺陷，未验证根因，暂不影响行为）。
+10. web 上 `takeScreenshot` 返回非空（签名非 nullable）→ 不要写 null 判断
+    （analyzer dead-code 警告）。
 
 ## 扩展新检查点
 
