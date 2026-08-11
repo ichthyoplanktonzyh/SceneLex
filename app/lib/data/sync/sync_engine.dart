@@ -224,8 +224,7 @@ class SyncEngine {
         await local.cacheWorkspaceSettings(
             workspaceId, jsonDecode(payloadJson) as Map<String, dynamic>);
       case 'list':
-        // Lists are not part of the v1 client surface yet.
-        break;
+        await local.applyList(listId: entityId, payloadJson: payloadJson);
     }
   }
 

@@ -4,12 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../api/models.dart';
 import '../../data/providers.dart';
 import '../../l10n/gen/app_localizations.dart';
+import '../lists/lists_page.dart';
 import 'experience_player.dart';
 import 'reactions/power_mode_service.dart';
 import 'reactions/review_reaction_layer.dart';
 import 'reactions/review_reactions_controller.dart';
 
 /// Today queue: due/new learning states, played through the Experience Player.
+/// The queue can be filtered (All Cards / a word list / tags), persisted.
 class ReviewPage extends ConsumerStatefulWidget {
   const ReviewPage({super.key, this.active = true});
 
@@ -33,9 +35,16 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
     final l10n = AppLocalizations.of(context);
     final library = ref.watch(libraryProvider);
     final reactions = ref.watch(reviewReactionsControllerProvider);
+    final filter = ref.watch(reviewFilterProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.reviewTitle)),
+      appBar: AppBar(
+        leading: _FilterMenuButton(
+          filter: filter,
+          onPressed: () => showReviewFilterSheet(context, ref),
+        ),
+        title: Text(l10n.reviewTitle),
+      ),
       // Touch to cancel: any touch on the review surface dismisses the
       // active rating reactions (reference behavior).
       body: Listener(
@@ -48,9 +57,17 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, _) => Center(child: Text(l10n.loadingFailed('$e'))),
               data: (lib) {
-                final queue = _buildQueue(lib);
+                final queue = _buildQueue(lib, filter);
                 if (queue.isEmpty) {
-                  return _EmptyQueue(senseCount: lib.states.length);
+                  return _EmptyQueue(
+                    senseCount: lib.states.length,
+                    filtered: filter is! ReviewFilterAll,
+                    onSwitchToAll: filter is ReviewFilterAll
+                        ? null
+                        : () => ref
+                            .read(reviewFilterProvider.notifier)
+                            .set(const ReviewFilter.all()),
+                  );
                 }
                 final sense = queue.first;
                 return ExperiencePlayer(
@@ -79,13 +96,27 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
     );
   }
 
-  /// Queue order mirrors the reference: recently reviewed due -> due -> new.
-  List<Sense> _buildQueue(Library lib) {
+  /// Queue order mirrors the reference: recently reviewed due -> due -> new,
+  /// restricted to the active filter.
+  List<Sense> _buildQueue(Library lib, ReviewFilter filter) {
+    final filtered = lib.senses.where((sense) {
+      if (!lib.states.containsKey(sense.wordSenseId)) return false;
+      return switch (filter) {
+        ReviewFilterAll() => true,
+        ReviewFilterList(:final listId) => lib.lists
+            .where((l) => l.listId == listId)
+            .map((l) => lib.senseHasAnyTag(sense.wordSenseId, l.tags))
+            .firstOrNull ??
+            false,
+        ReviewFilterTags(:final tags) =>
+          lib.senseHasAnyTag(sense.wordSenseId, tags),
+      };
+    }).toList();
+
     final due = <(Sense, DateTime?)>[];
     final newItems = <Sense>[];
-    for (final sense in lib.senses) {
-      final state = lib.states[sense.wordSenseId];
-      if (state == null) continue;
+    for (final sense in filtered) {
+      final state = lib.states[sense.wordSenseId]!;
       if (state.isNew) {
         newItems.add(sense);
       } else if (state.isDue) {
@@ -101,10 +132,210 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
   }
 }
 
+/// AppBar menu button: current filter title; opens the filter sheet.
+class _FilterMenuButton extends ConsumerWidget {
+  const _FilterMenuButton({required this.filter, required this.onPressed});
+
+  final ReviewFilter filter;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final library = ref.watch(libraryProvider);
+
+    final title = library.when(
+      data: (lib) => switch (filter) {
+        ReviewFilterAll() => l10n.listsAllCards,
+        ReviewFilterList(:final listId) => lib.lists
+            .where((l) => l.listId == listId)
+            .map((l) => l.name)
+            .firstOrNull ??
+            l10n.listsAllCards,
+        ReviewFilterTags(:final tags) => tags.isEmpty
+            ? l10n.listsAllCards
+            : tags.join(', '),
+      },
+      loading: () => l10n.listsAllCards,
+      error: (_, _) => l10n.listsAllCards,
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: onPressed,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            const Icon(Icons.arrow_drop_down),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Opens the filter bottom sheet (All Cards / lists / multi-select tags).
+void showReviewFilterSheet(BuildContext context, WidgetRef ref) {
+  final l10n = AppLocalizations.of(context);
+  final library = ref.read(libraryProvider);
+  final lib = library.value;
+  if (lib == null) return;
+
+  final current = ref.read(reviewFilterProvider);
+  var draft = current;
+  var draftTags = current is ReviewFilterTags
+      ? {...current.tags}
+      : <String>{};
+
+  Object radioValue(ReviewFilter filter) => switch (filter) {
+        ReviewFilterAll() => 'all',
+        ReviewFilterList(:final listId) => 'list-$listId',
+        ReviewFilterTags() => 'tags',
+      };
+
+  showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    builder: (sheetContext) => StatefulBuilder(
+      builder: (context, setSheetState) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                l10n.reviewFilterTitle,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 8),
+              RadioGroup<Object>(
+                groupValue: radioValue(draft),
+                onChanged: (value) => setSheetState(() {
+                  if (value == 'all') {
+                    draft = const ReviewFilter.all();
+                    draftTags = {};
+                  } else if (value is String && value.startsWith('list-')) {
+                    draft = ReviewFilter.list(value.substring(5));
+                    draftTags = {};
+                  }
+                }),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    RadioListTile<Object>(
+                      value: 'all',
+                      title: Text(l10n.listsAllCards),
+                      subtitle: Text(l10n.listsAllCardsBody(lib.states.length)),
+                    ),
+                    if (lib.lists.isNotEmpty) ...[
+                      const Divider(height: 8),
+                      Text(l10n.reviewFilterLists,
+                          style: Theme.of(context).textTheme.labelLarge),
+                      Flexible(
+                        child: ListView(
+                          shrinkWrap: true,
+                          children: [
+                            for (final list in lib.lists)
+                              RadioListTile<Object>(
+                                value: 'list-${list.listId}',
+                                dense: true,
+                                title: Text(list.name),
+                                subtitle: Text(l10n.listsMatchedCount(
+                                    lib.matchedCount(list))),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const Divider(height: 8),
+              Text(l10n.reviewFilterTags,
+                  style: Theme.of(context).textTheme.labelLarge),
+              const SizedBox(height: 8),
+              if (lib.tagCounts.isEmpty)
+                Text(
+                  l10n.listsNoTags,
+                  style: Theme.of(context).textTheme.bodySmall,
+                )
+              else
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final entry in lib.tagCounts.entries)
+                      FilterChip(
+                        label: Text('${entry.key} (${entry.value})'),
+                        selected: draftTags.contains(entry.key),
+                        onSelected: (selected) => setSheetState(() {
+                          if (selected) {
+                            draftTags.add(entry.key);
+                          } else {
+                            draftTags.remove(entry.key);
+                          }
+                          draft = draftTags.isEmpty
+                              ? const ReviewFilter.all()
+                              : ReviewFilter.tags({...draftTags});
+                        }),
+                      ),
+                  ],
+                ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(sheetContext);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (_) => const ListsPage(),
+                        ),
+                      );
+                    },
+                    child: Text(l10n.reviewFilterManage),
+                  ),
+                  const Spacer(),
+                  FilledButton(
+                    onPressed: () {
+                      ref.read(reviewFilterProvider.notifier).set(draft);
+                      Navigator.pop(sheetContext);
+                    },
+                    child: Text(l10n.reviewFilterDone),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
 class _EmptyQueue extends StatelessWidget {
-  const _EmptyQueue({required this.senseCount});
+  const _EmptyQueue({
+    required this.senseCount,
+    required this.filtered,
+    this.onSwitchToAll,
+  });
 
   final int senseCount;
+  final bool filtered;
+  final VoidCallback? onSwitchToAll;
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +352,14 @@ class _EmptyQueue extends StatelessWidget {
             senseCount == 0 ? l10n.reviewEmptyGoAdd : l10n.reviewEmptyAllDone,
             style: Theme.of(context).textTheme.bodySmall,
           ),
+          if (filtered && onSwitchToAll != null) ...[
+            const SizedBox(height: 16),
+            TextButton.icon(
+              onPressed: onSwitchToAll,
+              icon: const Icon(Icons.style),
+              label: Text(l10n.reviewEmptySwitchToAll),
+            ),
+          ],
         ],
       ),
     );

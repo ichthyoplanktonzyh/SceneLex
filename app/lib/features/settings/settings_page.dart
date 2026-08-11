@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/locale_controller.dart';
 import '../../auth/auth_controller.dart';
 import '../../l10n/gen/app_localizations.dart';
+import '../lists/lists_page.dart';
 import '../review/reactions/review_reactions_controller.dart';
 import 'notifications_service.dart';
 import 'scheduling_settings_page.dart';
@@ -37,6 +38,20 @@ class SettingsPage extends ConsumerWidget {
             leading: const Icon(Icons.logout),
             title: Text(l10n.settingsSignOut),
             onTap: () => _confirmSignOut(context, ref),
+          ),
+          const Divider(),
+          _SectionHeader(l10n.settingsWorkspaceSection),
+          ListTile(
+            leading: const Icon(Icons.playlist_play),
+            title: Text(l10n.settingsWorkspaceLists),
+            subtitle: Text(l10n.settingsWorkspaceListsBody),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => const ListsPage(),
+              ),
+            ),
           ),
           const Divider(),
           _SectionHeader(l10n.settingsNotificationsSection),

@@ -112,6 +112,100 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reviewEmptyAllDone => '全部完成,明天再来';
 
   @override
+  String get reviewEmptySwitchToAll => '切换到全部词义';
+
+  @override
+  String get reviewFilterTitle => '筛选';
+
+  @override
+  String get reviewFilterLists => '词单';
+
+  @override
+  String get reviewFilterTags => '标签';
+
+  @override
+  String get reviewFilterManage => '管理词单';
+
+  @override
+  String get reviewFilterDone => '完成';
+
+  @override
+  String get listsTitle => '词单';
+
+  @override
+  String get listsAllCards => '全部词义';
+
+  @override
+  String listsAllCardsBody(int count) {
+    return '$count 个词义';
+  }
+
+  @override
+  String get listsCreate => '新建词单';
+
+  @override
+  String get listsEdit => '编辑词单';
+
+  @override
+  String get listsDelete => '删除';
+
+  @override
+  String get listsDeleteTitle => '删除这个词单?';
+
+  @override
+  String get listsDeleteBody => '词单及其规则将从本设备和下次同步中移除,不会删除任何学习进度。';
+
+  @override
+  String get listsEmpty => '还没有词单。创建一个词单来筛选要复习的词义。';
+
+  @override
+  String get listsNameLabel => '名称';
+
+  @override
+  String get listsTagsLabel => '标签(至少选一个)';
+
+  @override
+  String get listsSaveHint => '词单的规则:词义只要带有任一选中标签即匹配。';
+
+  @override
+  String get listsNoTags => '暂无可用标签。';
+
+  @override
+  String listsMatchedCount(int count) {
+    return '$count 个匹配词义';
+  }
+
+  @override
+  String get listsDetailRules => '规则';
+
+  @override
+  String get listsDetailStats => '统计';
+
+  @override
+  String get listsDetailMatched => '匹配词义';
+
+  @override
+  String get listsMatchedEmpty => '还没有学习中的词义匹配这个词单。';
+
+  @override
+  String get listsStatMatched => '已匹配';
+
+  @override
+  String get listsStatDue => '当前到期';
+
+  @override
+  String get listsReviewThisDeck => '复习这个词单';
+
+  @override
+  String get cardRemove => '移除';
+
+  @override
+  String get cardRemoveTitle => '移出学习?';
+
+  @override
+  String get cardRemoveBody => '该词将从本地列表和下次同步中移除。之后可以随时重新添加。';
+
+  @override
   String get stageAnchor => '经验原型';
 
   @override
@@ -395,6 +489,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsWorkspaceSection => '工作区';
+
+  @override
+  String get settingsWorkspaceLists => '词单';
+
+  @override
+  String get settingsWorkspaceListsBody => '创建智能词单,筛选复习内容';
 
   @override
   String get settingsReset => '重置';

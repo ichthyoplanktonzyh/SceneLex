@@ -148,3 +148,46 @@ class AuthSession {
         email: json['user']['email'] as String,
       );
 }
+
+/// Word list: a smart filter (name + tag rule, at least one tag).
+/// Mirrors the sync `list` entity (filterDefinition {version: 2, tags: [...]}).
+class WordList {
+  const WordList({
+    required this.listId,
+    required this.name,
+    required this.tags,
+  });
+
+  final String listId;
+  final String name;
+  final List<String> tags;
+
+  factory WordList.fromJson(Map<String, dynamic> json) {
+    final filter = (json['filterDefinition'] as Map<String, dynamic>?) ??
+        const <String, dynamic>{};
+    return WordList(
+      listId: json['listId'] as String,
+      name: json['name']?.toString() ?? 'Untitled',
+      tags: ((filter['tags'] as List<dynamic>?) ?? const [])
+          .map((t) => t.toString())
+          .toList(),
+    );
+  }
+
+  /// Payload for outbox upsert (entity + LWW metadata).
+  Map<String, dynamic> toSyncPayload({
+    required String clientUpdatedAt,
+    required String lastModifiedByReplicaId,
+    required String lastOperationId,
+    String? deletedAt,
+  }) =>
+      {
+        'listId': listId,
+        'name': name,
+        'filterDefinition': {'version': 2, 'tags': tags},
+        'clientUpdatedAt': clientUpdatedAt,
+        'lastModifiedByReplicaId': lastModifiedByReplicaId,
+        'lastOperationId': lastOperationId,
+        'deletedAt': deletedAt,
+      };
+}

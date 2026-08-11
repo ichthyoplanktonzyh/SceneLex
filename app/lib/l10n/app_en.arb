@@ -61,6 +61,48 @@
   "reviewEmptyNoDue": "Nothing due today",
   "reviewEmptyGoAdd": "Add senses from the Cards tab",
   "reviewEmptyAllDone": "All done. See you tomorrow.",
+  "reviewEmptySwitchToAll": "Switch to all cards deck",
+  "reviewFilterTitle": "Filter",
+  "reviewFilterLists": "Lists",
+  "reviewFilterTags": "Tags",
+  "reviewFilterManage": "Manage lists",
+  "reviewFilterDone": "Done",
+
+  "listsTitle": "Lists",
+  "listsAllCards": "All Cards",
+  "listsAllCardsBody": "{count} cards",
+  "@listsAllCardsBody": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "listsCreate": "New list",
+  "listsEdit": "Edit list",
+  "listsDelete": "Delete",
+  "listsDeleteTitle": "Delete this list?",
+  "listsDeleteBody": "The list and its rule will be removed from this device and the next sync. No study progress is deleted.",
+  "listsEmpty": "No lists yet. Create a list to study a subset of words.",
+  "listsNameLabel": "Name",
+  "listsTagsLabel": "Tags (select at least one)",
+  "listsSaveHint": "A list matches a word when the word carries at least one of the selected tags.",
+  "listsNoTags": "No tags available yet.",
+  "listsMatchedCount": "{count} matching cards",
+  "@listsMatchedCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "listsDetailRules": "Rule",
+  "listsDetailStats": "Stats",
+  "listsDetailMatched": "Matching cards",
+  "listsMatchedEmpty": "No studied words match this list yet.",
+  "listsStatMatched": "Matched",
+  "listsStatDue": "Due now",
+  "listsReviewThisDeck": "Review this list",
+
+  "cardRemove": "Remove",
+  "cardRemoveTitle": "Remove from study?",
+  "cardRemoveBody": "This removes the word from the local list and the next sync. You can add it again any time.",
 
   "stageAnchor": "Prototype",
   "stageVariation": "Variation",
@@ -186,6 +228,8 @@
   "settingsResetProgressBody": "This clears all study progress on this device and on the server. It cannot be undone.",
   "settingsDeleteWorkspace": "Delete current workspace",
   "settingsWorkspaceSection": "Workspace",
+  "settingsWorkspaceLists": "Lists",
+  "settingsWorkspaceListsBody": "Create smart lists to filter your reviews",
   "settingsReset": "Reset",
   "settingsDelete": "Delete",
   "settingsVersion": "Version",

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/providers.dart';
 import '../features/cards/cards_page.dart';
 import '../features/progress/progress_page.dart';
 import '../features/review/review_page.dart';
@@ -7,34 +9,31 @@ import '../features/settings/settings_page.dart';
 import '../l10n/gen/app_localizations.dart';
 
 /// Top-level shell: 4 tabs (Review / Progress / Cards / Settings).
-class AppShell extends StatefulWidget {
+/// The selected tab is exposed via [selectedTabProvider] so other surfaces
+/// (e.g. "Review this deck") can jump to the Review tab.
+class AppShell extends ConsumerWidget {
   const AppShell({super.key});
-
-  @override
-  State<AppShell> createState() => _AppShellState();
-}
-
-class _AppShellState extends State<AppShell> {
-  int _selectedIndex = 0;
 
   static const _tabCount = 4;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final selectedIndex = ref.watch(selectedTabProvider);
+
     return Scaffold(
       body: IndexedStack(
-        index: _selectedIndex,
+        index: selectedIndex,
         children: [
           // Active flag lets the Review page grab keyboard focus when the
           // tab becomes visible (web/desktop shortcuts).
-          for (var i = 0; i < _tabCount; i++) _buildPage(i),
+          for (var i = 0; i < _tabCount; i++) _buildPage(i, selectedIndex),
         ],
       ),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _selectedIndex,
+        selectedIndex: selectedIndex,
         onDestinationSelected: (index) {
-          setState(() => _selectedIndex = index);
+          ref.read(selectedTabProvider.notifier).setTab(index);
           FocusManager.instance.primaryFocus?.unfocus();
         },
         destinations: [
@@ -63,9 +62,9 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
-  Widget _buildPage(int index) {
+  Widget _buildPage(int index, int selectedIndex) {
     return switch (index) {
-      0 => ReviewPage(active: _selectedIndex == index),
+      0 => ReviewPage(active: selectedIndex == index),
       1 => const ProgressPage(),
       2 => const CardsPage(),
       _ => const SettingsPage(),

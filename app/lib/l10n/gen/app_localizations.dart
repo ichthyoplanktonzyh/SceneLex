@@ -284,6 +284,186 @@ abstract class AppLocalizations {
   /// **'All done. See you tomorrow.'**
   String get reviewEmptyAllDone;
 
+  /// No description provided for @reviewEmptySwitchToAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to all cards deck'**
+  String get reviewEmptySwitchToAll;
+
+  /// No description provided for @reviewFilterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get reviewFilterTitle;
+
+  /// No description provided for @reviewFilterLists.
+  ///
+  /// In en, this message translates to:
+  /// **'Lists'**
+  String get reviewFilterLists;
+
+  /// No description provided for @reviewFilterTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get reviewFilterTags;
+
+  /// No description provided for @reviewFilterManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage lists'**
+  String get reviewFilterManage;
+
+  /// No description provided for @reviewFilterDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get reviewFilterDone;
+
+  /// No description provided for @listsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Lists'**
+  String get listsTitle;
+
+  /// No description provided for @listsAllCards.
+  ///
+  /// In en, this message translates to:
+  /// **'All Cards'**
+  String get listsAllCards;
+
+  /// No description provided for @listsAllCardsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} cards'**
+  String listsAllCardsBody(int count);
+
+  /// No description provided for @listsCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'New list'**
+  String get listsCreate;
+
+  /// No description provided for @listsEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit list'**
+  String get listsEdit;
+
+  /// No description provided for @listsDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get listsDelete;
+
+  /// No description provided for @listsDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this list?'**
+  String get listsDeleteTitle;
+
+  /// No description provided for @listsDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The list and its rule will be removed from this device and the next sync. No study progress is deleted.'**
+  String get listsDeleteBody;
+
+  /// No description provided for @listsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No lists yet. Create a list to study a subset of words.'**
+  String get listsEmpty;
+
+  /// No description provided for @listsNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get listsNameLabel;
+
+  /// No description provided for @listsTagsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags (select at least one)'**
+  String get listsTagsLabel;
+
+  /// No description provided for @listsSaveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A list matches a word when the word carries at least one of the selected tags.'**
+  String get listsSaveHint;
+
+  /// No description provided for @listsNoTags.
+  ///
+  /// In en, this message translates to:
+  /// **'No tags available yet.'**
+  String get listsNoTags;
+
+  /// No description provided for @listsMatchedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} matching cards'**
+  String listsMatchedCount(int count);
+
+  /// No description provided for @listsDetailRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule'**
+  String get listsDetailRules;
+
+  /// No description provided for @listsDetailStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Stats'**
+  String get listsDetailStats;
+
+  /// No description provided for @listsDetailMatched.
+  ///
+  /// In en, this message translates to:
+  /// **'Matching cards'**
+  String get listsDetailMatched;
+
+  /// No description provided for @listsMatchedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No studied words match this list yet.'**
+  String get listsMatchedEmpty;
+
+  /// No description provided for @listsStatMatched.
+  ///
+  /// In en, this message translates to:
+  /// **'Matched'**
+  String get listsStatMatched;
+
+  /// No description provided for @listsStatDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Due now'**
+  String get listsStatDue;
+
+  /// No description provided for @listsReviewThisDeck.
+  ///
+  /// In en, this message translates to:
+  /// **'Review this list'**
+  String get listsReviewThisDeck;
+
+  /// No description provided for @cardRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get cardRemove;
+
+  /// No description provided for @cardRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from study?'**
+  String get cardRemoveTitle;
+
+  /// No description provided for @cardRemoveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This removes the word from the local list and the next sync. You can add it again any time.'**
+  String get cardRemoveBody;
+
   /// No description provided for @stageAnchor.
   ///
   /// In en, this message translates to:
@@ -829,6 +1009,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Workspace'**
   String get settingsWorkspaceSection;
+
+  /// No description provided for @settingsWorkspaceLists.
+  ///
+  /// In en, this message translates to:
+  /// **'Lists'**
+  String get settingsWorkspaceLists;
+
+  /// No description provided for @settingsWorkspaceListsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Create smart lists to filter your reviews'**
+  String get settingsWorkspaceListsBody;
 
   /// No description provided for @settingsReset.
   ///

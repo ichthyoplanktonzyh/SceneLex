@@ -113,6 +113,104 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reviewEmptyAllDone => 'All done. See you tomorrow.';
 
   @override
+  String get reviewEmptySwitchToAll => 'Switch to all cards deck';
+
+  @override
+  String get reviewFilterTitle => 'Filter';
+
+  @override
+  String get reviewFilterLists => 'Lists';
+
+  @override
+  String get reviewFilterTags => 'Tags';
+
+  @override
+  String get reviewFilterManage => 'Manage lists';
+
+  @override
+  String get reviewFilterDone => 'Done';
+
+  @override
+  String get listsTitle => 'Lists';
+
+  @override
+  String get listsAllCards => 'All Cards';
+
+  @override
+  String listsAllCardsBody(int count) {
+    return '$count cards';
+  }
+
+  @override
+  String get listsCreate => 'New list';
+
+  @override
+  String get listsEdit => 'Edit list';
+
+  @override
+  String get listsDelete => 'Delete';
+
+  @override
+  String get listsDeleteTitle => 'Delete this list?';
+
+  @override
+  String get listsDeleteBody =>
+      'The list and its rule will be removed from this device and the next sync. No study progress is deleted.';
+
+  @override
+  String get listsEmpty =>
+      'No lists yet. Create a list to study a subset of words.';
+
+  @override
+  String get listsNameLabel => 'Name';
+
+  @override
+  String get listsTagsLabel => 'Tags (select at least one)';
+
+  @override
+  String get listsSaveHint =>
+      'A list matches a word when the word carries at least one of the selected tags.';
+
+  @override
+  String get listsNoTags => 'No tags available yet.';
+
+  @override
+  String listsMatchedCount(int count) {
+    return '$count matching cards';
+  }
+
+  @override
+  String get listsDetailRules => 'Rule';
+
+  @override
+  String get listsDetailStats => 'Stats';
+
+  @override
+  String get listsDetailMatched => 'Matching cards';
+
+  @override
+  String get listsMatchedEmpty => 'No studied words match this list yet.';
+
+  @override
+  String get listsStatMatched => 'Matched';
+
+  @override
+  String get listsStatDue => 'Due now';
+
+  @override
+  String get listsReviewThisDeck => 'Review this list';
+
+  @override
+  String get cardRemove => 'Remove';
+
+  @override
+  String get cardRemoveTitle => 'Remove from study?';
+
+  @override
+  String get cardRemoveBody =>
+      'This removes the word from the local list and the next sync. You can add it again any time.';
+
+  @override
   String get stageAnchor => 'Prototype';
 
   @override
@@ -405,6 +503,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsWorkspaceSection => 'Workspace';
+
+  @override
+  String get settingsWorkspaceLists => 'Lists';
+
+  @override
+  String get settingsWorkspaceListsBody =>
+      'Create smart lists to filter your reviews';
 
   @override
   String get settingsReset => 'Reset';

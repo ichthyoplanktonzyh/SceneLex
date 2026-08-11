@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../api/models.dart';
 import '../../data/providers.dart';
+import '../../data/sync/sync_providers.dart';
 import '../../l10n/gen/app_localizations.dart';
 
 /// Vocabulary surface: senses catalog with inline learning stats + local search.
@@ -16,16 +17,41 @@ class CardsPage extends ConsumerStatefulWidget {
 class _CardsPageState extends ConsumerState<CardsPage> {
   final _searchController = TextEditingController();
 
+  /// Rows dismissed this session (removed from the tree synchronously until
+  /// the library provider refreshes with the tombstoned state).
+  final _removedIds = <String>{};
+
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
   }
 
+  /// Tombstone the learning state (deletedAt set, still an upsert on the
+  /// wire), then trigger sync and refresh the library.
+  Future<void> _removeFromStudy(Sense sense) async {
+    final local = ref.read(localRepositoryProvider);
+    final ws = await ref.read(workspaceProvider.future);
+    await local.tombstoneLearningState(
+      workspaceId: ws,
+      wordSenseId: sense.wordSenseId,
+      nowIso: DateTime.now().toUtc().toIso8601String(),
+    );
+    ref.read(syncTriggerProvider)();
+    ref.invalidate(libraryProvider);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final library = ref.watch(libraryProvider);
+    // Once the refreshed library arrives (tombstone applied), dismissed rows
+    // become plain "not added" rows again and can reappear.
+    ref.listen(libraryProvider, (previous, next) {
+      if (next is AsyncData) {
+        _removedIds.clear();
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -69,11 +95,14 @@ class _CardsPageState extends ConsumerState<CardsPage> {
           if (senses.isEmpty) {
             return _EmptyState(message: l10n.cardsEmptySearch);
           }
+          final visible = senses
+              .where((s) => !_removedIds.contains(s.wordSenseId))
+              .toList();
           return ListView.separated(
-            itemCount: senses.length,
+            itemCount: visible.length,
             separatorBuilder: (_, _) => const Divider(height: 1),
             itemBuilder: (context, index) {
-              final sense = senses[index];
+              final sense = visible[index];
               final state = lib.states[sense.wordSenseId];
               return _SenseRow(
                 sense: sense,
@@ -82,7 +111,13 @@ class _CardsPageState extends ConsumerState<CardsPage> {
                   await addSenseToStudy(ref, sense.wordSenseId);
                   ref.invalidate(libraryProvider);
                 },
-              );            },
+                onRemove: state == null
+                    ? null
+                    : () => _removeFromStudy(sense),
+                onDismissed: () {
+                  setState(() => _removedIds.add(sense.wordSenseId));
+                },              );
+            },
           );
         },
       ),
@@ -111,11 +146,15 @@ class _SenseRow extends StatelessWidget {
     required this.sense,
     required this.state,
     required this.onStudy,
+    this.onRemove,
+    this.onDismissed,
   });
 
   final Sense sense;
   final LearningState? state;
   final VoidCallback onStudy;
+  final Future<void> Function()? onRemove;
+  final VoidCallback? onDismissed;
 
   @override
   Widget build(BuildContext context) {
@@ -123,8 +162,9 @@ class _SenseRow extends StatelessWidget {
     final theme = Theme.of(context);
     final st = state;
     final isNew = st == null || st.isNew;
+    final remove = onRemove;
 
-    return ListTile(
+    final tile = ListTile(
       title: Text(sense.lemma, style: theme.textTheme.titleMedium),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,6 +210,46 @@ class _SenseRow extends StatelessWidget {
           : Icon(Icons.check_circle, color: theme.colorScheme.primary),
       isThreeLine: true,
       onTap: state == null ? null : () => _showDetails(context, l10n),
+    );
+
+    // Swipe to remove from study (tombstone, synced as an upsert).
+    if (remove == null || onDismissed == null) return tile;
+    return Dismissible(
+      key: ValueKey('remove-${sense.wordSenseId}'),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        color: theme.colorScheme.errorContainer,
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 24),
+        child: Icon(Icons.delete_outline,
+            color: theme.colorScheme.onErrorContainer),
+      ),
+      child: tile,
+      confirmDismiss: (_) async {
+        final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(l10n.cardRemoveTitle),
+            content: Text(l10n.cardRemoveBody),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text(l10n.signOutCancel),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text(l10n.cardRemove),
+              ),
+            ],
+          ),
+        );
+        if (confirmed ?? false) {
+          // Tombstone first so the next sync carries the deletion.
+          await remove();
+        }
+        return confirmed ?? false;
+      },
+      onDismissed: (_) => onDismissed!(),
     );
   }
 

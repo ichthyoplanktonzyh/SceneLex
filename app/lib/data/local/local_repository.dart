@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../api/models.dart';
 import 'database.dart';
 
 const _uuidGen = Uuid();
@@ -387,6 +388,133 @@ class LocalRepository {
         action: 'upsert',
         clientUpdatedAt: nowIso,
         payload: {...settings, 'clientUpdatedAt': nowIso},
+      );
+    });
+  }
+
+  // ------------------------------------------------------------------
+  // Word lists (smart filters)
+  // ------------------------------------------------------------------
+
+  Future<List<LocalList>> allLists() {
+    return (db.select(db.localLists)..where((t) => t.deletedAt.isNull())).get();
+  }
+
+  /// Create/update a list locally (or tombstone it when [deletedAt] is set)
+  /// and queue an outbox upsert (entity + outbox in the same transaction).
+  Future<void> saveList({
+    required String workspaceId,
+    required WordList list,
+    DateTime? deletedAt,
+  }) async {
+    final nowIso = DateTime.now().toUtc().toIso8601String();
+    final operationId = _uuidGen.v4();
+    final replicaId = _uuidGen.v4();
+    final payload = list.toSyncPayload(
+      clientUpdatedAt: nowIso,
+      lastModifiedByReplicaId: replicaId,
+      lastOperationId: operationId,
+      deletedAt: deletedAt?.toUtc().toIso8601String(),
+    );
+
+    await db.transaction(() async {
+      await db.into(db.localLists).insertOnConflictUpdate(
+            LocalListsCompanion.insert(
+              listId: list.listId,
+              name: list.name,
+              filterDefinitionJson: jsonEncode(
+                {'version': 2, 'tags': list.tags},
+              ),
+              clientUpdatedAt: nowIso,
+              lastModifiedByReplicaId: replicaId,
+              lastOperationId: operationId,
+              deletedAt: Value(deletedAt?.toUtc()),
+            ),
+          );
+      await _enqueueOutbox(
+        workspaceId: workspaceId,
+        operationId: operationId,
+        entityType: 'list',
+        entityId: list.listId,
+        action: 'upsert',
+        clientUpdatedAt: nowIso,
+        payload: payload,
+      );
+    });
+  }
+
+  /// Locally apply a list snapshot (from bootstrap/pull).
+  Future<void> applyList({
+    required String listId,
+    required String payloadJson,
+  }) async {
+    final p = jsonDecode(payloadJson) as Map<String, dynamic>;
+    final filter = (p['filterDefinition'] as Map<String, dynamic>?) ??
+        const <String, dynamic>{};
+    await db.into(db.localLists).insertOnConflictUpdate(
+          LocalListsCompanion.insert(
+            listId: listId,
+            name: p['name']?.toString() ?? 'Untitled',
+            filterDefinitionJson: jsonEncode(filter),
+            clientUpdatedAt: p['clientUpdatedAt']?.toString() ?? '',
+            lastModifiedByReplicaId:
+                p['lastModifiedByReplicaId']?.toString() ?? _uuidGen.v4(),
+            lastOperationId: p['lastOperationId']?.toString() ?? _uuidGen.v4(),
+            deletedAt: Value(_dt(p['deletedAt'])),
+          ),
+        );
+  }
+
+  // ------------------------------------------------------------------
+  // Learning-state tombstone
+  // ------------------------------------------------------------------
+
+  /// Remove a word from study: tombstone the learning state (deletedAt set,
+  /// still a plain upsert on the wire — no dedicated delete operation).
+  Future<void> tombstoneLearningState({
+    required String workspaceId,
+    required String wordSenseId,
+    required String nowIso,
+  }) async {
+    final existing = await stateFor(wordSenseId);
+    if (existing == null) return;
+    final operationId = _uuidGen.v4();
+    final replicaId = _uuidGen.v4();
+
+    await db.transaction(() async {
+      await (db.update(db.localLearningStates)
+            ..where((t) => t.wordSenseId.equals(wordSenseId)))
+          .write(LocalLearningStatesCompanion(
+            clientUpdatedAt: Value(nowIso),
+            lastModifiedByReplicaId: Value(replicaId),
+            lastOperationId: Value(operationId),
+            deletedAt: Value(DateTime.parse(nowIso)),
+          ));
+      await _enqueueOutbox(
+        workspaceId: workspaceId,
+        operationId: operationId,
+        entityType: 'learning_state',
+        entityId: wordSenseId,
+        action: 'upsert',
+        clientUpdatedAt: nowIso,
+        payload: {
+          'learningStateId': existing.learningStateId,
+          'wordSenseId': wordSenseId,
+          'dueAt': existing.dueAt?.toUtc().toIso8601String(),
+          'reps': existing.reps,
+          'lapses': existing.lapses,
+          'fsrsStability': existing.fsrsStability,
+          'fsrsDifficulty': existing.fsrsDifficulty,
+          'fsrsLastReviewedAt':
+              existing.fsrsLastReviewedAt?.toUtc().toIso8601String(),
+          'fsrsScheduledDays': existing.fsrsScheduledDays,
+          'fsrsCardState': existing.fsrsCardState,
+          'fsrsStepIndex': existing.fsrsStepIndex,
+          'clientUpdatedAt': nowIso,
+          'lastModifiedByReplicaId': replicaId,
+          'lastOperationId': operationId,
+          'deletedAt': nowIso,
+        },
       );
     });
   }

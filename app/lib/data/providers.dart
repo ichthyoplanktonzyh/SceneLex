@@ -9,6 +9,7 @@ import '../api/models.dart';
 import 'local/database.dart';
 import 'sync/sync_providers.dart';
 import 'fsrs.dart';
+import 'tags.dart';
 
 const _uuidGen = Uuid();
 
@@ -30,13 +31,44 @@ final workspaceProvider = FutureProvider<String>((ref) async {
   return me['selectedWorkspaceId'] as String;
 });
 
-/// Offline-first library: senses + learning states from the local DB.
+/// Offline-first library: senses + learning states + lists from the local DB.
 /// Refresh = run sync first, then re-read.
 class Library {
-  const Library({required this.senses, required this.states});
+  const Library({
+    required this.senses,
+    required this.states,
+    required this.lists,
+    required this.tagCounts,
+  });
 
   final List<Sense> senses;
   final Map<String, LearningState> states;
+  final List<WordList> lists;
+  final Map<String, int> tagCounts;
+
+  /// Preset tags of a sense (empty when the sense is unknown).
+  Set<String> tagsOf(String wordSenseId) {
+    final sense = senses.where((s) => s.wordSenseId == wordSenseId).firstOrNull;
+    return sense == null ? const {} : presetTagsForSense(sense).toSet();
+  }
+
+  /// Whether a sense carries at least one of [tags] (match-any rule).
+  bool senseHasAnyTag(String wordSenseId, Iterable<String> tags) {
+    if (tags.isEmpty) return false;
+    return matchesAnyTag(tagsOf(wordSenseId), tags);
+  }
+
+  /// Number of studied senses matching any of [tags].
+  int countSensesWithTags(Iterable<String> tags) {
+    if (tags.isEmpty) return 0;
+    return senses
+        .where((s) => states.containsKey(s.wordSenseId))
+        .where((s) => matchesAnyTag(presetTagsForSense(s), tags))
+        .length;
+  }
+
+  /// Number of studied senses matching a list's rule.
+  int matchedCount(WordList list) => countSensesWithTags(list.tags);
 }
 
 final libraryProvider = FutureProvider<Library>((ref) async {
@@ -80,7 +112,31 @@ final libraryProvider = FutureProvider<Library>((ref) async {
     );
   }
 
-  return Library(senses: senses, states: states);
+  final listRows = await local.allLists();
+  final lists = [
+    for (final row in listRows)
+      WordList.fromJson({
+        'listId': row.listId,
+        'name': row.name,
+        'filterDefinition':
+            jsonDecode(row.filterDefinitionJson) as Map<String, dynamic>,
+      }),
+  ];
+
+  final tagCounts = <String, int>{};
+  for (final sense in senses) {
+    if (!states.containsKey(sense.wordSenseId)) continue;
+    for (final tag in presetTagsForSense(sense)) {
+      tagCounts[tag] = (tagCounts[tag] ?? 0) + 1;
+    }
+  }
+
+  return Library(
+    senses: senses,
+    states: states,
+    lists: lists,
+    tagCounts: tagCounts,
+  );
 });
 
 /// Add a word sense locally (outbox), then trigger sync.
@@ -195,3 +251,91 @@ ReviewRating _ratingOf(int rating) => switch (rating) {
       2 => ReviewRating.good,
       _ => ReviewRating.easy,
     };
+
+/// Selected bottom-tab index (lets the lists page jump to the Review tab).
+class SelectedTabController extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  void setTab(int index) => state = index;
+}
+
+final selectedTabProvider =
+    NotifierProvider<SelectedTabController, int>(SelectedTabController.new);
+
+/// Review queue filter: All Cards / a word list / a tag set (persisted).
+sealed class ReviewFilter {
+  const ReviewFilter();
+
+  const factory ReviewFilter.all() = ReviewFilterAll;
+  const factory ReviewFilter.list(String listId) = ReviewFilterList;
+  const factory ReviewFilter.tags(Set<String> tags) = ReviewFilterTags;
+
+  String get persistenceKey => jsonEncode(_toJson());
+
+  Map<String, dynamic> _toJson() => switch (this) {
+        ReviewFilterAll() => {'kind': 'all'},
+        ReviewFilterList(:final listId) => {'kind': 'list', 'listId': listId},
+        ReviewFilterTags(:final tags) => {'kind': 'tags', 'tags': tags.toList()},
+      };
+
+  static ReviewFilter fromPersistenceKey(String stored) {
+    try {
+      final json = jsonDecode(stored) as Map<String, dynamic>;
+      return switch (json['kind']) {
+        'list' => ReviewFilter.list(json['listId'] as String),
+        'tags' => ReviewFilter.tags(
+            ((json['tags'] as List<dynamic>?) ?? const [])
+                .map((t) => t.toString())
+                .toSet(),
+          ),
+        _ => const ReviewFilter.all(),
+      };
+    } catch (_) {
+      return const ReviewFilter.all();
+    }
+  }
+}
+
+class ReviewFilterAll extends ReviewFilter {
+  const ReviewFilterAll();
+}
+
+class ReviewFilterList extends ReviewFilter {
+  const ReviewFilterList(this.listId);
+  final String listId;
+}
+
+class ReviewFilterTags extends ReviewFilter {
+  const ReviewFilterTags(this.tags);
+  final Set<String> tags;
+}
+
+final reviewFilterProvider = NotifierProvider<ReviewFilterController, ReviewFilter>(
+    ReviewFilterController.new);
+
+class ReviewFilterController extends Notifier<ReviewFilter> {
+  static const _key = 'review_filter';
+
+  @override
+  ReviewFilter build() {
+    _restore();
+    return const ReviewFilter.all();
+  }
+
+  Future<void> _restore() async {
+    final prefs = await SharedPreferences.getInstance();
+    final stored = prefs.getString(_key);
+    if (stored == null) return;
+    final restored = ReviewFilter.fromPersistenceKey(stored);
+    if (restored is ReviewFilterAll || restored is ReviewFilterList || restored is ReviewFilterTags) {
+      state = restored;
+    }
+  }
+
+  Future<void> set(ReviewFilter filter) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_key, filter.persistenceKey);
+    state = filter;
+  }
+}

@@ -106,6 +106,20 @@ class LocalWorkspaceSettings extends Table {
   Set<Column> get primaryKey => {workspaceId};
 }
 
+/// Word lists (smart filters: name + tag rule, at least one tag).
+class LocalLists extends Table {
+  TextColumn get listId => text()();
+  TextColumn get name => text()();
+  TextColumn get filterDefinitionJson => text()();
+  TextColumn get clientUpdatedAt => text()();
+  TextColumn get lastModifiedByReplicaId => text()();
+  TextColumn get lastOperationId => text()();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {listId};
+}
+
 @DriftDatabase(
   tables: [
     LocalLearningStates,
@@ -115,6 +129,7 @@ class LocalWorkspaceSettings extends Table {
     LocalSenses,
     LocalPrograms,
     LocalWorkspaceSettings,
+    LocalLists,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -131,7 +146,7 @@ class AppDatabase extends _$AppDatabase {
             ));
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -141,6 +156,9 @@ class AppDatabase extends _$AppDatabase {
               localReviewEvents,
               localReviewEvents.reviewedLocalDate,
             );
+          }
+          if (from < 3) {
+            await migrator.createTable(localLists);
           }
         },
         beforeOpen: (details) async {

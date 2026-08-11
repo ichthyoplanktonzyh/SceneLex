@@ -3583,6 +3583,508 @@ class LocalWorkspaceSettingsCompanion
   }
 }
 
+class $LocalListsTable extends LocalLists
+    with TableInfo<$LocalListsTable, LocalList> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LocalListsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _listIdMeta = const VerificationMeta('listId');
+  @override
+  late final GeneratedColumn<String> listId = GeneratedColumn<String>(
+    'list_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _filterDefinitionJsonMeta =
+      const VerificationMeta('filterDefinitionJson');
+  @override
+  late final GeneratedColumn<String> filterDefinitionJson =
+      GeneratedColumn<String>(
+        'filter_definition_json',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _clientUpdatedAtMeta = const VerificationMeta(
+    'clientUpdatedAt',
+  );
+  @override
+  late final GeneratedColumn<String> clientUpdatedAt = GeneratedColumn<String>(
+    'client_updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastModifiedByReplicaIdMeta =
+      const VerificationMeta('lastModifiedByReplicaId');
+  @override
+  late final GeneratedColumn<String> lastModifiedByReplicaId =
+      GeneratedColumn<String>(
+        'last_modified_by_replica_id',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _lastOperationIdMeta = const VerificationMeta(
+    'lastOperationId',
+  );
+  @override
+  late final GeneratedColumn<String> lastOperationId = GeneratedColumn<String>(
+    'last_operation_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    listId,
+    name,
+    filterDefinitionJson,
+    clientUpdatedAt,
+    lastModifiedByReplicaId,
+    lastOperationId,
+    deletedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'local_lists';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LocalList> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('list_id')) {
+      context.handle(
+        _listIdMeta,
+        listId.isAcceptableOrUnknown(data['list_id']!, _listIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_listIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('filter_definition_json')) {
+      context.handle(
+        _filterDefinitionJsonMeta,
+        filterDefinitionJson.isAcceptableOrUnknown(
+          data['filter_definition_json']!,
+          _filterDefinitionJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_filterDefinitionJsonMeta);
+    }
+    if (data.containsKey('client_updated_at')) {
+      context.handle(
+        _clientUpdatedAtMeta,
+        clientUpdatedAt.isAcceptableOrUnknown(
+          data['client_updated_at']!,
+          _clientUpdatedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_clientUpdatedAtMeta);
+    }
+    if (data.containsKey('last_modified_by_replica_id')) {
+      context.handle(
+        _lastModifiedByReplicaIdMeta,
+        lastModifiedByReplicaId.isAcceptableOrUnknown(
+          data['last_modified_by_replica_id']!,
+          _lastModifiedByReplicaIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_lastModifiedByReplicaIdMeta);
+    }
+    if (data.containsKey('last_operation_id')) {
+      context.handle(
+        _lastOperationIdMeta,
+        lastOperationId.isAcceptableOrUnknown(
+          data['last_operation_id']!,
+          _lastOperationIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_lastOperationIdMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {listId};
+  @override
+  LocalList map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalList(
+      listId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}list_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      filterDefinitionJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}filter_definition_json'],
+      )!,
+      clientUpdatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}client_updated_at'],
+      )!,
+      lastModifiedByReplicaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_modified_by_replica_id'],
+      )!,
+      lastOperationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_operation_id'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+    );
+  }
+
+  @override
+  $LocalListsTable createAlias(String alias) {
+    return $LocalListsTable(attachedDatabase, alias);
+  }
+}
+
+class LocalList extends DataClass implements Insertable<LocalList> {
+  final String listId;
+  final String name;
+  final String filterDefinitionJson;
+  final String clientUpdatedAt;
+  final String lastModifiedByReplicaId;
+  final String lastOperationId;
+  final DateTime? deletedAt;
+  const LocalList({
+    required this.listId,
+    required this.name,
+    required this.filterDefinitionJson,
+    required this.clientUpdatedAt,
+    required this.lastModifiedByReplicaId,
+    required this.lastOperationId,
+    this.deletedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['list_id'] = Variable<String>(listId);
+    map['name'] = Variable<String>(name);
+    map['filter_definition_json'] = Variable<String>(filterDefinitionJson);
+    map['client_updated_at'] = Variable<String>(clientUpdatedAt);
+    map['last_modified_by_replica_id'] = Variable<String>(
+      lastModifiedByReplicaId,
+    );
+    map['last_operation_id'] = Variable<String>(lastOperationId);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    return map;
+  }
+
+  LocalListsCompanion toCompanion(bool nullToAbsent) {
+    return LocalListsCompanion(
+      listId: Value(listId),
+      name: Value(name),
+      filterDefinitionJson: Value(filterDefinitionJson),
+      clientUpdatedAt: Value(clientUpdatedAt),
+      lastModifiedByReplicaId: Value(lastModifiedByReplicaId),
+      lastOperationId: Value(lastOperationId),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+    );
+  }
+
+  factory LocalList.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LocalList(
+      listId: serializer.fromJson<String>(json['listId']),
+      name: serializer.fromJson<String>(json['name']),
+      filterDefinitionJson: serializer.fromJson<String>(
+        json['filterDefinitionJson'],
+      ),
+      clientUpdatedAt: serializer.fromJson<String>(json['clientUpdatedAt']),
+      lastModifiedByReplicaId: serializer.fromJson<String>(
+        json['lastModifiedByReplicaId'],
+      ),
+      lastOperationId: serializer.fromJson<String>(json['lastOperationId']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'listId': serializer.toJson<String>(listId),
+      'name': serializer.toJson<String>(name),
+      'filterDefinitionJson': serializer.toJson<String>(filterDefinitionJson),
+      'clientUpdatedAt': serializer.toJson<String>(clientUpdatedAt),
+      'lastModifiedByReplicaId': serializer.toJson<String>(
+        lastModifiedByReplicaId,
+      ),
+      'lastOperationId': serializer.toJson<String>(lastOperationId),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+    };
+  }
+
+  LocalList copyWith({
+    String? listId,
+    String? name,
+    String? filterDefinitionJson,
+    String? clientUpdatedAt,
+    String? lastModifiedByReplicaId,
+    String? lastOperationId,
+    Value<DateTime?> deletedAt = const Value.absent(),
+  }) => LocalList(
+    listId: listId ?? this.listId,
+    name: name ?? this.name,
+    filterDefinitionJson: filterDefinitionJson ?? this.filterDefinitionJson,
+    clientUpdatedAt: clientUpdatedAt ?? this.clientUpdatedAt,
+    lastModifiedByReplicaId:
+        lastModifiedByReplicaId ?? this.lastModifiedByReplicaId,
+    lastOperationId: lastOperationId ?? this.lastOperationId,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+  );
+  LocalList copyWithCompanion(LocalListsCompanion data) {
+    return LocalList(
+      listId: data.listId.present ? data.listId.value : this.listId,
+      name: data.name.present ? data.name.value : this.name,
+      filterDefinitionJson: data.filterDefinitionJson.present
+          ? data.filterDefinitionJson.value
+          : this.filterDefinitionJson,
+      clientUpdatedAt: data.clientUpdatedAt.present
+          ? data.clientUpdatedAt.value
+          : this.clientUpdatedAt,
+      lastModifiedByReplicaId: data.lastModifiedByReplicaId.present
+          ? data.lastModifiedByReplicaId.value
+          : this.lastModifiedByReplicaId,
+      lastOperationId: data.lastOperationId.present
+          ? data.lastOperationId.value
+          : this.lastOperationId,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalList(')
+          ..write('listId: $listId, ')
+          ..write('name: $name, ')
+          ..write('filterDefinitionJson: $filterDefinitionJson, ')
+          ..write('clientUpdatedAt: $clientUpdatedAt, ')
+          ..write('lastModifiedByReplicaId: $lastModifiedByReplicaId, ')
+          ..write('lastOperationId: $lastOperationId, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    listId,
+    name,
+    filterDefinitionJson,
+    clientUpdatedAt,
+    lastModifiedByReplicaId,
+    lastOperationId,
+    deletedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LocalList &&
+          other.listId == this.listId &&
+          other.name == this.name &&
+          other.filterDefinitionJson == this.filterDefinitionJson &&
+          other.clientUpdatedAt == this.clientUpdatedAt &&
+          other.lastModifiedByReplicaId == this.lastModifiedByReplicaId &&
+          other.lastOperationId == this.lastOperationId &&
+          other.deletedAt == this.deletedAt);
+}
+
+class LocalListsCompanion extends UpdateCompanion<LocalList> {
+  final Value<String> listId;
+  final Value<String> name;
+  final Value<String> filterDefinitionJson;
+  final Value<String> clientUpdatedAt;
+  final Value<String> lastModifiedByReplicaId;
+  final Value<String> lastOperationId;
+  final Value<DateTime?> deletedAt;
+  final Value<int> rowid;
+  const LocalListsCompanion({
+    this.listId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.filterDefinitionJson = const Value.absent(),
+    this.clientUpdatedAt = const Value.absent(),
+    this.lastModifiedByReplicaId = const Value.absent(),
+    this.lastOperationId = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LocalListsCompanion.insert({
+    required String listId,
+    required String name,
+    required String filterDefinitionJson,
+    required String clientUpdatedAt,
+    required String lastModifiedByReplicaId,
+    required String lastOperationId,
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : listId = Value(listId),
+       name = Value(name),
+       filterDefinitionJson = Value(filterDefinitionJson),
+       clientUpdatedAt = Value(clientUpdatedAt),
+       lastModifiedByReplicaId = Value(lastModifiedByReplicaId),
+       lastOperationId = Value(lastOperationId);
+  static Insertable<LocalList> custom({
+    Expression<String>? listId,
+    Expression<String>? name,
+    Expression<String>? filterDefinitionJson,
+    Expression<String>? clientUpdatedAt,
+    Expression<String>? lastModifiedByReplicaId,
+    Expression<String>? lastOperationId,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (listId != null) 'list_id': listId,
+      if (name != null) 'name': name,
+      if (filterDefinitionJson != null)
+        'filter_definition_json': filterDefinitionJson,
+      if (clientUpdatedAt != null) 'client_updated_at': clientUpdatedAt,
+      if (lastModifiedByReplicaId != null)
+        'last_modified_by_replica_id': lastModifiedByReplicaId,
+      if (lastOperationId != null) 'last_operation_id': lastOperationId,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LocalListsCompanion copyWith({
+    Value<String>? listId,
+    Value<String>? name,
+    Value<String>? filterDefinitionJson,
+    Value<String>? clientUpdatedAt,
+    Value<String>? lastModifiedByReplicaId,
+    Value<String>? lastOperationId,
+    Value<DateTime?>? deletedAt,
+    Value<int>? rowid,
+  }) {
+    return LocalListsCompanion(
+      listId: listId ?? this.listId,
+      name: name ?? this.name,
+      filterDefinitionJson: filterDefinitionJson ?? this.filterDefinitionJson,
+      clientUpdatedAt: clientUpdatedAt ?? this.clientUpdatedAt,
+      lastModifiedByReplicaId:
+          lastModifiedByReplicaId ?? this.lastModifiedByReplicaId,
+      lastOperationId: lastOperationId ?? this.lastOperationId,
+      deletedAt: deletedAt ?? this.deletedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (listId.present) {
+      map['list_id'] = Variable<String>(listId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (filterDefinitionJson.present) {
+      map['filter_definition_json'] = Variable<String>(
+        filterDefinitionJson.value,
+      );
+    }
+    if (clientUpdatedAt.present) {
+      map['client_updated_at'] = Variable<String>(clientUpdatedAt.value);
+    }
+    if (lastModifiedByReplicaId.present) {
+      map['last_modified_by_replica_id'] = Variable<String>(
+        lastModifiedByReplicaId.value,
+      );
+    }
+    if (lastOperationId.present) {
+      map['last_operation_id'] = Variable<String>(lastOperationId.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalListsCompanion(')
+          ..write('listId: $listId, ')
+          ..write('name: $name, ')
+          ..write('filterDefinitionJson: $filterDefinitionJson, ')
+          ..write('clientUpdatedAt: $clientUpdatedAt, ')
+          ..write('lastModifiedByReplicaId: $lastModifiedByReplicaId, ')
+          ..write('lastOperationId: $lastOperationId, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3596,6 +4098,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $LocalProgramsTable localPrograms = $LocalProgramsTable(this);
   late final $LocalWorkspaceSettingsTable localWorkspaceSettings =
       $LocalWorkspaceSettingsTable(this);
+  late final $LocalListsTable localLists = $LocalListsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3608,6 +4111,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     localSenses,
     localPrograms,
     localWorkspaceSettings,
+    localLists,
   ];
 }
 
@@ -5435,6 +5939,249 @@ typedef $$LocalWorkspaceSettingsTableProcessedTableManager =
       LocalWorkspaceSetting,
       PrefetchHooks Function()
     >;
+typedef $$LocalListsTableCreateCompanionBuilder =
+    LocalListsCompanion Function({
+      required String listId,
+      required String name,
+      required String filterDefinitionJson,
+      required String clientUpdatedAt,
+      required String lastModifiedByReplicaId,
+      required String lastOperationId,
+      Value<DateTime?> deletedAt,
+      Value<int> rowid,
+    });
+typedef $$LocalListsTableUpdateCompanionBuilder =
+    LocalListsCompanion Function({
+      Value<String> listId,
+      Value<String> name,
+      Value<String> filterDefinitionJson,
+      Value<String> clientUpdatedAt,
+      Value<String> lastModifiedByReplicaId,
+      Value<String> lastOperationId,
+      Value<DateTime?> deletedAt,
+      Value<int> rowid,
+    });
+
+class $$LocalListsTableFilterComposer
+    extends Composer<_$AppDatabase, $LocalListsTable> {
+  $$LocalListsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get listId => $composableBuilder(
+    column: $table.listId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get filterDefinitionJson => $composableBuilder(
+    column: $table.filterDefinitionJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clientUpdatedAt => $composableBuilder(
+    column: $table.clientUpdatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastModifiedByReplicaId => $composableBuilder(
+    column: $table.lastModifiedByReplicaId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastOperationId => $composableBuilder(
+    column: $table.lastOperationId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LocalListsTableOrderingComposer
+    extends Composer<_$AppDatabase, $LocalListsTable> {
+  $$LocalListsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get listId => $composableBuilder(
+    column: $table.listId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get filterDefinitionJson => $composableBuilder(
+    column: $table.filterDefinitionJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clientUpdatedAt => $composableBuilder(
+    column: $table.clientUpdatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastModifiedByReplicaId => $composableBuilder(
+    column: $table.lastModifiedByReplicaId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastOperationId => $composableBuilder(
+    column: $table.lastOperationId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LocalListsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LocalListsTable> {
+  $$LocalListsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get listId =>
+      $composableBuilder(column: $table.listId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get filterDefinitionJson => $composableBuilder(
+    column: $table.filterDefinitionJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get clientUpdatedAt => $composableBuilder(
+    column: $table.clientUpdatedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lastModifiedByReplicaId => $composableBuilder(
+    column: $table.lastModifiedByReplicaId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lastOperationId => $composableBuilder(
+    column: $table.lastOperationId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+}
+
+class $$LocalListsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LocalListsTable,
+          LocalList,
+          $$LocalListsTableFilterComposer,
+          $$LocalListsTableOrderingComposer,
+          $$LocalListsTableAnnotationComposer,
+          $$LocalListsTableCreateCompanionBuilder,
+          $$LocalListsTableUpdateCompanionBuilder,
+          (
+            LocalList,
+            BaseReferences<_$AppDatabase, $LocalListsTable, LocalList>,
+          ),
+          LocalList,
+          PrefetchHooks Function()
+        > {
+  $$LocalListsTableTableManager(_$AppDatabase db, $LocalListsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LocalListsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LocalListsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LocalListsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> listId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> filterDefinitionJson = const Value.absent(),
+                Value<String> clientUpdatedAt = const Value.absent(),
+                Value<String> lastModifiedByReplicaId = const Value.absent(),
+                Value<String> lastOperationId = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LocalListsCompanion(
+                listId: listId,
+                name: name,
+                filterDefinitionJson: filterDefinitionJson,
+                clientUpdatedAt: clientUpdatedAt,
+                lastModifiedByReplicaId: lastModifiedByReplicaId,
+                lastOperationId: lastOperationId,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String listId,
+                required String name,
+                required String filterDefinitionJson,
+                required String clientUpdatedAt,
+                required String lastModifiedByReplicaId,
+                required String lastOperationId,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LocalListsCompanion.insert(
+                listId: listId,
+                name: name,
+                filterDefinitionJson: filterDefinitionJson,
+                clientUpdatedAt: clientUpdatedAt,
+                lastModifiedByReplicaId: lastModifiedByReplicaId,
+                lastOperationId: lastOperationId,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LocalListsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LocalListsTable,
+      LocalList,
+      $$LocalListsTableFilterComposer,
+      $$LocalListsTableOrderingComposer,
+      $$LocalListsTableAnnotationComposer,
+      $$LocalListsTableCreateCompanionBuilder,
+      $$LocalListsTableUpdateCompanionBuilder,
+      (LocalList, BaseReferences<_$AppDatabase, $LocalListsTable, LocalList>),
+      LocalList,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -5456,4 +6203,6 @@ class $AppDatabaseManager {
         _db,
         _db.localWorkspaceSettings,
       );
+  $$LocalListsTableTableManager get localLists =>
+      $$LocalListsTableTableManager(_db, _db.localLists);
 }
