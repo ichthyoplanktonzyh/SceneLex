@@ -37,6 +37,25 @@ void main() {
       expect(compareLww(a, meta('2026-01-02T00:00:00Z', 'r', 'o')), 0);
     });
 
+    test('fractional-digit prefix pair compares by instant, not lexically', () {
+      // "…789Z" (0/3-digit server form) is EARLIER than "…789012Z" (6-digit),
+      // even though 'Z' (0x5A) > '0' (0x30) makes the raw string bigger.
+      final shorter = meta('2026-01-02T00:00:00.789Z', 'r', 'o');
+      final longer = meta('2026-01-02T00:00:00.789012Z', 'r', 'o');
+      expect(compareLww(shorter, longer), -1);
+      expect(compareLww(longer, shorter), 1);
+    });
+
+    test('same instant with different serialization compares equal', () {
+      final withZero = meta('2026-01-02T00:00:00Z', 'r', 'o');
+      final withMillis = meta('2026-01-02T00:00:00.000Z', 'r', 'o');
+      expect(compareLww(withZero, withMillis), 0);
+      // Falls through to the replica/operation tie-breakers.
+      final withZeroBigger =
+          meta('2026-01-02T00:00:00Z', 'rr', 'o');
+      expect(compareLww(withMillis, withZeroBigger), -1);
+    });
+
     test('missing remote fields sort as minimum (never wins)', () {
       final local = meta('2026-01-02T00:00:00Z', 'r', 'o');
       final missingRemote = LwwMetadata(
@@ -46,6 +65,13 @@ void main() {
       );
       expect(compareLww(local, missingRemote), 1);
       expect(compareLww(missingRemote, local), -1);
+    });
+
+    test('unparseable timestamp sorts as minimum (never wins)', () {
+      final local = meta('2026-01-02T00:00:00Z', 'r', 'o');
+      final garbage = meta('not-a-timestamp', 'r', 'o');
+      expect(compareLww(local, garbage), 1);
+      expect(compareLww(garbage, local), -1);
     });
   });
 }

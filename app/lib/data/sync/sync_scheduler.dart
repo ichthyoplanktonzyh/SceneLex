@@ -32,13 +32,19 @@ class _SyncSchedulerState extends ConsumerState<SyncScheduler> {
   bool _retrying = false;
   int _retryCount = 0;
   AppLifecycleListener? _lifecycleListener;
-  bool _foreground = true;
+  ProviderSubscription<SyncStateInfo>? _statusSubscription;
+  // lifecycleState can be null before the first lifecycle message arrives;
+  // the app is by definition in the foreground at that point, so null means
+  // foreground (otherwise the 60s poll and the backoff retry would never run).
+  bool _foreground =
+      WidgetsBinding.instance.lifecycleState != AppLifecycleState.paused &&
+      WidgetsBinding.instance.lifecycleState != AppLifecycleState.hidden &&
+      WidgetsBinding.instance.lifecycleState != AppLifecycleState.detached &&
+      WidgetsBinding.instance.lifecycleState != AppLifecycleState.inactive;
 
   @override
   void initState() {
     super.initState();
-    _foreground = WidgetsBinding.instance.lifecycleState ==
-        AppLifecycleState.resumed;
     _lifecycleListener = AppLifecycleListener(
       onResume: () {
         _foreground = true;
@@ -56,8 +62,10 @@ class _SyncSchedulerState extends ConsumerState<SyncScheduler> {
 
     // Backoff retry: any sync cycle ending in the offline state schedules
     // the next attempt (exponential, capped at 5 minutes); success cancels
-    // it and resets the backoff window.
-    ref.listen(syncStatusProvider, (previous, next) {
+    // it and resets the backoff window. ref.listen is not allowed in
+    // initState, so use listenManual and close the subscription on dispose.
+    _statusSubscription = ref.listenManual<SyncStateInfo>(syncStatusProvider,
+        (previous, next) {
       switch (next.status) {
         case SyncStateStatus.synced:
           _retrying = false;
@@ -90,6 +98,8 @@ class _SyncSchedulerState extends ConsumerState<SyncScheduler> {
   }
 
   void _triggerSync() {
+    // Backed-off retries are intentionally dropped while in the background
+    // (no re-arming): coming back to the foreground re-triggers via onResume.
     if (!_foreground) return;
     ref.read(syncTriggerProvider)();
   }
@@ -98,6 +108,7 @@ class _SyncSchedulerState extends ConsumerState<SyncScheduler> {
   void dispose() {
     _periodicTimer?.cancel();
     _retryTimer?.cancel();
+    _statusSubscription?.close();
     _lifecycleListener?.dispose();
     super.dispose();
   }
