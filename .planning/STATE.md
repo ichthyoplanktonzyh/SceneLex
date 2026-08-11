@@ -204,3 +204,21 @@ Phase 4 完成（离线优先）：
 - 待 P6：Web 打磨（键盘快捷键）、桌面端构建检查、上云部署（Fly.io/VPS 自选，
   不用 CDK）、移动端打包（图标/签名/商店元数据）。
 - 剩余用户决策：上云选型（P6 期间问）。
+
+## 会话收尾（2026-08-11，P6 一期结束后）
+
+- 用户决策：**上云先不做**（先把本地跑通）；移动端打包后置。
+- P6 一期交付（git：ea0ff66 → 新提交）：
+  - **Web/桌面键盘快捷键**：空格 = 下一 stage / 进入评分；1/2/3/4 = 评分
+    （仅评分界面）；切 tab / 输入框聚焦 / 弹窗打开时自动禁用（Focus 焦点机制：
+    AppShell 切 tab 时 unfocus + ReviewPage active 标记驱动重新聚焦，
+    Focus.onKeyEvent 只在焦点祖先链上触发，天然满足禁用条件）。
+  - **桌面端构建检查**：macOS 本地 `flutter build macos --debug` 成功；
+    Windows/Linux 平台插件配置已验证生成（通知插件无 Linux 实现 → 设置页已有
+    降级说明），需在对应平台做最终构建。
+  - **本地全栈跑通**：新增 `scripts/local-dev.sh`（Postgres + server + 内容导入
+    + web，`--no-web` 模式仅起后端），已实测跑通。
+  - 手动验证指引补充 P6 章节（快捷键/桌面端）。
+- 验证：web 构建 + 运行无错误；`flutter analyze` 0 问题；`flutter test` 25 全过。
+- 待 P6 二期（用户拍板时机未定）：上云部署（Fly.io/VPS 选型 + 域名/TLS/托管
+  Postgres）、Windows/Linux 构建验证、移动端打包（图标/签名/商店元数据）。

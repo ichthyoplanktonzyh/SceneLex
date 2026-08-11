@@ -17,21 +17,26 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0;
 
-  static const _pages = [
-    ReviewPage(),
-    ProgressPage(),
-    CardsPage(),
-    SettingsPage(),
-  ];
+  static const _tabCount = 4;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      body: IndexedStack(index: _selectedIndex, children: _pages),
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: [
+          // Active flag lets the Review page grab keyboard focus when the
+          // tab becomes visible (web/desktop shortcuts).
+          for (var i = 0; i < _tabCount; i++) _buildPage(i),
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
-        onDestinationSelected: (index) => setState(() => _selectedIndex = index),
+        onDestinationSelected: (index) {
+          setState(() => _selectedIndex = index);
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
         destinations: [
           NavigationDestination(
             icon: const Icon(Icons.style_outlined),
@@ -56,5 +61,14 @@ class _AppShellState extends State<AppShell> {
         ],
       ),
     );
+  }
+
+  Widget _buildPage(int index) {
+    return switch (index) {
+      0 => ReviewPage(active: _selectedIndex == index),
+      1 => const ProgressPage(),
+      2 => const CardsPage(),
+      _ => const SettingsPage(),
+    };
   }
 }

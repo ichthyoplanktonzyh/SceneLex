@@ -8,7 +8,11 @@ import 'experience_player.dart';
 
 /// Today queue: due/new learning states, played through the Experience Player.
 class ReviewPage extends ConsumerStatefulWidget {
-  const ReviewPage({super.key});
+  const ReviewPage({super.key, this.active = true});
+
+  /// Whether this tab is currently visible (drives keyboard focus on
+  /// web/desktop when returning to the tab).
+  final bool active;
 
   @override
   ConsumerState<ReviewPage> createState() => _ReviewPageState();
@@ -33,6 +37,7 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
           final sense = queue.first;
           return ExperiencePlayer(
             key: ValueKey('${sense.wordSenseId}-${lib.states[sense.wordSenseId]?.reps}'),
+            active: widget.active,
             sense: sense,
             state: lib.states[sense.wordSenseId] ?? const LearningState(
               wordSenseId: '',

@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../api/api_client.dart';
@@ -11,11 +15,14 @@ import '../../l10n/gen/app_localizations.dart';
 class ExperiencePlayer extends ConsumerStatefulWidget {
   const ExperiencePlayer({
     super.key,
+    this.active = true,
     required this.sense,
     required this.state,
     required this.onCompleted,
   });
 
+  /// Whether the hosting tab is visible (web/desktop keyboard shortcuts).
+  final bool active;
   final Sense sense;
   final LearningState state;
   final VoidCallback onCompleted;
@@ -25,6 +32,7 @@ class ExperiencePlayer extends ConsumerStatefulWidget {
 }
 
 class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
+  final _focusNode = FocusNode(debugLabel: 'experience-player');
   late final Future<ExperienceProgram> _programFuture;
   int _unitIndex = 0;
   bool _ratingMode = false;
@@ -35,6 +43,73 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
   void initState() {
     super.initState();
     _programFuture = _loadProgram();
+  }
+
+  @override
+  void didUpdateWidget(covariant ExperiencePlayer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.active && !oldWidget.active) {
+      _focusNode.requestFocus();
+    }
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  /// Space advances (next unit / enter rating); 1-4 rate (rating view only).
+  /// Only on web/desktop; the focus node stays primary only while this page
+  /// is active and no text field or dialog holds the focus.
+  KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
+    if (!widget.active) return KeyEventResult.ignored;
+    if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+      return KeyEventResult.ignored;
+    }
+    if (!(kIsWeb || Platform.isMacOS || Platform.isWindows || Platform.isLinux)) {
+      return KeyEventResult.ignored;
+    }
+
+    final key = event.logicalKey;
+    if (key == LogicalKeyboardKey.space) {
+      if (!_ratingMode && !_submitting && _program != null &&
+          _program!.units.isNotEmpty) {
+        _advance();
+      }
+      return KeyEventResult.handled;
+    }
+    final int? rating;
+    if (key == LogicalKeyboardKey.digit1) {
+      rating = 0;
+    } else if (key == LogicalKeyboardKey.digit2) {
+      rating = 1;
+    } else if (key == LogicalKeyboardKey.digit3) {
+      rating = 2;
+    } else if (key == LogicalKeyboardKey.digit4) {
+      rating = 3;
+    } else {
+      rating = null;
+    }
+    if (rating != null) {
+      if (_ratingMode && !_submitting) {
+        _submitRating(rating);
+      }
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
+
+  void _advance() {
+    final program = _program;
+    if (program == null) return;
+    setState(() {
+      if (_unitIndex < program.units.length - 1) {
+        _unitIndex++;
+      } else {
+        _ratingMode = true;
+      }
+    });
   }
 
   Future<ExperienceProgram> _loadProgram() async {
@@ -83,7 +158,11 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return FutureBuilder<ExperienceProgram>(
+    return Focus(
+      focusNode: _focusNode,
+      autofocus: widget.active,
+      onKeyEvent: _onKeyEvent,
+      child: FutureBuilder<ExperienceProgram>(
       future: _programFuture,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -109,17 +188,10 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
                 unit: program.units[_unitIndex],
                 isFirst: _unitIndex == 0,
                 isLast: _unitIndex == program.units.length - 1,
-                onNext: () {
-                  setState(() {
-                    if (_unitIndex < program.units.length - 1) {
-                      _unitIndex++;
-                    } else {
-                      _ratingMode = true;
-                    }
-                  });
-                },
+                onNext: _advance,
               );
       },
+      ),
     );
   }
 }

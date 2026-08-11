@@ -72,6 +72,21 @@ cd app && flutter run -d chrome --web-port 8090   # web
 - 断网评分仍可用(P4 回归)。
 - `flutter test`:FSRS 黄金向量 15/15 + streak/freeze parity 9 例全过。
 
+### 7. Web 键盘快捷键(P6)
+- 在 Review 页(Experience Player 播放中),不点按钮,直接用键盘:
+  - **空格**:进入下一 stage;最后一个 stage 后进入评分。
+  - **1 / 2 / 3 / 4**:评分(Again / Hard / Good / Easy),仅评分界面可见时。
+- 禁用场景:
+  - 切到其他 tab(词表/进度/设置)后按 1-4/空格:无效果。
+  - 输入框聚焦时(如词表搜索框):1-4/空格正常输入文本。
+  - 弹窗打开时(如退出登录确认、时间选择器):无效果。
+- 切回 Review tab:快捷键立即恢复生效。
+
+### 8. 桌面端(macOS)
+- `cd app && flutter build macos --debug` 应成功产出 `scenelex.app`。
+- `flutter run -d macos`:登录/学习/进度/设置全流程可用;键盘快捷键同 web。
+- Windows/Linux:需在对应平台构建验证(通知在 Linux 不可用,设置页显示降级说明)。
+
 ## 验收清单
 
 - [ ] Streak:连续天数、冻结额度(初始 2、消费 1 后 1)、周历火焰/雪花/今天描边
