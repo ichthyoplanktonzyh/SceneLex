@@ -32,13 +32,14 @@ pub fn incoming_lww_wins(incoming: &LwwMetadata, current: Option<&LwwMetadata>) 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use chrono::TimeZone;
 
     fn meta(at: &str, replica: u128, op: u128) -> LwwMetadata {
         LwwMetadata {
-            client_updated_at: Utc
-                .datetime_from_str(at, "%Y-%m-%dT%H:%M:%SZ")
-                .unwrap(),
+            client_updated_at: chrono::NaiveDateTime::parse_from_str(
+                at, "%Y-%m-%dT%H:%M:%SZ",
+            )
+            .map(|naive| naive.and_utc())
+            .unwrap(),
             last_modified_by_replica_id: Uuid::from_u128(replica),
             last_operation_id: Uuid::from_u128(op),
         }

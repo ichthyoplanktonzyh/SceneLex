@@ -7,13 +7,32 @@ EMAIL="sync-$(date +%s)@scenelex.app"
 echo "== auth =="
 curl -s -X POST $BASE/auth/send-code -H 'Content-Type: application/json' -d "{\"email\":\"$EMAIL\"}" -o /dev/null
 CODE=$(grep -o "code=[0-9]\{8\}" /tmp/scenelex-server.log | tail -1 | cut -d= -f2)
-TOKEN=$(curl -s -X POST $BASE/auth/verify-code -H 'Content-Type: application/json' -d "{\"email\":\"$EMAIL\",\"code\":\"$CODE\"}" | python3 -c "import json,sys; print(json.load(sys.stdin)['token'])")
-WS=$(curl -s $BASE/me -H "Authorization: Bearer $TOKEN" | python3 -c "import json,sys; print(json.load(sys.stdin)['selectedWorkspaceId'])")
-INST=$(python3 -c "import uuid; print(uuid.uuid4())")
-echo "workspace: $WS"
+VERIFY=$(curl -s -X POST $BASE/auth/verify-code -H 'Content-Type: application/json' -d "{\"email\":\"$EMAIL\",\"code\":\"$CODE\"}")
+TOKEN=$(echo "$VERIFY" | python3 -c "import json,sys; print(json.load(sys.stdin)['idToken'])")
+REFRESH=$(echo "$VERIFY" | python3 -c "import json,sys; print(json.load(sys.stdin)['refreshToken'])")
+echo "idToken+refreshToken issued (expiresIn: $(echo "$VERIFY" | python3 -c "import json,sys; print(json.load(sys.stdin)['expiresIn'])"))"
 
 AUTH="Authorization: Bearer $TOKEN"
 CT="Content-Type: application/json"
+
+echo "== 0. session renewal: refresh-token / revoke-token =="
+WS=$(curl -s $BASE/me -H "$AUTH" | python3 -c "import json,sys; print(json.load(sys.stdin)['selectedWorkspaceId'])")
+echo "workspace: $WS"
+ID2=$(curl -s -X POST $BASE/auth/refresh-token -H "$CT" -d "{\"refreshToken\":\"$REFRESH\"}" | python3 -c "import json,sys; print(json.load(sys.stdin)['idToken'])")
+echo "refresh-token -> new idToken (expiresIn: $(curl -s -X POST $BASE/auth/refresh-token -H "$CT" -d "{\"refreshToken\":\"$REFRESH\"}" | python3 -c "import json,sys; print(json.load(sys.stdin)['expiresIn'])"))"
+curl -s $BASE/me -H "Authorization: Bearer $ID2" | python3 -c "import json,sys; d=json.load(sys.stdin); print('new idToken works, workspace:', d['selectedWorkspaceId'])"
+curl -s -X POST $BASE/auth/revoke-token -H "$CT" -d "{\"refreshToken\":\"$REFRESH\"}" | python3 -m json.tool
+echo -n "refresh with revoked token -> HTTP "
+curl -s -o /tmp/revoked_refresh.json -w "%{http_code}\n" -X POST $BASE/auth/refresh-token -H "$CT" -d "{\"refreshToken\":\"$REFRESH\"}"
+cat /tmp/revoked_refresh.json
+echo
+echo -n "revoke again (idempotent) -> HTTP "
+curl -s -o /dev/null -w "%{http_code}\n" -X POST $BASE/auth/revoke-token -H "$CT" -d "{\"refreshToken\":\"$REFRESH\"}"
+echo -n "refresh with missing token -> HTTP "
+curl -s -o /tmp/missing_refresh.json -w "%{http_code}\n" -X POST $BASE/auth/refresh-token -H "$CT" -d "{}"
+cat /tmp/missing_refresh.json
+
+INST=$(python3 -c "import uuid; print(uuid.uuid4())")
 
 echo "== 1. bootstrap (empty remote) =="
 curl -s -X POST $BASE/workspaces/$WS/sync/bootstrap -H "$AUTH" -H "$CT" -d "{\"mode\":\"pull\",\"installationId\":\"$INST\",\"platform\":\"web\"}" | python3 -m json.tool

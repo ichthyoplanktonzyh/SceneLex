@@ -497,6 +497,9 @@ fn get_memory_state(state: &ScheduleState) -> Option<MemoryState> {
     })
 }
 
+// Kept as a flat function mirroring the reference algorithm's shape; the
+// argument list is intentionally unchanged for structural parity.
+#[allow(clippy::too_many_arguments)]
 fn build_short_term_schedule(
     state: &ScheduleState,
     next_memory: MemoryState,

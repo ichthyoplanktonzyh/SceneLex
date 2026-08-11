@@ -77,6 +77,9 @@ impl Alea {
         Self { c: 1, s0, s1, s2 }
     }
 
+    // `next` mirrors the reference alea implementation's method name;
+    // kept as-is for structural parity with the reference, not Iterator.
+    #[allow(clippy::should_implement_trait)]
     pub fn next(&mut self) -> f64 {
         let t = 2_091_639.0 * self.s0 + self.c as f64 * SCALE;
         self.s0 = self.s1;

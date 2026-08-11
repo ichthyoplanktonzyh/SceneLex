@@ -202,8 +202,7 @@ pub async fn upsert_list(
         if ws != workspace_id {
             return Err(sqlx::Error::Protocol(format!(
                 "list {entity_id} belongs to workspace {ws}, not {workspace_id}"
-            )
-            .into()));
+            )));
         }
     }
 
@@ -396,9 +395,24 @@ pub async fn append_review_event(
 // Snapshots (pull/bootstrap materialization)
 // ---------------------------------------------------------------
 
-fn learning_state_payload(
-    row: (Uuid, Option<DateTime<Utc>>, i32, i32, Option<f64>, Option<f64>, Option<DateTime<Utc>>, Option<i32>, String, Option<i32>, DateTime<Utc>, Uuid, Uuid, Option<DateTime<Utc>>),
-) -> Value {
+type LearningStateRow = (
+    Uuid,
+    Option<DateTime<Utc>>,
+    i32,
+    i32,
+    Option<f64>,
+    Option<f64>,
+    Option<DateTime<Utc>>,
+    Option<i32>,
+    String,
+    Option<i32>,
+    DateTime<Utc>,
+    Uuid,
+    Uuid,
+    Option<DateTime<Utc>>,
+);
+
+fn learning_state_payload(row: LearningStateRow) -> Value {
     let (id, due_at, reps, lapses, stability, difficulty, last_reviewed, scheduled_days, card_state, step_index, client_updated_at, replica, op, deleted_at) = row;
     json!({
         "learningStateId": id,

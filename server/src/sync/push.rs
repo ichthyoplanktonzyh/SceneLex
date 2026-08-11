@@ -190,7 +190,7 @@ async fn apply_operation(
             let (applied, _seq) = entities::append_review_event(tx, workspace_id, &op.payload, replica_id).await?;
             Ok((applied, None))
         }
-        other => Err(sqlx::Error::Protocol(format!("unknown entity type {other}").into())),
+        other => Err(sqlx::Error::Protocol(format!("unknown entity type {other}"))),
     }
 }
 

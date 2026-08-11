@@ -16,7 +16,10 @@ const VECTORS: &str = include_str!("fixtures/fsrs-full-vectors.json");
 #[derive(Debug, Deserialize)]
 struct Vector {
     name: String,
+    // Field comes from the golden-vector JSON (cardId); kept for structural
+    // parity with the reference vectors even though tests do not read it.
     #[serde(rename = "cardId")]
+    #[allow(dead_code)]
     card_id: String,
     settings: VectorSettings,
     reviews: Vec<VectorReview>,
