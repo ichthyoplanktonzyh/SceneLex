@@ -17,6 +17,9 @@ class CardsPage extends ConsumerStatefulWidget {
 class _CardsPageState extends ConsumerState<CardsPage> {
   final _searchController = TextEditingController();
 
+  /// Tags selected via the filter sheet (match-any over the senses).
+  final Set<String> _selectedTags = {};
+
   /// Rows dismissed this session (removed from the tree synchronously until
   /// the library provider refreshes with the tombstoned state).
   final _removedIds = <String>{};
@@ -25,6 +28,83 @@ class _CardsPageState extends ConsumerState<CardsPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Opens the tag filter sheet (multi-select chips + clear + apply).
+  void _openFilterSheet() {
+    final l10n = AppLocalizations.of(context);
+    final lib = ref.read(libraryProvider).value;
+    if (lib == null) return;
+
+    final draftTags = <String>{..._selectedTags};
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (sheetContext) => StatefulBuilder(
+        builder: (context, setSheetState) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  l10n.cardsFilterTitle,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 12),
+                if (lib.tagCounts.isEmpty)
+                  Text(
+                    l10n.listsNoTags,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  )
+                else
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final entry in lib.tagCounts.entries)
+                        FilterChip(
+                          label: Text('${entry.key} (${entry.value})'),
+                          selected: draftTags.contains(entry.key),
+                          onSelected: (selected) => setSheetState(() {
+                            if (selected) {
+                              draftTags.add(entry.key);
+                            } else {
+                              draftTags.remove(entry.key);
+                            }
+                          }),
+                        ),
+                    ],
+                  ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    TextButton(
+                      onPressed: draftTags.isEmpty
+                          ? null
+                          : () => setSheetState(draftTags.clear),
+                      child: Text(l10n.cardsFilterClear),
+                    ),
+                    const Spacer(),
+                    FilledButton(
+                      onPressed: () {
+                        setState(
+                          () => _selectedTags
+                            ..clear()
+                            ..addAll(draftTags),
+                        );
+                        Navigator.pop(sheetContext);
+                      },
+                      child: Text(l10n.cardsFilterApply),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   /// Tombstone the learning state (deletedAt set, still an upsert on the
@@ -56,6 +136,17 @@ class _CardsPageState extends ConsumerState<CardsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.cardsTitle),
+        actions: [
+          IconButton(
+            tooltip: l10n.cardsFilterTitle,
+            icon: Badge(
+              isLabelVisible: _selectedTags.isNotEmpty,
+              label: Text('${_selectedTags.length}'),
+              child: const Icon(Icons.filter_alt_outlined),
+            ),
+            onPressed: _openFilterSheet,
+          ),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(64),
           child: Padding(
@@ -83,17 +174,28 @@ class _CardsPageState extends ConsumerState<CardsPage> {
             return _EmptyState(message: l10n.cardsEmptyLibrary);
           }
           final query = _searchController.text.trim().toLowerCase();
-          final senses = query.isEmpty
+          var senses = query.isEmpty
               ? lib.senses
               : lib.senses
-                  .where((s) =>
-                      s.lemma.toLowerCase().contains(query) ||
-                      s.senseKey.toLowerCase().contains(query) ||
-                      s.pos.toLowerCase().contains(query) ||
-                      s.semanticType.toLowerCase().contains(query))
-                  .toList();
+                    .where(
+                      (s) =>
+                          s.lemma.toLowerCase().contains(query) ||
+                          s.senseKey.toLowerCase().contains(query) ||
+                          s.pos.toLowerCase().contains(query) ||
+                          s.semanticType.toLowerCase().contains(query),
+                    )
+                    .toList();
+          if (_selectedTags.isNotEmpty) {
+            senses = senses
+                .where((s) => lib.senseHasAnyTag(s.wordSenseId, _selectedTags))
+                .toList();
+          }
           if (senses.isEmpty) {
-            return _EmptyState(message: l10n.cardsEmptySearch);
+            return _EmptyState(
+              message: _selectedTags.isNotEmpty
+                  ? l10n.cardsFilterEmpty
+                  : l10n.cardsEmptySearch,
+            );
           }
           final visible = senses
               .where((s) => !_removedIds.contains(s.wordSenseId))
@@ -111,12 +213,11 @@ class _CardsPageState extends ConsumerState<CardsPage> {
                   await addSenseToStudy(ref, sense.wordSenseId);
                   ref.invalidate(libraryProvider);
                 },
-                onRemove: state == null
-                    ? null
-                    : () => _removeFromStudy(sense),
+                onRemove: state == null ? null : () => _removeFromStudy(sense),
                 onDismissed: () {
                   setState(() => _removedIds.add(sense.wordSenseId));
-                },              );
+                },
+              );
             },
           );
         },
@@ -133,10 +234,7 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(
-        message,
-        style: Theme.of(context).textTheme.bodyMedium,
-      ),
+      child: Text(message, style: Theme.of(context).textTheme.bodyMedium),
     );
   }
 }
@@ -188,10 +286,7 @@ class _SenseRow extends StatelessWidget {
                   color: st.isDue ? Colors.orange : Colors.grey,
                   text: l10n.cardStatDue(st.isDue ? 1 : 0),
                 ),
-                _StatChip(
-                  color: Colors.grey,
-                  text: l10n.cardStatReps(st.reps),
-                ),
+                _StatChip(color: Colors.grey, text: l10n.cardStatReps(st.reps)),
                 if (st.lapses > 0)
                   _StatChip(
                     color: Colors.red,
@@ -203,10 +298,7 @@ class _SenseRow extends StatelessWidget {
         ],
       ),
       trailing: state == null
-          ? FilledButton.tonal(
-              onPressed: onStudy,
-              child: Text(l10n.cardsStudy),
-            )
+          ? FilledButton.tonal(onPressed: onStudy, child: Text(l10n.cardsStudy))
           : Icon(Icons.check_circle, color: theme.colorScheme.primary),
       isThreeLine: true,
       onTap: state == null ? null : () => _showDetails(context, l10n),
@@ -221,8 +313,10 @@ class _SenseRow extends StatelessWidget {
         color: theme.colorScheme.errorContainer,
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 24),
-        child: Icon(Icons.delete_outline,
-            color: theme.colorScheme.onErrorContainer),
+        child: Icon(
+          Icons.delete_outline,
+          color: theme.colorScheme.onErrorContainer,
+        ),
       ),
       child: tile,
       confirmDismiss: (_) async {
@@ -279,8 +373,14 @@ class _SenseRow extends StatelessWidget {
             const SizedBox(height: 16),
             _DetailRow(label: l10n.cardMetaDue, value: dueText),
             _DetailRow(label: l10n.cardStateReview, value: s.fsrsCardState),
-            _DetailRow(label: l10n.cardStatReps(s.reps), value: s.reps.toString()),
-            _DetailRow(label: l10n.cardStatLapses(s.lapses), value: s.lapses.toString()),
+            _DetailRow(
+              label: l10n.cardStatReps(s.reps),
+              value: s.reps.toString(),
+            ),
+            _DetailRow(
+              label: l10n.cardStatLapses(s.lapses),
+              value: s.lapses.toString(),
+            ),
           ],
         ),
       ),

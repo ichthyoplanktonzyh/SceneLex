@@ -54,6 +54,12 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
     final filter = ref.watch(reviewFilterProvider);
     final hardReminder = ref.watch(reviewHardReminderProvider);
 
+    // Full queue size (not the seeded session queue) for the header badge;
+    // 0 until the library loads.
+    final queueTotal = library.value == null
+        ? 0
+        : _orderedCandidates(library.value!, filter).length;
+
     if (hardReminder) {
       // Non-blocking reminder after repeated Hard answers; shown once per
       // 3-day cooldown (reference "Quick reminder" dialog).
@@ -82,7 +88,10 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
           onPressed: () => showReviewFilterSheet(context, ref),
         ),
         title: Text(l10n.reviewTitle),
-        actions: const [_ReviewStreakBadge()],
+        actions: [
+          _ReviewQueueBadge(total: queueTotal),
+          const _ReviewStreakBadge(),
+        ],
       ),
       // Touch to cancel: any touch on the review surface dismisses the
       // active rating reactions (reference behavior).
@@ -104,21 +113,28 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
                     onSwitchToAll: filter is ReviewFilterAll
                         ? null
                         : () => ref
-                            .read(reviewFilterProvider.notifier)
-                            .set(const ReviewFilter.all()),
+                              .read(reviewFilterProvider.notifier)
+                              .set(const ReviewFilter.all()),
+                    onBrowseCards: lib.states.isEmpty
+                        ? () => ref.read(selectedTabProvider.notifier).setTab(2)
+                        : null,
                   );
                 }
                 final sense = queue.first;
                 return ExperiencePlayer(
-                  key: ValueKey('${sense.wordSenseId}-${lib.states[sense.wordSenseId]?.reps}'),
+                  key: ValueKey(
+                    '${sense.wordSenseId}-${lib.states[sense.wordSenseId]?.reps}',
+                  ),
                   active: widget.active,
                   sense: sense,
-                  state: lib.states[sense.wordSenseId] ?? const LearningState(
-                    wordSenseId: '',
-                    reps: 0,
-                    lapses: 0,
-                    fsrsCardState: 'new',
-                  ),
+                  state:
+                      lib.states[sense.wordSenseId] ??
+                      const LearningState(
+                        wordSenseId: '',
+                        reps: 0,
+                        lapses: 0,
+                        fsrsCardState: 'new',
+                      ),
                   onCompleted: () {
                     _reviewedThisSession.add(sense.wordSenseId);
                     ref.invalidate(libraryProvider);
@@ -152,10 +168,12 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
     // reference "seed 8, top up when the queue runs low" behavior).
     if (_queue.isEmpty || _queue.length < ReviewPage.queueReplenishBelow) {
       final need = ReviewPage.queueSeedSize - _queue.length;
-      _queue.addAll(candidates
-          .where((s) => !_queue.contains(s.wordSenseId))
-          .take(need)
-          .map((s) => s.wordSenseId));
+      _queue.addAll(
+        candidates
+            .where((s) => !_queue.contains(s.wordSenseId))
+            .take(need)
+            .map((s) => s.wordSenseId),
+      );
     }
 
     return [
@@ -173,13 +191,16 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
       if (!lib.states.containsKey(sense.wordSenseId)) return false;
       return switch (filter) {
         ReviewFilterAll() => true,
-        ReviewFilterList(:final listId) => lib.lists
-            .where((l) => l.listId == listId)
-            .map((l) => lib.senseHasAnyTag(sense.wordSenseId, l.tags))
-            .firstOrNull ??
-            false,
-        ReviewFilterTags(:final tags) =>
-          lib.senseHasAnyTag(sense.wordSenseId, tags),
+        ReviewFilterList(:final listId) =>
+          lib.lists
+                  .where((l) => l.listId == listId)
+                  .map((l) => lib.senseHasAnyTag(sense.wordSenseId, l.tags))
+                  .firstOrNull ??
+              false,
+        ReviewFilterTags(:final tags) => lib.senseHasAnyTag(
+          sense.wordSenseId,
+          tags,
+        ),
       };
     }).toList();
 
@@ -228,6 +249,56 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
   }
 }
 
+/// Queue badge in the Review app bar: icon + total words due/new under the
+/// active filter. Tapping opens the filter sheet (mirrors the reference
+/// review-queue-shortcut badge; disabled when the queue is empty).
+class _ReviewQueueBadge extends ConsumerWidget {
+  const _ReviewQueueBadge({required this.total});
+
+  final int total;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final colors = Theme.of(context).colorScheme;
+    final disabled = total == 0;
+    final color = disabled ? colors.onSurfaceVariant : colors.primary;
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 4),
+      child: Tooltip(
+        message: l10n.reviewQueueBadgeTooltip(total),
+        child: Material(
+          color: disabled
+              ? colors.surfaceContainerHighest
+              : colors.primaryContainer,
+          borderRadius: BorderRadius.circular(16),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: disabled ? null : () => showReviewFilterSheet(context, ref),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.playlist_play, size: 18, color: color),
+                  const SizedBox(width: 4),
+                  Text(
+                    '$total',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelLarge?.copyWith(color: color),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// Streak badge in the Review app bar: flame icon + current streak days.
 /// Highlighted when reviewed today; tapping jumps to the Progress streak card.
 class _ReviewStreakBadge extends ConsumerWidget {
@@ -240,7 +311,8 @@ class _ReviewStreakBadge extends ConsumerWidget {
     final data = ref.watch(progressDataProvider);
     final streak = data.value?.streak;
     final days = streak?.currentStreakDays ?? 0;
-    final hasReviewedToday = streak != null &&
+    final hasReviewedToday =
+        streak != null &&
         streak.statesByDate[todayLocalDate()] == StreakDayState.reviewed;
 
     return Padding(
@@ -278,10 +350,10 @@ class _ReviewStreakBadge extends ConsumerWidget {
                   Text(
                     '$days',
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          color: hasReviewedToday
-                              ? colors.primary
-                              : colors.onSurfaceVariant,
-                        ),
+                      color: hasReviewedToday
+                          ? colors.primary
+                          : colors.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
@@ -308,14 +380,14 @@ class _FilterMenuButton extends ConsumerWidget {
     final title = library.when(
       data: (lib) => switch (filter) {
         ReviewFilterAll() => l10n.listsAllCards,
-        ReviewFilterList(:final listId) => lib.lists
-            .where((l) => l.listId == listId)
-            .map((l) => l.name)
-            .firstOrNull ??
-            l10n.listsAllCards,
-        ReviewFilterTags(:final tags) => tags.isEmpty
-            ? l10n.listsAllCards
-            : tags.join(', '),
+        ReviewFilterList(:final listId) =>
+          lib.lists
+                  .where((l) => l.listId == listId)
+                  .map((l) => l.name)
+                  .firstOrNull ??
+              l10n.listsAllCards,
+        ReviewFilterTags(:final tags) =>
+          tags.isEmpty ? l10n.listsAllCards : tags.join(', '),
       },
       loading: () => l10n.listsAllCards,
       error: (_, _) => l10n.listsAllCards,
@@ -354,15 +426,13 @@ void showReviewFilterSheet(BuildContext context, WidgetRef ref) {
 
   final current = ref.read(reviewFilterProvider);
   var draft = current;
-  var draftTags = current is ReviewFilterTags
-      ? {...current.tags}
-      : <String>{};
+  var draftTags = current is ReviewFilterTags ? {...current.tags} : <String>{};
 
   Object radioValue(ReviewFilter filter) => switch (filter) {
-        ReviewFilterAll() => 'all',
-        ReviewFilterList(:final listId) => 'list-$listId',
-        ReviewFilterTags() => 'tags',
-      };
+    ReviewFilterAll() => 'all',
+    ReviewFilterList(:final listId) => 'list-$listId',
+    ReviewFilterTags() => 'tags',
+  };
 
   showModalBottomSheet<void>(
     context: context,
@@ -402,8 +472,10 @@ void showReviewFilterSheet(BuildContext context, WidgetRef ref) {
                     ),
                     if (lib.lists.isNotEmpty) ...[
                       const Divider(height: 8),
-                      Text(l10n.reviewFilterLists,
-                          style: Theme.of(context).textTheme.labelLarge),
+                      Text(
+                        l10n.reviewFilterLists,
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ),
                       Flexible(
                         child: ListView(
                           shrinkWrap: true,
@@ -413,8 +485,11 @@ void showReviewFilterSheet(BuildContext context, WidgetRef ref) {
                                 value: 'list-${list.listId}',
                                 dense: true,
                                 title: Text(list.name),
-                                subtitle: Text(l10n.listsMatchedCount(
-                                    lib.matchedCount(list))),
+                                subtitle: Text(
+                                  l10n.listsMatchedCount(
+                                    lib.matchedCount(list),
+                                  ),
+                                ),
                               ),
                           ],
                         ),
@@ -424,8 +499,10 @@ void showReviewFilterSheet(BuildContext context, WidgetRef ref) {
                 ),
               ),
               const Divider(height: 8),
-              Text(l10n.reviewFilterTags,
-                  style: Theme.of(context).textTheme.labelLarge),
+              Text(
+                l10n.reviewFilterTags,
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
               const SizedBox(height: 8),
               if (lib.tagCounts.isEmpty)
                 Text(
@@ -492,11 +569,13 @@ class _EmptyQueue extends StatelessWidget {
     required this.senseCount,
     required this.filtered,
     this.onSwitchToAll,
+    this.onBrowseCards,
   });
 
   final int senseCount;
   final bool filtered;
   final VoidCallback? onSwitchToAll;
+  final VoidCallback? onBrowseCards;
 
   @override
   Widget build(BuildContext context) {
@@ -505,14 +584,28 @@ class _EmptyQueue extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.coffee, size: 48, color: Theme.of(context).colorScheme.outline),
+          Icon(
+            Icons.coffee,
+            size: 48,
+            color: Theme.of(context).colorScheme.outline,
+          ),
           const SizedBox(height: 16),
-          Text(senseCount == 0 ? l10n.reviewEmptyNoSenses : l10n.reviewEmptyNoDue),
+          Text(
+            senseCount == 0 ? l10n.reviewEmptyNoSenses : l10n.reviewEmptyNoDue,
+          ),
           const SizedBox(height: 8),
           Text(
             senseCount == 0 ? l10n.reviewEmptyGoAdd : l10n.reviewEmptyAllDone,
             style: Theme.of(context).textTheme.bodySmall,
           ),
+          if (onBrowseCards != null) ...[
+            const SizedBox(height: 16),
+            TextButton.icon(
+              onPressed: onBrowseCards,
+              icon: const Icon(Icons.collections_bookmark_outlined),
+              label: Text(l10n.reviewEmptyBrowseCards),
+            ),
+          ],
           if (filtered && onSwitchToAll != null) ...[
             const SizedBox(height: 16),
             TextButton.icon(

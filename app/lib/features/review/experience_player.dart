@@ -9,6 +9,7 @@ import '../../api/api_client.dart';
 import '../../api/models.dart';
 import '../../data/providers.dart';
 import '../../data/sync/sync_providers.dart';
+import '../../data/tags.dart';
 import '../../l10n/gen/app_localizations.dart';
 import 'markdown/content_text.dart';
 import 'rating_interval.dart';
@@ -91,13 +92,18 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
     if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
       return KeyEventResult.ignored;
     }
-    if (!(kIsWeb || Platform.isMacOS || Platform.isWindows || Platform.isLinux)) {
+    if (!(kIsWeb ||
+        Platform.isMacOS ||
+        Platform.isWindows ||
+        Platform.isLinux)) {
       return KeyEventResult.ignored;
     }
 
     final key = event.logicalKey;
     if (key == LogicalKeyboardKey.space) {
-      if (!_ratingMode && !_submitting && _program != null &&
+      if (!_ratingMode &&
+          !_submitting &&
+          _program != null &&
           _program!.units.isNotEmpty) {
         _advance();
       }
@@ -200,10 +206,9 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
 
   Future<void> _submitRating(int rating) async {
     // Reference behavior: emit the rating reaction, then submit.
-    ref.read(reviewReactionsControllerProvider.notifier).emit(
-          rating,
-          reducedMotion: MediaQuery.disableAnimationsOf(context),
-        );
+    ref
+        .read(reviewReactionsControllerProvider.notifier)
+        .emit(rating, reducedMotion: MediaQuery.disableAnimationsOf(context));
     _tts.stop();
     setState(() {
       _submitting = true;
@@ -213,7 +218,8 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
       await submitReview(
         ref,
         wordSenseId: widget.sense.wordSenseId,
-        learningStateId: widget.state.learningStateId ?? widget.sense.wordSenseId,
+        learningStateId:
+            widget.state.learningStateId ?? widget.sense.wordSenseId,
         experienceUnitId: _currentUnit.experienceUnitId,
         programVersion: widget.sense.programVersion ?? 1,
         rating: rating,
@@ -222,8 +228,7 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
       if (mounted) widget.onCompleted();
     } catch (e) {
       if (mounted) {
-        setState(
-            () => _error = AppLocalizations.of(context).reviewSubmitError);
+        setState(() => _error = AppLocalizations.of(context).reviewSubmitError);
       }
     } finally {
       setState(() => _submitting = false);
@@ -242,40 +247,44 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
       autofocus: widget.active,
       onKeyEvent: _onKeyEvent,
       child: FutureBuilder<ExperienceProgram>(
-      future: _programFuture,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(child: Text(l10n.playerLoadFailed('${snapshot.error}')));
-        }
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        _program = snapshot.data;
-        final program = snapshot.data!;
-        if (program.units.isEmpty) {
-          return Center(child: Text(l10n.playerNoUnits));
-        }
-        return _ratingMode
-            ? _RatingView(
-                sense: widget.sense,
-                speaking: _speaking,
-                onToggleSpeech: () => _toggleSpeech(widget.sense.lemma),
-                submitting: _submitting,
-                error: _error,
-                options: _ratingOptions,
-                optionsFailed: _ratingOptionsFailed,
-                onRate: _submitRating,
-              )
-            : _UnitView(
-                sense: widget.sense,
-                unit: program.units[_unitIndex],
-                isFirst: _unitIndex == 0,
-                isLast: _unitIndex == program.units.length - 1,
-                speaking: _speaking,
-                onToggleSpeech: _toggleSpeech,
-                onNext: _advance,
-              );
-      },
+        future: _programFuture,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(l10n.playerLoadFailed('${snapshot.error}')),
+            );
+          }
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          _program = snapshot.data;
+          final program = snapshot.data!;
+          if (program.units.isEmpty) {
+            return Center(child: Text(l10n.playerNoUnits));
+          }
+          return _ratingMode
+              ? _RatingView(
+                  sense: widget.sense,
+                  speaking: _speaking,
+                  onToggleSpeech: () => _toggleSpeech(widget.sense.lemma),
+                  submitting: _submitting,
+                  error: _error,
+                  options: _ratingOptions,
+                  optionsFailed: _ratingOptionsFailed,
+                  onRate: _submitRating,
+                )
+              : _UnitView(
+                  sense: widget.sense,
+                  tags: presetTagsForSense(widget.sense),
+                  reps: widget.state.reps,
+                  unit: program.units[_unitIndex],
+                  isFirst: _unitIndex == 0,
+                  isLast: _unitIndex == program.units.length - 1,
+                  speaking: _speaking,
+                  onToggleSpeech: _toggleSpeech,
+                  onNext: _advance,
+                );
+        },
       ),
     );
   }
@@ -302,6 +311,8 @@ class _SpeechButton extends StatelessWidget {
 class _UnitView extends StatelessWidget {
   const _UnitView({
     required this.sense,
+    required this.tags,
+    required this.reps,
     required this.unit,
     required this.isFirst,
     required this.isLast,
@@ -311,6 +322,8 @@ class _UnitView extends StatelessWidget {
   });
 
   final Sense sense;
+  final List<String> tags;
+  final int reps;
   final ExperienceUnit unit;
   final bool isFirst;
   final bool isLast;
@@ -331,6 +344,25 @@ class _UnitView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (isFirst) ...[
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      tags.isEmpty
+                          ? l10n.reviewTagSummaryNone
+                          : tags.join(', '),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  _RepetitionBadge(reps: reps, l10n: l10n),
+                ],
+              ),
+              const SizedBox(height: 12),
               Text(
                 sense.lemma,
                 style: theme.textTheme.headlineLarge?.copyWith(
@@ -345,7 +377,10 @@ class _UnitView extends StatelessWidget {
               children: [
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.secondaryContainer,
                       borderRadius: BorderRadius.circular(16),
@@ -389,27 +424,61 @@ class _UnitView extends StatelessWidget {
   }
 }
 
+/// Repetition badge in the card header: "New" on first study, otherwise the
+/// reps count (mirrors the reference review-repetition badge).
+class _RepetitionBadge extends StatelessWidget {
+  const _RepetitionBadge({required this.reps, required this.l10n});
+
+  final int reps;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isNew = reps == 0;
+    final color = isNew ? theme.colorScheme.primary : Colors.teal;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.repeat, size: 16, color: color),
+          const SizedBox(width: 4),
+          Text(
+            isNew ? l10n.reviewRepetitionNew : l10n.reviewRepetitionCount(reps),
+            style: theme.textTheme.labelMedium?.copyWith(color: color),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 String _stageLabel(AppLocalizations l10n, String stage) => switch (stage) {
-      'anchor' => l10n.stageAnchor,
-      'variation' => l10n.stageVariation,
-      'perturbation' => l10n.stagePerturbation,
-      'discrimination' => l10n.stageDiscrimination,
-      'symbol_binding' => l10n.stageSymbolBinding,
-      'l2_grounding' => l10n.stageL2Grounding,
-      'transfer' => l10n.stageTransfer,
-      _ => stage,
-    };
+  'anchor' => l10n.stageAnchor,
+  'variation' => l10n.stageVariation,
+  'perturbation' => l10n.stagePerturbation,
+  'discrimination' => l10n.stageDiscrimination,
+  'symbol_binding' => l10n.stageSymbolBinding,
+  'l2_grounding' => l10n.stageL2Grounding,
+  'transfer' => l10n.stageTransfer,
+  _ => stage,
+};
 
 String _stageHint(AppLocalizations l10n, String stage) => switch (stage) {
-      'anchor' => l10n.hintAnchor,
-      'variation' => l10n.hintVariation,
-      'perturbation' => l10n.hintPerturbation,
-      'discrimination' => l10n.hintDiscrimination,
-      'symbol_binding' => l10n.hintSymbolBinding,
-      'l2_grounding' => l10n.hintL2Grounding,
-      'transfer' => l10n.hintTransfer,
-      _ => '',
-    };
+  'anchor' => l10n.hintAnchor,
+  'variation' => l10n.hintVariation,
+  'perturbation' => l10n.hintPerturbation,
+  'discrimination' => l10n.hintDiscrimination,
+  'symbol_binding' => l10n.hintSymbolBinding,
+  'l2_grounding' => l10n.hintL2Grounding,
+  'transfer' => l10n.hintTransfer,
+  _ => '',
+};
 
 class _TaskView extends StatelessWidget {
   const _TaskView(this.task);
@@ -419,7 +488,9 @@ class _TaskView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final map = task is Map<String, dynamic> ? task as Map<String, dynamic> : const <String, dynamic>{};
+    final map = task is Map<String, dynamic>
+        ? task as Map<String, dynamic>
+        : const <String, dynamic>{};
     final prompt = map['prompt']?.toString() ?? '';
     final options = (map['options'] as List<dynamic>?) ?? const [];
 
@@ -429,8 +500,10 @@ class _TaskView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.playerTaskJudge,
-                style: Theme.of(context).textTheme.labelLarge),
+            Text(
+              l10n.playerTaskJudge,
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
             const SizedBox(height: 8),
             if (prompt.isEmpty)
               Text(l10n.playerTaskPlaceholder)
@@ -502,10 +575,7 @@ class _RatingView extends StatelessWidget {
               style: theme.textTheme.headlineMedium,
             ),
             const SizedBox(height: 8),
-            Text(
-              l10n.playerRatingQuestion,
-              textAlign: TextAlign.center,
-            ),
+            Text(l10n.playerRatingQuestion, textAlign: TextAlign.center),
             const SizedBox(height: 40),
             if (error != null) ...[
               Text(
@@ -553,11 +623,11 @@ class _RatingView extends StatelessWidget {
 }
 
 Color _ratingColor(int rating) => switch (rating) {
-      0 => Colors.red,
-      1 => Colors.orange,
-      2 => Colors.green,
-      _ => Colors.teal,
-    };
+  0 => Colors.red,
+  1 => Colors.orange,
+  2 => Colors.green,
+  _ => Colors.teal,
+};
 
 class _RatingButton extends StatelessWidget {
   const _RatingButton({
