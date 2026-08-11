@@ -185,7 +185,10 @@ class _ExperiencePlayerState extends ConsumerState<ExperiencePlayer> {
       );
       if (mounted) widget.onCompleted();
     } catch (e) {
-      setState(() => _error = e.toString());
+      if (mounted) {
+        setState(
+            () => _error = AppLocalizations.of(context).reviewSubmitError);
+      }
     } finally {
       setState(() => _submitting = false);
     }

@@ -390,6 +390,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsAccountEmail => 'Email';
 
   @override
+  String get settingsAccountStatus => 'Account status';
+
+  @override
+  String get settingsAccountStatusLinked => 'Linked';
+
+  @override
   String get settingsSyncStatus => 'Sync status';
 
   @override
@@ -400,6 +406,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get syncStatusOffline => 'Offline';
+
+  @override
+  String get settingsLastSync => 'Last sync';
+
+  @override
+  String get settingsLastSyncNever => 'Never';
+
+  @override
+  String settingsLastSyncValue(String time) {
+    return 'Last synced $time';
+  }
+
+  @override
+  String get settingsSyncNow => 'Sync now';
 
   @override
   String get settingsSignOut => 'Log out';
@@ -683,6 +703,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reviewHardReminderDismiss => 'Got it';
+
+  @override
+  String get reviewSubmitError => 'Review wasn\'t saved';
 
   @override
   String reviewBadgeTooltip(int days) {

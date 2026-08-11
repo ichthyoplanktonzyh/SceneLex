@@ -28,14 +28,47 @@ final syncEngineProvider =
   return engine;
 });
 
-/// Runs the full sync cycle once (fire-and-forget from callers).
+/// Runs the full sync cycle once (fire-and-forget from callers); updates the
+/// observable [syncStatusProvider] around the cycle.
 final syncTriggerProvider = Provider<void Function()>((ref) {
   return () async {
+    final status = ref.read(syncStatusProvider.notifier);
+    status.beginSync();
     final engine = await ref.read(syncEngineProvider.future);
     try {
       await engine.runSync();
+      status.syncSucceeded();
     } catch (e) {
-      // Offline or server error: keep local state, outbox persists.
+      status.syncFailed();
     }
   };
 });
+
+/// Observable sync status (Settings account section): synced / syncing /
+/// offline, plus the last successful sync timestamp.
+enum SyncStateStatus { synced, syncing, offline }
+
+class SyncStateInfo {
+  const SyncStateInfo({required this.status, this.lastSyncAt});
+
+  final SyncStateStatus status;
+  final DateTime? lastSyncAt;
+}
+
+class SyncStatusController extends Notifier<SyncStateInfo> {
+  @override
+  SyncStateInfo build() =>
+      const SyncStateInfo(status: SyncStateStatus.synced);
+
+  void beginSync() =>
+      state = SyncStateInfo(status: SyncStateStatus.syncing, lastSyncAt: state.lastSyncAt);
+
+  void syncSucceeded() =>
+      state = SyncStateInfo(status: SyncStateStatus.synced, lastSyncAt: DateTime.now());
+
+  void syncFailed() =>
+      state = SyncStateInfo(status: SyncStateStatus.offline, lastSyncAt: state.lastSyncAt);
+}
+
+final syncStatusProvider =
+    NotifierProvider<SyncStatusController, SyncStateInfo>(SyncStatusController.new);

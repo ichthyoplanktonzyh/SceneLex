@@ -97,6 +97,8 @@ class LearningState {
     this.fsrsStability,
     this.fsrsDifficulty,
     this.fsrsScheduledDays,
+    this.fsrsLastReviewedAt,
+    this.clientUpdatedAt,
   });
 
   final String wordSenseId;
@@ -109,6 +111,8 @@ class LearningState {
   final double? fsrsStability;
   final double? fsrsDifficulty;
   final int? fsrsScheduledDays;
+  final DateTime? fsrsLastReviewedAt;
+  final String? clientUpdatedAt;
 
   bool get isNew => fsrsCardState == 'new';
 
@@ -132,6 +136,11 @@ class LearningState {
         fsrsStability: (json['payload']?['fsrsStability'] as num?)?.toDouble(),
         fsrsDifficulty: (json['payload']?['fsrsDifficulty'] as num?)?.toDouble(),
         fsrsScheduledDays: json['payload']?['fsrsScheduledDays'] as int?,
+        fsrsLastReviewedAt:
+            json['payload']?['fsrsLastReviewedAt'] == null
+                ? null
+                : DateTime.parse(json['payload']['fsrsLastReviewedAt'] as String),
+        clientUpdatedAt: json['clientUpdatedAt'] as String?,
       );
 }
 

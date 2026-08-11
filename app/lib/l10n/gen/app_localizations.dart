@@ -788,6 +788,18 @@ abstract class AppLocalizations {
   /// **'Email'**
   String get settingsAccountEmail;
 
+  /// No description provided for @settingsAccountStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Account status'**
+  String get settingsAccountStatus;
+
+  /// No description provided for @settingsAccountStatusLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked'**
+  String get settingsAccountStatusLinked;
+
   /// No description provided for @settingsSyncStatus.
   ///
   /// In en, this message translates to:
@@ -811,6 +823,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Offline'**
   String get syncStatusOffline;
+
+  /// No description provided for @settingsLastSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Last sync'**
+  String get settingsLastSync;
+
+  /// No description provided for @settingsLastSyncNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Never'**
+  String get settingsLastSyncNever;
+
+  /// No description provided for @settingsLastSyncValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Last synced {time}'**
+  String settingsLastSyncValue(String time);
+
+  /// No description provided for @settingsSyncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get settingsSyncNow;
 
   /// No description provided for @settingsSignOut.
   ///
@@ -1327,6 +1363,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Got it'**
   String get reviewHardReminderDismiss;
+
+  /// No description provided for @reviewSubmitError.
+  ///
+  /// In en, this message translates to:
+  /// **'Review wasn\'t saved'**
+  String get reviewSubmitError;
 
   /// No description provided for @reviewBadgeTooltip.
   ///

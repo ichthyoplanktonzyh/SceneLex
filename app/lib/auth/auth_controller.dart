@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/api_client.dart';
 import '../api/models.dart';
+import '../data/sync/sync_providers.dart';
 
 /// Session state machine: unknown (loading) -> signedOut / signedIn.
 enum AuthStatus { loading, signedOut, signedIn }
@@ -55,8 +56,11 @@ class AuthController extends Notifier<AuthState> {
     state = AuthState(status: AuthStatus.signedIn, email: session.email);
   }
 
+  /// Signs out and clears all local workspaces and sync data (spec §6);
+  /// the installation identity is kept.
   Future<void> signOut() async {
     final prefs = await SharedPreferences.getInstance();
+    await ref.read(localRepositoryProvider).wipeStudyData();
     await prefs.remove(_tokenKey);
     await prefs.remove('auth_email');
     ref.read(apiClientProvider).token = null;

@@ -380,6 +380,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsAccountEmail => '邮箱';
 
   @override
+  String get settingsAccountStatus => '账号状态';
+
+  @override
+  String get settingsAccountStatusLinked => '已关联';
+
+  @override
   String get settingsSyncStatus => '同步状态';
 
   @override
@@ -390,6 +396,20 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get syncStatusOffline => '离线';
+
+  @override
+  String get settingsLastSync => '上次同步';
+
+  @override
+  String get settingsLastSyncNever => '从未';
+
+  @override
+  String settingsLastSyncValue(String time) {
+    return '上次同步 $time';
+  }
+
+  @override
+  String get settingsSyncNow => '立即同步';
 
   @override
   String get settingsSignOut => '退出登录';
@@ -662,6 +682,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get reviewHardReminderDismiss => '知道了';
+
+  @override
+  String get reviewSubmitError => '复习记录未能保存';
 
   @override
   String reviewBadgeTooltip(int days) {

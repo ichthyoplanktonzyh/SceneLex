@@ -113,6 +113,8 @@ final libraryProvider = FutureProvider<Library>((ref) async {
       fsrsStability: row.fsrsStability,
       fsrsDifficulty: row.fsrsDifficulty,
       fsrsScheduledDays: row.fsrsScheduledDays,
+      fsrsLastReviewedAt: row.fsrsLastReviewedAt,
+      clientUpdatedAt: row.clientUpdatedAt,
     );
   }
 

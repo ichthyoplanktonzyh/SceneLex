@@ -219,3 +219,25 @@ cd app && flutter run -d chrome --web-port 8090   # web
 ### 24. 词表详情元数据(P7-D)
 - Cards → 点击词义行 → 详情:Due(到期)/ State / Reps / Lapses 只读
   元数据,文案与参考一致(Due/Reps/Lapses)。
+
+### 25. 队列 rank 对齐(P7 差距修复)
+- 对一张到期卡评 Again/Hard(短期步进)→ 该卡立即回到队列,且排在更
+  老的逾期卡之前(最近 1h 复习过的到期卡优先)。
+- 同 dueAt 时:后加入学习的卡优先(createdAt DESC 代理)。
+- 其余顺序:其他到期卡(按 dueAt ASC)→ 新卡。
+
+### 26. 登出清本地数据(P7 差距修复)
+- Settings → 账号 → Log out:确认弹窗("本地数据将被清除")。
+- 确认后:回登录页;本地学习状态/复习事件/outbox/游标/词单全部清空
+  (安装身份保留);重新登录后从服务端重新 bootstrap。
+- 验证:退出前记录某卡 reps,重新登录后服务端数据回来(不同设备)。
+
+### 27. 账号区同步状态(P7 差距修复)
+- Settings → 账号:Account status(Linked)、Sync status(Synced/Syncing…/
+  Offline)、Last sync(时间或 Never)、Sync now(手动触发)。
+- 断网时点 Sync now → 状态变 Offline;恢复网络再点 → Synced + 时间更新。
+
+### 28. 提交失败文案(P7 差距修复)
+- 断网时评分(或临时改坏 API 地址)→ 内联错误显示
+  "Review wasn't saved"(zh:"复习记录未能保存"),按钮恢复可点;
+  恢复后重试成功。

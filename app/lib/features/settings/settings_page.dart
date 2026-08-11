@@ -9,6 +9,7 @@ import '../../app/locale_controller.dart';
 import '../../api/api_client.dart';
 import '../../auth/auth_controller.dart';
 import '../../data/providers.dart';
+import '../../data/sync/sync_providers.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../lists/lists_page.dart';
 import '../review/reactions/review_reactions_controller.dart';
@@ -24,12 +25,29 @@ class SettingsPage extends ConsumerWidget {
 
   static const _appVersion = '0.1.0';
 
+  static String _formatSyncTime(DateTime t) {
+    final local = t.toLocal();
+    String two(int v) => v.toString().padLeft(2, '0');
+    return '${two(local.hour)}:${two(local.minute)} '
+        '${local.month}/${local.day}';
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final auth = ref.watch(authControllerProvider);
     final locale = ref.watch(localeControllerProvider);
     final notifications = ref.watch(notificationsControllerProvider);
+    final syncStatus = ref.watch(syncStatusProvider);
+
+    final syncStatusText = switch (syncStatus.status) {
+      SyncStateStatus.synced => l10n.syncStatusSynced,
+      SyncStateStatus.syncing => l10n.syncStatusSyncing,
+      SyncStateStatus.offline => l10n.syncStatusOffline,
+    };
+    final lastSyncText = syncStatus.lastSyncAt == null
+        ? l10n.settingsLastSyncNever
+        : l10n.settingsLastSyncValue(_formatSyncTime(syncStatus.lastSyncAt!));
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settingsTitle)),
@@ -40,6 +58,26 @@ class SettingsPage extends ConsumerWidget {
             leading: const Icon(Icons.account_circle),
             title: Text(l10n.settingsAccountEmail),
             subtitle: Text(auth.email ?? ''),
+          ),
+          ListTile(
+            leading: const Icon(Icons.link),
+            title: Text(l10n.settingsAccountStatus),
+            subtitle: Text(l10n.settingsAccountStatusLinked),
+          ),
+          ListTile(
+            leading: const Icon(Icons.cloud_done_outlined),
+            title: Text(l10n.settingsSyncStatus),
+            subtitle: Text(syncStatusText),
+          ),
+          ListTile(
+            leading: const Icon(Icons.schedule),
+            title: Text(l10n.settingsLastSync),
+            subtitle: Text(lastSyncText),
+          ),
+          ListTile(
+            leading: const Icon(Icons.sync),
+            title: Text(l10n.settingsSyncNow),
+            onTap: () => ref.read(syncTriggerProvider)(),
           ),
           ListTile(
             leading: const Icon(Icons.logout),

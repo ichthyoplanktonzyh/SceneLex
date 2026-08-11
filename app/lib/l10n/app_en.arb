@@ -191,10 +191,21 @@
   "settingsTitle": "Settings",
   "settingsAccountSection": "Account",
   "settingsAccountEmail": "Email",
+  "settingsAccountStatus": "Account status",
+  "settingsAccountStatusLinked": "Linked",
   "settingsSyncStatus": "Sync status",
   "syncStatusSynced": "Synced",
   "syncStatusSyncing": "Syncing…",
   "syncStatusOffline": "Offline",
+  "settingsLastSync": "Last sync",
+  "settingsLastSyncNever": "Never",
+  "settingsLastSyncValue": "Last synced {time}",
+  "@settingsLastSyncValue": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "settingsSyncNow": "Sync now",
   "settingsSignOut": "Log out",
   "signOutTitle": "Log out?",
   "signOutBody": "Local data on this device will be cleared.",
@@ -303,6 +314,8 @@
   "reviewHardReminderTitle": "Quick reminder",
   "reviewHardReminderBody": "If you did not know the answer, choose \"Again\". \"Hard\" is only for answers you knew but it was difficult to recall.",
   "reviewHardReminderDismiss": "Got it",
+
+  "reviewSubmitError": "Review wasn't saved",
 
   "reviewBadgeTooltip": "Review streak {days} days. Not reviewed today.",
   "@reviewBadgeTooltip": {

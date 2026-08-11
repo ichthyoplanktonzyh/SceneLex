@@ -165,6 +165,9 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
     ];
   }
 
+  /// Rank mirrors behavior spec §10: due cards reviewed within the last hour
+  /// -> other due cards -> new cards; tie-break: dueAt ASC -> createdAt
+  /// (clientUpdatedAt) DESC -> id ASC.
   List<Sense> _orderedCandidates(Library lib, ReviewFilter filter) {
     final filtered = lib.senses.where((sense) {
       if (!lib.states.containsKey(sense.wordSenseId)) return false;
@@ -180,22 +183,48 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
       };
     }).toList();
 
-    final due = <(Sense, DateTime?)>[];
+    final recentDue = <(Sense, DateTime)>[];
+    final due = <(Sense, DateTime)>[];
     final newItems = <Sense>[];
+    final hourAgo = DateTime.now().toUtc().subtract(const Duration(hours: 1));
+
     for (final sense in filtered) {
       final state = lib.states[sense.wordSenseId]!;
       if (state.isNew) {
         newItems.add(sense);
-      } else if (state.isDue) {
-        due.add((sense, state.dueAt));
+      } else if (state.isDue && state.dueAt != null) {
+        final lastReviewed = state.fsrsLastReviewedAt;
+        final reviewedRecently =
+            lastReviewed != null && lastReviewed.isAfter(hourAgo);
+        (reviewedRecently ? recentDue : due).add((sense, state.dueAt!));
       }
     }
-    due.sort((a, b) {
-      final da = a.$2?.millisecondsSinceEpoch ?? 0;
-      final db = b.$2?.millisecondsSinceEpoch ?? 0;
-      return da.compareTo(db);
+
+    // createdAt proxy: the state's clientUpdatedAt (when it joined study).
+    String createdKey(Sense s) =>
+        lib.states[s.wordSenseId]?.clientUpdatedAt ?? '';
+
+    int compare((Sense, DateTime) a, (Sense, DateTime) b) {
+      final byDue = a.$2.compareTo(b.$2);
+      if (byDue != 0) return byDue;
+      final byCreated = createdKey(b.$1).compareTo(createdKey(a.$1));
+      if (byCreated != 0) return byCreated;
+      return a.$1.wordSenseId.compareTo(b.$1.wordSenseId);
+    }
+
+    recentDue.sort(compare);
+    due.sort(compare);
+    newItems.sort((a, b) {
+      final byCreated = createdKey(b).compareTo(createdKey(a));
+      if (byCreated != 0) return byCreated;
+      return a.wordSenseId.compareTo(b.wordSenseId);
     });
-    return [...due.map((e) => e.$1), ...newItems];
+
+    return [
+      ...recentDue.map((e) => e.$1),
+      ...due.map((e) => e.$1),
+      ...newItems,
+    ];
   }
 }
 
