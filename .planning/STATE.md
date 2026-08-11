@@ -222,3 +222,17 @@ Phase 4 完成（离线优先）：
 - 验证：web 构建 + 运行无错误；`flutter analyze` 0 问题；`flutter test` 25 全过。
 - 待 P6 二期（用户拍板时机未定）：上云部署（Fly.io/VPS 选型 + 域名/TLS/托管
   Postgres）、Windows/Linux 构建验证、移动端打包（图标/签名/商店元数据）。
+
+## 会话收尾（2026-08-11，P6 一期 + 修复后）
+
+- 修复：server CORS（web 登录 Failed to fetch）；drift web 资产
+  （sqlite3.wasm + drift_worker.js + DriftWebOptions）——web 端首次真正跑通
+  本地库；用户完整跑通全流程确认无问题。
+- **用户新指令**：推进到"复刻原项目所有行为"，仅学习体验（Experience Player）
+  可更换。差距清单 14 项已整理（TTS/Markdown-LaTeX/评分动画/词单筛选/删除/
+  标签/设置扩充/账号删除/工作区管理/队列补充/Hard 提醒/徽章联动）。
+- 接力文档已提交：`docs/v1/handoff-phase7.md`（§2 任务清单 A-D 四组、
+  代码地图、3 个待决策点、验证方式）。
+- 待用户决策（P7 期间问）：标签来源（预置只读/用户自定义/仅 All Cards）、
+  TTS 引擎取舍、LaTeX 渲染方案（建议先降级）。
+- 下个会话启动指令：`读 /Users/shadow/SceneLex/docs/v1/handoff-phase7.md,然后按 §2 任务清单从 A 组开始工作`。
