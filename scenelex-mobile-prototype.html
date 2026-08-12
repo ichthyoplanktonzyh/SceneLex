@@ -1,0 +1,1328 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SceneLex 手机端原型 · 理解词义流程</title>
+<style>
+/* ============================================================
+   0. 基础（壳沿用不背单词复刻原型）
+   ============================================================ */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  background:radial-gradient(120% 90% at 50% 0%,#23232b 0%,#0e0e12 60%,#08080b 100%);
+  color:#e8e8ee;min-height:100%;
+  display:flex;justify-content:center;align-items:flex-start;gap:34px;
+  padding:36px 24px 60px;flex-wrap:wrap;
+}
+
+/* 1. 手机外壳 ------------------------------------------------ */
+.phone{
+  position:relative;flex:0 0 auto;width:390px;height:844px;border-radius:48px;background:#000;
+  box-shadow:0 0 0 11px #16161b,0 0 0 12.5px #33333c,0 46px 90px -20px rgba(0,0,0,.75);
+  overflow:hidden;user-select:none;color:#141416;font-size:15px;line-height:1.45;
+}
+.viewport{position:absolute;inset:0;border-radius:48px;overflow:hidden;background:#f4f4f6}
+.statusbar{
+  position:absolute;top:0;left:0;right:0;height:46px;z-index:60;pointer-events:none;
+  display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 30px;
+  font-size:15px;font-weight:600;letter-spacing:.2px;color:#16161a;transition:color .3s;
+}
+.statusbar.light{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.25)}
+.sb-r{display:flex;align-items:center;gap:5px}
+.sb-r svg{width:15px;height:15px;opacity:.92}
+.sb-bat{width:24px;height:12px;border:1.4px solid currentColor;border-radius:3.5px;position:relative;opacity:.92}
+.sb-bat::after{content:"";position:absolute;top:1.4px;left:1.4px;bottom:1.4px;width:70%;background:currentColor;border-radius:1.5px}
+.sb-bat::before{content:"";position:absolute;right:-3.4px;top:3.4px;bottom:3.4px;width:1.8px;background:currentColor;border-radius:0 1px 1px 0}
+.hbar{position:absolute;left:50%;transform:translateX(-50%);bottom:7px;width:126px;height:4.5px;border-radius:4px;background:rgba(0,0,0,.28);z-index:61;pointer-events:none}
+.hbar.light{background:rgba(255,255,255,.7)}
+
+/* 2. 屏幕 / 转场 --------------------------------------------- */
+.screen{
+  position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;background:#f4f4f6;
+  visibility:hidden;pointer-events:none;z-index:10;
+  transition:transform .4s cubic-bezier(.22,.85,.3,1),opacity .26s ease,visibility .4s;
+  scrollbar-width:none;
+}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{visibility:visible;pointer-events:auto}
+.screen[data-anim="fade"]{opacity:0}
+.screen[data-anim="fade"].active{opacity:1}
+.screen[data-anim="sheet"]{transform:translateY(103%);z-index:20}
+.screen[data-anim="sheet"].active{transform:translateY(0)}
+.screen[data-anim="slide"]{transform:translateX(100%);z-index:24}
+.screen[data-anim="slide"].active{transform:translateX(0)}
+#s-home{z-index:5}
+#s-learn,#s-review,#s-finish{z-index:30}
+#s-scene{z-index:34}
+
+.pad{padding:0 18px 40px}
+.h-sp{height:52px}
+.icon{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;display:block}
+.card{background:#fff;border-radius:18px;box-shadow:0 1px 2px rgba(20,20,30,.04)}
+.row{display:flex;align-items:center;gap:12px;padding:16px;cursor:pointer}
+.row+.row{border-top:1px solid #f1f1f4}
+.row .t{font-size:16.5px;font-weight:600;flex:1}
+.row .v{color:#a0a0a8;font-size:14.5px}
+.chev{width:18px;height:18px;stroke:#c2c2ca;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.sq{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;flex:0 0 auto}
+.sq .icon{width:21px;height:21px;stroke-width:1.8}
+.sec-title{font-size:20px;font-weight:700;letter-spacing:.3px}
+.pill{background:#ffeddc;color:#f0761d;font-size:14px;font-weight:700;padding:7px 15px;border-radius:20px;border:0;cursor:pointer;font-family:inherit}
+.pill:active{transform:scale(.96)}
+.sheet-head{display:flex;align-items:center;padding:54px 18px 12px;height:110px;position:sticky;top:0;background:#f4f4f6;z-index:5}
+.sheet-head .down{background:none;border:0;padding:6px;cursor:pointer;color:#1c1c20;display:flex}
+.sheet-head .down .icon{width:26px;height:26px;stroke-width:2.1}
+.sheet-head h2{position:absolute;left:0;right:0;top:54px;bottom:12px;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:600;pointer-events:none}
+.sheet-head .right{margin-left:auto;background:none;border:0;cursor:pointer;color:#1c1c20;display:flex;padding:6px}
+.group{margin-bottom:16px;overflow:hidden}
+
+/* 3. 首页 ---------------------------------------------------- */
+#s-home{background:#cfc7e6}
+.wall{position:absolute;inset:0;overflow:hidden}
+.wall::before{
+  content:"";position:absolute;inset:0;
+  background:
+   radial-gradient(85% 42% at 74% 84%,rgba(255,214,164,.62),transparent 62%),
+   radial-gradient(70% 34% at 24% 92%,rgba(255,231,236,.55),transparent 65%),
+   radial-gradient(55% 26% at 88% 20%,rgba(255,222,178,.45),transparent 70%),
+   linear-gradient(180deg,#f3c078 0%,#e5b9a8 8%,#d9c0dd 16%,#c9c2ea 30%,#cfc4ec 42%,#dcc5e6 56%,#eec9d8 70%,#f6d2cf 82%,#f0dbe6 92%,#e6dced 100%);
+}
+.wall .hill{position:absolute;left:-10%;right:-10%;bottom:-6%;height:34%;border-radius:50% 50% 0 0/70% 70% 0 0;background:linear-gradient(180deg,rgba(255,236,222,.85),rgba(243,224,236,.6));filter:blur(2px)}
+.wall .band{position:absolute;left:0;right:0;top:7%;height:5%;background:linear-gradient(90deg,rgba(255,196,120,.75),rgba(255,214,150,.55),rgba(255,190,140,.7));filter:blur(9px)}
+.spark{position:absolute;border-radius:50%;background:#fff8e0;animation:tw 2.6s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.25;transform:scale(.7)}50%{opacity:1;transform:scale(1)}}
+.avatar-btn{position:absolute;top:56px;left:20px;padding:0;border:0;background:none;cursor:pointer;z-index:3}
+.avatar{
+  display:block;width:58px;height:58px;border-radius:50%;
+  background:linear-gradient(158deg,#9aa6bd 0%,#6b7488 52%,#434b5e 100%);
+  box-shadow:0 0 0 2.5px rgba(255,255,255,.55),0 6px 16px rgba(60,40,80,.22);
+  position:relative;overflow:hidden;
+}
+.avatar::before{content:"";position:absolute;left:50%;top:19%;width:33%;height:33%;transform:translateX(-50%);border-radius:50%;background:rgba(255,255,255,.88)}
+.avatar::after{content:"";position:absolute;left:50%;bottom:-14%;width:62%;height:42%;transform:translateX(-50%);border-radius:50% 50% 0 0;background:rgba(255,255,255,.85)}
+.brandmark{position:absolute;top:70px;right:22px;z-index:3;font-size:13px;font-weight:700;letter-spacing:2.4px;color:rgba(40,32,58,.5)}
+.sign-card{
+  position:absolute;left:50%;top:224px;transform:translateX(-50%);
+  width:172px;padding:26px 0 22px;text-align:center;border-radius:26px;cursor:pointer;z-index:3;
+  background:linear-gradient(160deg,rgba(255,255,255,.52),rgba(255,255,255,.26));
+  backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);
+  box-shadow:0 10px 30px rgba(90,60,120,.14);transition:transform .18s ease;
+}
+.sign-card:active{transform:translateX(-50%) scale(.965)}
+.sign-card .icon{width:34px;height:34px;margin:0 auto 14px;stroke-width:1.7;color:#2c2c33}
+.sign-card .st{font-size:20px;font-weight:700;color:#242429;letter-spacing:1px}
+.sign-card .sd{font-size:16px;color:#3d3d45;margin-top:3px;letter-spacing:.4px}
+.sign-card.done .st{color:#f0761d}
+.home-actions{position:absolute;left:16px;right:16px;bottom:104px;display:flex;gap:16px;z-index:3}
+.act{
+  flex:1;border:0;cursor:pointer;text-align:left;padding:16px 18px 18px;border-radius:16px;font-family:inherit;
+  background:linear-gradient(150deg,rgba(255,255,255,.46),rgba(255,255,255,.24));
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 8px 24px rgba(90,60,120,.12);transition:transform .16s ease;
+}
+.act:active{transform:scale(.97)}
+.act b{display:block;font-size:25px;font-weight:700;color:#232329;letter-spacing:.2px}
+.act span{display:block;font-size:20px;color:#f2701c;margin-top:2px;font-weight:500}
+.act i{display:block;font-size:12px;color:#6b6470;font-style:normal;margin-top:1px}
+.tabbar{position:absolute;left:0;right:0;bottom:18px;display:flex;z-index:3}
+.tabbar button{flex:1;background:none;border:0;display:grid;place-items:center;cursor:pointer;color:#1e1e24;padding:10px 0}
+.tabbar .icon{width:30px;height:30px;stroke-width:1.7;filter:drop-shadow(0 1px 2px rgba(255,255,255,.5))}
+.tabbar button:active{transform:scale(.9)}
+
+/* 4. 理解流程（核心） ---------------------------------------- */
+#s-learn,#s-review{
+  background:linear-gradient(155deg,#f7e8ca 0%,#e4dfe9 22%,#d6d4e8 42%,#dcd1e6 60%,#e6cfdd 78%,#dfc9e0 100%);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.lscroll{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.lscroll::-webkit-scrollbar{display:none}
+.lh{display:flex;align-items:center;padding:6px 14px 0;height:54px;gap:4px;flex:0 0 auto}
+.lh button{background:none;border:0;cursor:pointer;color:#26262c;padding:6px;display:flex}
+.lh .prog-n{font-size:17.5px;font-weight:600;margin-left:-2px;letter-spacing:.3px}
+.lh .tools{margin-left:auto;display:flex;align-items:center;gap:4px}
+.lh .tools .icon{width:24px;height:24px}
+.lh .tools .txt{font-size:16px;font-weight:700;padding:2px 5px}
+.lh button:disabled{opacity:.28;cursor:default}
+
+.segbar{display:flex;gap:5px;padding:6px 18px 0;flex:0 0 auto}
+.segbar i{flex:1;height:3.5px;border-radius:3px;background:rgba(255,255,255,.55);overflow:hidden}
+.segbar i.on{background:#2c2c34}
+.segbar i.half{background:linear-gradient(90deg,#2c2c34 50%,rgba(255,255,255,.55) 50%)}
+.steprow{display:flex;align-items:center;padding:12px 18px 0;flex:0 0 auto;gap:10px}
+.steprow .lb{font-size:13px;font-weight:700;letter-spacing:1.4px;color:#6d6d78;text-transform:uppercase}
+.steprow .mode{margin-left:auto;font-size:12.5px;background:rgba(255,255,255,.6);color:#5c5c68;padding:5px 11px;border-radius:14px;font-weight:600}
+.steprow .mode.l2{background:#2c2c34;color:#fff}
+
+.lbody{padding:20px 18px 30px}
+.kicker{font-size:13.5px;color:#7b7b86;margin-bottom:11px;display:flex;align-items:center;gap:7px}
+.kicker .dotmark{width:6px;height:6px;border-radius:50%;background:#f2701c}
+.scenecard{
+  border-radius:18px;padding:20px 19px;margin-bottom:16px;
+  background:linear-gradient(150deg,rgba(255,255,255,.62),rgba(255,255,255,.34));
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  font-size:18px;line-height:1.78;color:#1e1e26;letter-spacing:.1px;
+}
+.scenecard b{font-weight:800}
+.scenecard .sp{color:#2c2c34;font-weight:600}
+.scenecard+.scenecard{margin-top:-4px}
+.scenecard .srcref{display:block;margin-top:14px;font-size:11.5px;color:#8e8e99;letter-spacing:.3px}
+.qbox{margin-top:22px}
+.qbox .q{font-size:16.5px;font-weight:700;color:#22222a;margin-bottom:12px}
+.choices{display:flex;flex-direction:column;gap:10px}
+.ch{
+  text-align:left;border:0;cursor:pointer;font-family:inherit;padding:14px 16px;border-radius:13px;
+  background:rgba(255,255,255,.52);font-size:16px;color:#26262c;transition:.16s;line-height:1.5;
+}
+.ch:active{transform:scale(.985)}
+.ch.right{background:rgba(24,183,150,.24);box-shadow:inset 0 0 0 1.5px rgba(20,170,140,.55);color:#0c7a63;font-weight:600}
+.ch.wrong{background:rgba(240,72,86,.2);box-shadow:inset 0 0 0 1.5px rgba(230,70,84,.45);color:#c22b3b}
+.ch.mute{opacity:.4}
+.fb{margin-top:14px;font-size:15px;line-height:1.6;color:#6a6a76;min-height:22px}
+.fb.good{color:#0c7a63}
+.fb.bad{color:#c22b3b}
+.minicmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.minicmp div{background:rgba(255,255,255,.5);border-radius:13px;padding:13px 14px}
+.minicmp b{display:block;font-size:15.5px;margin-bottom:4px}
+.minicmp p{font-size:13.5px;color:#5f5f6b;line-height:1.5}
+
+/* 符号揭示 */
+.symbol{text-align:center;padding:22px 4px 0;animation:rise .45s cubic-bezier(.2,.9,.3,1)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.symbol .w{font-size:46px;font-weight:850;letter-spacing:-1.4px;color:#131318}
+.symbol .ph{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:12px}
+.symbol .ph .p{font-size:17px;color:#4a4a54}
+.ph-b{background:rgba(255,255,255,.62);border:0;color:#3a3a42;font-size:12.5px;font-weight:600;padding:4px 9px;border-radius:12px;display:flex;align-items:center;gap:3px;cursor:pointer;font-family:inherit}
+.ph-b .icon{width:13px;height:13px;stroke-width:2}
+.symbol .pos{font-size:13px;color:#8a8a94;margin-top:7px}
+.symbol .say{font-size:17px;line-height:1.75;color:#26262e;margin-top:26px;text-align:left;
+  background:rgba(255,255,255,.5);border-radius:16px;padding:18px}
+.symbol .say b{font-weight:800}
+.symbol .gloss{font-size:13.5px;color:#82828e;margin-top:14px;line-height:1.6;text-align:left;padding:0 4px}
+.symbol .gloss em{font-style:normal;color:#5b5b66;font-weight:600}
+
+/* L2 落地 */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chips span{background:rgba(255,255,255,.6);border-radius:11px;padding:8px 12px;font-size:14.5px;color:#34343e}
+.exline{background:rgba(255,255,255,.5);border-radius:15px;padding:16px 17px;margin-top:14px}
+.exline .en{font-size:18px;font-weight:600;color:#1d1d25;line-height:1.5}
+.exline .en b{color:#f2701c}
+.exline .zh{font-size:15px;color:#5f5f6b;margin-top:6px}
+.blocklabel{font-size:11.5px;font-weight:800;letter-spacing:1.6px;color:#8b8b96;text-transform:uppercase;margin:22px 0 2px}
+
+/* 底部按钮 */
+.lfoot{flex:0 0 auto;display:flex;justify-content:center;padding:10px 0 32px;z-index:4}
+.lfoot .fbtn{background:none;border:0;font-family:inherit;font-size:18.5px;font-weight:700;color:#26262c;cursor:pointer;padding:6px 26px 0;display:grid;justify-items:center;gap:9px}
+.lfoot .fbtn i{display:block;width:26px;height:5px;border-radius:3px}
+.lfoot .fbtn.green i{background:#0fb99b}
+.lfoot .fbtn.orange i{background:#f2701c}
+.lfoot .fbtn.dark i{background:#2c2c34}
+.lfoot .fbtn:disabled{opacity:.32;cursor:default}
+
+/* 5. 复习（反向流程） ---------------------------------------- */
+.l1badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.55);color:#5c5c68;font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:14px;margin-bottom:14px}
+.l1badge i{width:7px;height:7px;border-radius:50%;background:#f2701c;font-style:normal}
+.l1badge.mix i{background:#e0a021}
+.l1badge.pure i{background:#0fb99b}
+.recallbox{margin-top:24px;text-align:center}
+.recallbox .q{font-size:16.5px;font-weight:700;color:#22222a}
+.recallbox .hintline{font-size:13.5px;color:#84848f;margin-top:8px}
+.answerbox{text-align:center;animation:rise .4s ease}
+.answerbox .w{font-size:40px;font-weight:850;letter-spacing:-1.2px;color:#131318}
+.answerbox .zh{font-size:15px;color:#7c7c88;margin-top:8px}
+.answerbox .conf{font-size:15.5px;color:#3d3d47;line-height:1.65;margin-top:18px;background:rgba(255,255,255,.5);border-radius:14px;padding:14px 16px;text-align:left}
+.grades{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 18px 6px;flex:0 0 auto}
+.grade{border:0;cursor:pointer;font-family:inherit;border-radius:14px;padding:13px 8px;background:rgba(255,255,255,.62);text-align:center;transition:.15s}
+.grade:active{transform:scale(.97)}
+.grade b{display:block;font-size:16px;font-weight:700;color:#26262c}
+.grade span{display:block;font-size:12px;color:#83838f;margin-top:3px}
+.grade.g1{box-shadow:inset 0 0 0 1.5px rgba(230,70,84,.4)}
+.grade.g2{box-shadow:inset 0 0 0 1.5px rgba(224,160,33,.4)}
+.grade.g3{box-shadow:inset 0 0 0 1.5px rgba(20,170,140,.45)}
+.grade.g4{box-shadow:inset 0 0 0 1.5px rgba(60,120,220,.35)}
+
+/* 6. 完成页 --------------------------------------------------- */
+#s-finish{background:linear-gradient(160deg,#f7e8ca,#ded9e9 40%,#e5cfdd)}
+.fin{padding:110px 26px 0;text-align:center}
+.fin .em{font-size:52px}
+.fin h3{font-size:25px;font-weight:700;margin-top:14px}
+.fin p{color:#6f6f79;margin-top:8px;font-size:15px;line-height:1.6}
+.fin .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:30px 0 18px}
+.fin .g{background:rgba(255,255,255,.58);border-radius:14px;padding:15px 6px;backdrop-filter:blur(10px)}
+.fin .g b{display:block;font-size:24px;font-weight:700}
+.fin .g span{font-size:12px;color:#7a7a84}
+.fin .note{font-size:13px;color:#7c7c88;background:rgba(255,255,255,.42);border-radius:13px;padding:12px 14px;text-align:left;line-height:1.6;margin-bottom:22px}
+.fin .btn{display:block;width:100%;padding:15px;border-radius:26px;border:0;font-family:inherit;font-size:16.5px;font-weight:600;cursor:pointer;margin-bottom:11px}
+.fin .btn.p{background:#f2701c;color:#fff}
+.fin .btn.g{background:rgba(255,255,255,.62);color:#3a3a42}
+
+/* 7. 概念地图 ------------------------------------------------- */
+.mapcard{background:#fff;border-radius:18px;padding:17px 17px 6px;margin-bottom:14px}
+.mapcard .hd{display:flex;align-items:baseline;gap:9px;margin-bottom:4px}
+.mapcard .hd b{font-size:20px;font-weight:800;letter-spacing:-.3px}
+.mapcard .hd span{font-size:13px;color:#9a9aa4}
+.mapcard .def{font-size:14px;color:#6e6e79;line-height:1.55;margin-bottom:14px}
+.bd{border-top:1px solid #f1f1f4;padding:13px 0}
+.bd .line{display:flex;align-items:center;gap:9px;font-size:15.5px;font-weight:700}
+.bd .line .rel{font-size:11.5px;font-weight:600;color:#9a7c2e;background:#fdf3dc;padding:3px 8px;border-radius:9px}
+.bd .line .rel.diff{color:#3f6fb5;background:#e8effb}
+.bd p{font-size:13.5px;color:#6b6b76;line-height:1.6;margin-top:7px}
+.bd .diag{font-size:13px;color:#8b8b96;line-height:1.55;margin-top:6px;padding-left:11px;border-left:2px solid #ececf1}
+.l1warn{background:#fff7ec;border-radius:13px;padding:13px 14px;margin:4px 0 14px}
+.l1warn b{font-size:14px;color:#b7761c;display:block;margin-bottom:5px}
+.l1warn p{font-size:13.5px;color:#7a6a52;line-height:1.6}
+
+/* 8. 我的学习 / 偏好 ------------------------------------------ */
+.segwrap{position:absolute;left:0;right:0;top:54px;bottom:12px;display:flex;justify-content:center;align-items:center;pointer-events:none}
+.seg{display:flex;background:#eaeaee;border-radius:24px;padding:4px;pointer-events:auto}
+.seg button{border:0;background:none;font-family:inherit;font-size:17px;font-weight:600;color:#9a9aa2;padding:8px 18px;border-radius:20px;cursor:pointer;transition:.22s}
+.seg button.on{background:#fff;color:#1b1b1f;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.plan-top{display:flex;align-items:center;justify-content:space-between;margin:6px 0 12px}
+.book{display:flex;gap:16px;align-items:flex-start;position:relative}
+.bookcover{width:76px;height:104px;border-radius:6px;overflow:hidden;background:#1b2036;position:relative;flex:0 0 auto;box-shadow:0 3px 8px rgba(0,0,0,.18)}
+.bookcover .t{position:absolute;top:9px;left:8px;right:7px;color:#fff;font-size:11px;font-weight:800;line-height:1.2;letter-spacing:-.2px}
+.bookcover .s{position:absolute;top:38px;left:8px;color:rgba(255,255,255,.75);font-size:9.5px}
+.bookcover .c{position:absolute;left:8px;bottom:10px;width:34px;height:34px;border-radius:50%;background:#f2701c;opacity:.85}
+.bookcover .tri1{position:absolute;right:10px;bottom:26px;width:0;height:0;border-left:18px solid #7ee0c8;border-bottom:18px solid transparent}
+.bookcover .tri2{position:absolute;right:10px;bottom:8px;width:0;height:0;border-left:18px solid #7ee0c8;border-top:18px solid transparent}
+.book .name{font-size:19px;font-weight:600;padding-right:26px}
+.book .sub{font-size:13.5px;color:#9a9aa4;margin-top:5px}
+.newbook{display:flex;align-items:center;gap:10px;margin-top:18px;color:#3b3b42;font-size:16px;cursor:pointer}
+.cbx{width:22px;height:22px;border-radius:6px;border:2px solid #c9c9d1;display:grid;place-items:center}
+.cbx.on{background:#f2701c;border-color:#f2701c}
+.cbx .icon{width:14px;height:14px;stroke:#fff;stroke-width:3;opacity:0}
+.cbx.on .icon{opacity:1}
+.kebab{position:absolute;top:0;right:0;background:none;border:0;padding:4px;cursor:pointer;color:#4a4a52}
+.prog{height:7px;border-radius:5px;background:#eeeef2;margin:18px 0 8px;overflow:hidden}
+.prog i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#ff8b1f,#f2650d);width:21.7%}
+.prog-txt{display:flex;justify-content:space-between;color:#a2a2aa;font-size:15px;padding-bottom:16px;border-bottom:1px solid #f0f0f3}
+.daily{display:flex;align-items:center;justify-content:space-between;padding:16px 0 4px}
+.daily b{font-size:16.5px}
+.daily span{color:#f2701c;font-weight:600;cursor:pointer}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:22px 10px;padding:6px 4px 4px}
+.stat .lb{display:flex;align-items:center;gap:8px;color:#4b4b53;font-size:14.5px}
+.stat .lb .icon{width:17px;height:17px;stroke-width:2.2}
+.stat .nm{font-size:29px;font-weight:700;margin-top:3px;letter-spacing:-.5px}
+.stat .nm small{font-size:14px;font-weight:400;color:#a2a2aa;margin-left:3px}
+.week{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;padding:14px 2px 4px}
+.week .wd{font-size:12.5px;color:#b0b0b8;letter-spacing:.5px;font-weight:600}
+.week .wd.now{color:#f2701c}
+.week .dn{font-size:17px;font-weight:600;margin-top:13px;color:#2a2a30}
+.pref-row{display:flex;align-items:center;padding:16px;cursor:pointer;gap:12px}
+.pref-row+.pref-row{border-top:1px solid #f2f2f5}
+.pref-row .t{font-size:16.5px;font-weight:600;flex:1}
+.pref-row .t small{display:block;font-size:12.5px;font-weight:400;color:#a4a4ac;margin-top:3px;line-height:1.5}
+.pref-row .v{color:#9a9aa2;font-size:15px;max-width:158px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sw{width:52px;height:30px;border-radius:16px;background:#dcdce2;position:relative;transition:.25s;flex:0 0 auto}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.25s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.sw.on{background:#f4700f}
+.sw.on::after{left:25px}
+.grouplabel{font-size:12px;font-weight:800;letter-spacing:1.5px;color:#a0a0aa;text-transform:uppercase;margin:4px 0 9px 6px}
+
+/* 9. 我的内容 ------------------------------------------------- */
+.listen-wrap{display:flex;gap:12px;margin-bottom:16px}
+.lcard{border-radius:18px;padding:12px 12px 14px;position:relative;overflow:hidden}
+.lcard.a{flex:1.72;background:linear-gradient(150deg,#e2dcf4,#efe9f8)}
+.lcard.b{flex:1;background:linear-gradient(150deg,#bfeade,#d6f3ea)}
+.lc-head{display:flex;align-items:center;gap:7px;margin:2px 0 10px}
+.lc-head .dot{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:#fff}
+.lcard.a .dot{background:#8878d0}.lcard.b .dot{background:#3fb99b}
+.lc-head .dot .icon{width:15px;height:15px;stroke-width:2}
+.lc-head span{font-size:16px;font-weight:700}
+.lcard.a .lc-head span{color:#7566c6}.lcard.b .lc-head span{color:#2fa88c}
+.lc-inner{display:flex;gap:10px}
+.lbox{flex:1;background:rgba(255,255,255,.66);border-radius:13px;padding:11px 12px 8px;cursor:pointer;position:relative;min-height:100px}
+.lbox:active{background:rgba(255,255,255,.9)}
+.lbox .n{font-size:17px;font-weight:700}
+.lbox .c{font-size:13px;color:#8f8f97;margin-top:2px}
+.lbox .play{position:absolute;right:9px;bottom:8px;width:25px;height:25px;border-radius:50%;display:grid;place-items:center}
+.lcard.a .play{background:#ded6f5;color:#8878d0}
+.lcard.b .play{background:#c8ece1;color:#3fb99b}
+.lbox .play .icon{width:13px;height:13px;fill:currentColor;stroke:none}
+
+/* 10. 个人中心 ------------------------------------------------ */
+#s-profile{background:linear-gradient(180deg,#eef0ef 0%,#e9ecea 45%,#e4e8e3 100%)}
+.pf-top{display:flex;align-items:center;justify-content:space-between;padding:8px 20px}
+.pf-top button{background:none;border:0;padding:6px;cursor:pointer;color:#1c1c20;display:flex}
+.pf-hero{text-align:center;padding:20px 0 24px}
+.pf-hero .avatar{width:108px;height:108px;margin:0 auto 14px}
+.pf-hero h3{font-size:22px;font-weight:600}
+.vip{display:inline-flex;align-items:center;gap:8px;margin-top:12px;background:rgba(0,0,0,.05);color:#8b8b93;font-size:15px;padding:8px 16px;border-radius:20px;cursor:pointer}
+.vip .v{width:26px;height:18px;border-radius:4px;background:#c3c3cb;color:#fff;font-size:9.5px;font-weight:800;display:grid;place-items:center}
+.assets{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.asset{background:#fff;border-radius:16px;padding:15px;cursor:pointer}
+.asset .hd{display:flex;align-items:center;justify-content:space-between}
+.asset .hd b{font-size:16.5px}
+.asset .big{font-size:26px;font-weight:800;margin-top:12px;letter-spacing:-.6px}
+.asset .sm{font-size:12.5px;color:#9a9aa4;margin-top:3px}
+.mbars{display:flex;gap:5px;align-items:flex-end;height:38px;margin-top:12px}
+.mbars i{flex:1;border-radius:3px 3px 0 0;background:#f2701c;opacity:.75}
+
+/* 11. 弹层 / 提示 --------------------------------------------- */
+.mask{position:absolute;inset:0;z-index:48;display:none}
+.mask.on{display:block}
+.menu{position:absolute;z-index:49;background:#fff;border-radius:16px;box-shadow:0 16px 44px rgba(30,20,50,.22);overflow:hidden;display:none;transform-origin:top right;animation:pop .16s ease-out}
+.menu.on{display:block}
+@keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.menu button{display:flex;align-items:center;gap:15px;width:100%;background:none;border:0;font-family:inherit;font-size:16.5px;color:#1c1c22;padding:14px 20px 14px 17px;cursor:pointer;white-space:nowrap}
+.menu button+button{border-top:1px solid #f2f2f5}
+.menu button:active{background:#f7f7fa}
+.menu button:disabled{color:#c0c0c8;cursor:default}
+.menu .icon{width:21px;height:21px;flex:0 0 auto}
+#menu-more{top:52px;right:14px;width:206px}
+#menu-book{top:196px;right:18px;width:238px}
+.toast{
+  position:absolute;left:50%;bottom:118px;transform:translate(-50%,10px);z-index:70;
+  background:rgba(28,28,34,.93);color:#fff;font-size:14.5px;padding:11px 20px;border-radius:22px;
+  opacity:0;pointer-events:none;transition:.24s;max-width:310px;text-align:center;line-height:1.5;
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* 12. 说明面板 ------------------------------------------------ */
+.panel{flex:0 0 auto;width:342px;padding-top:6px;color:#c9c9d4;font-size:13.5px;line-height:1.7}
+.panel h1{font-size:21px;color:#fff;font-weight:700;letter-spacing:.4px}
+.panel .sub{color:#7c7c8c;margin:6px 0 20px;font-size:13px}
+.panel h4{color:#fff;font-size:12.5px;font-weight:700;margin:22px 0 10px;letter-spacing:1.4px;text-transform:uppercase;opacity:.55}
+.jump{display:flex;flex-wrap:wrap;gap:8px}
+.jump button{background:#1c1c23;border:1px solid #2e2e38;color:#d2d2de;font-family:inherit;font-size:12.5px;padding:8px 13px;border-radius:9px;cursor:pointer;transition:.16s}
+.jump button:hover{background:#282832;border-color:#3d3d4a;color:#fff}
+.panel ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.panel li{padding-left:16px;position:relative;color:#a4a4b4}
+.panel li::before{content:"";position:absolute;left:2px;top:10px;width:5px;height:5px;border-radius:50%;background:#f2701c}
+.panel li b{color:#e6e6f0;font-weight:600}
+.panel .flow{background:#15151b;border:1px solid #262630;border-radius:12px;padding:14px 15px;font-size:12.5px;line-height:1.85;color:#9e9eb0;white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.panel .foot{margin-top:22px;color:#5e5e6c;font-size:12px;border-top:1px solid #232330;padding-top:14px}
+@media(max-width:820px){body{padding:20px 12px}.panel{width:390px}}
+</style>
+</head>
+<body>
+
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-graph" viewBox="0 0 24 24"><circle cx="12" cy="5.4" r="2.6"/><circle cx="5.2" cy="17" r="2.6"/><circle cx="18.8" cy="17" r="2.6"/><path d="M10.2 7.4 6.8 14.6M13.8 7.4l3.4 7.2M7.8 17h8.4"/></symbol>
+  <symbol id="i-desk" viewBox="0 0 24 24"><rect x="3" y="6.5" width="18" height="13" rx="2.5"/><path d="M3 11h18M9.5 8.5V4.6h5v3.9"/></symbol>
+  <symbol id="i-gearpic" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="m6 16 3.6-4 3 3.2L15 13l3 3.2"/><circle cx="17.5" cy="17" r="3.4" fill="currentColor" stroke="none"/><circle cx="17.5" cy="17" r="1.2" fill="#fff" stroke="none"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 9.5h17M8 3.5v3M16 3.5v3"/><circle cx="8.6" cy="14.6" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="14.6" r=".9" fill="currentColor" stroke="none"/><circle cx="15.4" cy="14.6" r=".9" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-chev-r" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+  <symbol id="i-chev-d" viewBox="0 0 24 24"><path d="m5 9 7 7 7-7"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9.2 17h5.6M10 20.2h4"/><path d="M12 3.4a5.8 5.8 0 0 0-3.4 10.5c.5.4.8 1 .8 1.6h5.2c0-.6.3-1.2.8-1.6A5.8 5.8 0 0 0 12 3.4Z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.6 2.6 5.4 5.9.8-4.3 4.1 1.1 5.9-5.3-2.9-5.3 2.9 1.1-5.9L3.5 9.8l5.9-.8L12 3.6Z"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M4 8.5h10.5a5 5 0 0 1 0 10H8"/><path d="m7.5 4.5-3.7 4 3.7 4"/></symbol>
+  <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.9" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.9" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.9" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-kebab" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.8" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.8" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2.8" y="5" width="18.4" height="14" rx="2.4"/><path d="m3.4 6.6 8.6 6.6 8.6-6.6"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.3v13.4L19 12 8 5.3Z"/></symbol>
+  <symbol id="i-replay" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 5.4V11h-5.4"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="3.6"/><path d="M12 1.8v3.4M12 18.8v3.4M1.8 12h3.4M18.8 12h3.4"/></symbol>
+  <symbol id="i-bookopen" viewBox="0 0 24 24"><rect x="4" y="3.6" width="16" height="16.8" rx="2.4"/><path d="M8 3.6v16.8M11.5 8h5M11.5 12h5"/></symbol>
+  <symbol id="i-calchk" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3.5v3M16 3.5v3M8.8 14l2.3 2.3 4.2-4.4"/></symbol>
+  <symbol id="i-chk" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="m8.4 12.2 2.6 2.6 4.8-5"/></symbol>
+  <symbol id="i-note" viewBox="0 0 24 24"><rect x="5" y="3.6" width="14" height="16.8" rx="2.4"/><path d="M9 3.6v16.8M11.8 8.4h4.4M11.8 12h4.4"/></symbol>
+  <symbol id="i-quote" viewBox="0 0 24 24"><rect x="3.4" y="5" width="17.2" height="14" rx="2.6"/><path d="M7.4 9.4h4M7.4 13h3"/><path d="m14.6 10.2 3.4 2.1-3.4 2.1v-4.2Z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M14.8 4.4a2.3 2.3 0 0 1 3.3 3.2L8.4 17.4 4 19l1.6-4.4 9.2-10.2Z"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 8h10M18 8h2M4 16h4M12 16h8"/><circle cx="16" cy="8" r="2.2"/><circle cx="10" cy="16" r="2.2"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M10 15V9.4l5-1.2V14"/><circle cx="9" cy="15.2" r="1.6"/><circle cx="14" cy="14" r="1.6"/></symbol>
+  <symbol id="i-fix" viewBox="0 0 24 24"><path d="m6 18 8.4-8.4M4.6 19.4 8 18.6l-.6-3.4"/><path d="m13 8.4 2.6-2.6 3.4 3.4-2.6 2.6-3.4-3.4Z"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3.6a8.4 8.4 0 0 0 0 16.8c1.2 0 1.8-.8 1.8-1.7 0-1.4 1-2 2.2-2h1.2a3 3 0 0 0 3-3c0-5.4-3.7-10.1-8.2-10.1Z"/><circle cx="8.4" cy="10" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="7.8" r="1.1" fill="currentColor" stroke="none"/><circle cx="8" cy="14.4" r="1.1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-set" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 14.4a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1v.3a2 2 0 1 1-4 0v-.2a1.6 1.6 0 0 0-2.8-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7h-.3a2 2 0 1 1 0-4h.2a1.6 1.6 0 0 0 1.1-2.8l-.1-.1A2 2 0 1 1 7.2 3.7l.1.1a1.6 1.6 0 0 0 2.7-1.1v-.3a2 2 0 1 1 4 0v.2a1.6 1.6 0 0 0 2.8 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7h.3a2 2 0 1 1 0 4h-.2a1.6 1.6 0 0 0-1.4 1.2Z"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 6.6h16M7 12h13M11 17.4h9"/><circle cx="16.4" cy="6.6" r="1.8"/><circle cx="4.6" cy="12" r="1.8"/><circle cx="7.6" cy="17.4" r="1.8"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><rect x="4.4" y="3.6" width="15.2" height="16.8" rx="2.4"/><path d="M8 8.4h8M8 12h8M8 15.6h5"/></symbol>
+  <symbol id="i-dl" viewBox="0 0 24 24"><path d="M7 17.4a4.4 4.4 0 0 1-.4-8.8 5.6 5.6 0 0 1 10.8-1 3.9 3.9 0 0 1 2.4 7.3"/><path d="M12 10.6v8m0 0 3-3m-3 3-3-3"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20.2 11.4A8.2 8.2 0 0 0 6.4 6.8L3.8 9.2"/><path d="M3.8 12.6a8.2 8.2 0 0 0 13.8 4.6l2.6-2.4"/><path d="M3.8 4.6v4.6h4.6M20.2 19.4v-4.6h-4.6"/></symbol>
+  <symbol id="i-vol" viewBox="0 0 24 24"><path d="M11 5.4 6.6 9H3.6v6h3L11 18.6V5.4Z"/><path d="M14.6 9.4a3.6 3.6 0 0 1 0 5.2M17.4 6.8a7.4 7.4 0 0 1 0 10.4"/></symbol>
+  <symbol id="i-bars" viewBox="0 0 24 24"><path d="M4 7h9M4 12h14M4 17h6"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24"><path d="M4 6v12h16"/><path d="m7 14 4-4 3 3 5-6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.4V12l3 2"/></symbol>
+  <symbol id="i-timer" viewBox="0 0 24 24"><path d="M20.4 12a8.4 8.4 0 1 1-4.6-7.5"/><path d="M12 7.6V12l3 1.8"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3.4 8.4 4.4-8.4 4.4L3.6 7.8 12 3.4Z"/><path d="m3.6 12.4 8.4 4.4 8.4-4.4M3.6 16.6 12 21l8.4-4.4"/></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M2.6 8.6a14 14 0 0 1 18.8 0M6 12.2a9 9 0 0 1 12 0M9.4 15.8a4.2 4.2 0 0 1 5.2 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-signal" viewBox="0 0 24 24"><path d="M3 18h2M8.5 13.5v4.5M14 9.5V18M19.5 5.5V18" stroke-width="2.6"/></symbol>
+</svg>
+
+<div class="phone">
+  <div class="statusbar light" id="statusbar">
+    <span id="sbTime">8:58</span>
+    <span class="sb-r">
+      <svg class="icon" style="width:14px;height:14px"><use href="#i-clock"/></svg>
+      <svg class="icon" style="width:14px;height:14px"><use href="#i-wifi"/></svg>
+      <svg class="icon" style="width:14px;height:14px"><use href="#i-signal"/></svg>
+      <i class="sb-bat"></i>
+    </span>
+  </div>
+
+  <div class="viewport">
+
+    <!-- ============ 首页 ============ -->
+    <section class="screen active" id="s-home" data-anim="fade">
+      <div class="wall"><div class="band"></div><div class="hill"></div><div id="sparks"></div></div>
+      <button class="avatar-btn" onclick="go('s-profile')"><span class="avatar"></span></button>
+      <div class="brandmark">SCENELEX</div>
+
+      <div class="sign-card" id="signCard" onclick="doSign()">
+        <svg class="icon"><use href="#i-cal"/></svg>
+        <div class="st" id="signT">签到</div>
+        <div class="sd">08/12 Wed.</div>
+      </div>
+
+      <div class="home-actions">
+        <button class="act" onclick="startLearn()"><b>Learn</b><span id="learnN">4</span><i>待理解义项</i></button>
+        <button class="act" onclick="startReview('due')"><b>Review</b><span id="reviewN">8</span><i>待复习义项</i></button>
+      </div>
+
+      <nav class="tabbar">
+        <button onclick="go('s-map')" aria-label="概念地图"><svg class="icon"><use href="#i-graph"/></svg></button>
+        <button onclick="go('s-content')" aria-label="我的内容"><svg class="icon"><use href="#i-desk"/></svg></button>
+        <button onclick="go('s-study')" aria-label="我的学习"><svg class="icon"><use href="#i-gearpic"/></svg></button>
+      </nav>
+    </section>
+
+    <!-- ============ 理解流程 ============ -->
+    <section class="screen" id="s-learn" data-anim="fade">
+      <div class="h-sp"></div>
+      <div class="lh">
+        <button onclick="exitFlow()"><svg class="icon" style="width:26px;height:26px"><use href="#i-chev-l"/></svg></button>
+        <span class="prog-n" id="lhProg">第 1 / 4 词</span>
+        <div class="tools">
+          <button id="btnUndo" onclick="undoUnit()"><svg class="icon"><use href="#i-undo"/></svg></button>
+          <button id="btnStar" onclick="toggleFav(this)"><svg class="icon"><use href="#i-star"/></svg></button>
+          <button onclick="skipKnown()"><span class="txt">熟</span></button>
+          <button onclick="openMenu('menu-more',event)"><svg class="icon"><use href="#i-dots"/></svg></button>
+        </div>
+      </div>
+      <div class="segbar" id="segbar"></div>
+      <div class="steprow">
+        <span class="lb" id="stepLb">经验 1 · 建立锚点</span>
+        <span class="mode" id="modePill">L1 概念形成</span>
+      </div>
+      <div class="lscroll" id="lScroll"><div class="lbody" id="lBody"></div></div>
+      <div class="lfoot" id="lFoot"></div>
+    </section>
+
+    <!-- ============ 复习 / 迁移验收 ============ -->
+    <section class="screen" id="s-review" data-anim="fade">
+      <div class="h-sp"></div>
+      <div class="lh">
+        <button onclick="exitFlow()"><svg class="icon" style="width:26px;height:26px"><use href="#i-chev-l"/></svg></button>
+        <span class="prog-n" id="rvProg">复习 1 / 8</span>
+        <div class="tools">
+          <button onclick="toast('这条复习记录会带上 word_sense + program_version + experience_unit 一起上报')"><svg class="icon"><use href="#i-layers"/></svg></button>
+          <button onclick="openMenu('menu-more',event)"><svg class="icon"><use href="#i-dots"/></svg></button>
+        </div>
+      </div>
+      <div class="lscroll" id="rvScroll"><div class="lbody" id="rvBody"></div></div>
+      <div id="rvFootWrap"></div>
+    </section>
+
+    <!-- ============ 组完成 ============ -->
+    <section class="screen" id="s-finish" data-anim="fade">
+      <div class="fin" id="finBody"></div>
+    </section>
+
+    <!-- ============ 概念地图 ============ -->
+    <section class="screen" id="s-map" data-anim="sheet">
+      <div class="sheet-head">
+        <button class="down" onclick="back()"><svg class="icon"><use href="#i-chev-d"/></svg></button>
+        <h2>概念地图</h2>
+        <button class="right" onclick="toast('边界与混淆关系直接来自 relations.boundaries / l1_confusables')"><svg class="icon"><use href="#i-bulb"/></svg></button>
+      </div>
+      <div class="pad" id="mapBody"></div>
+    </section>
+
+    <!-- ============ 我的内容 ============ -->
+    <section class="screen" id="s-content" data-anim="sheet">
+      <div class="sheet-head">
+        <button class="down" onclick="back()"><svg class="icon"><use href="#i-chev-d"/></svg></button>
+        <h2>我的内容</h2>
+        <button class="right" onclick="toast('小窍门：经验回放只重看场景，不重看词——回忆词是复习的事')"><svg class="icon"><use href="#i-bulb"/></svg></button>
+      </div>
+      <div class="pad">
+        <div class="listen-wrap">
+          <div class="lcard a">
+            <div class="lc-head"><span class="dot"><svg class="icon"><use href="#i-replay"/></svg></span><span>经验回放</span></div>
+            <div class="lc-inner">
+              <div class="lbox" onclick="toast('回放已建立的 12 个经验场景（只看场景，不给词）')"><div class="n">回顾</div><div class="c">12 场景</div><span class="play"><svg class="icon"><use href="#i-play"/></svg></span></div>
+              <div class="lbox" onclick="toast('先看一眼明天新词的锚点场景，不揭示符号')"><div class="n">预习</div><div class="c">4 场景</div><span class="play"><svg class="icon"><use href="#i-play"/></svg></span></div>
+            </div>
+          </div>
+          <div class="lcard b">
+            <div class="lc-head"><span class="dot"><svg class="icon"><use href="#i-target"/></svg></span><span>迁移验收</span></div>
+            <div class="lc-inner">
+              <div class="lbox" onclick="startReview('transfer')"><div class="n">今日</div><div class="c">4 义项</div><span class="play"><svg class="icon"><use href="#i-play"/></svg></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card group">
+          <div class="row" onclick="toast('在学词单：SceneLex 高频义项（上）5,585 义项')">
+            <span class="sq" style="background:#dff5ee;color:#13a583"><svg class="icon"><use href="#i-bookopen"/></svg></span>
+            <span class="t">在学词单</span><span class="v">5,585 义项</span><svg class="chev"><use href="#i-chev-r"/></svg>
+          </div>
+        </div>
+        <div class="card group">
+          <div class="row" onclick="toast('近日已理解：前天 1 义项')">
+            <span class="sq" style="background:#fdf0d8;color:#e9a020"><svg class="icon"><use href="#i-calchk"/></svg></span>
+            <span class="t">近日已理解</span><span class="v">前天 1 义项</span><svg class="chev"><use href="#i-chev-r"/></svg>
+          </div>
+          <div class="row" onclick="toast('全部已理解：1,212 义项')">
+            <span class="sq" style="background:#fdf3dc;color:#e8a72a"><svg class="icon"><use href="#i-chk"/></svg></span>
+            <span class="t">全部已理解</span><span class="v">1,212 义项</span><svg class="chev"><use href="#i-chev-r"/></svg>
+          </div>
+        </div>
+        <div class="card group">
+          <div class="row" onclick="go('s-map')">
+            <span class="sq" style="background:#e6ecfd;color:#4a76e8"><svg class="icon"><use href="#i-graph"/></svg></span>
+            <span class="t">我的概念地图</span><span class="v">4 组边界</span><svg class="chev"><use href="#i-chev-r"/></svg>
+          </div>
+          <div class="row" onclick="toast('场景收藏：把某个特别好用的经验实例存下来')">
+            <span class="sq" style="background:#e6ecfd;color:#4a76e8"><svg class="icon"><use href="#i-quote"/></svg></span>
+            <span class="t">场景收藏</span><span class="v">3 个</span><svg class="chev"><use href="#i-chev-r"/></svg>
+          </div>
+          <div class="row" onclick="toast('笔记：还没有写过笔记')">
+            <span class="sq" style="background:#e9edff;color:#5772ea"><svg class="icon"><use href="#i-pen"/></svg></span>
+            <span class="t">笔记</span><span class="v">0 条</span><svg class="chev"><use href="#i-chev-r"/></svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 我的学习 / 学习偏好 ============ -->
+    <section class="screen" id="s-study" data-anim="sheet">
+      <div class="sheet-head">
+        <button class="down" onclick="back()"><svg class="icon"><use href="#i-chev-d"/></svg></button>
+        <div class="segwrap"><div class="seg">
+          <button id="segA" class="on" onclick="switchStudy('a')">我的学习</button>
+          <button id="segB" onclick="switchStudy('b')">学习偏好</button>
+        </div></div>
+      </div>
+
+      <div class="pad" id="studyA">
+        <div class="plan-top"><div class="sec-title">计划</div><button class="pill" onclick="toast('换一份词单：按词频段 / 考试 / 主题')">换份词单</button></div>
+        <div class="card" style="padding:16px 16px 6px;margin-bottom:26px">
+          <div class="book">
+            <div class="bookcover"><span class="t">SceneLex 高频义项</span><span class="s">上册 · 5585</span><i class="c"></i><i class="tri1"></i><i class="tri2"></i></div>
+            <div style="flex:1;position:relative">
+              <div class="name">高频义项（上）</div>
+              <div class="sub">按义项组织，不按词头</div>
+              <button class="kebab" onclick="openMenu('menu-book',event)"><svg class="icon"><use href="#i-kebab"/></svg></button>
+              <div class="newbook" onclick="toggleCbx(this)"><span class="cbx"><svg class="icon"><use href="#i-chk"/></svg></span>难点本 218</div>
+            </div>
+          </div>
+          <div class="prog"><i></i></div>
+          <div class="prog-txt"><span>已理解 <b style="color:#6d6d76;font-weight:600">1212</b></span><span>总义项 <b style="color:#6d6d76;font-weight:600">5585</b></span></div>
+          <div class="daily"><b>每日新理解义项</b><span onclick="switchStudy('b')">4 / 天</span></div>
+        </div>
+
+        <div class="plan-top"><div class="sec-title">统计</div><button class="pill" onclick="toast('生成学习长图分享')">晒成绩</button></div>
+        <div class="card" style="padding:16px;margin-bottom:26px">
+          <div style="display:flex;align-items:center;margin-bottom:14px">
+            <b style="font-size:18px">概览</b>
+            <svg class="chev" style="margin-left:auto;width:20px;height:20px"><use href="#i-chev-r"/></svg>
+          </div>
+          <div class="stats">
+            <div class="stat"><div class="lb"><svg class="icon" style="color:#f5c23a"><use href="#i-bars"/></svg>今日理解&复习</div><div class="nm" id="statToday">0<small>义项</small></div></div>
+            <div class="stat"><div class="lb"><svg class="icon" style="color:#ef4e63"><use href="#i-trend"/></svg>累计理解</div><div class="nm" id="statAll">1212<small>义项</small></div></div>
+            <div class="stat"><div class="lb"><svg class="icon" style="color:#f5c23a"><use href="#i-timer"/></svg>今日总时长</div><div class="nm" id="statMin">0<small>分钟</small></div></div>
+            <div class="stat"><div class="lb"><svg class="icon" style="color:#ef4e63"><use href="#i-clock"/></svg>累计时长</div><div class="nm">15330<small>分钟</small></div></div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:16px 16px 20px">
+          <div style="display:flex;align-items:center">
+            <b style="font-size:18px">签到日历</b>
+            <span style="margin-left:auto;color:#a2a2aa;font-size:15px">连续签到 <span id="streak">0</span> 天</span>
+            <svg class="chev" style="width:18px;height:18px;margin-left:4px"><use href="#i-chev-r"/></svg>
+          </div>
+          <div class="week">
+            <div><div class="wd">MON</div><div class="dn">10</div></div>
+            <div><div class="wd">TUE</div><div class="dn">11</div></div>
+            <div><div class="wd now">WED</div><div class="dn" style="color:#f2701c">今</div></div>
+            <div><div class="wd">THU</div><div class="dn" style="color:#c8c8d0">13</div></div>
+            <div><div class="wd">FRI</div><div class="dn" style="color:#c8c8d0">14</div></div>
+            <div><div class="wd">SAT</div><div class="dn" style="color:#c8c8d0">15</div></div>
+            <div><div class="wd">SUN</div><div class="dn" style="color:#c8c8d0">16</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pad" id="studyB" style="display:none">
+        <div class="grouplabel">理解流程</div>
+        <div class="card group">
+          <div class="pref-row" id="prefTransfer" onclick="cycleTransfer(this)">
+            <span class="t">迁移测试时机<small>放在首学末尾会测到短时记忆；建议挪到当天收尾</small></span>
+            <span class="v">当天收尾</span>
+          </div>
+          <div class="pref-row" onclick="toggleSw(this,'边界扰动题')"><span class="t">边界扰动题<small>用对比 / 反例场景压掉错误泛化</small></span><span class="sw on"></span></div>
+          <div class="pref-row" onclick="toggleSw(this,'符号回指')"><span class="t">符号回指<small>揭示后补一次「场景 → 词」的检索</small></span><span class="sw on"></span></div>
+        </div>
+
+        <div class="grouplabel">L1 脚手架</div>
+        <div class="card group">
+          <div class="pref-row" onclick="cyclePref(this,['中文','中英混排','纯英文'],'当前档位')"><span class="t">叙事语言档位</span><span class="v">中文</span></div>
+          <div class="pref-row" onclick="toggleSw(this,'自动撤除脚手架')"><span class="t">自动撤除<small>复习次数增加后逐档切到纯英文</small></span><span class="sw on"></span></div>
+          <div class="pref-row" onclick="toggleSw(this,'符号揭示前显示中文')"><span class="t">揭示前显示中文标签<small>打开等于回到「先给翻译」，默认关闭</small></span><span class="sw"></span></div>
+        </div>
+
+        <div class="grouplabel">节奏</div>
+        <div class="card group">
+          <div class="pref-row" onclick="cyclePref(this,['4 义项/组','6 义项/组','8 义项/组','12 义项/组'],'新学节奏')"><span class="t">新学节奏<small>一个义项约 90 秒，不能照搬 20 词/组</small></span><span class="v">4 义项/组</span></div>
+          <div class="pref-row" onclick="cyclePref(this,['20 义项/组','10 义项/组','30 义项/组'],'复习节奏')"><span class="t">复习节奏</span><span class="v">20 义项/组</span></div>
+        </div>
+
+        <div class="grouplabel">发音与提醒</div>
+        <div class="card group">
+          <div class="pref-row" onclick="cyclePref(this,['美式','英式'],'发音类型')"><span class="t">发音类型</span><span class="v">美式</span></div>
+          <div class="pref-row" onclick="cyclePref(this,['符号揭示时','揭示 + 例句','关闭'],'自动发音')"><span class="t">自动发音</span><span class="v">符号揭示时</span></div>
+          <div class="pref-row" onclick="toast('学习提醒：智能提醒 / 固定时间 / 关闭')"><span class="t">学习提醒</span><span class="v">智能提醒</span></div>
+        </div>
+        <div class="card group">
+          <div class="pref-row" onclick="toast('更多学习偏好')"><span class="t">更多学习偏好</span><svg class="chev"><use href="#i-chev-r"/></svg></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 个人中心 ============ -->
+    <section class="screen" id="s-profile" data-anim="slide">
+      <div class="h-sp"></div>
+      <div class="pf-top">
+        <button onclick="back()"><svg class="icon" style="width:26px;height:26px"><use href="#i-chev-l"/></svg></button>
+        <button onclick="toast('消息中心：暂无新消息')"><svg class="icon" style="width:26px;height:26px"><use href="#i-mail"/></svg></button>
+      </div>
+      <div class="pf-hero">
+        <span class="avatar"></span>
+        <h3>52赫兹的Alice</h3>
+        <div class="vip" onclick="toast('会员：解锁全部义项与富媒体微世界')"><span class="v">VIP</span>未开通会员 ›</div>
+      </div>
+      <div class="pad">
+        <div class="assets">
+          <div class="asset" onclick="toast('已理解义项 1,212 / 已建立经验 3,806 个场景')">
+            <div class="hd"><b>已理解义项</b><svg class="chev"><use href="#i-chev-r"/></svg></div>
+            <div class="big">1,212</div><div class="sm">3,806 个经验场景</div>
+          </div>
+          <div class="asset" onclick="toast('掌握度分布：按 FSRS 状态分档')">
+            <div class="hd"><b>掌握度</b><svg class="chev"><use href="#i-chev-r"/></svg></div>
+            <div class="mbars"><i style="height:40%"></i><i style="height:64%"></i><i style="height:88%"></i><i style="height:52%"></i><i style="height:30%"></i></div>
+            <div class="sm">稳定期中位数 12 天</div>
+          </div>
+        </div>
+        <div class="card group">
+          <div class="row" onclick="toast('外观 & 沉浸场景')">
+            <span class="sq" style="background:#dff5ec;color:#17a97f"><svg class="icon"><use href="#i-palette"/></svg></span>
+            <span class="t">外观 & 沉浸场景</span><svg class="chev"><use href="#i-chev-r"/></svg>
+          </div>
+          <div class="row" onclick="back();setTimeout(()=>{go('s-study');switchStudy('b')},260)">
+            <span class="sq" style="background:#f6e9fb;color:#b053d8"><svg class="icon"><use href="#i-sliders"/></svg></span>
+            <span class="t">学习偏好</span><svg class="chev"><use href="#i-chev-r"/></svg>
+          </div>
+          <div class="row" onclick="toast('更多设置：账号、通知、离线包')">
+            <span class="sq" style="background:#e7edfd;color:#4a76e8"><svg class="icon"><use href="#i-set"/></svg></span>
+            <span class="t">更多设置</span><svg class="chev"><use href="#i-chev-r"/></svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="mask" id="mask" onclick="closeMenus()"></div>
+    <div class="menu" id="menu-more">
+      <button onclick="closeMenus();reset();go('s-study');switchStudy('b')"><svg class="icon"><use href="#i-sliders"/></svg>学习偏好</button>
+      <button onclick="closeMenus();toast('沉浸场景：为学习界面更换背景与音效')"><svg class="icon"><use href="#i-music"/></svg>沉浸场景</button>
+      <button onclick="closeMenus();toast('这段经验来自 data/scenes/ 下的正式场景规格')"><svg class="icon"><use href="#i-layers"/></svg>查看场景来源</button>
+      <button onclick="closeMenus();toast('纠错｜举报')"><svg class="icon"><use href="#i-fix"/></svg>纠错｜举报</button>
+    </div>
+    <div class="menu" id="menu-book">
+      <button onclick="closeMenus();toast('选择学习范围：按词频段 / 语义类型筛选')"><svg class="icon"><use href="#i-filter"/></svg>选择学习范围</button>
+      <button onclick="closeMenus();toast('查看词单义项表（5,585 条）')"><svg class="icon"><use href="#i-list"/></svg>查看义项表</button>
+      <button onclick="closeMenus();toast('下载离线经验包（含场景文本，富媒体另计）')"><svg class="icon"><use href="#i-dl"/></svg>下载离线经验包</button>
+      <button onclick="closeMenus();toast('重学词单会清空当前进度')"><svg class="icon"><use href="#i-replay"/></svg>重学词单</button>
+      <button disabled><svg class="icon"><use href="#i-refresh"/></svg>更新词单</button>
+    </div>
+    <div class="toast" id="toast"></div>
+  </div>
+  <div class="hbar light" id="hbar"></div>
+</div>
+
+<aside class="panel">
+  <h1>SceneLex 手机端原型</h1>
+  <div class="sub">壳沿用不背单词复刻原型，学习内核整体换成「理解词义」流程。内容跑的是正式库真数据：reluctant-01 / messy-01 / almost-01 / dirty-01 及其 21 个场景规格。</div>
+
+  <h4>两条流程</h4>
+  <div class="flow">Learn（首学 · 概念形成）
+  1 锚点经验      ← proto 场景
+  2 共性提取      ← transfer 场景 + 判断题
+  3 边界扰动      ← contrast/counter 场景 + 判断题
+  4 符号揭示      ← 英文词第一次出现
+  5 L2 落地       ← 搭配/例句 + 符号回指
+
+Review（复习 · 反向检索）
+  新 transfer 场景 → 回忆符号 → 揭示
+  → FSRS 四级评分</div>
+
+  <h4>关键设计</h4>
+  <ul>
+    <li><b>揭示前不出现单词</b>：顶栏只显示「第 N 词」，第 4 步之前整个界面找不到英文词和中文释义</li>
+    <li><b>四选一被移走</b>：它是符号检索，不是概念形成；反向放进复习（看场景 → 回忆词）</li>
+    <li><b>迁移测试挪出首学</b>：默认「当天收尾」，偏好里可切回「首学末尾 / 首次复习」对比手感</li>
+    <li><b>4 义项一组</b>：一个义项约 90 秒，20 词/组会变成 40 分钟</li>
+    <li><b>L1 脚手架分三档</b>：复习卡随次数从中文 → 中英混 → 纯英文，对应不背单词的「关闭译文」但有理论依据</li>
+    <li><b>概念地图 Tab</b>：直接渲染 relations.boundaries 与 l1_confusables，是竞品没有的资产</li>
+  </ul>
+
+  <h4>快速跳转</h4>
+  <div class="jump">
+    <button onclick="reset()">首页</button>
+    <button onclick="reset();startLearn()">理解流程</button>
+    <button onclick="reset();startLearn();jumpUnit(3)">符号揭示</button>
+    <button onclick="reset();startLearn();jumpUnit(4)">L2 落地</button>
+    <button onclick="reset();startReview('due')">复习（反向）</button>
+    <button onclick="reset();showFinish()">组完成</button>
+    <button onclick="reset();go('s-map')">概念地图</button>
+    <button onclick="reset();go('s-content')">我的内容</button>
+    <button onclick="reset();go('s-study');switchStudy('a')">我的学习</button>
+    <button onclick="reset();go('s-study');switchStudy('b')">学习偏好</button>
+    <button onclick="reset();go('s-profile')">个人中心</button>
+  </div>
+
+  <div class="foot">文件：SceneLex/scenelex-mobile-prototype.html　·　数据结构见 JS 里的 PROGRAM 常量，可直接作为 ExperienceProgram 契约草案</div>
+</aside>
+
+<script>
+/* ============================================================
+   ExperienceProgram（契约草案）
+   每个义项一份，由编译层从 WordSense + SceneSpec 编译产出。
+   units[] 的顺序即教学序列；review[] 是复习专用的新经验。
+   ============================================================ */
+const PROGRAM = {
+'reluctant-01':{
+  sense_id:'reluctant-01', word:'reluctant', pos:'adjective', ipa:'/rɪˈlʌktənt/',
+  semantic_type:'mental_state', l1_label:'不情愿的',
+  key:'一个自己可以做的行动摆在面前 ＋ 意愿为负 ＋ 就算做了，抵抗仍然看得见。',
+  reveal:'你刚才反复认出的这种状态，英语用 <b>reluctant</b> 表示：一个自己可以做的行动摆在面前，<b>内心并不愿意</b>——就算最后做了，那份不愿意仍然看得见。',
+  gloss:'常译「不情愿的」。<em>中文标签只是最后贴上去的名字，不是这个概念的来源。</em>',
+  units:[
+    {type:'anchor', kicker:'经验 1 · 建立锚点', ref:'reluctant-01-proto-01 · prototype',
+     scene:'饭桌上，妈妈指着孩子盘里的西兰花：「来，吃一口。」<br><br>孩子停住了。身体微微往后靠，视线从盘子上移开。<br>过了几秒，他伸手去拿叉子，手在半途又停了一下。<br><br><b>最后他还是自己把那一口吃了下去</b>——嚼得很平淡，一刻也没变得主动。'},
+    {type:'commonality', kicker:'经验 2 · 换一个完全不同的表面', ref:'reluctant-01-transfer-01 · transfer',
+     scene:'朋友把摔坏的杯子摆在桌上，看着他。<br><br>他盯着地板，手指绞在一起，过了很久才开口：<br>「……是我弄的。」<br><br>说完，他没有抬头。',
+     q:'这两个人最核心的共同点是什么？',
+     choices:[{t:'两个人都做不到这件事'},{t:'两个人都不太愿意做，但最后还是做了',ok:true},{t:'两个人都是被别人强迫的'}],
+     good:'对。抓住这一点：行动就摆在面前，主观意愿是负的——但动作仍然发生了。',
+     bad:'再看一次：不是「能不能」，也不是「被谁逼」，而是他们自己对这件事的意愿。'},
+    {type:'discrimination', kicker:'表面很像，把核心变量换掉', ref:'reluctant-01-contrast-01 · contrast → hesitant-01',
+     scene:'同一座跳水台。<br><br>有个人自己走上去，走到边缘又退半步，探头看看水面，又后退。<br>目光在水面和梯子之间来回。<br><br>她一直没决定要不要跳。',
+     q:'她的核心状态，和刚才两个人是同一类吗？',
+     choices:[{t:'是'},{t:'不是',ok:true}],
+     good:'对。她不是「不想跳」，而是「还没决定跳不跳」。停顿看起来一样，核心完全不同。',
+     bad:'注意她摆动的是「跳 or 不跳」这个选择本身，而不是对某个已定行动缺乏意愿。',
+     mini:[{w:'reluctant',d:'方向已定，意愿为负——不想做'},{w:'hesitant',d:'方向未定，意愿不明——还没决定'}]},
+    {type:'symbol'},
+    {type:'grounding',
+     collocations:['be reluctant to do sth','a reluctant nod','reluctant participant','reluctant agreement'],
+     example:{en:'She was <b>reluctant</b> to leave.',zh:'她不情愿离开。'},
+     recall:{scene:'教练吹哨要他上跳台。他仰头闭眼叹了口气，磨磨蹭蹭地爬上梯子，最后闭着眼跳了下去。',
+             q:'这一刻用哪个词？', choices:[{t:'reluctant',ok:true},{t:'hesitant'},{t:'eager'}],
+             good:'对。他没有在两个选项之间摆动，他只是不想做——但做了。',
+             bad:'他并没有在犹豫要不要跳，教练已经定了；他缺的是意愿。'}}
+  ],
+  transfer:{ref:'新情境 · 第一次见',
+    scene:'你拿到一份薪水很高的工作，但必须搬到国外、离开家人。<br><br>你非常不想走。<br>犹豫了几天，你还是签了字。',
+    q:'可以用 reluctant 描述你面对这个选择的态度吗？',
+    choices:[{t:'可以',ok:true},{t:'不可以'}],
+    good:'✓ 行动最终发生了，但意愿从头到尾是负的——正是 reluctant。',
+    bad:'「最后做了」不等于「愿意做」。判据是意愿，不是结果。'},
+  review:[
+    {l1:0, scene:'护士举起针管。<br>他把袖子卷起来，眼睛却一直盯着窗外，手臂僵着不动，过了好几秒才伸过去。'},
+    {l1:1, scene:'The dog sees the bathtub.<br>它四爪撑地往后退，被一路拖过去，最后还是被抱进了水里。'},
+    {l1:2, scene:'Her father hands her the microphone.<br>She looks at the floor, sighs, takes it — and starts to speak.'}
+  ]
+},
+'messy-01':{
+  sense_id:'messy-01', word:'messy', pos:'adjective', ipa:'/ˈmɛsi/',
+  semantic_type:'attribute', l1_label:'乱的',
+  key:'相对于本该有的整齐状态，位置乱了 ＋ 这份无序一眼可见（与干不干净无关）。',
+  reveal:'这种状态英语叫 <b>messy</b>：相对于它<b>本该有的整齐</b>，东西的位置乱了——而且这份无序是<b>一眼看得见</b>的。',
+  gloss:'常译「乱的」。<em>注意中文的「乱」范围大得多：局势乱是 chaotic，交通乱是 disorderly。</em>',
+  units:[
+    {type:'anchor', kicker:'经验 1 · 建立锚点', ref:'messy-01-proto-01 · prototype',
+     scene:'早上的卧室：床铺平整，书立在架上，鞋成对摆在门口。<br><br>傍晚，同一间房——<br>衣服搭在椅背上、堆在地上，书摊开在床中间，包倒在地毯上。<br><br>室友推门进来，愣了一下。'},
+    {type:'commonality', kicker:'经验 2 · 对象、环境全部换掉', ref:'messy-01-transfer-01 · transfer',
+     scene:'做完饭的厨房台面：切菜板、空瓶子、拆开一半的包装袋横七竖八摊着。<br><br>镜头一转——<br>一个人刚睡醒，头发一撮朝东、一撮朝西。',
+     q:'台面和头发，共有的是什么？',
+     choices:[{t:'都很脏'},{t:'东西不在该在的位置上，无序看得见',ok:true},{t:'都是因为没时间打理'}],
+     good:'对。核心是「可见的位置无序」，和干不干净、忙不忙没有关系。',
+     bad:'台面和头发都不一定脏——真正共有的是「本该有的秩序不在了」。'},
+    {type:'discrimination', kicker:'中文把两件事粘在了一起', ref:'messy-01-contrast-01 · contrast → dirty-01',
+     scene:'A 房间：物品摆放整齐，书立在架上，鞋成对放好。<br><b>但地板和桌面满是污渍和灰尘。</b><br><br>B 房间：东西乱堆一地。<br><b>但每一件都干干净净。</b>',
+     q:'哪一间是刚才那种状态？',
+     choices:[{t:'A 房间'},{t:'B 房间',ok:true},{t:'两间都是'}],
+     good:'对。B 是位置无序，A 只是表面不洁。中文「脏乱」连用，英语把这两件事分得很开。',
+     bad:'A 房间所有东西都在该在的位置上，只是表面有污物——那是 dirty，不是这个词。',
+     mini:[{w:'messy',d:'位置无序：东西不在该在的地方'},{w:'dirty',d:'表面不洁：有污渍、灰尘、油腻'}]},
+    {type:'symbol'},
+    {type:'grounding',
+     collocations:['messy room','messy desk','messy hair','messy handwriting','get messy'],
+     example:{en:'His handwriting is so <b>messy</b> that I can\'t read it.',zh:'他的字太乱了，我认不出来。'},
+     recall:{scene:'书桌上堆满了书和文件——数量极多，但每一摞都码得整整齐齐。<br>手肘一碰，最上面那摞塌了，纸散了一桌。',
+             q:'哪个词到这一刻才成立？', choices:[{t:'messy',ok:true},{t:'dirty'},{t:'cluttered'}],
+             good:'对。塌之前是 cluttered（多但有序），塌之后秩序没了，才是 messy。',
+             bad:'纸没有变脏，只是位置乱了；而「多」在塌之前就已经成立了。'}}
+  ],
+  transfer:{ref:'新情境 · 第一次见',
+    scene:'你打开新同事交上来的代码文件：<br>缩进忽左忽右，函数顺序毫无逻辑，注释东一句西一句。',
+    q:'这里能用 messy 吗？',
+    choices:[{t:'可以',ok:true},{t:'不可以，代码不是物理空间'}],
+    good:'✓ 可以。载体从房间换成了文件，但「相对于该有的秩序，排布乱了」这个结构没变。',
+    bad:'再想一次：判据是「本该有的排布秩序被打乱且可见」，它不要求是物理空间。'},
+  review:[
+    {l1:0, scene:'展会结束后的场地：椅子东倒西歪，宣传单散了一地，桌布拖在地上。'},
+    {l1:1, scene:'She opens the drawer. 电线、充电头、旧钥匙缠成一团，找一根数据线要翻半天。'},
+    {l1:2, scene:'After the party, cups sit on the floor, coats pile on one chair, and nothing is where it should be.'}
+  ]
+},
+'almost-01':{
+  sense_id:'almost-01', word:'almost', pos:'adverb', ipa:'/ˈɔːlmoʊst/',
+  semantic_type:'scalar_degree', l1_label:'几乎',
+  key:'界线明确 ＋ 距离极小 ＋ 最终没有跨过去，三者缺一不可。',
+  reveal:'这个结构英语用 <b>almost</b>：有一条<b>明确的界线</b>，距离已经<b>极小</b>，但<b>最终没有跨过去</b>。三个条件缺一不可。',
+  gloss:'常译「几乎 / 差一点」。<em>注意：中文「几乎不」对应的是 hardly/barely，不能直译成 almost not。</em>',
+  units:[
+    {type:'anchor', kicker:'经验 1 · 建立锚点', ref:'almost-01-proto-01 · prototype',
+     scene:'男孩踮起脚，伸手去够货架最里面那罐饮料。<br><br>指尖<b>擦到了</b>罐身——<br>罐子却往里滚了半圈。<br><br>他的手停在半空，够不到了。'},
+    {type:'commonality', kicker:'经验 2 · 三个毫不相干的画面', ref:'almost-01-transfer-01 · transfer',
+     scene:'一只鸟一路飞到笼顶，撞在玻璃上。<br><br>一个程序员敲下最后一行代码，屏幕黑了。<br><br>聚会上人都到齐了，只差一个。',
+     q:'三个画面共有的结构是什么？',
+     choices:[{t:'都失败得很惨'},{t:'都非常接近一条明确的界线，但没跨过去',ok:true},{t:'都是运气不好'}],
+     good:'对。有一条清楚的线、距离极小、最终没到——这三样同时成立才算。',
+     bad:'重点不是「惨」也不是「运气」：线是明确的，距离是极小的，结果是没到。'},
+    {type:'discrimination', kicker:'只改一个变量：到底过没过线', ref:'almost-01-contrast-01 · contrast → barely-01',
+     scene:'两个人跳远。<br><br>第一个人落地时，脚尖差 1 厘米没过线。<br>第二个人脚尖<b>刚好擦过线</b>，勉强站住。',
+     q:'第二个人可以用同一个词吗？',
+     choices:[{t:'可以，都只差一点点'},{t:'不可以',ok:true}],
+     good:'对。他已经过线了——哪怕只有 1 厘米。跨过去的是 barely，没跨过去的才是这个词。',
+     bad:'看落点：第二个人过线了。「到没到」是这条边界唯一的判据，距离多小都不算。',
+     mini:[{w:'almost',d:'差一点没到（未达成）'},{w:'barely',d:'勉强刚好到（已达成）'}]},
+    {type:'symbol'},
+    {type:'grounding',
+     collocations:['almost finished','almost there','almost fell','almost everyone','almost forgot'],
+     example:{en:'I <b>almost</b> missed the train.',zh:'我差点没赶上那班火车。'},
+     recall:{scene:'球射向球门，越过守门员指尖，砸在门柱上弹了出来。',
+             q:'这一脚怎么说？', choices:[{t:'It was almost a goal.',ok:true},{t:'It was barely a goal.'},{t:'It was exactly a goal.'}],
+             good:'对。球没进——极度接近但未达成。',
+             bad:'球弹出去了，没进门线。barely 是「勉强进了」，这里是没进。'}}
+  ],
+  transfer:{ref:'新情境 · 第一次见',
+    scene:'杯子从桌沿滑下去。<br>你伸手一捞，在离地十厘米的地方接住了它。',
+    q:'The cup ____ fell. 这里填 almost 成立吗？',
+    choices:[{t:'成立',ok:true},{t:'不成立'}],
+    good:'✓ 「摔到地上」这条线很明确，距离极小，而且最终没有发生——almost fell。',
+    bad:'再看这条线：杯子摔了没有？没有。这正是 almost 的标准结构。'},
+  review:[
+    {l1:0, scene:'电梯门就要合上，他冲过去伸手一挡——手指擦过门边，门还是关上了。'},
+    {l1:1, scene:'The jar lid won\'t move. 她使劲拧了三次，感觉<b>就要开了</b>，手一滑又滑了回去。'},
+    {l1:2, scene:'The battery shows 1%. He types the last sentence — and the screen goes black before he can save.'}
+  ]
+},
+'dirty-01':{
+  sense_id:'dirty-01', word:'dirty', pos:'adjective', ipa:'/ˈdɜːrti/',
+  semantic_type:'attribute', l1_label:'脏的',
+  key:'某个表面附着了本不该在那儿的外来物 ＋ 偏离它应有的洁净基准（与摆放整齐无关）。',
+  reveal:'这种状态英语叫 <b>dirty</b>：某个表面上<b>附着了本不该在那儿的东西</b>——灰、泥、油、污渍——相对于它应有的洁净基准。',
+  gloss:'常译「脏的」。<em>中文一个「脏」字从沾灰到结垢全包了；英语按程度和污物类型继续分：filthy / grimy / muddy。</em>',
+  units:[
+    {type:'anchor', kicker:'经验 1 · 建立锚点', ref:'dirty-01-proto-01 · prototype',
+     scene:'男孩穿着崭新的白球衣出门。<br><br>泥地上一次摔倒，起来时衣服上全是草渍和泥点，两只手一片黑。<br><br>回到家，妈妈用湿布在他手背上擦了一下——<br><b>露出一小块干净的皮肤。</b>'},
+    {type:'commonality', kicker:'经验 2 · 三个不同的表面', ref:'dirty-01-transfer-01 · transfer',
+     scene:'修车工摊开双手，掌纹里全是黑油。<br><br>幼童从草地上跑回来，白袜子染成灰绿色。<br><br>司机透过挡风玻璃看出去，全是一层土。',
+     q:'三个画面共有的是什么？',
+     choices:[{t:'东西都摆得很乱'},{t:'表面附着了本不该在那儿的东西',ok:true},{t:'都需要换新的'}],
+     good:'对。判据是「表面上有不该有的东西」，跟摆放整不整齐无关。',
+     bad:'手、袜子、玻璃都在各自该在的位置上；变的只是表面。'},
+    {type:'discrimination', kicker:'同一个词头，另一个词义', ref:'dirty-01-counter-01 · counterexample → dirty-02',
+     scene:'几个朋友聚会，有人讲了个下流笑话。<br><br>大家笑着起哄：<br>「So <b>dirty</b>!」',
+     q:'这里的 dirty 和刚才三个画面是同一个词义吗？',
+     choices:[{t:'是，都是 dirty'},{t:'不是',ok:true}],
+     good:'对。这里没有任何表面、任何污物。它是 dirty 的另一个义项，在 SceneLex 里是<b>另一个独立的学习单位</b>。',
+     bad:'找找看：这里有被弄脏的表面吗？没有。同一个词头，不同经验范畴。',
+     mini:[{w:'dirty-01',d:'表面附着污物（物理）'},{w:'dirty-02',d:'言语内容下流（非物理）'}]},
+    {type:'symbol'},
+    {type:'grounding',
+     collocations:['dirty hands','dirty dishes','dirty clothes','get dirty','so dirty that…'],
+     example:{en:'Don\'t touch the wall — your hands are <b>dirty</b>.',zh:'别碰墙，你手是脏的。'},
+     recall:{scene:'厨房里，碗碟摞得整整齐齐——但每一只碗底都留着一圈油。',
+             q:'这个厨房是？', choices:[{t:'dirty，但不 messy',ok:true},{t:'messy，但不 dirty'},{t:'两个都不是'}],
+             good:'对。位置完全有序，表面有污物——恰好是中文「脏乱」拆开后的那一半。',
+             bad:'碗摞得整整齐齐，位置一点不乱；乱的判据在这里不成立。'}}
+  ],
+  transfer:{ref:'新情境 · 第一次见',
+    scene:'你从阁楼搬下一箱旧书。<br>手指划过封面，留下一道痕，指腹变灰。',
+    q:'这些书可以说 dirty 吗？',
+    choices:[{t:'可以',ok:true},{t:'不可以，只是旧'}],
+    good:'✓ 灰是附着在表面的外来物，而且擦一下就能看出洁净基准——正是 dirty。',
+    bad:'「旧」是年份，「脏」是表面附着物。手指划出的那道痕就是证据。'},
+  review:[
+    {l1:0, scene:'雨天骑车回来，裤腿从膝盖到脚踝甩满了泥点，鞋帮上结了一层壳。'},
+    {l1:1, scene:'He picks up the mug. 杯壁内侧挂着一圈褐色的茶渍，看得出很久没洗了。'},
+    {l1:2, scene:'She wipes the window with one finger. A clear line appears through the grey film of dust.'}
+  ]
+}
+};
+
+const ORDER = ['reluctant-01','messy-01','almost-01','dirty-01'];
+
+/* 概念边界（来自 relations.boundaries / l1_confusables） */
+const MAP_DATA = [
+ {id:'reluctant-01', word:'reluctant', label:'不情愿的', def:'面对一个自己可以做的行动，内心并不愿意；就算做了，不愿意仍然可见。',
+  bd:[{t:'hesitant',rel:'overlaps',d:'hesitant 是「还没决定往哪边」，reluctant 是「对已确定的那件事没有意愿」。两者可以同时成立，不是一条量表的两端。',dg:'分开找两种证据：在选项之间摆动 ＝ hesitant；对某个已知行动抗拒 ＝ reluctant。单看「停顿」两个都证明不了。'},
+      {t:'refuse',rel:'different_dimension',d:'refuse 是可观察的拒绝动作，reluctant 是内在意愿状态。可以干脆地拒绝却毫不勉强，也可以极不情愿却照做。',dg:'只看到一个干脆的「不」，只能证明 refuse；reluctant 需要另外的意愿证据——拖延、后撤、最小接触。'}],
+  l1:{t:'不情愿 / 不愿意',d:'中文这两个词同时盖住 reluctant、unwilling、hesitant。区别落在「最后做没做」和「有没有情绪抵触」上，而中文并不强制区分。'}},
+ {id:'messy-01', word:'messy', label:'可见的杂乱无序', def:'相对于该有的整齐状态，组成部分的位置乱了，且一眼可见。',
+  bd:[{t:'dirty',rel:'different_dimension',d:'messy 判断位置与组织秩序，dirty 判断表面是否有污物。两者可以同时成立，也可以各自单独成立。',dg:'问一句：东西在该在的地方吗（messy）／表面有不该有的东西吗（dirty）。'},
+      {t:'cluttered',rel:'overlaps',d:'cluttered 强调东西多、占满空间；messy 强调排列无序。堆得满但码得齐，是 cluttered 不是 messy。',dg:'看「多」还是看「乱」：数量大但有序 ＝ cluttered；秩序崩了才 ＝ messy。'}],
+  l1:{t:'乱 / 脏乱',d:'中文「乱」远大于 messy：局势乱是 chaotic，交通乱是 disorderly。而「脏乱」连用会把 messy 和 dirty 焊死。'}},
+ {id:'almost-01', word:'almost', label:'接近但未达到', def:'与一条明确的达成界线距离极小，且最终没有达成。',
+  bd:[{t:'barely',rel:'different_dimension',d:'almost 是没跨过界线，barely 是勉强跨过了。距离都很小，方向相反。',dg:'唯一判据是「到没到」，不是「差多少」。'},
+      {t:'about',rel:'overlaps',d:'about 是量上的大致近似，不强调有没有达成，也不需要逼近过程。',dg:'有没有一条明确的界线、有没有逼近它？没有就只是 about。'}],
+  l1:{t:'几乎 / 差点',d:'「几乎不」对应 hardly/barely，直译成 almost not 是典型错误；「差点」还带庆幸语气，almost 没有。'}},
+ {id:'dirty-01', word:'dirty', label:'表面附着污物', def:'表面沾上了灰、泥、油、污渍等不受欢迎的外来物质，偏离应有的洁净基准。',
+  bd:[{t:'filthy',rel:'overlaps',d:'filthy 是程度更重、令人厌恶的 dirty。filthy 更精确时，dirty 并不因此变假。',dg:'程度问题，不是真假问题。'},
+      {t:'dirty-02',rel:'different_dimension',d:'同一个词头的另一个义项：言语内容下流。没有表面、没有污物，是独立的学习单位。',dg:'找被弄脏的物理表面；找不到就不是 dirty-01。'}],
+  l1:{t:'脏 / 脏乱',d:'中文一个「脏」从沾灰到结垢到水污染全包；英语按程度与污物类型继续分化 dirty / filthy / grimy / muddy / polluted。'}}
+];
+
+/* ============================================================
+   路由 / 通用
+   ============================================================ */
+const stack=[]; const LIGHT_SB=['s-home'];
+function setChrome(id){
+  const light=LIGHT_SB.includes(id);
+  document.getElementById('statusbar').classList.toggle('light',light);
+  document.getElementById('hbar').classList.toggle('light',light);
+}
+function go(id){
+  const el=document.getElementById(id);
+  if(!el||el.classList.contains('active'))return;
+  el.classList.add('active'); el.scrollTop=0; stack.push(id); setChrome(id); closeMenus();
+}
+function back(){
+  const id=stack.pop(); if(!id)return;
+  document.getElementById(id).classList.remove('active');
+  setChrome(stack[stack.length-1]||'s-home'); closeMenus();
+}
+function reset(){ while(stack.length){document.getElementById(stack.pop()).classList.remove('active');} setChrome('s-home'); closeMenus(); }
+function exitFlow(){ reset(); }
+let tt;
+function toast(m){ const t=document.getElementById('toast'); t.innerHTML=m; t.classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('on'),2200); }
+function openMenu(id,e){ e.stopPropagation(); closeMenus(); document.getElementById('mask').classList.add('on'); document.getElementById(id).classList.add('on'); }
+function closeMenus(){ document.getElementById('mask').classList.remove('on'); document.querySelectorAll('.menu').forEach(m=>m.classList.remove('on')); }
+
+/* 首页 */
+let signed=false, streak=0;
+function doSign(){
+  if(signed){toast('今天已经签到过啦');return;}
+  signed=true; streak=1;
+  document.getElementById('signCard').classList.add('done');
+  document.getElementById('signT').textContent='已签到';
+  document.getElementById('streak').textContent=streak;
+  toast('签到成功　连续 1 天');
+}
+(function sparks(){
+  const box=document.getElementById('sparks'); let h='';
+  const put=(x,y,s,o,d)=>{h+=`<i class="spark" style="left:${x}%;top:${y}%;width:${s}px;height:${s}px;opacity:${o};box-shadow:0 0 ${s*2.4}px ${s*.7}px rgba(255,214,150,${o*.75});animation-delay:${d}s"></i>`;};
+  for(let i=0;i<170;i++){
+    const p=Math.random(), sp=p*44;
+    put(88-p*72+(Math.random()-.5)*sp, 88-p*60+(Math.random()-.5)*sp*.62, Math.random()*2.2+.9, (1-p*.55)*(.35+Math.random()*.6), Math.random()*2.6);
+  }
+  [[83,17,15],[30,57,9],[62,24,7]].forEach(([cx,cy,n])=>{
+    for(let i=0;i<n*4;i++){ const a=Math.random()*Math.PI*2,r=Math.random()*7;
+      put(cx+Math.cos(a)*r, cy+Math.sin(a)*r*.9, Math.random()*1.8+.9, .5+Math.random()*.5, Math.random()*2.6); }
+  });
+  box.innerHTML=h;
+})();
+
+/* 偏好 */
+const PREFS={ transfer:'当天收尾', l1:'中文', boundary:true, recall:true };
+function toggleCbx(el){ el.querySelector('.cbx').classList.toggle('on'); }
+function toggleSw(el,name){
+  const s=el.querySelector('.sw'); s.classList.toggle('on'); const on=s.classList.contains('on');
+  if(name==='边界扰动题')PREFS.boundary=on;
+  if(name==='符号回指')PREFS.recall=on;
+  toast(name+(on?'：已开启':'：已关闭'));
+}
+function cyclePref(el,vals,name){
+  const v=el.querySelector('.v'), i=vals.indexOf(v.textContent.trim());
+  v.textContent=vals[(i+1)%vals.length];
+  if(name==='当前档位')PREFS.l1=v.textContent;
+  toast(name+' → '+v.textContent);
+}
+function cycleTransfer(el){
+  const vals=['当天收尾','首学末尾','首次复习'];
+  const v=el.querySelector('.v'), i=vals.indexOf(v.textContent.trim());
+  v.textContent=vals[(i+1)%vals.length]; PREFS.transfer=v.textContent;
+  toast('迁移测试时机 → '+PREFS.transfer+(PREFS.transfer==='首学末尾'?'（理解流程会多出第 6 步）':''));
+}
+function switchStudy(k){
+  const a=k==='a';
+  document.getElementById('segA').classList.toggle('on',a);
+  document.getElementById('segB').classList.toggle('on',!a);
+  document.getElementById('studyA').style.display=a?'':'none';
+  document.getElementById('studyB').style.display=a?'none':'';
+  document.getElementById('s-study').scrollTop=0;
+}
+
+/* ============================================================
+   理解流程
+   ============================================================ */
+let wIdx=0, uIdx=0, units=[], prog=null, answered=true, learnedToday=0, correctCnt=0, askedCnt=0;
+const MODES={anchor:'L1 概念形成',commonality:'L1 概念形成',discrimination:'L1 概念形成',symbol:'绑定 L2 符号',grounding:'L2 使用',transfer:'全新经验'};
+const LABELS={anchor:'经验 1 · 建立锚点',commonality:'经验 2 · 发现共性',discrimination:'边界扰动 · 排除错误泛化',symbol:'符号揭示',grounding:'L2 落地',transfer:'迁移验证'};
+
+function buildUnits(p){
+  let u=p.units.filter(x=>x.type!=='discrimination'||PREFS.boundary);
+  if(PREFS.transfer==='首学末尾') u=u.concat([Object.assign({type:'transfer',kicker:'第一次见到的新情境'},p.transfer)]);
+  return u;
+}
+function startLearn(){ reset(); wIdx=0; learnedToday=0; correctCnt=0; askedCnt=0; go('s-learn'); loadWord(); }
+function loadWord(){ prog=PROGRAM[ORDER[wIdx]]; units=buildUnits(prog); uIdx=0; renderUnit(); }
+function jumpUnit(i){ uIdx=Math.min(i,units.length-1); renderUnit(); }
+
+function renderUnit(){
+  const u=units[uIdx];
+  document.getElementById('lhProg').textContent=`第 ${wIdx+1} / ${ORDER.length} 词`;
+  document.getElementById('btnUndo').disabled=(uIdx===0&&wIdx===0);
+  document.getElementById('stepLb').textContent=u.kicker&&u.type!=='anchor'?LABELS[u.type]:LABELS[u.type];
+  const mp=document.getElementById('modePill');
+  mp.textContent=MODES[u.type]; mp.classList.toggle('l2',u.type==='symbol'||u.type==='grounding');
+  document.getElementById('segbar').innerHTML=units.map((_,i)=>`<i class="${i<uIdx?'on':i===uIdx?'half':''}"></i>`).join('');
+  const body=document.getElementById('lBody');
+  answered=true;
+
+  if(u.type==='symbol'){
+    body.innerHTML=`
+      <div class="symbol">
+        <div class="w">${prog.word}</div>
+        <div class="ph">
+          <button class="ph-b" onclick="toast('🔊 播放美式发音')">美 <svg class="icon"><use href="#i-vol"/></svg></button>
+          <span class="p">${prog.ipa}</span>
+        </div>
+        <div class="pos">${prog.pos} · ${prog.semantic_type}</div>
+        <div class="say">${prog.reveal}</div>
+        <div class="gloss">${prog.gloss}</div>
+      </div>`;
+    foot('继续','green',next);
+  }
+  else if(u.type==='grounding'){
+    body.innerHTML=`
+      <div class="blocklabel">常见搭配</div>
+      <div class="chips">${u.collocations.map(c=>`<span>${c}</span>`).join('')}</div>
+      <div class="exline"><div class="en">${u.example.en}</div><div class="zh">${u.example.zh}</div></div>
+      ${PREFS.recall?`
+      <div class="blocklabel">符号回指 · 5 秒</div>
+      <div class="scenecard" style="font-size:16.5px">${u.recall.scene}</div>
+      <div class="qbox"><div class="q">${u.recall.q}</div>
+        <div class="choices">${u.recall.choices.map((c,i)=>`<button class="ch" onclick="pick(this,${i},'recall')">${c.t}</button>`).join('')}</div>
+        <div class="fb" id="fb"></div>
+      </div>`:''}`;
+    if(PREFS.recall){answered=false;}
+    foot(wIdx<ORDER.length-1?'下一词':'完成本组','green',next,!answered);
+  }
+  else{
+    const q=u.q?`
+      <div class="qbox"><div class="q">${u.q}</div>
+        <div class="choices">${u.choices.map((c,i)=>`<button class="ch" onclick="pick(this,${i},'unit')">${c.t}</button>`).join('')}</div>
+        <div class="fb" id="fb"></div>
+        ${u.mini?`<div class="minicmp">${u.mini.map(m=>`<div><b>${m.w}</b><p>${m.d}</p></div>`).join('')}</div>`:''}
+      </div>`:'';
+    const kick=(u.kicker&&u.kicker!==LABELS[u.type])?`<div class="kicker"><i class="dotmark"></i>${u.kicker}</div>`:'';
+    body.innerHTML=`${kick}
+      <div class="scenecard">${u.scene}<span class="srcref">${u.ref||''}</span></div>
+      ${q}`;
+    if(u.q){answered=false;}
+    const last=(uIdx===units.length-1);
+    foot(last?(wIdx<ORDER.length-1?'下一词':'完成本组'):'继续','green',next,!answered);
+  }
+  document.getElementById('lScroll').scrollTop=0;
+}
+function foot(text,cls,fn,disabled){
+  const f=document.getElementById('lFoot');
+  f.innerHTML=`<button class="fbtn ${cls}" id="fbtn" ${disabled?'disabled':''}>${text}<i></i></button>`;
+  document.getElementById('fbtn').onclick=fn;
+}
+function pick(btn,i,kind){
+  const u=units[uIdx];
+  const set=kind==='recall'?u.recall:u;
+  if(btn.parentNode.querySelector('.right,.wrong'))return;
+  const ok=!!set.choices[i].ok;
+  [...btn.parentNode.children].forEach((b,k)=>{
+    if(set.choices[k].ok)b.classList.add('right');
+    else if(k===i)b.classList.add('wrong');
+    else b.classList.add('mute');
+  });
+  const fb=document.getElementById('fb');
+  if(fb){ fb.innerHTML=ok?set.good:set.bad; fb.className='fb '+(ok?'good':'bad'); }
+  askedCnt++; if(ok)correctCnt++;
+  answered=true;
+  const b=document.getElementById('fbtn'); if(b)b.disabled=false;
+}
+function next(){
+  if(!answered)return;
+  if(uIdx<units.length-1){ uIdx++; renderUnit(); return; }
+  learnedToday++;
+  document.getElementById('statToday').innerHTML=learnedToday+'<small>义项</small>';
+  document.getElementById('statAll').innerHTML=(1212+learnedToday)+'<small>义项</small>';
+  document.getElementById('statMin').innerHTML=Math.max(1,Math.round(learnedToday*1.6))+'<small>分钟</small>';
+  document.getElementById('learnN').textContent=Math.max(0,ORDER.length-learnedToday);
+  if(wIdx<ORDER.length-1){ wIdx++; loadWord(); }
+  else showFinish();
+}
+function undoUnit(){
+  if(uIdx>0){uIdx--;renderUnit();}
+  else if(wIdx>0){wIdx--;prog=PROGRAM[ORDER[wIdx]];units=buildUnits(prog);uIdx=units.length-1;renderUnit();}
+  toast('已回到上一步');
+}
+function skipKnown(){
+  toast('真实产品里这里会先给一次迁移测试，而不是直接标记「已会」');
+  learnedToday++; if(wIdx<ORDER.length-1){wIdx++;loadWord();} else showFinish();
+}
+function toggleFav(b){
+  b.classList.toggle('on'); const on=b.classList.contains('on');
+  b.querySelector('.icon').style.fill=on?'#f2701c':'none';
+  b.querySelector('.icon').style.stroke=on?'#f2701c':'currentColor';
+  toast(on?'已加入难点本':'已移出难点本');
+}
+
+/* ============================================================
+   组完成
+   ============================================================ */
+function showFinish(){
+  const acc=askedCnt?Math.round(correctCnt/askedCnt*100):100;
+  const t=PREFS.transfer;
+  document.getElementById('finBody').innerHTML=`
+    <div class="em">🎉</div>
+    <h3>本组理解完成</h3>
+    <p>${ORDER.length} 个义项的经验已经建立</p>
+    <div class="grid">
+      <div class="g"><b>${ORDER.length}</b><span>新建经验</span></div>
+      <div class="g"><b>${acc}%</b><span>边界判别</span></div>
+      <div class="g"><b>${Math.max(2,Math.round(ORDER.length*1.6))}</b><span>分钟</span></div>
+    </div>
+    ${t==='当天收尾'?`<div class="note">迁移测试被安排在这里，而不是每个词学完就测——刚学完 30 秒测到的是短时记忆，不是理解。</div>
+      <button class="btn p" onclick="startReview('transfer')">开始迁移验收（${ORDER.length} 义项）</button>`:
+      t==='首次复习'?`<div class="note">迁移测试已推迟到第一次复习时进行（当前偏好：首次复习）。</div>
+      <button class="btn p" onclick="startReview('due')">去复习（8 义项待复习）</button>`:
+      `<div class="note">迁移测试已在每个义项的首学末尾完成（当前偏好：首学末尾）。</div>
+      <button class="btn p" onclick="startReview('due')">去复习（8 义项待复习）</button>`}
+    <button class="btn g" onclick="exitFlow()">回首页休息一下</button>`;
+  reset(); go('s-finish');
+}
+
+/* ============================================================
+   复习 / 迁移验收（反向流程）
+   ============================================================ */
+let queue=[], qIdx=0, revealed=false, rvMode='due';
+const L1NAME=['中文脚手架','中英混排','纯英文'];
+const L1CLS=['','mix','pure'];
+function startReview(mode){
+  rvMode=mode; qIdx=0; queue=[];
+  if(mode==='transfer'){
+    ORDER.forEach(id=>{const p=PROGRAM[id];queue.push({id,kind:'transfer',l1:0,scene:p.transfer.scene,q:p.transfer.q,choices:p.transfer.choices,good:p.transfer.good,bad:p.transfer.bad});});
+  }else{
+    ORDER.forEach(id=>{ PROGRAM[id].review.slice(0,2).forEach(r=>queue.push({id,kind:'recall',l1:r.l1,scene:r.scene})); });
+    queue.sort(()=>Math.random()-.5);
+  }
+  reset(); go('s-review'); renderCard();
+}
+function renderCard(){
+  const c=queue[qIdx]; const p=PROGRAM[c.id]; revealed=false;
+  document.getElementById('rvProg').textContent=(rvMode==='transfer'?'迁移验收 ':'复习 ')+(qIdx+1)+' / '+queue.length;
+  const body=document.getElementById('rvBody');
+  if(c.kind==='transfer'){
+    body.innerHTML=`
+      <div class="kicker"><i class="dotmark"></i>第一次见到的新情境</div>
+      <div class="scenecard">${c.scene}</div>
+      <div class="qbox"><div class="q">${c.q}</div>
+        <div class="choices">${c.choices.map((x,i)=>`<button class="ch" onclick="pickTransfer(this,${i})">${x.t}</button>`).join('')}</div>
+        <div class="fb" id="fbr"></div></div>`;
+    footR(`<button class="fbtn green" id="rbtn" disabled>下一个<i></i></button>`);
+    document.getElementById('rbtn').onclick=nextCard;
+  }else{
+    body.innerHTML=`
+      <span class="l1badge ${L1CLS[c.l1]}"><i></i>${L1NAME[c.l1]}　·　第 ${c.l1+1} 档</span>
+      <div class="kicker"><i class="dotmark"></i>新经验 · 之前没见过这一个</div>
+      <div class="scenecard">${c.scene}</div>
+      <div class="recallbox"><div class="q">这种状态，你会用哪个词？</div>
+        <div class="hintline">先自己想出来，再看答案</div></div>`;
+    footR(`<button class="fbtn dark" id="rbtn">显示答案<i></i></button>`);
+    document.getElementById('rbtn').onclick=revealAnswer;
+  }
+  document.getElementById('rvScroll').scrollTop=0;
+}
+function footR(html){ document.getElementById('rvFootWrap').innerHTML=`<div class="lfoot">${html}</div>`; }
+function pickTransfer(btn,i){
+  const c=queue[qIdx];
+  if(btn.parentNode.querySelector('.right,.wrong'))return;
+  const ok=!!c.choices[i].ok;
+  [...btn.parentNode.children].forEach((b,k)=>{ if(c.choices[k].ok)b.classList.add('right'); else if(k===i)b.classList.add('wrong'); else b.classList.add('mute'); });
+  const fb=document.getElementById('fbr'); fb.innerHTML=ok?c.good:c.bad; fb.className='fb '+(ok?'good':'bad');
+  document.getElementById('rbtn').disabled=false;
+}
+function revealAnswer(){
+  const c=queue[qIdx], p=PROGRAM[c.id]; revealed=true;
+  document.getElementById('rvBody').innerHTML+=`
+    <div class="answerbox" style="margin-top:26px">
+      <div class="w">${p.word}</div>
+      <div class="zh">${p.ipa} · ${p.l1_label}</div>
+      <div class="conf"><b>判据　</b>${p.key}</div>
+    </div>`;
+  document.getElementById('rvFootWrap').innerHTML=`
+    <div class="grades">
+      <button class="grade g1" onclick="grade('Again')"><b>重来</b><span>&lt; 1 分钟</span></button>
+      <button class="grade g2" onclick="grade('Hard')"><b>有点难</b><span>6 分钟</span></button>
+      <button class="grade g3" onclick="grade('Good')"><b>记得</b><span>1 天</span></button>
+      <button class="grade g4" onclick="grade('Easy')"><b>很轻松</b><span>4 天</span></button>
+    </div>
+    <div style="text-align:center;font-size:12px;color:#8b8b96;padding:2px 0 26px">FSRS-6 · 下次复习会换一段没见过的经验</div>`;
+  document.getElementById('rvScroll').scrollTop=999;
+}
+function grade(g){ toast('已评分：'+g+'　下次会用新的经验场景来问'); nextCard(); }
+function nextCard(){
+  if(qIdx<queue.length-1){ qIdx++; renderCard(); return; }
+  document.getElementById('finBody').innerHTML=`
+    <div class="em">${rvMode==='transfer'?'🎯':'✅'}</div>
+    <h3>${rvMode==='transfer'?'迁移验收完成':'本轮复习完成'}</h3>
+    <p>${rvMode==='transfer'?'这 4 个义项都能迁移到第一次见的新情境':'8 条复习记录已写入 review_events'}</p>
+    <div class="grid">
+      <div class="g"><b>${queue.length}</b><span>${rvMode==='transfer'?'已验收':'已复习'}</span></div>
+      <div class="g"><b>${rvMode==='transfer'?'4/4':'7/8'}</b><span>回忆成功</span></div>
+      <div class="g"><b>${Math.max(1,Math.round(queue.length*0.4))}</b><span>分钟</span></div>
+    </div>
+    <div class="note">每条记录携带 word_sense + program_version + experience_unit，可以反过来评估某个版本的编译质量。</div>
+    <button class="btn g" onclick="exitFlow()">回首页</button>`;
+  reset(); go('s-finish');
+}
+
+/* ============================================================
+   概念地图
+   ============================================================ */
+document.getElementById('mapBody').innerHTML=MAP_DATA.map(m=>`
+  <div class="mapcard">
+    <div class="hd"><b>${m.word}</b><span>${m.label}</span></div>
+    <div class="def">${m.def}</div>
+    ${m.bd.map(b=>`
+      <div class="bd">
+        <div class="line">↔ ${b.t}<span class="rel ${b.rel==='different_dimension'?'diff':''}">${b.rel==='overlaps'?'重叠':'不同维度'}</span></div>
+        <p>${b.d}</p><div class="diag">判据：${b.dg}</div>
+      </div>`).join('')}
+    <div class="bd" style="padding-bottom:16px">
+      <div class="l1warn" style="margin-top:8px"><b>L1 切割错位 · ${m.l1.t}</b><p>${m.l1.d}</p></div>
+    </div>
+  </div>`).join('');
+
+/* 时钟 */
+(function clock(){
+  const t=document.getElementById('sbTime');
+  const tick=()=>{const d=new Date();t.textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');};
+  tick(); setInterval(tick,20000);
+})();
+</script>
+</body>
+</html>
