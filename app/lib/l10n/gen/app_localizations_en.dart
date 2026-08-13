@@ -887,4 +887,73 @@ class AppLocalizationsEn extends AppLocalizations {
   String reviewBadgeTooltipReviewed(int days) {
     return 'Review streak $days days. Reviewed today.';
   }
+
+  @override
+  String get experienceRuntimeRoleAnchor => 'First look';
+
+  @override
+  String get experienceRuntimeRoleVariation => 'What stays the same';
+
+  @override
+  String get experienceRuntimeRolePerturbation => 'Change one thing';
+
+  @override
+  String get experienceRuntimeRoleDiscrimination => 'Choose the right one';
+
+  @override
+  String get experienceRuntimeRoleTransfer => 'Take it further';
+
+  @override
+  String experienceRuntimeProgress(int current, int total) {
+    return '$current/$total';
+  }
+
+  @override
+  String get experienceRuntimeContinue => 'Continue';
+
+  @override
+  String get experienceRuntimeBack => 'Back';
+
+  @override
+  String get experienceRuntimeEvidenceLabel => 'What you can see';
+
+  @override
+  String get experienceRuntimeCorrect => 'Correct';
+
+  @override
+  String get experienceRuntimeIncorrect => 'Not quite';
+
+  @override
+  String get experienceRuntimePronunciation => 'Listen';
+
+  @override
+  String get experienceRuntimeGroundingBackToExperience =>
+      'The moment you just saw';
+
+  @override
+  String get experienceRuntimeConstructions => 'Structures';
+
+  @override
+  String get experienceRuntimeCollocations => 'Word partners';
+
+  @override
+  String get experienceRuntimeCompleteTitle => 'Session complete';
+
+  @override
+  String get experienceRuntimeCompleteExperiences => 'experiences completed';
+
+  @override
+  String experienceRuntimeCompleteFirstAttempt(int correct, int total) {
+    return '$correct of $total correct on the first try';
+  }
+
+  @override
+  String get experienceRuntimeReplay => 'Re-experience';
+
+  @override
+  String get experienceRuntimeLoadErrorTitle =>
+      'Could not load this experience';
+
+  @override
+  String get experienceRuntimeRetry => 'Try again';
 }

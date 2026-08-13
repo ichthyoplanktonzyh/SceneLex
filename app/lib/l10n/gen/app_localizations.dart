@@ -1619,6 +1619,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Review streak {days} days. Reviewed today.'**
   String reviewBadgeTooltipReviewed(int days);
+
+  /// No description provided for @experienceRuntimeRoleAnchor.
+  ///
+  /// In en, this message translates to:
+  /// **'First look'**
+  String get experienceRuntimeRoleAnchor;
+
+  /// No description provided for @experienceRuntimeRoleVariation.
+  ///
+  /// In en, this message translates to:
+  /// **'What stays the same'**
+  String get experienceRuntimeRoleVariation;
+
+  /// No description provided for @experienceRuntimeRolePerturbation.
+  ///
+  /// In en, this message translates to:
+  /// **'Change one thing'**
+  String get experienceRuntimeRolePerturbation;
+
+  /// No description provided for @experienceRuntimeRoleDiscrimination.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the right one'**
+  String get experienceRuntimeRoleDiscrimination;
+
+  /// No description provided for @experienceRuntimeRoleTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Take it further'**
+  String get experienceRuntimeRoleTransfer;
+
+  /// No description provided for @experienceRuntimeProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{current}/{total}'**
+  String experienceRuntimeProgress(int current, int total);
+
+  /// No description provided for @experienceRuntimeContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get experienceRuntimeContinue;
+
+  /// No description provided for @experienceRuntimeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get experienceRuntimeBack;
+
+  /// No description provided for @experienceRuntimeEvidenceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'What you can see'**
+  String get experienceRuntimeEvidenceLabel;
+
+  /// No description provided for @experienceRuntimeCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct'**
+  String get experienceRuntimeCorrect;
+
+  /// No description provided for @experienceRuntimeIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Not quite'**
+  String get experienceRuntimeIncorrect;
+
+  /// No description provided for @experienceRuntimePronunciation.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen'**
+  String get experienceRuntimePronunciation;
+
+  /// No description provided for @experienceRuntimeGroundingBackToExperience.
+  ///
+  /// In en, this message translates to:
+  /// **'The moment you just saw'**
+  String get experienceRuntimeGroundingBackToExperience;
+
+  /// No description provided for @experienceRuntimeConstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Structures'**
+  String get experienceRuntimeConstructions;
+
+  /// No description provided for @experienceRuntimeCollocations.
+  ///
+  /// In en, this message translates to:
+  /// **'Word partners'**
+  String get experienceRuntimeCollocations;
+
+  /// No description provided for @experienceRuntimeCompleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session complete'**
+  String get experienceRuntimeCompleteTitle;
+
+  /// No description provided for @experienceRuntimeCompleteExperiences.
+  ///
+  /// In en, this message translates to:
+  /// **'experiences completed'**
+  String get experienceRuntimeCompleteExperiences;
+
+  /// No description provided for @experienceRuntimeCompleteFirstAttempt.
+  ///
+  /// In en, this message translates to:
+  /// **'{correct} of {total} correct on the first try'**
+  String experienceRuntimeCompleteFirstAttempt(int correct, int total);
+
+  /// No description provided for @experienceRuntimeReplay.
+  ///
+  /// In en, this message translates to:
+  /// **'Re-experience'**
+  String get experienceRuntimeReplay;
+
+  /// No description provided for @experienceRuntimeLoadErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load this experience'**
+  String get experienceRuntimeLoadErrorTitle;
+
+  /// No description provided for @experienceRuntimeRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get experienceRuntimeRetry;
 }
 
 class _AppLocalizationsDelegate

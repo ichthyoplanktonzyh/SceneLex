@@ -426,5 +426,43 @@
     "placeholders": {
       "days": {"type": "int"}
     }
-  }
+  },
+
+  "experienceRuntimeRoleAnchor": "First look",
+  "experienceRuntimeRoleVariation": "What stays the same",
+  "experienceRuntimeRolePerturbation": "Change one thing",
+  "experienceRuntimeRoleDiscrimination": "Choose the right one",
+  "experienceRuntimeRoleTransfer": "Take it further",
+
+  "experienceRuntimeProgress": "{current}/{total}",
+  "@experienceRuntimeProgress": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "experienceRuntimeContinue": "Continue",
+  "experienceRuntimeBack": "Back",
+  "experienceRuntimeEvidenceLabel": "What you can see",
+  "experienceRuntimeCorrect": "Correct",
+  "experienceRuntimeIncorrect": "Not quite",
+
+  "experienceRuntimePronunciation": "Listen",
+  "experienceRuntimeGroundingBackToExperience": "The moment you just saw",
+  "experienceRuntimeConstructions": "Structures",
+  "experienceRuntimeCollocations": "Word partners",
+
+  "experienceRuntimeCompleteTitle": "Session complete",
+  "experienceRuntimeCompleteExperiences": "experiences completed",
+  "experienceRuntimeCompleteFirstAttempt": "{correct} of {total} correct on the first try",
+  "@experienceRuntimeCompleteFirstAttempt": {
+    "placeholders": {
+      "correct": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "experienceRuntimeReplay": "Re-experience",
+
+  "experienceRuntimeLoadErrorTitle": "Could not load this experience",
+  "experienceRuntimeRetry": "Try again"
 }

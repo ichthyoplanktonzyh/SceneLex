@@ -335,5 +335,43 @@
     "placeholders": {
       "days": {"type": "int"}
     }
-  }
+  },
+
+  "experienceRuntimeRoleAnchor": "初次遇见",
+  "experienceRuntimeRoleVariation": "什么没变",
+  "experienceRuntimeRolePerturbation": "只改一点",
+  "experienceRuntimeRoleDiscrimination": "分辨选择",
+  "experienceRuntimeRoleTransfer": "进一步迁移",
+
+  "experienceRuntimeProgress": "{current}/{total}",
+  "@experienceRuntimeProgress": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "experienceRuntimeContinue": "继续",
+  "experienceRuntimeBack": "返回",
+  "experienceRuntimeEvidenceLabel": "你能看到的证据",
+  "experienceRuntimeCorrect": "正确",
+  "experienceRuntimeIncorrect": "不太对",
+
+  "experienceRuntimePronunciation": "听发音",
+  "experienceRuntimeGroundingBackToExperience": "你刚才看到的场景",
+  "experienceRuntimeConstructions": "句式",
+  "experienceRuntimeCollocations": "搭配",
+
+  "experienceRuntimeCompleteTitle": "本次学习完成",
+  "experienceRuntimeCompleteExperiences": "个经验已完成",
+  "experienceRuntimeCompleteFirstAttempt": "首次作答正确 {correct}/{total}",
+  "@experienceRuntimeCompleteFirstAttempt": {
+    "placeholders": {
+      "correct": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "experienceRuntimeReplay": "重新体验",
+
+  "experienceRuntimeLoadErrorTitle": "无法加载这个经验",
+  "experienceRuntimeRetry": "重试"
 }

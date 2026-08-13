@@ -856,4 +856,71 @@ class AppLocalizationsZh extends AppLocalizations {
   String reviewBadgeTooltipReviewed(int days) {
     return '连续复习 $days 天。今天已复习。';
   }
+
+  @override
+  String get experienceRuntimeRoleAnchor => '初次遇见';
+
+  @override
+  String get experienceRuntimeRoleVariation => '什么没变';
+
+  @override
+  String get experienceRuntimeRolePerturbation => '只改一点';
+
+  @override
+  String get experienceRuntimeRoleDiscrimination => '分辨选择';
+
+  @override
+  String get experienceRuntimeRoleTransfer => '进一步迁移';
+
+  @override
+  String experienceRuntimeProgress(int current, int total) {
+    return '$current/$total';
+  }
+
+  @override
+  String get experienceRuntimeContinue => '继续';
+
+  @override
+  String get experienceRuntimeBack => '返回';
+
+  @override
+  String get experienceRuntimeEvidenceLabel => '你能看到的证据';
+
+  @override
+  String get experienceRuntimeCorrect => '正确';
+
+  @override
+  String get experienceRuntimeIncorrect => '不太对';
+
+  @override
+  String get experienceRuntimePronunciation => '听发音';
+
+  @override
+  String get experienceRuntimeGroundingBackToExperience => '你刚才看到的场景';
+
+  @override
+  String get experienceRuntimeConstructions => '句式';
+
+  @override
+  String get experienceRuntimeCollocations => '搭配';
+
+  @override
+  String get experienceRuntimeCompleteTitle => '本次学习完成';
+
+  @override
+  String get experienceRuntimeCompleteExperiences => '个经验已完成';
+
+  @override
+  String experienceRuntimeCompleteFirstAttempt(int correct, int total) {
+    return '首次作答正确 $correct/$total';
+  }
+
+  @override
+  String get experienceRuntimeReplay => '重新体验';
+
+  @override
+  String get experienceRuntimeLoadErrorTitle => '无法加载这个经验';
+
+  @override
+  String get experienceRuntimeRetry => '重试';
 }
