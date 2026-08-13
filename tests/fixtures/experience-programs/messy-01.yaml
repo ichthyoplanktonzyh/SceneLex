@@ -1,0 +1,366 @@
+schema_version: "1.0"
+program_id: messy-01-program
+program_version: 1
+status: reviewed
+target:
+  sense_id: messy-01
+  lemma: messy
+  pos: adjective
+  ipa: /ˈmɛsi/
+  locale_l1: zh
+semantic_model:
+  invariant: >-
+    一个可被整体观察的空间或对象，其组成部分偏离了预期/常规的排列与形态，形成
+    整体可见的无序；判断对象是位置与排列秩序，不是表面附着。
+  necessary_conditions:
+    - 存在一个可被整体观察的空间、对象或可见产物。
+    - 整体由多个物品、部分或可见细节构成。
+    - 这些组成部分偏离其常规、预期或整齐的排列与形态。
+    - 无序达到整体可见的程度。
+  non_entailments:
+    - 排列无序不蕴涵表面附着污物。
+    - 表面附着污物不蕴涵排列无序。
+    - 排列无序不蕴涵物品数量多（少量物品错位同样成立）。
+    - 排列无序不蕴涵蓄意破坏。
+  typical_correlates:
+    - 相同类型物品分散在不同位置。
+    - 物品方向不一致、相互交叠。
+    - 与同一空间的整洁对照状态形成对比。
+  misconceptions:
+    - id: misc-1
+      description: 乱 = 脏（把 messy 与 dirty 混为一体）。
+      correction: >-
+        messy 判断位置与排列秩序，dirty 判断表面是否有污物；两条维度独立。
+        固定表面状态、只改变位置秩序，看目标词是否成立。
+    - id: misc-2
+      description: 只有物品很多、堆得满满当当才算乱。
+      correction: >-
+        乱的定义是"偏离预期排列"，与数量无关；少量物品只要位置全错，同样成立。
+  l1_interference:
+    - 中文"乱"覆盖物理空间、抽象局面与行为秩序；messy 在日常英语中主要指可见的
+      物理无序，需要把"乱"的经验范围收窄到可观察的排列。
+    - 中文"脏乱"连用使学习者把 messy 与 dirty 绑定，需要分别验证两条维度。
+units:
+  - id: unit-1
+    sequence: 1
+    role: anchor
+    hypothesis_target: misc-2
+    preserved_variables:
+      - setting
+      - item_kind
+      - baseline_arrangement
+    changed_variables:
+      - arrangement_state
+      - orientation
+    semantic_spec:
+      judgment: 少量物品位置全错，是否构成整体可见的无序？
+      arrangement_baseline: each item in its usual place
+      disorder_state: present
+      item_quantity: small
+      arrangement_state: "disordered"
+    experience:
+      episode: >-
+        A study desk after homework: the notebook lies open at a slant on top of
+        the keyboard, three pencils rest among the keys, a cup sits upside down
+        beside the lamp, and the pages of the book stick out at different
+        angles.
+      observable_evidence:
+        - The notebook lies at a slant on top of the keyboard instead of its usual spot.
+        - Three pencils rest among the keyboard keys.
+        - The cup sits upside down beside the lamp.
+        - The book's pages stick out at different angles.
+      surface_dimensions:
+        - name: placement
+          baseline: each item in its usual place
+          deviation: notebook on the keyboard, pencils in the keys, cup upside down
+        - name: orientation
+          baseline: aligned and level
+          deviation: slanted notebook, pages at different angles
+    interaction:
+      question: Only a few items sit on this desk. Is the desk described by the target meaning?
+      answers:
+        - id: a1
+          text: Yes — the few items are all out of their usual places, which reads as disorder.
+          is_correct: true
+          feedback: >-
+            The number of items is small, but every one of them sits where it does
+            not belong. Disorder is about placement, not about how many things there
+            are.
+        - id: a2
+          text: No — with so few items, it cannot be called that.
+          is_correct: false
+          feedback: >-
+            Quantity is not part of the meaning. A few misplaced items with no order
+            between them is still a visible disorder.
+  - id: unit-2
+    sequence: 2
+    role: variation
+    hypothesis_target: null
+    preserved_variables:
+      - arrangement_state
+      - baseline_arrangement
+      - disorder_kind
+    changed_variables:
+      - space
+      - item_kind
+      - item_quantity
+    semantic_spec:
+      judgment: 换到更大的空间与更多物品，无序是否仍然成立？
+      arrangement_baseline: toys kept in the toy box
+      disorder_state: present
+      item_quantity: large
+      space: "playroom"
+      item_kind: "toys"
+    experience:
+      episode: >-
+        A playroom at the end of the day: a building-block tower lies collapsed
+        in the middle of the rug, toy cars sit on the bookshelf, a teddy bear
+        hangs upside down from the window curtain, and puzzle pieces cover the
+        floor in small scattered piles.
+      observable_evidence:
+        - The block tower lies collapsed on the rug.
+        - Toy cars sit on the bookshelf where no car belongs.
+        - The teddy bear hangs upside down from the curtain.
+        - Puzzle pieces scatter across the floor in small piles.
+      surface_dimensions:
+        - name: placement
+          baseline: toys kept in the toy box
+          deviation: cars on the shelf, bear on the curtain, blocks on the rug
+        - name: scatter
+          baseline: pieces grouped in their boxes
+          deviation: puzzle pieces spread across the floor in piles
+    interaction:
+      question: The room is full of toys in the wrong places. Which statement fits best?
+      answers:
+        - id: a1
+          text: The toys are out of their expected places, so the room reads as jumbled.
+          is_correct: true
+          feedback: >-
+            Every kind of toy sits somewhere unexpected, and the pieces spread out
+            without order. The room visibly departs from its usual arrangement.
+        - id: a2
+          text: The toys are still in the room, so nothing changed.
+          is_correct: false
+          feedback: >-
+            Being in the room is not the same as being in the right place. The
+            meaning is about the arrangement of things, not about whether they are
+            present at all.
+  - id: unit-3
+    sequence: 3
+    role: perturbation
+    hypothesis_target: misc-1
+    preserved_variables:
+      - arrangement_state
+      - baseline_arrangement
+      - setting
+    changed_variables:
+      - item_quantity
+      - surface_condition
+    semantic_spec:
+      judgment: 每件物品都干净无痕时，位置错位是否仍然成立？
+      arrangement_baseline: each item at its station
+      disorder_state: present
+      surface_condition: unmarked
+      item_quantity: "small"
+    experience:
+      episode: >-
+        A kitchen counter with just three things: a sponge lying on the chopping
+        board, a knife resting on the counter beside the cutting area, and a
+        plate sitting on top of the dish rack instead of inside it. Each item
+        looks new and carries no marks or stains.
+      observable_evidence:
+        - The sponge lies on the chopping board instead of its holder.
+        - The knife rests on the counter next to the cutting area.
+        - The plate sits on top of the dish rack instead of inside it.
+        - Every item looks new, with no marks on it.
+      surface_dimensions:
+        - name: placement
+          baseline: each item at its station
+          deviation: all three items sit somewhere unexpected
+        - name: surface_condition
+          baseline: any surface state possible
+          deviation: surfaces stay unmarked while placement is wrong
+    interaction:
+      question: The three items are all spotless, but none of them is in its place. Which description fits best?
+      answers:
+        - id: a1
+          text: The counter is jumbled because the placement is wrong, not because of any marks.
+          is_correct: true
+          feedback: >-
+            The surfaces carry nothing, yet the arrangement is wrong on all three
+            items. This shows the meaning lives in placement; surface marks are a
+            separate thing.
+        - id: a2
+          text: Without any marks, nothing can be wrong with the counter.
+          is_correct: false
+          feedback: >-
+            Marks are about the surface, not about arrangement. A counter with clean
+            items that all sit in the wrong places is still a disorder of placement.
+  - id: unit-4
+    sequence: 4
+    role: transfer
+    hypothesis_target: null
+    preserved_variables:
+      - arrangement_state
+      - baseline_arrangement
+    changed_variables:
+      - domain
+      - component_kind
+      - observer_scale
+      - setting
+    semantic_spec:
+      judgment: 从房间换到头发，无序是否仍然成立？
+      arrangement_baseline: hair combed into a smooth shape
+      disorder_state: present
+      domain: hair
+      component_kind: "hair strands"
+      observer_scale: "whole head"
+      setting: "bedroom after sleep"
+    experience:
+      episode: >-
+        A child wakes up after a restless sleep. Her hair sticks out in several
+        directions: a tuft stands up at the crown, a strand lies across her
+        cheek, and the back is flattened on one side while the other side
+        springs outward. There is no single smooth line from front to back.
+      observable_evidence:
+        - A tuft of hair stands up at the crown.
+        - A strand lies across the cheek.
+        - The back of the hair flattens on one side and springs out on the other.
+        - No part of the hair follows a single smooth line.
+      surface_dimensions:
+        - name: orientation
+          baseline: strands combed into one direction
+          deviation: strands point in several directions
+        - name: contour
+          baseline: smooth silhouette from front to back
+          deviation: uneven silhouette with tufts and flattened sides
+    interaction:
+      question: The child's hair has no marks on it, only disorder. Which statement fits best?
+      answers:
+        - id: a1
+          text: The hair is jumbled because its strands and shape left the expected arrangement.
+          is_correct: true
+          feedback: >-
+            Hair is made of many small strands, and here they point in different
+            directions with an uneven outline. The meaning transfers from rooms to
+            hair because the structure is the same: parts out of their expected
+            arrangement.
+        - id: a2
+          text: Hair cannot be described by this meaning because it is not a room.
+          is_correct: false
+          feedback: >-
+            The meaning is about any visible whole made of parts; a head of hair is
+            exactly that. The domain changes, the judgment does not.
+symbol_binding:
+  reveal:
+    l2_word: messy
+    ipa: /ˈmɛsi/
+    presentation: >-
+      Return to the desk scene. The word "messy" names the state of that desk:
+      parts out of their expected places, readable at a glance — separate from
+      any marks on their surfaces.
+  minimal_l1_gloss: 乱的
+grounding:
+  source_experience_id: unit-1
+  l2_realization: The desk was messy after homework.
+  constructions:
+    - '[place/thing] is messy'
+    - a messy [noun]
+    - look/get messy
+  collocations:
+    - messy room
+    - messy desk
+    - messy hair
+    - messy kitchen
+review_pool:
+  - id: review-1
+    semantic_spec:
+      judgment: 换成办公室桌面，小件物品错位是否仍然成立？
+    experience:
+      episode: >-
+        An office desk at quitting time: the stapler sits inside the keyboard
+        tray, a coffee cup balances on top of the monitor, and the mouse rests
+        upside down beside the keyboard. The papers stay in their neat stack.
+      observable_evidence:
+        - The stapler sits inside the keyboard tray.
+        - A coffee cup balances on top of the monitor.
+        - The mouse rests upside down beside the keyboard.
+        - The paper stack stays in one place.
+      surface_dimensions:
+        - name: placement
+          baseline: each item in its usual spot
+          deviation: stapler in the tray, cup on the monitor, mouse upside down
+        - name: orientation
+          baseline: items right side up
+          deviation: the mouse lies upside down
+  - id: review-2
+    semantic_spec:
+      judgment: 换成书架，书籍方向与位置错乱是否仍然成立？
+    experience:
+      episode: >-
+        A bookshelf after a quick search: several books lean sideways against
+        the shelf edge, two volumes lie flat on top of the row, and the book
+        ends no longer line up at the front of the shelf.
+      observable_evidence:
+        - Several books lean sideways against the shelf edge.
+        - Two volumes lie flat on top of the row.
+        - The book ends do not line up at the front.
+      surface_dimensions:
+        - name: orientation
+          baseline: books upright and aligned
+          deviation: books leaning and lying flat on top
+        - name: alignment
+          baseline: book ends line up at the front
+          deviation: uneven ends sticking out at different depths
+metadata:
+  compiler_version: 1.0.0
+  prompt_versions:
+    semantic_planner: v1
+    program_planner: v1
+    surface_generator: v1
+    quality_gate: v1
+  generated_at: "2026-08-01T00:00:00Z"
+  source_semantic_revision: 1
+  model_provider: fake-adapter
+  model_name: fixture-writer
+  request_ids: []
+  quality_gate:
+    passed: true
+    dimensions:
+      - name: semantic_correctness
+        verdict: pass
+        note: 全部单元落在"组成部分偏离预期排列，整体可见无序"的 invariant 内。
+      - name: sense_purity
+        verdict: pass
+        note: 未滑向 dirty（表面附着），与 cluttered（数量多）边界明确。
+      - name: prototype_quality
+        verdict: pass
+        note: anchor 书桌是最典型的排列错乱实例。
+      - name: definition_leakage
+        verdict: pass
+        note: 语义由物品位置与方向承载，无定义式说明。
+      - name: l2_leakage
+        verdict: pass
+        note: 揭示前内容无 messy 及相邻词。
+      - name: variable_isolation
+        verdict: pass
+        note: 单元间只改变空间/物品类型/数量，排列维度保持。
+      - name: accidental_invariant
+        verdict: pass
+        note: 空间、物品类型与数量在单元间变化，未固定单一场景。
+      - name: transfer_novelty
+        verdict: pass
+        note: transfer 从房间转到头发，改变四个表面维度。
+      - name: cognitive_noise
+        verdict: pass
+        note: 每段只描述一个空间的一组错位，无无关认知负担。
+    scores:
+      semantic_correctness: 9.0
+      sense_purity: 9.0
+      prototype_quality: 9.0
+      definition_leakage: 9.0
+      l2_leakage: 9.0
+      variable_isolation: 8.5
+      accidental_invariant: 9.0
+      transfer_novelty: 8.5
+      cognitive_noise: 8.5

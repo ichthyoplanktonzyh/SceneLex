@@ -1,0 +1,796 @@
+schema_version: '1.0'
+program_id: dirty-01-program
+program_version: 1
+status: draft
+target:
+  sense_id: dirty-01
+  lemma: dirty
+  pos: adjective
+  ipa: /ˈdɜːrti/
+  locale_l1: zh
+semantic_model:
+  invariant: 一个对象、身体部位或空间被判定为 dirty，当且仅当它的表面附着有外来的、不受欢迎的物质，使表面偏离其应有的洁净基准，且这种不洁状态可被直接感知并被视为需要清除的负面状态。
+  necessary_conditions:
+  - 存在一个有表面的对象、身体部位或空间，该表面是状态判断的载体。
+  - 该表面上附着有外来的、不受欢迎的物质（如灰尘、泥、污渍、油腻等）。
+  - 该附着使表面偏离了它应有的洁净基准，即它不再处于 clean 的状态。
+  - 这种不洁状态可被直接感知：看得见污渍、摸得到黏腻，或闻得到不洁气味。
+  - 该状态被视为需要清除或清洗的负面状态。
+  non_entailments:
+  - 一个对象/空间被判定为 dirty，并不蕴涵它同时是 messy（物品位置无序）；反之，东西乱放但表面干净（messy）也不蕴涵 dirty。
+  - dirty 成立并不蕴涵达到 filthy 那种极端令人厌恶的程度；dirty 在程度谱系上是最中性、较轻的默认词。
+  - dirty-01（物理表面不洁）成立并不蕴涵 dirty-02（言语、笑话等粗俗内容）成立；反之，dirty-02 成立也不蕴涵存在物理表面污物。
+  - dirty 成立并不蕴涵污物一定是泥（muddy）；非泥污物同样支持 dirty。
+  - dirty 成立并不蕴涵环境污染意义上的 polluted；polluted 涉及液体/空气等介质中有害杂质的污染，而不只是表面附着污物。
+  - 表面上没有可见污渍，并不蕴涵它不是 dirty；触觉（黏腻）或嗅觉也能直接判断不洁。
+  typical_correlates:
+  - 污物常表现为可见的污渍、泥点、灰尘或油污，并与表面洁净部分形成明显对比。
+  - 触摸常感到黏腻、砂粒感或油腻感。
+  - 凑近常闻到霉味、酸腐味等不洁气味。
+  - 用抹布或刷子擦拭时，污物会转移到抹布/水中，表面随之变干净。
+  - 清洗时水变浑浊，或洗涤后水中出现可见污垢；清洗行为常与 dirty 判断伴随出现。
+  misconceptions:
+  - id: misc-1
+    description: 把 dirty 和 messy 当成同一个概念，认为“脏”就是“乱”，或“乱”就是“脏”。
+    correction: 分别观察“表面有无污物”和“物品位置有无秩序”两个维度：一个房间东西摆放整齐但地板有污渍时，仍可称 dirty but not messy；东西乱放但每件都干净时，则是
+      messy but not dirty。这些样本可以推翻二者合一。
+  - id: misc-2
+    description: 认为 dirty 必须达到 filthy 那种极度肮脏、令人作呕的程度，或反过来把所有不洁都无差别地叫作 dirty。
+    correction: 沿洁净到污秽的程度连续体比较：仅沾一点灰尘也可被母语者称为 dirty，而长期嵌入的油腻污垢更自然用 grimy，极度厌恶用 filthy；同一表面可同时是
+      dirty 和 filthy，程度增强不会让 dirty 变假。
+  - id: misc-3
+    description: 受中文“脏话／下流”影响，把 dirty joke、dirty word 中的 dirty 也归入物理表面不洁这个义项。
+    correction: 检查被评价对象是物理表面还是言语、笑话等内容：如果语境中没有可感知的表面附着污物，而是内容粗俗，则应归入 dirty-02，不能作为
+      dirty-01 的证据。
+  - id: misc-4
+    description: 因为中文“脏”也用于水质污染，学习者容易把 dirty-01 与 polluted 混为一谈。
+    correction: 判断场景评价的是“表面附着污物”还是“液体/空气的杂质污染”：只有表面因外来物质偏离洁净基准才成立 dirty-01；环境污染需要介质中有害杂质的证据，不能仅凭一处脏污就判定
+      polluted。
+  - id: misc-5
+    description: 认为 dirty 一定要能看见污渍，看不见就不算脏。
+    correction: 提供外观洁净但摸起来黏腻、或闻起来有酸腐味且可归因于表面外来物质的对象；若母语者仍接受 dirty，则可见污渍不是必要条件。
+  l1_interference:
+  - 中文“脏”是一个比 dirty-01 更宽的概念，覆盖轻微沾灰（dirty）、极度肮脏（filthy）、油腻结垢（grimy）和水质污染（polluted）；学习者容易把
+    dirty 当成这一谱系的总称，忽略它是最中性、程度最轻的默认词。
+  - 中文“脏乱”常连用，把 dirty（表面污物）和 messy（位置无序）两个独立维度绑定在一起，导致学习者看到乱放的物品就使用 dirty。
+  - 中文“脏话／下流”的“脏”覆盖 dirty-02，使学习者把言语内容层面的 dirty 与本义项（物理表面不洁）混淆，遇到 dirty joke/dirty
+    word 时不会切换到另一个义项。
+units:
+- id: unit-1
+  role: anchor
+  hypothesis_target: null
+  preserved_variables:
+  - surface_or_object
+  - medium
+  - spatial_order
+  - perception_channel
+  changed_variables:
+  - contaminant_presence
+  - contaminant_type
+  - visible_mark
+  - cleanliness_deviation
+  semantic_spec:
+    judgment: 本单元让学习者在同一块厨房地砖的洁净/落尘对照中建立核心判断：表面因外来可见污物而偏离洁净基准时，该状态就是 dirty；此判断不依赖位置秩序。
+    surface_or_object: kitchen_floor
+    medium: solid_surface
+    spatial_order: tidy
+    perception_channel: visual
+    contaminant_presence:
+    - 'yes'
+    - 'no'
+    contaminant_type:
+    - dust_and_dirt
+    - none
+    visible_mark:
+    - present
+    - absent
+    cleanliness_deviation:
+    - deviated
+    - not_deviated
+  sequence: 1
+  experience:
+    episode: A kitchen has pale floor tiles that are bare on one side. On the other
+      side, a thin gray layer of dust and tiny crumbs covers the surface. The cabinets
+      and jars are arranged in straight rows; nothing on the floor is out of place
+      except the dust film. A person in socks steps near the gray side, stops at the
+      boundary, and walks around it to the bare side. Later, the person presses a
+      damp cloth onto the gray side and lifts it; the cloth is marked with gray, and
+      the tile underneath is plain and bright.
+    observable_evidence:
+    - A gray layer of dust and crumbs is visible on one half of the tile and not on
+      the other.
+    - The person walks around the gray half and keeps their socks on the bare half.
+    - After a damp cloth is pressed onto the gray half and lifted, gray marks appear
+      on the cloth and the tile looks brighter.
+    surface_dimensions:
+    - name: Surface coating
+      baseline: Tile surface has no visible gray layer
+      deviation: One half carries a visible gray layer of dust and crumbs.
+    - name: Position order
+      baseline: Cabinets and jars are aligned in rows
+      deviation: Position order remains aligned; only the surface layer changes.
+  interaction:
+    question: Which statement is true about the half of the floor with the gray dust?
+    answers:
+    - id: a1
+      text: It has an unwanted layer of dust and crumbs on its surface.
+      is_correct: true
+      feedback: The gray layer is an unwanted substance stuck to the tile surface.
+    - id: a2
+      text: Its objects are out of their usual places.
+      is_correct: false
+      feedback: The cabinets and jars are still in rows; the difference is on the
+        surface, not in position.
+    - id: a3
+      text: The dust is only on the damp cloth, not on the tile.
+      is_correct: false
+      feedback: The gray marks on the lifted cloth came from the tile, so the dust
+        was on the tile.
+- id: unit-2
+  role: variation
+  hypothesis_target: null
+  preserved_variables:
+  - surface_or_object
+  - medium
+  - spatial_order
+  - perception_channel
+  changed_variables:
+  - contaminant_presence
+  - contaminant_type
+  - visible_mark
+  - cleanliness_deviation
+  - tactile_evidence
+  semantic_spec:
+    judgment: 将 dirty 转移到身体表面：同一双手在沾泥与洗净两种状态下形成对照；污物类型变为泥，判断不变。
+    surface_or_object: hands
+    medium: solid_surface
+    spatial_order: not_applicable
+    perception_channel: visual_and_tactile
+    contaminant_presence:
+    - 'yes'
+    - 'no'
+    contaminant_type:
+    - mud
+    - none
+    visible_mark:
+    - present
+    - absent
+    cleanliness_deviation:
+    - deviated
+    - not_deviated
+    tactile_evidence:
+    - gritty
+    - clean_smooth
+  sequence: 2
+  experience:
+    episode: A child kneels in a garden bed and scoops up wet soil with both hands.
+      The palms turn brown, and dark soil fills the creases of the fingers. The child
+      claps the hands together; crumbs of soil drop onto the ground. When the child
+      rubs a thumb across a palm, the thumb catches on tiny gritty bits. The child
+      holds the hands under a tap; the water turns brown, and the hands become pale
+      and smooth again.
+    observable_evidence:
+    - Brown wet soil clings to the palms and between the fingers.
+    - Clapping the hands makes crumbs of soil fall.
+    - The thumb catches on gritty bits when it rubs across the palm.
+    - Under the tap, the water turns brown and the hands become pale and smooth.
+    surface_dimensions:
+    - name: Surface coating
+      baseline: Hands show only skin
+      deviation: Hands are covered with a brown layer of wet soil.
+    - name: Tactile feel
+      baseline: Palm is smooth under the thumb
+      deviation: The thumb catches on gritty bits on the palm.
+    - name: Position order
+      baseline: Position is not a meaningful dimension for a body surface
+      deviation: No position disorder appears; the change is on the skin.
+  interaction:
+    question: What changes when the child's hands come out of the wet soil?
+    answers:
+    - id: a1
+      text: They have unwanted wet soil stuck to the surface of their hands.
+      is_correct: true
+      feedback: The brown layer and the gritty catch show that wet soil is attached
+        to the skin.
+    - id: a2
+      text: Their hands are in the wrong place.
+      is_correct: false
+      feedback: Hands do not have a position; the change is on the skin surface.
+    - id: a3
+      text: Their hands feel rough, but nothing is on them.
+      is_correct: false
+      feedback: The wet soil falls off and rinses away, so something is on the hands;
+        the roughness is not just a skin texture.
+- id: unit-3
+  role: transfer
+  hypothesis_target: misc-5
+  preserved_variables:
+  - medium
+  - spatial_order
+  - contaminant_presence
+  - cleanliness_deviation
+  changed_variables:
+  - surface_or_object
+  - contaminant_type
+  - perception_channel
+  - visible_mark
+  - tactile_evidence
+  semantic_spec:
+    judgment: 将 dirty 迁移到没有可见污渍的表面上：同一桌面外观无痕但触摸黏腻，仍成立；可见污渍不是必要条件。
+    medium: solid_surface
+    spatial_order: neutral
+    contaminant_presence: 'yes'
+    cleanliness_deviation: deviated
+    surface_or_object: tabletop
+    contaminant_type: sticky_grease_residue
+    perception_channel: tactile
+    visible_mark: absent
+    tactile_evidence: sticky
+  sequence: 3
+  experience:
+    episode: A laminated tabletop looks plain and even; no stain or spot can be seen
+      on it. A visitor places a flat palm on the table and slowly lifts it; the skin
+      pulls against the surface. The visitor slides a finger across the corner; the
+      finger moves in small jumps instead of gliding. A paper napkin is laid flat,
+      pressed down, and then lifted; the napkin rises with a slow tug and a faint
+      peeling sound. No mark appears on the napkin or the tabletop.
+    observable_evidence:
+    - No stain or spot is visible on the tabletop.
+    - A flat palm lifted from the tabletop pulls against it.
+    - A finger slid across the corner moves in small jumps instead of gliding.
+    - A pressed napkin lifts with a visible tug and a faint peeling sound.
+    surface_dimensions:
+    - name: Visible marks
+      baseline: No mark is visible on the surface
+      deviation: Visible marks stay absent; the surface condition is not shown by
+        color or spot.
+    - name: Tactile feel
+      baseline: A hand should glide over the surface
+      deviation: The surface resists the palm, finger, and napkin with a sticky pull.
+    - name: Surface coating
+      baseline: No outer layer is expected
+      deviation: A clear sticky film is present even though it cannot be seen.
+  interaction:
+    question: What supports the idea that something is on the tabletop even though
+      no mark is visible?
+    answers:
+    - id: a1
+      text: The palm and the napkin stick to the surface and tug when lifted.
+      is_correct: true
+      feedback: The sticky pull is direct evidence of an unwanted film on the surface;
+        seeing a mark is not required.
+    - id: a2
+      text: The tabletop is plain and even, so its surface must be uncoated.
+      is_correct: false
+      feedback: A plain look does not rule out a sticky film; the touch evidence contradicts
+        it.
+    - id: a3
+      text: No stain or spot appears, so nothing can be on the table.
+      is_correct: false
+      feedback: The absence of visible marks does not mean no material is there; the
+        tug and peeling sound show the film.
+- id: unit-4
+  role: discrimination
+  hypothesis_target: misc-1
+  preserved_variables:
+  - medium
+  - surface_or_object
+  changed_variables:
+  - contaminant_presence
+  - contaminant_type
+  - visible_mark
+  - cleanliness_deviation
+  - spatial_order
+  semantic_spec:
+    judgment: 在同一房间内把 dirty 与位置无序分开：整齐但地板有污渍仍是 dirty；散乱但物件表面干净则不是 dirty。
+    medium: solid_surface
+    surface_or_object: bedroom
+    contaminant_presence:
+    - 'yes'
+    - 'no'
+    contaminant_type:
+    - dust_stain
+    - none
+    visible_mark:
+    - present
+    - absent
+    cleanliness_deviation:
+    - deviated
+    - not_deviated
+    spatial_order:
+    - tidy
+    - messy
+  sequence: 4
+  experience:
+    episode: In one bedroom, the left wall has folded clothes in neat stacks and books
+      standing in a row. The floor boards next to the stacks carry gray smudges and
+      a light layer of dust. On the right wall, shoes, towels, and papers are scattered
+      across the floor, but each scattered item looks bright and free of marks. A
+      person walks over the left floor, leaves footprints in the dust, then walks
+      around the right floor and steps over the scattered items without changing their
+      surfaces.
+    observable_evidence:
+    - Left floor boards show gray smudges and dust; footprints appear where the person
+      walks.
+    - Left items stay in neat stacks and rows.
+    - Right floor has scattered items, but the surfaces of the scattered items and
+      floor have no visible dust or marks.
+    - The person steps over the scattered items, and no marks appear on them.
+    surface_dimensions:
+    - name: Surface coating
+      baseline: Surfaces are free of gray film and smudges
+      deviation: Left floor has dust and smudges; right side has no dust or smudges.
+    - name: Position order
+      baseline: Objects are where they are expected to be
+      deviation: Left side remains ordered; right side is scattered.
+  interaction:
+    question: Which side shows a surface-state difference rather than a position-order
+      difference?
+    answers:
+    - id: a1
+      text: 'The left side: the floor under the neat stacks has dust and smudges.'
+      is_correct: true
+      feedback: Gray dust and footprints are on the floor surface, even though the
+        objects are neatly placed.
+    - id: a2
+      text: 'The right side: the objects are scattered across the floor.'
+      is_correct: false
+      feedback: Scattered placement is a position difference; the surfaces of those
+        objects are bright and free of marks.
+    - id: a3
+      text: Both sides show only position differences.
+      is_correct: false
+      feedback: The left side is a surface coating change; the right side is a position
+        order change; they are separate dimensions.
+- id: unit-5
+  role: perturbation
+  hypothesis_target: misc-2
+  preserved_variables:
+  - medium
+  - surface_or_object
+  - spatial_order
+  - contaminant_presence
+  - cleanliness_deviation
+  - visible_mark
+  - perception_channel
+  changed_variables:
+  - degree_severity
+  - contaminant_type
+  semantic_spec:
+    judgment: 沿洁净—污秽连续体比较：仅薄尘一层也称 dirty；重度油垢仍是 dirty，只是更精确的词会偏向程度更强的近义标签。
+    medium: solid_surface
+    surface_or_object: kitchen_countertop
+    spatial_order: tidy
+    contaminant_presence: 'yes'
+    cleanliness_deviation: deviated
+    visible_mark: present
+    perception_channel: visual
+    degree_severity:
+    - mild
+    - severe
+    contaminant_type:
+    - dust
+    - caked_grime
+  sequence: 5
+  experience:
+    episode: A kitchen countertop is empty along its whole length. At the left end,
+      a thin gray dust has settled evenly; a person draws a finger through the dust
+      and a clear line appears. At the right end, the surface carries a thick dark
+      crust of dried grease and crumbs; a person presses a fingernail into the crust
+      and leaves a deep groove that stays in place. Both ends keep the countertop
+      clear of objects; neither end has anything out of place.
+    observable_evidence:
+    - A finger drawn through the left-end dust produces a clear line in the layer.
+    - A fingernail pressed into the right-end crust leaves a deep groove, and the
+      crust holds its shape.
+    - The countertop is empty and tidy at both ends.
+    surface_dimensions:
+    - name: Degree of coating
+      baseline: Expected surface has no outer layer
+      deviation: Left end has a thin light dust layer; right end has a thick dark
+        crust; both are unwanted coatings.
+    - name: Position order
+      baseline: Countertop is empty
+      deviation: Countertop stays empty; only the coating degree differs.
+  interaction:
+    question: Which of the following is true about the two ends of the countertop?
+    answers:
+    - id: a1
+      text: Both ends have an unwanted substance on the surface, though the amounts
+        are very different.
+      is_correct: true
+      feedback: Both ends carry an outer layer—dust on the left, crust on the right;
+        the difference is in amount and type, not in whether the surface state has
+        changed.
+    - id: a2
+      text: Only the thick dark crust counts; the thin dust is too slight to count.
+      is_correct: false
+      feedback: The thin dust is still an unwanted layer; a finger line through it
+        shows it is on the surface.
+    - id: a3
+      text: Neither end has an unwanted substance because the countertop is empty.
+      is_correct: false
+      feedback: Empty means no objects, not that the surface is free of coating; the
+        finger line and the groove show the opposite.
+- id: unit-6
+  role: discrimination
+  hypothesis_target: misc-3
+  preserved_variables:
+  - medium
+  - spatial_order
+  changed_variables:
+  - surface_or_object
+  - contaminant_presence
+  - contaminant_type
+  - cleanliness_deviation
+  - evaluated_kind
+  semantic_spec:
+    judgment: 区分 dirty-01 与另一义项：布料上的油渍是 dirty-01；印刷页面上仅有粗俗文字而表面无外来附着物时，不构成 dirty-01。
+    medium: solid_surface
+    spatial_order: not_applicable
+    surface_or_object:
+    - cloth_swatch
+    - printed_page
+    contaminant_presence:
+    - 'yes'
+    - 'no'
+    contaminant_type:
+    - grease_stain
+    - none
+    cleanliness_deviation:
+    - deviated
+    - not_deviated
+    evaluated_kind:
+    - physical_surface_condition
+    - semantic_content
+  sequence: 6
+  experience:
+    episode: A cloth swatch lies on a table with a dark grease stain spreading into
+      the weave. A person touches the stain and lifts the swatch so the dark patch
+      is visible on the other side. Next to the swatch, a printed page lies flat and
+      unmarked; the page is covered with sentences made of rude words. A person reads
+      one sentence aloud, then runs a finger across the page. The fingertip leaves
+      no trace, and the paper has no stain, no dust, and no sticky feel. The dark
+      patch stays on the cloth, while the paper stays flat and unmarked.
+    observable_evidence:
+    - The grease stain spreads into the cloth and appears on the other side when the
+      swatch is lifted.
+    - The printed page is covered with rude sentences but has no stain, dust, or sticky
+      film on it.
+    - A finger run across the page leaves no trace, and the paper remains flat.
+    surface_dimensions:
+    - name: Surface coating
+      baseline: No unwanted material is attached to a surface
+      deviation: Grease is soaked into the cloth; the paper has no stain, dust, or
+        sticky film.
+    - name: Kind of judged object
+      baseline: Judging a physical surface
+      deviation: The cloth's physical surface is changed; the page's rude content
+        is not a surface coating.
+  interaction:
+    question: Which item has an unwanted substance stuck to its physical surface?
+    answers:
+    - id: a1
+      text: The cloth swatch with the grease stain.
+      is_correct: true
+      feedback: The grease stain is visible on both sides of the cloth, so it is physically
+        in the weave.
+    - id: a2
+      text: The printed page with rude sentences.
+      is_correct: false
+      feedback: The page carries rude content, but the finger leaves no trace and
+        the paper has no stain, dust, or sticky film; the content is not a coating.
+    - id: a3
+      text: Both items have an unwanted substance on their surfaces.
+      is_correct: false
+      feedback: Only the cloth shows a stain; the paper's surface is unmarked, so
+        only the cloth is physically changed.
+- id: unit-7
+  role: discrimination
+  hypothesis_target: misc-4
+  preserved_variables:
+  - visible_mark
+  - spatial_order
+  - contaminant_presence
+  changed_variables:
+  - medium
+  - surface_or_object
+  - contaminant_type
+  - evaluated_kind
+  semantic_spec:
+    judgment: 区分 dirty-01 与环境污染：靴面上的泥点成立；河水中的化学杂质使水浑浊，属于环境污染，不构成 dirty-01。
+    medium:
+    - solid_surface
+    - environmental_liquid
+    surface_or_object:
+    - boot
+    - river_water
+    contaminant_presence: 'yes'
+    contaminant_type:
+    - mud
+    - chemical_runoff
+    evaluated_kind:
+    - surface_state
+    - environmental_medium_purity
+    visible_mark: present
+    spatial_order: not_applicable
+  sequence: 7
+  experience:
+    episode: A person walks across wet soil in a yard, and brown spots of soil cling
+      to the sides of a boot. A few steps from the boot, a stream receives a cloudy
+      gray flow from a pipe; the stream turns milky, and a rainbow film spreads on
+      the water. The person taps the boot with a stick; brown flecks fall off the
+      surface. The person dips a jar into the stream and lifts it; the water inside
+      is cloudy and smells sharp. The brown flecks fall onto the ground, while the
+      cloudy water stays cloudy in the jar.
+    observable_evidence:
+    - Brown spots of soil cling to the boot surface and fall off when tapped with
+      a stick.
+    - The stream turns milky where the pipe enters, and a rainbow film spreads across
+      the water.
+    - Water lifted in a jar is cloudy and gives a sharp smell.
+    surface_dimensions:
+    - name: Kind of changed medium
+      baseline: Judging a solid surface condition
+      deviation: The boot is a solid surface with soil attached; the stream is a body
+        of water whose medium is cloudy.
+    - name: Contaminant type
+      baseline: No unwanted material is present
+      deviation: Soil clings to the boot; cloudy runoff mixes into the water.
+  interaction:
+    question: Which one is a problem with a solid surface rather than with the water
+      itself?
+    answers:
+    - id: a1
+      text: The boot with brown soil spots stuck to it.
+      is_correct: true
+      feedback: The boot has soil clinging to its surface; the surface is the thing
+        that has changed.
+    - id: a2
+      text: The stream with milky cloudy water and a rainbow film.
+      is_correct: false
+      feedback: The stream changed inside the water itself—cloudiness and film are
+        in the medium, not on a solid surface.
+    - id: a3
+      text: Both are problems with the same kind of thing.
+      is_correct: false
+      feedback: The boot is a surface state; the stream is a change in the water medium,
+        so they are not the same kind.
+symbol_binding:
+  reveal:
+    l2_word: dirty
+    ipa: /ˈdɜːrti/
+    presentation: 'Return to the kitchen floor from unit-1. Let learners look at the
+      gray side they already noticed, then say the word slowly: /ˈdɜːrti/. Point to
+      the gray dust and crumbs while saying ''dirty.'' Write ''dirty'' beside the
+      same floor. Then produce the sentence ''This floor is dirty'' and extend it
+      to objects from earlier units: the soil-covered hands are dirty hands; the sticky
+      tabletop is a dirty tabletop. Use ''get dirty'' for the moment the child''s
+      hands entered the wet soil. Do not introduce boundary labels in this step; they
+      belong to later discrimination reviews.'
+  minimal_l1_gloss: 脏的（表面附着污物）
+grounding:
+  source_experience_id: unit-1
+  l2_realization: The gray half of this floor is dirty. It is a dirty floor. After
+    the dust settled on it, the floor got dirty.
+  constructions:
+  - '[thing] is dirty'
+  - a dirty [noun]
+  - get/make [something] dirty
+  - so dirty that [clause]
+  collocations:
+  - dirty hands
+  - dirty dishes
+  - dirty clothes
+  - dirty floor
+  - dirty water
+  - get dirty
+review_pool:
+- id: review-1
+  semantic_spec:
+    judgment: 新经验：雨后后院台阶有泥脚印。判断该表面状态是否属于 dirty。
+  experience:
+    episode: After a night of rain, a person steps from the garden onto the back steps.
+      Each shoe leaves a wet brown print on the pale gray step, and the prints overlap
+      where the person shifts weight. A neighbor looks at the prints and points. The
+      person goes inside, returns with a pail and a brush, and scrubs the step. The
+      water in the pail turns brown, and the pale gray surface is visible again.
+    observable_evidence:
+    - Wet brown shoe prints cover the pale gray step.
+    - Loose bits of soil scatter around the prints.
+    - The scrub water turns brown, and the pale gray surface appears again.
+    surface_dimensions:
+    - name: Surface coating
+      baseline: Step is pale gray with no prints
+      deviation: Wet brown prints and loose bits of soil cover the step.
+- id: review-2
+  semantic_spec:
+    judgment: 新经验：书桌桌面落灰但书本整齐。判断 dirty 是否仍成立，能否与位置秩序分离。
+  experience:
+    episode: A study desk holds a row of books with their spines aligned and a pencil
+      tray in its corner. A fine gray dust has settled evenly over the desktop; the
+      dust lies between and around the books. A person writes a word in the dust with
+      a fingertip; the fingertip line is sharp. The books do not move, and the pencil
+      tray stays in its corner.
+    observable_evidence:
+    - A uniform gray layer covers the desktop between the book spines.
+    - A fingertip drawn through the layer leaves a sharp line.
+    - The book spines remain aligned and the pencil tray stays in its corner.
+    surface_dimensions:
+    - name: Position order
+      baseline: Books and tray are in aligned places
+      deviation: Positions stay aligned while the desktop gains a gray layer.
+    - name: Surface coating
+      baseline: Desktop has no gray layer
+      deviation: A fine gray layer covers the surface.
+- id: review-3
+  semantic_spec:
+    judgment: 新经验：玩具散落一地但表面干净。判断这是位置无序还是 dirty。
+  experience:
+    episode: A bedroom floor has building blocks, toy cars, and crayons scattered
+      from one wall to the other. A person steps carefully between the toys. The floors
+      and the toys show no dust, no stains, and no sticky film. The floor boards are
+      pale and plain where they are visible. The person picks up a toy car and turns
+      it over; its plastic body is bright and unmarked.
+    observable_evidence:
+    - Toys are scattered across the whole floor.
+    - The visible floor and toy surfaces have no dust, stains, or sticky film.
+    - A lifted toy car is bright and unmarked on both sides.
+    surface_dimensions:
+    - name: Position order
+      baseline: Objects are in typical places
+      deviation: Objects are scattered from one wall to the other.
+    - name: Surface coating
+      baseline: Surfaces have no dust, stains, or sticky film
+      deviation: No dust, stain, or sticky film appears on the surfaces.
+- id: review-4
+  semantic_spec:
+    judgment: 新经验：门把手外观干净但摸起来黏腻。判断没有可见污渍时 dirty 是否可能成立。
+  experience:
+    episode: A brass door handle looks bright and even, with no stain or dust visible.
+      A person wraps a hand around it and opens the door; the hand is slow to slide,
+      then peels away with a small tug. Another person presses a tissue to the handle
+      and lifts it; the tissue catches and makes a faint tearing sound. The metal
+      still looks bright, but the touch is sticky.
+    observable_evidence:
+    - The handle looks bright and has no visible stain.
+    - A hand opening the door slides slowly and then peels away with a tug.
+    - A tissue pressed to the handle catches and tears slightly when lifted.
+    surface_dimensions:
+    - name: Visible marks
+      baseline: No stain or dust is visible on the handle
+      deviation: No visible mark appears, but a sticky film is on the metal.
+    - name: Tactile feel
+      baseline: A hand should slide over the handle
+      deviation: The hand and tissue resist being pulled away.
+- id: review-5
+  semantic_spec:
+    judgment: 新经验：河湾水体浑浊有油膜和化学气味。判断这是 dirty 还是环境污染。
+  experience:
+    episode: A river bend near an old pipe has water that is milky gray instead of
+      clear. A thin rainbow film lies on the surface, and the air near the bend carries
+      a sharp smell. A person lowers a glass jar into the water and lifts it. The
+      water in the jar is cloudy, and the jar's own surface is not stained. The change
+      stays in the water itself.
+    observable_evidence:
+    - The river water is milky gray and has a rainbow film on top.
+    - A sharp smell comes from the water near the pipe.
+    - Water lifted in a jar is cloudy; the jar itself shows no stain or coating.
+    surface_dimensions:
+    - name: Kind of changed medium
+      baseline: A solid surface would carry an attached substance
+      deviation: The water itself is cloudy and carries a film; the glass jar remains
+        unmarked.
+- id: review-6
+  semantic_spec:
+    judgment: 新经验：一个笑话内容粗俗，但讲述者衣物和脸干净。判断被评价对象是否属于 dirty-01。
+  experience:
+    episode: At a busy entrance, a person tells a joke that uses harsh and rude words.
+      Listeners frown and turn away. The speaker's jacket is bright and without stains,
+      and the face has no dust or grease. A listener checks the speaker's sleeve and
+      sees no mark. The only thing that stands out is the words themselves, not the
+      surface they come from.
+    observable_evidence:
+    - Listeners frown and turn away after hearing the words.
+    - The speaker's jacket and face show no dust, stains, or sticky marks.
+    - A listener examines the sleeve and finds no surface mark.
+    surface_dimensions:
+    - name: Surface coating
+      baseline: No unwanted material is on the speaker
+      deviation: The speaker's surface is unmarked; the judged content is verbal.
+    - name: Kind of judged object
+      baseline: Judging a physical surface
+      deviation: The rude content of the joke is not a surface coating; no material
+        is attached.
+metadata:
+  compiler_version: 1.0.0
+  prompt_versions:
+    semantic_planner: v1
+    program_planner: v1
+    surface_generator: v1
+    quality_gate: v1
+  generated_at: '2026-08-13T03:38:26Z'
+  source_semantic_revision: 1
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids: []
+  quality_gate:
+    passed: true
+    dimensions:
+    - name: semantic_correctness
+      verdict: pass
+      note: All units respect WordSense dirty-01 conditions. unit-1/2/4/5/6/7 tie
+        the category to surface-attached unwanted substances; unit-6's printed page
+        has no surface coating, unit-7's river water is medium pollution rather than
+        surface dirt, and unit-5's severe crust remains a surface coating even though
+        it approaches grime/filth territory. No unit asks learners to treat a neighboring
+        category as the target.
+    - name: sense_purity
+      verdict: pass
+      note: No unintended slide into messy, filthy, grimy, muddy, or polluted in learner-visible
+        content. unit-5 uses a thick dark crust that is grime/filth-adjacent, but
+        the correct answer and feedback explicitly keep the judgment at 'unwanted
+        surface layer'; WordSense allows degree-neighbors to remain dirty, so this
+        is not a category error.
+    - name: prototype_quality
+      verdict: pass
+      note: 'unit-1 is a strong baseline prototype: the same kitchen floor has one
+        bare/clean half and one half with a visible gray dust-and-crumb layer, the
+        spatial order is tidy, and the damp-cloth removal shows the surface returning
+        to bright. This matches WordSense externalization and cleanly excludes messy.'
+    - name: definition_leakage
+      verdict: pass
+      note: Learner-visible surfaces—episodes, observable evidence, options, feedback,
+        and dimension descriptions—do not say 'dirty means ...' and do not present
+        the target lemma before reveal. Some feedback strings paraphrase the invariant
+        ('unwanted substance stuck to the tile surface'), but they are tied to concrete
+        observable evidence and function as corrective feedback, not standalone definitional
+        narration.
+    - name: l2_leakage
+      verdict: pass
+      note: The target lemma 'dirty' and the listed confusables (messy, filthy, grimy,
+        muddy, polluted) do not appear in learner-visible pre-reveal content. unit-6
+        uses 'rude words/rude content' to depict the dirty-02 contrast, but this is
+        not the target L2 label or a listed confusable, and it is confined to the
+        discrimination episode.
+    - name: variable_isolation
+      verdict: warn
+      note: unit-2 lists perception_channel in preserved_variables, but semantic_spec.perception_channel
+        is 'visual_and_tactile' while the anchor unit-1 is 'visual', so an undeclared
+        channel change occurs. Fix by adding perception_channel to changed_variables
+        or by making the tactile evidence a visual-only equivalent. The extra channel
+        is caused by the same contaminant and does not invalidate the judgment, so
+        this is a warning. Also, unit-5 varies contaminant_type together with degree_severity;
+        if a pure severity contrast is intended, the same contaminant should be used
+        at two amounts.
+    - name: accidental_invariant
+      verdict: pass
+      note: Positive examples vary in surface (floor, hands, tabletop, countertop,
+        cloth, boot), contaminant (dust/crumbs, mud, sticky grease, caked grime),
+        severity, and perceptual evidence. unit-3 breaks any possible visible-mark
+        invariant, unit-5 varies degree, and unit-4 includes a tidy positive example.
+        No fake invariant such as 'always messy' or 'always visibly stained' is created.
+    - name: transfer_novelty
+      verdict: pass
+      note: unit-3 transfers from floor/body surfaces to a tabletop, from visible
+        dust/mud to invisible sticky grease residue, and from visual/visual-tactile
+        to tactile-only evidence. It changes at least two surface dimensions—object,
+        contaminant type, perception channel, and visible-mark presence—and enters
+        a clearly distinct sensory domain without changing dirty-01's truth conditions.
+    - name: cognitive_noise
+      verdict: pass
+      note: No unrelated subplot or distractor vocabulary is introduced. unit-4's
+        neat/messy props directly support the position-order contrast, unit-6's rude-content
+        page directly supports the dirty-02 exclusion, and unit-7's river/pipe/jar
+        directly supports the polluted exclusion. The extra elements are all evidence
+        for the target boundary.
+    scores:
+      semantic_correctness: 9.0
+      sense_purity: 8.5
+      prototype_quality: 9.0
+      definition_leakage: 8.0
+      l2_leakage: 8.5
+      variable_isolation: 7.0
+      accidental_invariant: 9.0
+      transfer_novelty: 9.0
+      cognitive_noise: 8.5

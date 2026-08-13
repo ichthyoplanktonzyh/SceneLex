@@ -1,0 +1,368 @@
+schema_version: "1.0"
+program_id: almost-01-program
+program_version: 1
+status: reviewed
+target:
+  sense_id: almost-01
+  lemma: almost
+  pos: adverb
+  ipa: /ˈɔːlmoʊst/
+  locale_l1: zh
+semantic_model:
+  invariant: >-
+    存在一个可辨识的达成阈值，实际状态沿某维度逼近到极近处，但最终未跨越阈值。
+  necessary_conditions:
+    - 存在明确可辨识的达成阈值（终点、满、到达、完成等）。
+    - 实际状态与阈值之间的距离极小（极度接近）。
+    - 阈值最终没有被跨越。
+  non_entailments:
+    - 极度接近不蕴涵达成（阈值未被跨越）。
+    - 未跨越不蕴涵远离（还差很远时不能说 almost）。
+    - >-
+      "差一点"不蕴涵"发生了"（almost fell 不蕴涵 fell）。
+    - 大约相等（about）不蕴涵 almost——almost 强调未达成。
+  typical_correlates:
+    - 观众产生"就要到达/就要发生"的预期。
+    - 距离、数量、时间或程度上只差一小截。
+    - 结果停留在阈值之外清晰可见。
+  misconceptions:
+    - id: misc-1
+      description: almost 意味着事件最终还是发生了（把 almost fell 当成 fell）。
+      correction: >-
+        almost 的核心是"未达成"本身；事件没有发生。判定要看结果是否停在阈值外，
+        而不是看接近的过程。
+    - id: misc-2
+      description: 只要"大约/大概"接近就可以说 almost，不需要极度接近。
+      correction: >-
+        about 表示近似相等，不强调差距大小；almost 必须距离阈值极小。距离还远
+        时是 not yet / approaching，不是 almost。
+    - id: misc-3
+      description: 刚好越过阈值也叫 almost（把勉强达成与未达成混淆）。
+      correction: >-
+        一旦跨越阈值就是达成（barely），almost 要求结果停在阈值之外；未达成本身
+        才是 almost 的成立条件。
+  l1_interference:
+    - 中文"几乎"也覆盖 nearly/practically；中文"几乎不"表达 hardly/barely，
+      学习者容易把 almost not 直译。
+    - 中文"差点"偏向未发生的负面事件并带庆幸语气，almost 无此限制。
+units:
+  - id: unit-1
+    sequence: 1
+    role: anchor
+    hypothesis_target: misc-1
+    preserved_variables:
+      - dimension
+      - threshold_kind
+      - participant
+    changed_variables:
+      - distance_to_threshold
+      - outcome
+    semantic_spec:
+      judgment: 结果停在阈值外，接近到了什么程度？
+      threshold: goal line
+      proximity: extremely close
+      crossed: false
+      dimension: physical distance
+    experience:
+      episode: >-
+        Kai kicks the ball hard toward the goal. The ball rolls fast across the
+        grass, slows down at the goal line, and stops with its tip touching the
+        line without crossing it. The goalkeeper stands still, watching.
+      observable_evidence:
+        - The ball rolls fast and gets close to the line.
+        - The ball slows down exactly at the line.
+        - The ball's tip touches the line but does not go past it.
+        - The goalkeeper does not need to move.
+      surface_dimensions:
+        - name: gap_to_threshold
+          baseline: ball crosses the line by a hand's width
+          deviation: ball stops touching the line, not past it
+        - name: outcome
+          baseline: goal scored
+          deviation: no goal; the ball stays outside
+    interaction:
+      question: Did the ball go into the goal?
+      answers:
+        - id: a1
+          text: No — it stopped at the line without going in, even though it got very close.
+          is_correct: true
+          feedback: >-
+            The ball came extremely close but stopped with its tip on the line; the
+            event (a goal) never happened. Getting close is not the same as happening.
+        - id: a2
+          text: Yes — it was so close that it must have gone in.
+          is_correct: false
+          feedback: >-
+            Being close is not the same as crossing. The ball's tip touched the line
+            but did not pass it, so the outcome stayed unfinished.
+  - id: unit-2
+    sequence: 2
+    role: variation
+    hypothesis_target: misc-2
+    preserved_variables:
+      - threshold_kind
+      - crossed
+      - dimension
+    changed_variables:
+      - physical_setting
+      - substance
+      - degree_of_fill
+    semantic_spec:
+      judgment: 换到"满"的阈值上，极近与未达成是否仍然成立？
+      threshold: cup rim
+      proximity: extremely close
+      crossed: false
+      dimension: level / quantity
+      physical_setting: "kitchen counter"
+      substance: "water"
+    experience:
+      episode: >-
+        Nina pours water into a tall glass, watching the level rise. She stops
+        just in time: the water surface sits one millimeter below the rim. No
+        drop spills over the edge.
+      observable_evidence:
+        - The water rises close to the top of the glass.
+        - Nina stops pouring exactly at the right moment.
+        - The water surface is one millimeter below the rim.
+        - Nothing spills over the edge.
+      surface_dimensions:
+        - name: fill_level
+          baseline: water reaches the rim and spills
+          deviation: water stops one millimeter below the rim
+        - name: outcome
+          baseline: overflow
+          deviation: not a drop spilled
+    interaction:
+      question: Was the glass full?
+      answers:
+        - id: a1
+          text: No — the water stopped just under the rim, leaving a tiny gap.
+          is_correct: true
+          feedback: >-
+            The gap is tiny, but the threshold (the rim) was not reached, so the
+            glass was not full. A tiny gap still counts as not there.
+        - id: a2
+          text: Yes — it was close enough that it counts as full.
+          is_correct: false
+          feedback: >-
+            Being close is not the same as reaching the level. One millimeter below
+            the rim means the threshold was not crossed.
+  - id: unit-3
+    sequence: 3
+    role: discrimination
+    hypothesis_target: misc-3
+    preserved_variables:
+      - threshold_kind
+      - participant
+      - setting
+    changed_variables:
+      - crossed
+      - outcome
+      - observable_stop
+    semantic_spec:
+      judgment: 未跨越阈值与刚跨越阈值如何区分？
+      threshold: finish line
+      proximity: extremely close
+      crossed: false
+      positive_case: child crosses the line and then stops
+      negative_case: child stops one step before the line
+      observable_stop: "stops just before the line"
+    experience:
+      episode: >-
+        Two children race toward a finish line on the ground. The first child
+        stops one step before the line, leaning forward with an outstretched
+        hand, fingers still short of the line. The second child runs across the
+        line with his chest and only then slows down.
+      observable_evidence:
+        - The first child stops while still one step away from the line.
+        - The first child's fingers reach forward but do not touch the line.
+        - The second child's chest passes the line before he slows down.
+      surface_dimensions:
+        - name: position_at_stop
+          baseline: body crosses the line
+          deviation: first child stops one step short, fingers still short
+        - name: outcome
+          baseline: finish reached
+          deviation: first child does not finish; second child does
+    interaction:
+      question: Which child got extremely close but did not reach the finish line?
+      answers:
+        - id: a1
+          text: The first child, who stopped one step before the line.
+          is_correct: true
+          feedback: >-
+            He was extremely close — one step and an outstretched hand — but he
+            stopped before the line, so he did not reach it. Crossing the line
+            is the dividing point.
+        - id: a2
+          text: The second child, who ran across the line.
+          is_correct: false
+          feedback: >-
+            The second child's chest passed the line, so he did reach it. Reaching
+            the threshold and stopping just before it are two different outcomes.
+  - id: unit-4
+    sequence: 4
+    role: transfer
+    hypothesis_target: null
+    preserved_variables:
+      - crossed
+      - proximity
+    changed_variables:
+      - domain
+      - dimension
+      - participant
+      - action_type
+    semantic_spec:
+      judgment: 换到时间维度（赶电梯），极近未达成是否仍然成立？
+      threshold: elevator doors closing
+      proximity: extremely close
+      crossed: false
+      dimension: time
+      domain: "time"
+      participant: "elderly woman"
+      action_type: reaching the elevator
+    experience:
+      episode: >-
+        An elderly woman walks toward an elevator at the end of a hallway. The
+        doors begin to close as she approaches. She is half a step away when the
+        two doors meet in front of her. She stops and watches the elevator go
+        down.
+      observable_evidence:
+        - The doors start closing as she comes near.
+        - She is half a step away when the doors meet.
+        - The doors close in front of her and the elevator goes down.
+      surface_dimensions:
+        - name: timing
+          baseline: reaches the doors while they are still open
+          deviation: half a step short when the doors meet
+        - name: outcome
+          baseline: rides the elevator down
+          deviation: the elevator leaves without her
+    interaction:
+      question: Did the woman catch the elevator?
+      answers:
+        - id: a1
+          text: No — the doors closed half a step before she got there.
+          is_correct: true
+          feedback: >-
+            She arrived half a step too late: the doors met before she reached them,
+            so she did not catch the elevator. The timing gap is tiny but the outcome
+            did not happen.
+        - id: a2
+          text: Yes — she was close enough that she made it.
+          is_correct: false
+          feedback: >-
+            The doors were shut before she arrived; being close in time does not
+            mean the event happened.
+symbol_binding:
+  reveal:
+    l2_word: almost
+    ipa: /ˈɔːlmoʊst/
+    presentation: >-
+      Return to the goal scene. The word "almost" names the state of the ball
+      there: extremely close to a clear threshold, with the crossing still not
+      happening — in distance, in level, in time.
+  minimal_l1_gloss: 几乎
+grounding:
+  source_experience_id: unit-1
+  l2_realization: The ball almost crossed the line.
+  constructions:
+    - almost [verb]
+    - almost [adjective]
+    - almost [quantifier/number]
+  collocations:
+    - almost finished
+    - almost there
+    - almost everyone
+    - almost forgot
+review_pool:
+  - id: review-1
+    semantic_spec:
+      judgment: 换到"切完"阈值，极近未达成是否仍然成立？
+    experience:
+      episode: >-
+        A cook chops an onion on a board, slice after slice. He stops when one
+        slice is left uncut: a single thin ring still holds the onion together.
+        He puts the knife down.
+      observable_evidence:
+        - He chops slice after slice and stops before the last one.
+        - One thin ring still holds the onion together.
+        - He puts the knife down at that point.
+      surface_dimensions:
+        - name: remaining_part
+          baseline: onion fully cut
+          deviation: one thin ring still uncut
+        - name: outcome
+          baseline: chopping finished
+          deviation: he stops with one slice left
+  - id: review-2
+    semantic_spec:
+      judgment: 换到"赶上公交"阈值，时间差极小但未赶上是否仍然成立？
+    experience:
+      episode: >-
+        A man runs toward a bus stop as a bus pulls away. He is three steps from
+        the door when the bus closes its doors and moves off. He slows down and
+        watches it turn the corner.
+      observable_evidence:
+        - He runs toward the bus as it starts to move.
+        - He is three steps away when the doors close.
+        - The bus drives away and he stops.
+      surface_dimensions:
+        - name: distance_when_closing
+          baseline: reaches the door while it is open
+          deviation: three steps short when the doors close
+        - name: outcome
+          baseline: catches the bus
+          deviation: bus drives away without him
+metadata:
+  compiler_version: 1.0.0
+  prompt_versions:
+    semantic_planner: v1
+    program_planner: v1
+    surface_generator: v1
+    quality_gate: v1
+  generated_at: "2026-08-01T00:00:00Z"
+  source_semantic_revision: 1
+  model_provider: fake-adapter
+  model_name: fixture-writer
+  request_ids: []
+  quality_gate:
+    passed: true
+    dimensions:
+      - name: semantic_correctness
+        verdict: pass
+        note: 四个单元全部落在"极近且未跨越阈值"的 invariant 内。
+      - name: sense_purity
+        verdict: pass
+        note: 未滑向 barely（达成）/ about（大约）/ not yet（还远）。
+      - name: prototype_quality
+        verdict: pass
+        note: anchor 球停在线上是最典型的极近未达成实例。
+      - name: definition_leakage
+        verdict: pass
+        note: 语义由结果位置承载，无定义式说明。
+      - name: l2_leakage
+        verdict: pass
+        note: 揭示前内容无 almost 及相邻词。
+      - name: variable_isolation
+        verdict: pass
+        note: 每个单元沿单一维度逼近同一类阈值，其余变量受控。
+      - name: accidental_invariant
+        verdict: pass
+        note: threshold 与维度在各单元间变化，未固定在同一场景。
+      - name: transfer_novelty
+        verdict: pass
+        note: transfer 从空间维度转到时间维度，改变四个表面维度。
+      - name: cognitive_noise
+        verdict: pass
+        note: 叙事短、阈值清晰，无无关认知负担。
+    scores:
+      semantic_correctness: 9.0
+      sense_purity: 9.0
+      prototype_quality: 9.0
+      definition_leakage: 9.0
+      l2_leakage: 9.0
+      variable_isolation: 8.5
+      accidental_invariant: 9.0
+      transfer_novelty: 8.5
+      cognitive_noise: 8.5

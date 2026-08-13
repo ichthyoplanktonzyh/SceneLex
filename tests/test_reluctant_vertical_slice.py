@@ -96,19 +96,28 @@ def test_wordsense_matches_approved_inventory_identity(sense):
     assert inventory.validate_sense_against_inventory(sense, approved, entry) == []
 
 
-def test_wordsense_is_still_on_its_first_semantic_contract(sense):
-    """措辞与场景约束可以修订 (version 会涨), 语义契约没变则 semantic_revision 不动。
+def test_wordsense_semantic_contract_is_on_revision_two(sense):
+    """reluctant-01 已发布第 2 版语义契约。
 
-    两者混用会让所有已绑定的 Scene 无谓地变成 NEEDS_REVIEW。
+    v1 语义契约隐含"行动必须开始或完成"；v2 的核心不变式改为"面对一个可执行行动
+    或行动方案时，主观意愿为负"——eventual_action 不再是必要条件，"最终没有行动"
+    绝不能被排除，任何单一行为（叹气、拖延、表情）都不是定义条件。version 是普通
+    资源修订，与 semantic_revision 是两个概念，不能混用。
     """
-    assert sense["semantic_revision"] == revisions.NEW_SENSE_SEMANTIC_REVISION
-    assert sense["version"] >= 1
+    assert sense["semantic_revision"] == 2
+    assert sense["version"] >= 3
 
 
-def test_scene_revision_binding_is_current(scene, sense):
-    """Shot Plan 只能从 CURRENT 的 SceneSpec 编译; 这是上游门禁本身。"""
+def test_scene_revision_binding_is_explicitly_stale(scene, sense):
+    """v1 契约下的 SceneSpec 绑定 revision 1, 语义契约升到 v2 后显式成为 stale。
+
+    语义契约变更意味着旧场景需要人工重新审核视觉证据 (NEEDS_REVIEW), 这正是
+    revisions.check_scene_revision 的职责; 任何把 revision 数字直接改成 2 来假装
+    重新审核的行为都属于身份漂移, 由检测逻辑拦截。
+    """
     check = revisions.check_scene_revision(scene, sense)
-    assert check.status == revisions.CURRENT, check.message
+    assert check.status == revisions.NEEDS_REVIEW, check.message
+    assert scene["sense_revision"] == 1
 
 
 def test_reluctant_is_bounded_against_refuse(sense):
@@ -134,10 +143,17 @@ def test_shot_plan_passes_its_own_validators(plan, scene):
 
 
 def test_shot_plan_binds_the_upstream_it_was_compiled_from(plan, scene, sense):
+    """Shot Plan 绑定它编译时的上游版本; 旧切片保持绑定 revision 1, 是 stale legacy。
+
+    语义契约升到 v2 后, 这条视频切片不再与当前契约一致, 显式标记为 stale: 它的
+    sense_revision (1) 落后于当前 semantic_revision (2)。这条绑定由机器记录,
+    不靠人脑记忆。
+    """
     assert plan["scene_ref"] == SCENE_ID
     assert plan["scene_version"] == scene["version"]
     assert plan["sense_ref"] == SENSE_ID
-    assert plan["sense_revision"] == sense["semantic_revision"]
+    assert plan["sense_revision"] == 1
+    assert plan["sense_revision"] != sense["semantic_revision"]
 
 
 def test_every_scene_beat_reaches_some_shot(plan, scene):

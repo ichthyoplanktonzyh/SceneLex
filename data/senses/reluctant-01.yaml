@@ -1,15 +1,15 @@
 schema_version: '1.1'
 language: en
-version: 2
-semantic_revision: 1
+version: 3
+semantic_revision: 2
 status: reviewed
 id: reluctant-01
 word: reluctant
 pos: adjective
 sense_label: 不情愿的
 definition: Unwilling to perform an action that is available to the experiencer, because
-  of the experiencer's own internal resistance; the action may still be performed, but
-  the unwillingness stays visible while it happens.
+  of the experiencer's own internal resistance. The action may or may not be performed;
+  when it is performed, the unwillingness stays visible while it happens.
 frequency:
   band: low
   rank: 9349
@@ -35,27 +35,32 @@ semantic_skeleton:
     description: A specific, possible future action that the experiencer could choose
       to perform.
   propositions:
-  - There exists an experiencer who is aware of a potential action.
-  - The experiencer has an internal state of unwillingness, resistance, or doubt toward
-    performing that action.
-  - The experiencer either refrains from the action, or if they perform it, they do
-    so with hesitation, delay, or lack of enthusiasm that is externally observable.
+  - There exists an experiencer who is aware of an available action or course of action.
+  - The experiencer's subjective willingness toward performing that action is negative
+    (unwillingness, inner resistance, or aversion to doing it).
+  - The negative willingness is supported by observable behavior, but no single behavior
+    (delay, sighing, expression, refusal, and so on) is a definitional condition.
+  - The action may or may not be performed; "no action in the end" is never excluded.
   - The unwillingness originates from the experiencer's own disposition, not from
     external prohibition or physical inability.
 conditions:
   required:
-  - The experiencer is consciously considering a specific action.
-  - The experiencer's internal attitude toward the action is negative (unwilling/resistant).
-  - If the action is performed, the performance is accompanied by observable hesitation
-    or lack of genuine willingness.
+  - The experiencer is consciously facing an available action or course of action.
+  - The experiencer's internal attitude toward the action is negative (unwillingness
+    or inner resistance; the core invariant).
+  - The negative willingness is supported by observable behavior; no single behavior
+    (delay, sighing, facial expression, minimal contact, refusal, etc.) is required.
+  - The action's eventual performance or non-performance is not part of the definition
+    (both outcomes are compatible with reluctant).
   excluded:
   - condition: The experiencer is eager or enthusiastic about performing the action.
   - condition: The experiencer is physically unable or externally prevented from performing
       the action.
-  - condition: The experiencer performs the action spontaneously without any sign
-      of hesitation.
+  - condition: The action is performed or declined without any observable sign of negative
+      willingness; a bare refusal alone does not establish reluctance, and a smooth prompt
+      performance with no negative-willingness evidence does not either.
   - condition: The experiencer declines the action for external or procedural reasons
-      with no internal resistance; a bare refusal does not by itself establish reluctance.
+      with no internal resistance.
   - condition: The experiencer moves slowly for reasons unrelated to willingness (age,
       injury, fatigue, or a task that is simply laborious).
   - condition: The experiencer has not understood the request, or no opportunity to
@@ -80,8 +85,9 @@ relations:
       can refuse briskly with no reluctance, and can be deeply reluctant yet comply.
       A depicted refusal is therefore not evidence of reluctance.
     diagnostic: If the scene only shows a clear no, it establishes refuse and nothing
-      more; reluctant requires separate willingness evidence — delay, withdrawal, minimal
-      contact — attached to an action the experiencer could still take.
+      more; reluctant requires separate negative-willingness evidence attached to an
+      action the experiencer could still take — delay, withdrawal, minimal contact,
+      sighing, and so on, without requiring any single one of them.
   - target: unwilling-01
     relation: overlaps
     distinction: Both describe a lack of desire to act, but reluctant emphasizes emotional
@@ -115,37 +121,45 @@ relations:
 scene_requirements:
   must_show:
   - A clear triggering event or request that puts a specific, physically available
-    action in front of the experiencer.
-  - 'The experiencer''s resistance carried by the body rather than by speech: delay
-    before moving, withdrawal or lean-away, minimal contact with the object, slowed
-    or partial movement.'
-  - The action beginning or completing anyway, with the resistance still legible while
-    it happens.
+    action or course of action in front of the experiencer.
+  - Negative willingness carried by observable behavior rather than by speech, in any
+    combination of delay before moving, withdrawal or lean-away, minimal contact with
+    the object, slowed or partial movement, sighing, turning away, flat voice; no single
+    behavior is required.
+  - The action may or may not begin or complete; either outcome keeps the meaning
+    intact as long as the negative willingness is legible.
   must_not:
   - External force or prohibition that directly prevents the action (e.g., tied up,
     forbidden by authority).
   - The experiencer showing enjoyment or eagerness during the action.
-  - The experiencer refusing outright and the action never happening; that scene teaches
-    refuse-01.
+  - A bare refusal with no additional observable sign of negative willingness; refusal
+    alone does not establish reluctant. (An outcome where the action never happens is
+    NOT excluded when negative willingness is otherwise observable.)
   - Dialogue, captions, or narration carrying the meaning on their own; with all speech
     removed the behavior must still support reluctant.
   - Facial expression as the sole evidence; a frown alone does not distinguish reluctance
     from fear, sadness, or annoyance.
+  - The scene treating any single behavior (sigh, delay, frown) as the required sign
+    of reluctance; each is only possible evidence, never a definitional condition.
   - Sensory disgust or dislike of an object as the dominant evidence. reluctant is low
     willingness toward an *action*; if the strongest thing on screen is how unpleasant
     a thing tastes, smells, or looks, the scene teaches disgust, not reluctance.
   - A beat or shot whose purpose is to display the target word, a caption, a definition,
     or a narrator naming it; word presentation belongs to the later teaching layer.
   externalization:
-  - 'Facial expressions: downturned mouth, furrowed brows, side-eye.'
-  - 'Body language: stepping back, crossing arms, slow or hesitant approach.'
+  - 'Facial expressions: downturned mouth, furrowed brows, side-eye — possible evidence,
+    never required.'
+  - 'Body language: stepping back, crossing arms, slow or hesitant approach, turning
+    away, pausing at the door.'
   - 'Vocal tone: sighing, flat or quiet voice, brief negative responses like ''I guess
-    so'' or ''If I have to''.'
-  timing: Introduce the triggering event first, then hold on the experiencer's resistant
-    reaction long enough for it to read, then let the action begin and complete while
-    the resistance is still visible. Presenting the target word itself — on screen, in
-    narration, or as a caption — is a later teaching/editing concern and must not be
-    designed into the scene's beats.
+    so'' or ''If I have to'' — possible evidence, never required.'
+  - 'No action in the end: stopping before starting, or never engaging with the available
+    action, with the reluctance read in the behavior that leads up to the stop.'
+  timing: Introduce the triggering event first, then hold on the experiencer's negative-willingness
+    behavior long enough for it to read, then close with the willingness state still
+    legible — whether the action begins, completes, or never happens. Presenting the
+    target word itself — on screen, in narration, or as a caption — is a later
+    teaching/editing concern and must not be designed into the scene's beats.
 provenance:
   sources:
   - type: dictionary

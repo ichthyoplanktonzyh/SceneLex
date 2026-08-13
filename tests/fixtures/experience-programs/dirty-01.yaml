@@ -1,0 +1,415 @@
+schema_version: "1.0"
+program_id: dirty-01-program
+program_version: 1
+status: reviewed
+target:
+  sense_id: dirty-01
+  lemma: dirty
+  pos: adjective
+  ipa: /ˈdɜːrti/
+  locale_l1: zh
+semantic_model:
+  invariant: >-
+    对象表面附着了一种不受欢迎的外来物质，使表面偏离其应有的洁净基线；该偏离
+    可被直接感知。判断对象是表面状态，不是位置的秩序。
+  necessary_conditions:
+    - 存在一个有表面的对象、身体部位或空间。
+    - 表面附着了外来的、不受欢迎的物质。
+    - 该附着使表面偏离了应有的洁净基线。
+    - 偏离可被直接感知（视觉、触觉或嗅觉）。
+  non_entailments:
+    - 表面有污物不蕴涵物品摆放无序（两条维度独立）。
+    - 物品摆放无序不蕴涵表面有污物。
+    - 表面附着污物不蕴涵健康危害或需要洗涤。
+    - 污物的程度不蕴涵判断本身（轻微污物同样成立）。
+  typical_correlates:
+    - 污物与洁净区域形成可见对比。
+    - 擦拭、洗涤后污物转移、表面恢复。
+    - 触觉或嗅觉提示（黏腻、气味）。
+  misconceptions:
+    - id: misc-1
+      description: 脏 = 东西乱（把 dirty 与 messy 混为一体）。
+      correction: >-
+        dirty 判断的是表面是否附着外来物质；messy 判断的是位置与排列是否无序。
+        判断时固定位置秩序，只变化表面附着，看目标词是否成立。
+    - id: misc-2
+      description: 只有很脏（大量污物、令人厌恶）才算 dirty。
+      correction: >-
+        轻微但可见的污物同样成立；极度肮脏滑向 filthy，是程度更强的相邻词，
+        不是 dirty 的成立条件。
+    - id: misc-3
+      description: 只有特定类型的污物（食物、泥土）才算 dirty。
+      correction: >-
+        任何外来的、不受欢迎的物质——墨水、灰尘、油污——附着在表面上都使该
+        表面偏离洁净基线。
+  l1_interference:
+    - 中文"脏乱"常连用，使学习者把 dirty（表面附着）与 messy（位置无序）绑定成
+      一个概念，需要分别验证两条维度。
+    - 中文"脏"同时覆盖物理不洁与言语粗俗（dirty-02），物理表面义项须与引申义分开。
+units:
+  - id: unit-1
+    sequence: 1
+    role: anchor
+    hypothesis_target: null
+    preserved_variables:
+      - surface_type
+      - setting
+      - baseline_state
+    changed_variables:
+      - contamination
+      - visible_marks
+    semantic_spec:
+      judgment: 表面状态从基线发生了什么变化？
+      contaminant: tomato sauce
+      surface: white shirt
+      contamination_state: present
+      contamination: "present"
+      visible_marks: blotches of tomato sauce
+    experience:
+      episode: >-
+        After breakfast, Leo's white shirt shows three red blotches of tomato
+        sauce on the front, spreading from the collar down to the middle of the
+        chest. The rest of the shirt stays white and smooth.
+      observable_evidence:
+        - Three red blotches of tomato sauce sit on the front of the shirt.
+        - The blotches spread from the collar to the middle of the chest.
+        - The surrounding fabric stays white, making the blotches easy to see.
+      surface_dimensions:
+        - name: surface_state
+          baseline: white fabric without marks
+          deviation: three red blotches attached to the fabric
+        - name: contrast
+          baseline: uniform white
+          deviation: red marks stand out against the white fabric
+    interaction:
+      question: What changed about the shirt after breakfast?
+      answers:
+        - id: a1
+          text: A foreign substance (tomato sauce) attached to its surface and left marks.
+          is_correct: true
+          feedback: >-
+            The red blotches are tomato sauce stuck to the fabric; the surface went
+            from white and unmarked to marked. The shirt's shape and position never
+            changed.
+        - id: a2
+          text: The shirt's pieces were rearranged into a mess.
+          is_correct: false
+          feedback: >-
+            The shirt is still in its normal shape; what changed is the substance on
+            its surface, not the order of its parts.
+  - id: unit-2
+    sequence: 2
+    role: variation
+    hypothesis_target: misc-2
+    preserved_variables:
+      - contamination_state
+      - baseline_state
+      - setting
+    changed_variables:
+      - surface_type
+      - contaminant_type
+      - pattern_of_marks
+    semantic_spec:
+      judgment: 换成地面与脚印，轻微可见的污物是否仍然成立？
+      contaminant: soil from shoes
+      surface: white tiled floor
+      contamination_state: present
+      contaminant_type: "soil footprints"
+      pattern_of_marks: thin smears from each footprint
+    experience:
+      episode: >-
+        A white tiled floor in a hallway: a line of dark brown footprints leads
+        from the door to the kitchen, each print leaving a thin smear on the
+        tiles. The rest of the floor keeps its light color.
+      observable_evidence:
+        - Dark brown footprints trail across the floor.
+        - Each footprint leaves a thin smear on the tiles.
+        - The floor around the prints keeps its light color.
+      surface_dimensions:
+        - name: surface_state
+          baseline: light floor without marks
+          deviation: brown smears attached where the shoes stepped
+        - name: coverage
+          baseline: no marks anywhere
+          deviation: a trail of thin marks, the rest untouched
+    interaction:
+      question: The marks on the floor are thin and easy to wipe off. Is the floor still described by the target meaning?
+      answers:
+        - id: a1
+          text: Yes — the soil stuck to the surface, even though the amount is small.
+          is_correct: true
+          feedback: >-
+            The soil from the shoes is a foreign substance sitting on the tiles. A
+            small amount is still a deviation from the unmarked floor; the meaning
+            does not require a lot of it.
+        - id: a2
+          text: No — only heavy, thick marks count.
+          is_correct: false
+          feedback: >-
+            The meaning covers any visible foreign substance on the surface. Extreme
+            heaviness is a stronger neighboring word, not a requirement.
+  - id: unit-3
+    sequence: 3
+    role: variation
+    hypothesis_target: misc-3
+    preserved_variables:
+      - surface_type
+      - baseline_state
+      - contamination_state
+    changed_variables:
+      - contaminant_type
+      - contaminant_source
+    semantic_spec:
+      judgment: 换成墨水，不同种类的污物是否同样成立？
+      contaminant: ink
+      surface: white shirt
+      contamination_state: present
+      contaminant_source: "ink pen"
+    experience:
+      episode: >-
+        The same white shirt from the first scene: this time a dark blue ink
+        stain sits near the sleeve, sharp-edged against the white fabric. The
+        stain spreads a little along the fibers of the sleeve.
+      observable_evidence:
+        - A dark blue ink stain sits near the sleeve.
+        - The stain has sharp edges against the white fabric.
+        - The stain spreads slightly along the shirt fibers.
+      surface_dimensions:
+        - name: surface_state
+          baseline: white fabric without marks
+          deviation: dark blue ink attached near the sleeve
+        - name: contaminant_kind
+          baseline: no substance on the surface
+          deviation: ink, a different substance from the first scene
+    interaction:
+      question: Ink instead of sauce — does the shirt still have the target meaning?
+      answers:
+        - id: a1
+          text: Yes — ink is also a foreign substance stuck to the surface.
+          is_correct: true
+          feedback: >-
+            The meaning does not care what the substance is: any unwanted matter
+            attached to the surface makes it deviate from its unmarked baseline.
+            Ink works as well as sauce.
+        - id: a2
+          text: No — only food counts as a contaminant.
+          is_correct: false
+          feedback: >-
+            Food is just one example. Ink, dust, soil, and grease all attach to the
+            surface and pull it away from its unmarked baseline.
+  - id: unit-4
+    sequence: 4
+    role: discrimination
+    hypothesis_target: misc-1
+    preserved_variables:
+      - setting
+      - baseline_state
+      - contamination_state
+    changed_variables:
+      - arrangement_state
+      - surface_state
+    semantic_spec:
+      judgment: 位置秩序与表面附着两条维度如何分离？
+      arrangement_variable: fixed vs scattered
+      contamination_variable: marked vs unmarked
+      case_a: orderly room with stained floor
+      case_b: scattered toys, each unmarked
+      surface_state: stained in case_a, unmarked in case_b
+    experience:
+      episode: >-
+        Room A: books stand in neat rows on the shelves, cushions aligned on the
+        sofa, but the floor carries several dark stains near the table. Room B:
+        toys lie scattered across the floor and the bed covers are pulled off,
+        yet each toy looks bright and unmarked.
+      observable_evidence:
+        - Room A's books sit in neat rows while the floor shows dark stains.
+        - Room A's cushions stay aligned on the sofa.
+        - Room B's toys lie scattered in different spots.
+        - Room B's toys look bright, with no marks on them.
+      surface_dimensions:
+        - name: arrangement
+          baseline: items in their usual positions
+          deviation: room A stays orderly; room B's items are scattered
+        - name: surface_state
+          baseline: surfaces without marks
+          deviation: room A's floor carries stains; room B's items carry none
+    interaction:
+      question: Which room has a surface carrying a foreign substance?
+      answers:
+        - id: a1
+          text: Room A — the floor has stains even though the room is orderly.
+          is_correct: true
+          feedback: >-
+            The stains are matter attached to the floor surface. Room A shows that
+            order and surface state are two separate things: a room can be orderly
+            and still have marked surfaces.
+        - id: a2
+          text: Room B — because its things are scattered around.
+          is_correct: false
+          feedback: >-
+            Scattering is about position and order, not about the surface. Room B's
+            toys carry no marks at all, so its surfaces stayed as they should be.
+  - id: unit-5
+    sequence: 5
+    role: transfer
+    hypothesis_target: null
+    preserved_variables:
+      - contamination_state
+      - baseline_state
+    changed_variables:
+      - surface_type
+      - contaminant_source
+      - setting
+      - surface_texture
+    semantic_spec:
+      judgment: 换成宠物与地毯纤维，表面附着是否仍然成立？
+      contaminant: soil from paws
+      surface: white carpet
+      contamination_state: present
+      contaminant_source: "dog paws"
+      setting: "living room"
+      surface_texture: "carpet fibers"
+    experience:
+      episode: >-
+        In a living room with a white carpet, a dog walks in after a walk
+        outside. Its paws leave brown smudges across the carpet, each step
+        pressing a darker print into the fibers.
+      observable_evidence:
+        - The dog walks across the white carpet after coming from outside.
+        - Brown smudges appear where its paws step.
+        - Each step presses a darker print into the carpet fibers.
+      surface_dimensions:
+        - name: surface_state
+          baseline: white carpet without marks
+          deviation: brown smudges pressed into the fibers
+        - name: surface_type
+          baseline: smooth fabric (shirt, tiles)
+          deviation: soft woven carpet fibers catching the soil
+    interaction:
+      question: The carpet changed from white to covered in paw prints. Which description fits best?
+      answers:
+        - id: a1
+          text: Soil from the paws attached to the carpet surface and marked it.
+          is_correct: true
+          feedback: >-
+            The brown smudges are soil stuck to the carpet fibers. The meaning
+            transfers to a soft, woven surface and a new source of matter without
+            any change in what the word requires.
+        - id: a2
+          text: The carpet's pieces were moved out of place.
+          is_correct: false
+          feedback: >-
+            The carpet stays in place; what changed is the substance pressed onto
+            its surface, not its arrangement.
+symbol_binding:
+  reveal:
+    l2_word: dirty
+    ipa: /ˈdɜːrti/
+    presentation: >-
+      Return to the breakfast scene. The word "dirty" names the state of the
+      shirt there: a foreign substance on a surface, pulling it away from its
+      unmarked baseline — order and cleanliness are separate.
+  minimal_l1_gloss: 脏的
+grounding:
+  source_experience_id: unit-1
+  l2_realization: The shirt was dirty after breakfast.
+  constructions:
+    - '[thing] is dirty'
+    - get/make [something] dirty
+    - a dirty [noun]
+  collocations:
+    - dirty hands
+    - dirty dishes
+    - dirty floor
+    - get dirty
+review_pool:
+  - id: review-1
+    semantic_spec:
+      judgment: 换成车窗，雨水与泥点附着是否仍然成立？
+    experience:
+      episode: >-
+        A taxi drives through a rainy city street. By the end of the ride, the
+        windshield carries small brown splashes where drops of muddy water dried
+        on the glass, leaving streaks across the driver's view.
+      observable_evidence:
+        - Brown splashes appear on the windshield during the ride.
+        - The dried drops leave streaks across the glass.
+        - The glass around the streaks stays clear.
+      surface_dimensions:
+        - name: surface_state
+          baseline: clear glass
+          deviation: dried brown splashes and streaks on the windshield
+        - name: contrast
+          baseline: uniform clear view
+          deviation: streaks stand out against the clear parts
+  - id: review-2
+    semantic_spec:
+      judgment: 换成皮肤表面，炭粉附着是否仍然成立？
+    experience:
+      episode: >-
+        A child draws with charcoal and then wipes her hands on her apron. The
+        gray smudges stay on her fingers, dark patches against the skin, even
+        after she rubs them once more on the cloth.
+      observable_evidence:
+        - Gray smudges cover her fingers after drawing.
+        - Wiping on the apron does not remove the marks.
+        - The smudges stay dark against the skin.
+      surface_dimensions:
+        - name: surface_state
+          baseline: unmarked skin
+          deviation: gray charcoal smudges on the fingers
+        - name: persistence
+          baseline: nothing sticks to the skin
+          deviation: the marks stay after a wipe
+metadata:
+  compiler_version: 1.0.0
+  prompt_versions:
+    semantic_planner: v1
+    program_planner: v1
+    surface_generator: v1
+    quality_gate: v1
+  generated_at: "2026-08-01T00:00:00Z"
+  source_semantic_revision: 1
+  model_provider: fake-adapter
+  model_name: fixture-writer
+  request_ids: []
+  quality_gate:
+    passed: true
+    dimensions:
+      - name: semantic_correctness
+        verdict: pass
+        note: 全部单元落在"外来物质附着于表面，偏离洁净基线"的 invariant 内。
+      - name: sense_purity
+        verdict: pass
+        note: 未滑向 messy（位置秩序），与 filthy/muddy 等程度或原因词保持距离。
+      - name: prototype_quality
+        verdict: pass
+        note: anchor 衬衫污渍是最典型的表面附着实例。
+      - name: definition_leakage
+        verdict: pass
+        note: 语义由表面状态与对比承载，无定义式说明。
+      - name: l2_leakage
+        verdict: pass
+        note: 揭示前内容无 dirty 及相邻词。
+      - name: variable_isolation
+        verdict: pass
+        note: 两个 variation 分别只改变表面类型与污物类型，其余受控。
+      - name: accidental_invariant
+        verdict: pass
+        note: 污物类型与表面在单元间变化，未固定在单一场景。
+      - name: transfer_novelty
+        verdict: pass
+        note: transfer 换成宠物与地毯纤维，改变四个表面维度。
+      - name: cognitive_noise
+        verdict: pass
+        note: 每个片段单一对象、单一表面，无无关认知负担。
+    scores:
+      semantic_correctness: 9.0
+      sense_purity: 9.0
+      prototype_quality: 9.0
+      definition_leakage: 9.0
+      l2_leakage: 9.0
+      variable_isolation: 8.5
+      accidental_invariant: 9.0
+      transfer_novelty: 8.5
+      cognitive_noise: 8.5

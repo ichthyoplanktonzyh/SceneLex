@@ -1,0 +1,749 @@
+schema_version: '1.0'
+program_id: almost-01-program
+program_version: 1
+status: draft
+target:
+  sense_id: almost-01
+  lemma: almost
+  pos: adverb
+  ipa: /ˈɔːlmoʊst/
+  locale_l1: zh
+semantic_model:
+  invariant: almost 成立当且仅当：存在一个有明确界限的目标状态，实际状态已极度逼近该界限、余距极小，但目标最终未被达成；这个“差一点”的间隙可被观察为“几乎到了”。
+  necessary_conditions:
+  - 存在一个目标状态或事件，且有明确可辨识的达成界限
+  - 实际状态沿某一维度（距离、数量、时间、程度等）向该目标逼近
+  - 实际状态与该达成界限之间的距离极小，只差很小的距离、数量、时间或程度
+  - 目标最终没有完全达成，实际状态停留在“差一点”的位置上
+  - 剩余间隙小到足以让观察者产生“几乎到了”的感知
+  non_entailments:
+  - almost 成立不蕴涵目标已经达成或完全实现
+  - 目标距离尚远、过程只在中途不蕴涵 almost；almost 要求极度接近明确终点
+  - 目标已经完全达成不蕴涵 almost；almost 要求未达成
+  - 数值只是大约等于某量而不强调差一点不蕴涵 almost；这种经验对应 about，而非 almost
+  - 勉强刚好达成不蕴涵 almost；这种经验对应 barely，而 almost 的核心是未达成
+  - 正在接近但过程尚未结束、结果未知不蕴涵 almost；这种经验对应 approaching/not yet，almost 要求结果已经是“未达成”
+  - almost 不蕴涵事件是负面的，也不蕴涵“庆幸没发生”的语用含义
+  typical_correlates:
+  - 场景中出现明确的终点标记（终点线、瓶口刻度、电梯门、桌沿）——这是常见伴随线索，不是 almost 的成立条件
+  - 运动轨迹逼近边界后停下或转向，例如手差一点够到、球擦边未进——这是常见伴随表现，不是必要条件
+  - 数量场景中容器顶部留有一段可见空隙，例如瓶子几乎装满但差一小截——这是常见伴随表现，不是必要条件
+  - 时间场景中截止时刻先于动作完成，例如差一秒赶上电梯但门已关——这是常见伴随表现，不是必要条件
+  - 状态场景中最后一点未完成，例如冰块几乎融化但还剩一小块——这是常见伴随表现，不是必要条件
+  misconceptions:
+  - id: misc-1
+    description: 把 almost 当成 not yet，以为只要还在过程中、离终点还可以很远就能用 almost。
+    correction: 需要观察证据：almost 要求实际状态已极度接近明确终点；若过程只在中途、终点尚远，应改用 not yet/approaching。
+  - id: misc-2
+    description: 把 almost 当成 about/approximately，忽视它包含“未达到目标”这一层。
+    correction: 需要观察证据：almost 指向一个明确阈值且实际值差一点未达到；如果只是给出大致数量、不强调差一点，应使用 about。
+  - id: misc-3
+    description: 把 almost 和 barely 混同，认为“几乎达到”就是“勉强达到”。
+    correction: 需要观察证据：almost 指向未达成，barely 指向虽然达成但有困难；一旦目标被达到，almost 就不成立。
+  - id: misc-4
+    description: 受 L1 影响，把中文“几乎不”直译为 almost not，用来表达 hardly/barely 的含义。
+    correction: 需要观察证据：英语表达“几乎不/几乎没有”时通常用 hardly/barely 或 almost no/nobody/never 等量化结构；almost
+      not 在标准英语中非常受限，不能照中文直译。
+  - id: misc-5
+    description: 认为 almost 只能用于负面或庆幸型事件，如“差点摔倒”。
+    correction: 需要观察证据：almost 同样适用于中性/正面事件（almost finished, almost there）；它本身不蕴涵负面性，也没有“幸好没发生”的含义。
+  l1_interference:
+  - 中文“几乎”覆盖 almost、nearly、practically，比 almost 更宽；学习者容易把“几乎”的所有近似义都套到 almost 上。
+  - 中文“差点”多用于未发生的负面事件，并带有“庆幸没发生”的语用偏向；学习者可能把 almost 限制于负面/险情场景，或误加庆幸含义。
+  - 中文“几乎不”对应 hardly/barely，学习者直译成 almost not，产生英语中不自然的结构。
+units:
+- id: unit-1
+  role: anchor
+  hypothesis_target: misc-5
+  preserved_variables:
+  - progress_state
+  - gap_size
+  - achievement
+  - boundary_salience
+  - observer_perspective
+  - crossed
+  changed_variables:
+  - target_state
+  - dimension
+  - event_type
+  - setting
+  - eventual_action
+  - valence
+  semantic_spec:
+    judgment: 在任务完成场景中，先让学习者看到“离完成只剩极小一块，但尚未完成”的状态，并把该状态作为目标概念的正例；因为事件是中性/正面的，所以也纠正“只能用于负面/险情”的预期。
+    target_state: complete_picture
+    dimension: task_completion
+    progress_state: at_threshold
+    gap_size: tiny
+    achievement: 'no'
+    eventual_action: finish_picture
+    event_type: task_progress
+    valence: neutral_positive
+    boundary_salience: visible_unfinished_area
+    setting: home
+    observer_perspective: third_person
+    crossed: 'no'
+    surface_pattern: almost + past_participle/adjective
+  sequence: 1
+  experience:
+    episode: Sam is doing a jigsaw puzzle at the kitchen table. All but one piece
+      of the picture are in place; a single piece-shaped space remains in the lower
+      right corner. He picks up the final piece, holds it just above the empty space,
+      then puts it on the table beside the board. He leans back and looks at the gap.
+    observable_evidence:
+    - A single piece-shaped space remains in the lower right corner of the puzzle.
+    - The final piece lies on the table, not in the board.
+    - Sam looks at the empty space, then at the piece beside it, without pressing
+      it in.
+    surface_dimensions:
+    - name: Unfinished area
+      baseline: The picture has no empty spaces
+      deviation: One piece-shaped space is still visible.
+    - name: Placement of the last piece
+      baseline: Last piece sits inside the picture
+      deviation: Last piece rests beside the board.
+  interaction:
+    question: At the end of the scene, what is true about the puzzle?
+    answers:
+    - id: a1
+      text: The puzzle is done.
+      is_correct: false
+      feedback: 'No: a piece-shaped space is still open, and the final piece is on
+        the table, not in it.'
+    - id: a2
+      text: The puzzle is not done.
+      is_correct: true
+      feedback: 'Yes: the visible gap and the piece beside the board show that one
+        part is still undone.'
+- id: unit-2
+  role: perturbation
+  hypothesis_target: misc-1
+  preserved_variables:
+  - target_state
+  - dimension
+  - event_type
+  - setting
+  - eventual_action
+  - valence
+  - boundary_salience
+  - observer_perspective
+  - achievement
+  - crossed
+  changed_variables:
+  - progress_state
+  - gap_size
+  semantic_spec:
+    judgment: 沿用上一单元的任务完成场景，只把过程位置改为中途：终点仍明确但距离尚远。目标概念在此不成立；对应的是 not_yet/approaching，用于纠正“只要在过程中就能用目标词”的误解。
+    target_state: complete_picture
+    dimension: task_completion
+    progress_state: midway
+    gap_size: large
+    achievement: 'no'
+    eventual_action: finish_picture
+    event_type: task_progress
+    valence: neutral_positive
+    boundary_salience: visible_unfinished_area
+    setting: home
+    observer_perspective: third_person
+    crossed: 'no'
+    expected_judgment: negative
+  sequence: 2
+  experience:
+    episode: Sam starts a second puzzle with the same picture. He puts the edge pieces
+      in place, then fills some middle pieces along the left side. More than half
+      of the board is still empty, and the bare middle is easy to see. He adds one
+      more piece, stops, and looks at the large empty area.
+    observable_evidence:
+    - Only the border and a few middle pieces are in place.
+    - A large empty area covers the center and right side of the board.
+    - Sam places one piece and then stops with many empty spaces around it.
+    surface_dimensions:
+    - name: Unfinished area
+      baseline: No empty spaces in the picture
+      deviation: A large empty area covers the center and right side.
+    - name: Amount of bare board
+      baseline: No bare board
+      deviation: Most of the board is bare.
+  interaction:
+    question: How much of the second puzzle is still left to do?
+    answers:
+    - id: a1
+      text: Only a small spot remains.
+      is_correct: false
+      feedback: 'No: the empty area is large and covers the center and right side.'
+    - id: a2
+      text: A large part of the picture is still empty.
+      is_correct: true
+      feedback: 'Yes: the bare middle and right side are visible, so the work is still
+        in an early middle stage.'
+- id: unit-3
+  role: variation
+  hypothesis_target: null
+  preserved_variables:
+  - progress_state
+  - gap_size
+  - achievement
+  - observer_perspective
+  - crossed
+  changed_variables:
+  - target_state
+  - dimension
+  - event_type
+  - setting
+  - eventual_action
+  - valence
+  - boundary_salience
+  semantic_spec:
+    judgment: 把目标概念迁移到数量维度：容器接近满，瓶口仍有可见空隙。这是正例，目标未达成。
+    target_state: fill_to_brim
+    dimension: quantity
+    progress_state: at_threshold
+    gap_size: tiny
+    achievement: 'no'
+    eventual_action: fill_complete
+    event_type: container_fill
+    valence: neutral
+    boundary_salience: marked_brim
+    setting: kitchen
+    observer_perspective: third_person
+    crossed: 'no'
+    surface_pattern: almost + adjective
+  sequence: 3
+  experience:
+    episode: Lena fills a glass bottle with water from a jug. A thin black line runs
+      around the neck near the top. She tilts the jug carefully; the water rises quickly,
+      then slows. The surface stops a finger's width below the line. She straightens
+      the jug and sets it down without adding another drop.
+    observable_evidence:
+    - A thin line is marked near the top of the bottle.
+    - The water surface is one finger-width below that line.
+    - Lena lifts the jug away while the gap is still visible.
+    - No water reaches the line or spills over.
+    surface_dimensions:
+    - name: Water level relative to the line
+      baseline: Water reaches the line
+      deviation: Water stops just below the line.
+    - name: Room left in the bottle
+      baseline: No room left above the water
+      deviation: A narrow gap remains above the water.
+  interaction:
+    question: When Lena stops pouring, what does the bottle look like?
+    answers:
+    - id: a1
+      text: It has a little empty space at the top.
+      is_correct: true
+      feedback: 'Yes: the water surface sits just below the marked line, so the bottle
+        can still hold a little more.'
+    - id: a2
+      text: It is filled right to the mark.
+      is_correct: false
+      feedback: 'No: the surface is below the line by a finger''s width.'
+- id: unit-4
+  role: variation
+  hypothesis_target: null
+  preserved_variables:
+  - progress_state
+  - gap_size
+  - achievement
+  - observer_perspective
+  - crossed
+  changed_variables:
+  - target_state
+  - dimension
+  - event_type
+  - setting
+  - eventual_action
+  - valence
+  - boundary_salience
+  semantic_spec:
+    judgment: 把目标概念用在动作后果维度：身体失去平衡、即将摔倒但最终站住；目标事件“摔倒”未发生但极度逼近。
+    target_state: fall_down
+    dimension: action_outcome
+    progress_state: at_threshold
+    gap_size: tiny
+    achievement: 'no'
+    eventual_action: fall_to_ground
+    event_type: slip_accident
+    valence: negative
+    boundary_salience: loss_of_balance_edge
+    setting: street
+    observer_perspective: third_person
+    crossed: 'no'
+    surface_pattern: almost + past_tense_verb
+  sequence: 4
+  experience:
+    episode: Rosa walks across a wet street and steps on a smooth metal cover. Her
+      back foot shoots forward and her body tilts sideways; her arms swing out. She
+      grabs a metal post with one hand and bends her knees. Her shoes stay on the
+      ground and she does not hit the ground.
+    observable_evidence:
+    - Rosa's back foot slides forward suddenly.
+    - Her body tilts far to one side and both arms fly out.
+    - One hand grips the post and her knees bend.
+    - She remains standing; no part of her touches the ground.
+    surface_dimensions:
+    - name: Body position
+      baseline: Upright and balanced
+      deviation: Tilted far sideways, then upright again.
+    - name: Fall distance
+      baseline: No slip; body stays upright
+      deviation: Body tilts to the edge of falling but does not go down.
+  interaction:
+    question: What happens after Rosa steps on the metal cover?
+    answers:
+    - id: a1
+      text: She hits the ground.
+      is_correct: false
+      feedback: 'No: she grabs the post and stays on her feet.'
+    - id: a2
+      text: She stays on her feet.
+      is_correct: true
+      feedback: 'Yes: the slip pushed her body sideways, but her hand caught the post
+        and she did not go down.'
+- id: unit-5
+  role: discrimination
+  hypothesis_target: misc-2
+  preserved_variables:
+  - dimension
+  - number_scale
+  - observer_perspective
+  - event_type
+  - setting
+  - valence
+  changed_variables:
+  - target_state
+  - progress_state
+  - gap_size
+  - achievement
+  - boundary_salience
+  - eventual_action
+  - crossed
+  semantic_spec:
+    judgment: 在同一距离报告场景中对照“差一点到 5 公里”和“大约 5 公里”：前者有明确阈值且差一点未达到，是目标概念；后者只是近似数值、不强调未达成，对应
+      about/approximately。用于纠正 almost 与 about 的混淆。
+    dimension: quantity
+    number_scale: 5_km
+    observer_perspective: third_person
+    event_type: distance_report
+    setting: running_track
+    valence: neutral
+    target_state:
+      target: reach_5km_marker
+      distractor: report_approximate_distance
+    progress_state:
+      target: at_threshold
+      distractor: approximate_value
+    gap_size:
+      target: tiny
+      distractor: not_applicable
+    achievement:
+      target: 'no'
+      distractor: not_applicable
+    boundary_salience:
+      target: digital_5km_marker
+      distractor: round_number_estimate
+    eventual_action:
+      target: reach_5km_marker
+      distractor: no_threshold_event
+    crossed:
+      target: 'no'
+      distractor: not_applicable
+    expected_judgment:
+      target: positive
+      distractor: negative
+  sequence: 5
+  experience:
+    episode: Two runners are on a track with a painted 5 km line on the surface. Runner
+      A passes a digital screen beside the track that reads 4.99 km. She slows down
+      and stops a few steps before the painted line, looking at the screen. Runner
+      B finishes a separate run, sees 5.2 on her watch, and calls out 'Five kilometers'
+      to a friend; she does not go near the painted line.
+    observable_evidence:
+    - Runner A stops a few steps before the painted 5 km line.
+    - The screen beside Runner A shows 4.99 km.
+    - Runner B's watch shows 5.2, but she says 'Five kilometers.'
+    - Runner B does not go to the painted line.
+    surface_dimensions:
+    - name: Distance to the painted line
+      baseline: Runner touches the line
+      deviation: Runner A stops a few steps before it; Runner B has no relation to
+        it.
+    - name: Distance information
+      baseline: Distance is measured by a visible mark
+      deviation: Runner A uses the track screen; Runner B reports a rounded number.
+  interaction:
+    question: Which runner is still a few steps short of the painted 5 km line?
+    answers:
+    - id: a1
+      text: Runner A, because the screen says 4.99 and she stops before the line.
+      is_correct: true
+      feedback: 'Yes: Runner A has a real mark ahead of her, and the screen places
+        her a tiny distance before it.'
+    - id: a2
+      text: Runner B, because she reads a number from her watch.
+      is_correct: false
+      feedback: 'No: Runner B only looks at a number; no line is part of her run.'
+- id: unit-6
+  role: discrimination
+  hypothesis_target: misc-3
+  preserved_variables:
+  - target_state
+  - dimension
+  - event_type
+  - setting
+  - boundary_salience
+  - observer_perspective
+  - valence
+  - gap_size
+  changed_variables:
+  - progress_state
+  - achievement
+  - eventual_action
+  - crossed
+  semantic_spec:
+    judgment: 在同一赶车场景中对照“差一秒没赶上”与“勉强赶上”：前者目标未达成，是目标概念；后者目标达成但有困难，对应 barely；用于纠正 almost
+      与 barely 的混同。
+    target_state: catch_train
+    dimension: time
+    event_type: commuting
+    setting: station_platform
+    boundary_salience: doors_closing
+    observer_perspective: third_person
+    valence: neutral
+    gap_size: tiny_margin
+    progress_state:
+      target: at_threshold
+      distractor: crossed_threshold_with_difficulty
+    achievement:
+      target: 'no'
+      distractor: 'yes'
+    eventual_action:
+      target: not_boarded
+      distractor: boarded
+    crossed:
+      target: 'no'
+      distractor: 'yes'
+    expected_judgment:
+      target: positive
+      distractor: negative
+  sequence: 6
+  experience:
+    episode: At a station platform, Mina and Omar are running for two trains whose
+      doors are closing. Mina reaches her door one step away; the panels slide shut
+      in front of her and her fingers touch the glass. The train moves away. Omar
+      reaches his door just as the panels begin to close; he pushes his arm into the
+      opening, the panels press against his shoulder, and he squeezes inside before
+      they close.
+    observable_evidence:
+    - Mina's hand is still stretched out when the door panels close and the train
+      leaves.
+    - Omar's arm is caught between the panels for a moment.
+    - Omar disappears inside the train before the doors finish closing.
+    - Mina stays on the platform as the train pulls away.
+    surface_dimensions:
+    - name: Arrival time at the door
+      baseline: Passenger arrives while the door is open
+      deviation: Mina arrives after the door closes; Omar arrives while it is closing.
+    - name: Boarding result
+      baseline: Passenger is on the train
+      deviation: Mina stays on the platform; Omar is on the train.
+  interaction:
+    question: Which traveler is too late to get on the train?
+    answers:
+    - id: a1
+      text: Mina
+      is_correct: true
+      feedback: 'Yes: the doors shut before she could get through, and the train left
+        while she was still on the platform.'
+    - id: a2
+      text: Omar
+      is_correct: false
+      feedback: 'No: Omar pushed into the opening and got inside before the doors
+        closed.'
+- id: unit-7
+  role: transfer
+  hypothesis_target: misc-4
+  preserved_variables:
+  - progress_state
+  - gap_size
+  - achievement
+  - observer_perspective
+  - crossed
+  changed_variables:
+  - target_state
+  - dimension
+  - event_type
+  - setting
+  - eventual_action
+  - valence
+  - boundary_salience
+  - surface_pattern
+  - negation_scope
+  semantic_spec:
+    judgment: 把目标概念迁移到计数/量化维度：大厅距离“完全没有来人”只差一个人但未达到。这个正例同时固定否定量化的表达位置：用 almost 加否定量化词（nobody/no
+      one），而不是把 almost 放在否定动词前。
+    target_state: empty_hall
+    dimension: count
+    progress_state: at_threshold
+    gap_size: tiny
+    achievement: 'no'
+    eventual_action: zero_attendees
+    event_type: attendance
+    valence: neutral
+    boundary_salience: nearly_empty_room
+    setting: auditorium
+    observer_perspective: third_person
+    crossed: 'no'
+    surface_pattern: almost + negative_quantifier
+    negation_scope: quantifier_not_verb
+    l1_correction_note: 本单元不安排 almost not 的直译结构；近零含义由 almost nobody/no one 等量化结构承载。
+  sequence: 7
+  experience:
+    episode: Staff set up an auditorium with two hundred seats for a talk. At the
+      start time, one person sits in the front row. The rows behind and beside her
+      are empty, and the doors stay open without anyone else coming in. A staff member
+      looks at the rows, counts the empty seats, and walks back to the entrance.
+    observable_evidence:
+    - Exactly one audience member is seated in the front row.
+    - All the other seats in the hall are unoccupied.
+    - No one else enters during the scene.
+    - The staff member scans the rows and then leaves the hall.
+    surface_dimensions:
+    - name: Seat occupancy
+      baseline: Every seat is empty
+      deviation: One seat is occupied and all others are empty.
+    - name: Arrivals
+      baseline: No one has arrived
+      deviation: One person has arrived, and no one else comes in.
+  interaction:
+    question: What do you see when the talk is about to start?
+    answers:
+    - id: a1
+      text: One person in a hall with many empty seats.
+      is_correct: true
+      feedback: 'Yes: there is one audience member, but the rest of the hall has no
+        one else.'
+    - id: a2
+      text: No one at all in the hall.
+      is_correct: false
+      feedback: 'No: one person is sitting in the front row, so the hall has one person
+        in it.'
+symbol_binding:
+  reveal:
+    l2_word: almost
+    ipa: /ˈɔːlmoʊst/
+    presentation: 'After the learners have experienced the repeated gap in each scene,
+      point to the remaining space (the missing puzzle piece, the finger-width above
+      the bottle line, the distance before the 5 km line, the one empty seat in the
+      hall) and say the word clearly: /ˈɔːlmoʊst/. Show the spelling ''almost''. Explain
+      that this word names a situation that is extremely close to a final point, but
+      the final point has not been reached. In the near-empty hall, attach it to the
+      quantity word: ''almost nobody'' means close to zero people, and the hall had
+      one person, so it was almost nobody. Do not put ''almost'' before a negative
+      verb such as ''almost not''.'
+  minimal_l1_gloss: 几乎；差一点就…
+grounding:
+  source_experience_id: unit-1
+  l2_realization: Sam has almost finished the puzzle, but the last piece is still
+    beside the board.
+  constructions:
+  - almost [past tense verb]
+  - almost [adjective]
+  - almost [quantifier/number]
+  - '[subject] almost [verb]'
+  collocations:
+  - almost finished
+  - almost there
+  - almost fell
+  - almost impossible
+  - almost everyone
+  - almost forgot
+review_pool:
+- id: review-1
+  semantic_spec:
+    judgment: 复习时，让学习者在“足球射门击中门柱弹出、没有进球”的新事件中判断目标概念是否成立；重点检查“极度接近但未达成”是否仍被识别。
+    target_state: score_goal
+    dimension: physical_distance
+    progress_state: at_threshold
+    gap_size: tiny
+    achievement: 'no'
+    eventual_action: ball_in_net
+    event_type: football_shot
+    valence: neutral
+    setting: football_field
+    crossed: 'no'
+  experience:
+    episode: Keira takes a shot from the edge of the penalty area on a football field.
+      The ball curls past the goalkeeper, clips the inside of the post, and bounces
+      back onto the grass. The ball rolls away from the goal and stops just outside
+      the line. Keira watches it and kicks the ground.
+    observable_evidence:
+    - The ball hits the post, not the net.
+    - The ball does not cross the goal line.
+    - The goalkeeper falls after the ball has already bounced away.
+    surface_dimensions:
+    - name: Ball position after the shot
+      baseline: Ball crosses the goal line into the net
+      deviation: Ball hits the post and stays outside the goal.
+    - name: Score
+      baseline: A goal is counted
+      deviation: No goal is scored.
+- id: review-2
+  semantic_spec:
+    judgment: 复习时，让学习者在“商店即将打烊、顾客差一秒没能在关门前进入”的新时间截止场景中判断目标概念；重点检查时间维度上的差一点未达成。
+    target_state: enter_store_before_closing
+    dimension: time
+    progress_state: at_threshold
+    gap_size: tiny
+    achievement: 'no'
+    eventual_action: enter_before_close
+    event_type: deadline_arrival
+    valence: neutral
+    setting: shop_entrance
+    crossed: 'no'
+  experience:
+    episode: At a shop entrance, the sign by the door switches to 'Closed' while a
+      customer is still running toward it. The door swings inward and starts to close.
+      The customer reaches the door handle one step too late; the latch clicks and
+      the door stays shut. He stands outside and looks through the glass.
+    observable_evidence:
+    - The sign switches to 'Closed' before the customer reaches the door.
+    - The door closes before the customer can grab the handle.
+    - The customer's hand is still reaching when the latch clicks.
+    - He remains outside and the door stays shut.
+    surface_dimensions:
+    - name: Door position
+      baseline: Door is open for entry
+      deviation: Door closes and locks before the customer arrives.
+    - name: Customer location
+      baseline: Customer is inside the shop
+      deviation: Customer is outside the glass door.
+- id: review-3
+  semantic_spec:
+    judgment: 复习时，让学习者在“电影厅几乎坐满，但仍有一个空位”的新计数场景中判断目标概念；同时检验 almost 与量化词搭配的结构是否迁移到 almost
+      all。
+    target_state: full_theater
+    dimension: count
+    progress_state: at_threshold
+    gap_size: tiny
+    achievement: 'no'
+    eventual_action: full_house
+    event_type: seat_occupancy
+    valence: neutral
+    setting: cinema
+    crossed: 'no'
+    surface_pattern: almost + quantifier
+  experience:
+    episode: 'At a cinema, an electronic sign above the entrance reads: ''Almost every
+      seat is now taken.'' Inside, every row has people in it except one seat near
+      the middle. A member of the staff walks down the row with a flashlight, stops
+      at the empty seat, checks the seat number, and continues out. The single empty
+      seat remains open when the lights go down.'
+    observable_evidence:
+    - The sign displays the words 'Almost every seat is now taken.'
+    - One seat in the middle row has no one in it.
+    - All other seats in the hall have a person in them.
+    - The staff member looks at the empty seat and leaves it empty.
+    surface_dimensions:
+    - name: Seat occupancy
+      baseline: Every seat is occupied
+      deviation: One seat remains open.
+    - name: Sign wording
+      baseline: Sign gives no occupancy information
+      deviation: Sign says 'Almost every seat is now taken.'
+metadata:
+  compiler_version: 1.0.0
+  prompt_versions:
+    semantic_planner: v1
+    program_planner: v1
+    surface_generator: v1
+    quality_gate: v1
+  generated_at: '2026-08-13T04:15:12Z'
+  source_semantic_revision: 1
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids: []
+  quality_gate:
+    passed: true
+    dimensions:
+    - name: semantic_correctness
+      verdict: pass
+      note: 'All positive units match the WordSense conditions: clear boundary, tiny
+        remaining gap, non-achievement (unit-1 puzzle gap, unit-3 bottle below the
+        line, unit-4 near-fall, unit-5 Runner A at 4.99 km before the line, unit-6
+        Mina one step before closed doors, unit-7 one person in a large hall). Negative
+        units are intentional excluded categories: unit-2 is not_yet/midway, unit-5
+        Runner B is about/approximate, unit-6 Omar is barely/achieved. No unit presents
+        a neighboring sense as the target.'
+    - name: sense_purity
+      verdict: pass
+      note: No accidental drift into nearly/barely/about/not_yet/practically. The
+        negative-event near-fall in unit-4 is a legitimate almost case and is balanced
+        by the neutral/positive anchors in unit-1 and unit-7, so it does not create
+        an 'almost is only for bad events' overgeneralization.
+    - name: prototype_quality
+      verdict: warn
+      note: 'unit-1 is a canonical ''almost finished'' prototype: one piece-shaped
+        gap, last piece beside the board, clear boundary. However, the interaction
+        question (''The puzzle is done'' / ''The puzzle is not done'') tests only
+        non-completion; ''not done'' would also be true of unit-2''s midway state.
+        To make the anchor fully bind the tiny-gap/at-threshold property, unit-1''s
+        interaction should ask about the amount remaining, e.g., ''How much of the
+        puzzle is left to do?'' with ''only one piece'' vs ''most of the board''.'
+    - name: definition_leakage
+      verdict: warn
+      note: 'Unit episodes, observable_evidence, answer options, and feedback are
+        non-definitional and let the scenes carry the semantics. The one direct definitional
+        sentence is in symbol_binding.reveal.presentation: ''Explain that this word
+        names a situation that is extremely close to a final point, but the final
+        point has not been reached.'' Because this appears at the post-experience
+        reveal stage it is a risk rather than a full replacement of experience, but
+        it is still learner-visible definitional wording. A safer reveal should point
+        to the observed gap, say /ˈɔːlmoʊst/, and show the spelling, leaving the semantic
+        explanation outside the learner-visible script.'
+    - name: l2_leakage
+      verdict: pass
+      note: No pre-reveal episode, observable_evidence, answer, feedback, or surface_dimension
+        contains 'almost' or adjacent L2 confusables (nearly/barely/about/practically).
+        'almost' appears only in symbol_binding/grounding and in review-3's sign,
+        which is post-reveal review content, not '揭示前' content.
+    - name: variable_isolation
+      verdict: pass
+      note: unit-2 changes only progress_state and gap_size while keeping target_state,
+        dimension, setting, eventual_action, achievement, and valence fixed, cleanly
+        isolating the distance-to-boundary variable. unit-5 and unit-6 preserve their
+        situational frames and change only the cluster of variables that constitutes
+        the almost/about and almost/barely contrasts; no extra variable shifts quietly
+        and invalidates the judgment.
+    - name: accidental_invariant
+      verdict: pass
+      note: Positive examples vary across target_state (complete_picture, fill_to_brim,
+        fall_down, reach_5km_marker, catch_train, empty_hall), dimension (task_completion,
+        quantity, action_outcome, time, count), setting, valence, and boundary_salience.
+        The repeated values 'at_threshold + tiny gap + not achieved + not crossed'
+        are definitional conditions, not accidental invariants.
+    - name: transfer_novelty
+      verdict: pass
+      note: unit-7 moves from the first-learning home/kitchen task-completion domain
+        to an auditorium attendance/count domain and changes at least two surface
+        dimensions (seat occupancy and arrivals). It also shifts the surface construction
+        to 'almost + negative quantifier' while preserving the semantic conditions
+        (clear boundary, tiny gap, non-achievement), so the transfer is novel and
+        valid.
+    - name: cognitive_noise
+      verdict: pass
+      note: Episodes are single-situation and each observable_evidence item maps directly
+        to the target distinction. unit-5 and unit-6 use two-subcase comparisons,
+        but those subcases are the discriminations themselves, not extraneous plot.
+        No unrelated vocabulary or ambiguous wording that would block category binding
+        is present.
+    scores:
+      semantic_correctness: 9.0
+      sense_purity: 9.0
+      prototype_quality: 7.5
+      definition_leakage: 7.5
+      l2_leakage: 9.0
+      variable_isolation: 9.0
+      accidental_invariant: 9.0
+      transfer_novelty: 9.0
+      cognitive_noise: 8.5

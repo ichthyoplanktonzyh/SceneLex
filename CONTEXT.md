@@ -33,6 +33,38 @@ _Avoid_: 视频脚本、镜头表、素材
 SceneSpec 中观众必须感知的语义事件单位。它不等于 Shot、Keyframe 或 Clip。
 _Avoid_: 镜头、关键帧、视频段
 
+**ExperienceProgram（经验程序）**:
+一个 WordSense 编译出的可教学、可引用、可版本化的程序：semantic_model、有序概念
+单元（units）、symbol_binding、grounding、review_pool 与 metadata。它是当前新主线
+的产物契约（`schema/experience-program.schema.json` v1.0）。
+_Avoid_: 五段叙事模板、卡片组、旧 SceneSpec 机械映射
+
+**Experience Compiler（经验编译器）**:
+把 WordSense 编译为 ExperienceProgram 的四阶段 deep module
+（`tools/experience_compiler.py`）。对外只暴露 `compile_experience_program` /
+`validate_program` / `run_regression`；内部阶段不对外。
+_Avoid_: 把四阶段分别暴露成公共接口
+
+**Semantic Planner（语义规划器）**:
+Compiler 第一阶段。把 WordSense 还原为 semantic_model：invariant、必要条件、
+非蕴涵、典型伴随、带稳定 ID 的 misconceptions、L1 干扰。只处理词义，不设计经验。
+_Avoid_: 直接生成叙事、单元或学习者可见内容
+
+**Experience Program Planner（程序规划器）**:
+Compiler 第二阶段。规划有序概念单元（role、假设目标、受控/变化变量、语义规格）、
+grounding 计划、复习池计划与揭示计划。只产出语义计划，不写表面文本。
+_Avoid_: 五场景组模板、按 SceneSpec 一一映射
+
+**Surface Experience Generator（表面经验生成器）**:
+Compiler 第三阶段。把语义计划实现为 learner-visible 表面经验：episode、可观察
+证据、表面维度、可评分 interaction、揭示与 L2 落地。揭示前禁止目标词与相邻 L2 词。
+_Avoid_: 旁白直陈语义、语义计划与表面文本混层
+
+**Semantic Critic / Quality Gate（语义批评器）**:
+Compiler 第四阶段。按九个固定维度审核程序；任一阻塞维度未过，compile 不返回程序。
+结论写入 metadata，不泄漏进 learner-visible 内容；pass 不代表自动发布。
+_Avoid_: VLM 结论、生成成功即通过、分数代替 verdict
+
 ## Execution
 
 > **Legacy Note**: 随着理论转向“语义教学引擎”和通用微世界架构，此执行层（Shot Plan / Keyframe Plan 等）已降级为特定类型的微世界（视频类）的具体实现细节。

@@ -81,7 +81,25 @@ SceneLex 采用上述核心三层解耦架构：
 阶段 3：交互微世界（3D / 模拟 / 叙事引擎）
 ```
 
-当前处于阶段 1：LLM 将 WordSense + SceneSpec 编译为学习者可体验的经验叙事，以卡片式学习单元嵌入背单词软件。每个学习单元包含：经验溯源、5 个场景叙事（原型/对比/反例/边界/迁移）、L1 经验对比和自测题。原型验证见 [`prototype/reluctant-demo.html`](prototype/reluctant-demo.html)。
+## Experience Compiler v1（当前主线）
+
+当前阶段 1 的实现主线是 **ExperienceProgram**：`tools/experience_compiler.py`
+以 WordSense 为唯一输入权威，经四阶段编译（Semantic Planner → Experience
+Program Planner → Surface Experience Generator → Semantic Critic / Quality Gate）
+产出版本化的 ExperienceProgram（`schema/experience-program.schema.json` v1.0）。
+单元数量与 role 组合（anchor / variation / perturbation / discrimination /
+transfer）由词义决定，不固定为五段模板。SceneSpec 不再是经验单元的机械来源；
+旧视频管线降级为 legacy。契约、接口、阶段与 fixture 职责见
+[`docs/experience-compiler-v1.md`](docs/experience-compiler-v1.md)。
+
+```bash
+python3 tools/experience_compiler.py regression                # 离线四词回归
+python3 tools/experience_compiler.py validate <program-file>   # 离线确定性校验
+python3 tools/experience_compiler.py compile reluctant-01      # 四阶段编译 → data/drafts/experience-programs/
+```
+
+四词回归 fixture 冻结于 `tests/fixtures/experience-programs/`（人工可审查，
+不自动发布）。原型验证见 [`prototype/reluctant-demo.html`](prototype/reluctant-demo.html)。
 
 ## Legacy：视频管线（从语义到视频）
 
@@ -183,6 +201,7 @@ tools/director.py            语义节拍 → 可执行 Shot Plan (plan / show /
 tools/shot_plan.py           Shot Plan 身份、Beat→Shot 映射与时长/连续性校验
 tools/render.py              legacy beat-image 渲染原型 (plan / show / render)
 tools/llm.py                 多协议 LLM 适配器
+tools/experience_compiler.py Experience Compiler v1: WordSense → ExperienceProgram (compile / validate / regression)
 tools/revisions.py           Scene → WordSense 语义修订绑定与状态判定
 tools/validate.py            正式库发布门
 tools/export.py              面向消费者的确定性 JSON 导出

@@ -1,0 +1,830 @@
+schema_version: '1.0'
+program_id: reluctant-01-program
+program_version: 1
+status: draft
+target:
+  sense_id: reluctant-01
+  lemma: reluctant
+  pos: adjective
+  ipa: rɪˈlʌktənt
+  locale_l1: zh
+semantic_model:
+  invariant: A person is reluctant when, while consciously facing a specific available
+    action, their own internal attitude toward performing it is a negative willingness
+    or inner resistance, and that resistance is legible through observable behavior
+    regardless of whether the action is performed.
+  necessary_conditions:
+  - There is an experiencer who is consciously facing a specific, physically available
+    action or course of action, understands that the action is available, and has
+    an actual opportunity to act.
+  - The experiencer's internal attitude toward performing that action is negative
+    — unwillingness, inner resistance, or aversion (the core invariant); this attitude
+    originates in the experiencer's own disposition, not in external prohibition,
+    procedural reasons, or physical inability.
+  - The negative willingness is supported by observable behavior; no single behavior
+    (delay, sigh, facial expression, minimal contact, refusal, etc.) is definitionally
+    required.
+  - If the action is performed, the negative willingness remains legible while the
+    action happens; if the action is not performed, the negative willingness is legible
+    in the behavior leading up to that outcome.
+  - The eventual performance or non-performance of the action is not part of the definition;
+    both a completed action and no action in the end are compatible with reluctant.
+  non_entailments:
+  - Performing or completing the available action does not entail that the experiencer
+    was not reluctant; a reluctant person may comply while the unwillingness remains
+    visible.
+  - A smooth, prompt performance with no observable sign of negative willingness does
+    not entail reluctant; the negative-willingness evidence is definitionally required.
+  - The action never happening does not entail that the experiencer was not reluctant;
+    stopping before starting or never engaging is compatible when the resistance is
+    separately observable.
+  - A bare refusal or a clear verbal 'no' does not entail reluctant; refusal alone
+    is an observable act of declining and requires separate negative-willingness evidence.
+  - Reluctance does not entail refusal; a deeply reluctant person may still act.
+  - Reluctance does not entail non-performance; the person may eventually do the action.
+  - Reluctance does not entail performance; the person may stop before starting or
+    never engage.
+  - A pause, delay, or slow movement does not entail reluctant; it may be caused by
+    age, injury, fatigue, a laborious task, or uncertainty rather than by negative
+    willingness.
+  - A frown or an unhappy/fearful expression alone does not entail reluctant; facial
+    expression alone cannot distinguish reluctance from fear, sadness, annoyance,
+    or general distress not attached to a specific action.
+  - Reluctance does not entail that the action was impossible or externally forbidden;
+    it is an internal state, not a statement about external constraint.
+  typical_correlates:
+  - Often, the experiencer pauses or delays before moving, or pauses at the door before
+    proceeding.
+  - Often, the experiencer sighs, turns away, or uses a flat/quiet voice while acknowledging
+    the task.
+  - Often, the experiencer steps back, crosses arms, or leans away from the action
+    or object.
+  - Often, contact with the object is minimal, slowed, or partial rather than full
+    and smooth.
+  - When the action is performed, it is often done with continuing visible resistance,
+    such as a minimal grudging nod or an 'I guess so' response.
+  - Sometimes, the experiencer stops before starting or never engages with the available
+    action, with the resistance readable in the behavior leading up to the stop.
+  misconceptions:
+  - id: misc-1
+    description: If the person eventually does the action, they cannot really have
+      been reluctant.
+    correction: Completion by itself is not counter-evidence; the misconception is
+      overturned only when the action is performed promptly and smoothly with no observable
+      sign of negative willingness. If the person completes the action while sighing,
+      turning away, or making minimal contact, reluctance remains supported.
+  - id: misc-2
+    description: A refusal or a clear 'no' is enough to call someone reluctant.
+    correction: To overturn this, observe whether the person shows any inner resistance
+      beyond the no — delay, withdrawal, minimal contact, or other negative-willingness
+      signs attached to the available action. If the scene only shows a clear no,
+      it supports refuse, not reluctant.
+  - id: misc-3
+    description: A pause, delay, or slow movement is the same thing as reluctance.
+    correction: Evidence that the slowness is due to age, injury, fatigue, or the
+      task being laborious — or that the person is wavering between options rather
+      than resisting one known action — overturns the inference. The behavior must
+      be tied to negative willingness toward the specific action.
+  - id: misc-4
+    description: A frown, sigh, or unhappy expression alone is enough to prove reluctance.
+    correction: A frown or sad expression must be tied to the specific available action
+      and corroborated by other possible signs such as withdrawal, delay, or flat
+      voice; if the emotion is fear, sadness, or annoyance not directed at the action,
+      the label reluctant is not supported.
+  - id: misc-5
+    description: 'Reluctant is the same as unwilling: a firm decision not to do the
+      action.'
+    correction: Evidence that the person eventually acts despite emotional struggle
+      supports reluctant, not unwilling; evidence that the person simply decides not
+      to act without emotional conflict supports unwilling or refusal. The distinction
+      is decision/no-decision and emotional resistance, not whether action occurs.
+  l1_interference:
+  - Chinese 不情愿 covers reluctant, unwilling, and hesitant in a broader way, so learners
+    may label any scene of hesitation or direct refusal as reluctant even when the
+    negative-willingness core is missing.
+  - 'Chinese 不愿意 is closer to will-level negation and is often mapped to unwilling;
+    this decision-oriented mapping can make learners miss reluctant''s core: the action
+    may still be performed while the person''s inner resistance remains visible.'
+units:
+- id: unit-1
+  role: anchor
+  hypothesis_target: misc-1
+  preserved_variables:
+  - experiencer
+  - setting
+  - potential_action
+  - trigger_source
+  - observable_behavior
+  - external_constraint
+  changed_variables:
+  - eventual_action
+  semantic_spec:
+    judgment: 本单元建立目标状态：经验者面对具体可执行行动时，内心对该行动有负面意愿，并通过叹气、停顿、最小接触等可见行为保持；行动最终完成并不能否定这一目标状态。
+    experiencer: young_person
+    setting: kitchen
+    potential_action: take_medicine
+    trigger_source: caregiver
+    observable_behavior: delay_sigh_minimal_contact
+    external_constraint: none
+    eventual_action: performed
+    internal_attitude: negative_willingness
+    action_opportunity: present
+    target_state: present
+  sequence: 1
+  experience:
+    episode: At home, a young person sits at the kitchen table. A caregiver places
+      a small bottle of medicine and a spoon beside the young person. The young person
+      looks at the bottle, then reaches for the spoon only after a long pause. They
+      let out a quiet sigh and touch the spoon with only two fingertips. They raise
+      the spoon toward their mouth slowly, stop once, then continue and drink the
+      medicine.
+    observable_evidence:
+    - long pause before reaching for the spoon
+    - quiet sigh before touching the spoon
+    - touches the spoon with only two fingertips
+    - hand stops once while raising the spoon, then continues
+    - drinks the medicine
+    surface_dimensions:
+    - name: approach speed
+      baseline: reaches for the spoon as soon as it is placed
+      deviation: pauses for a long time before reaching
+    - name: hand contact
+      baseline: closes the whole hand around the spoon
+      deviation: touches it with only two fingertips
+    - name: movement while acting
+      baseline: one smooth motion
+      deviation: slow motion with a stop before continuing
+  interaction:
+    question: Which set of behaviors in the scene is the strongest evidence?
+    answers:
+    - id: a1
+      text: A long pause, a quiet sigh, and a minimal two-finger touch before the
+        medicine is taken
+      is_correct: true
+      feedback: These visible signs stay present before and during the action; completing
+        the medicine does not remove them.
+    - id: a2
+      text: The caregiver places the bottle and spoon on the table
+      is_correct: false
+      feedback: This is the event that makes the action available; it does not show
+        the person's feeling toward the action.
+    - id: a3
+      text: The person sits at the kitchen table
+      is_correct: false
+      feedback: Being at the table is just the setting; it does not carry the evidence.
+- id: unit-2
+  role: variation
+  hypothesis_target: null
+  preserved_variables:
+  - experiencer
+  - external_constraint
+  changed_variables:
+  - setting
+  - potential_action
+  - trigger_source
+  - observable_behavior
+  - eventual_action
+  semantic_spec:
+    judgment: 本单元要求学习者判断：可用行动没有被执行，并不等于目标状态缺失；只要在行动开始前有停步、转身等指向该行动的内在抵触迹象，目标状态仍然成立。
+    experiencer: young_person
+    external_constraint: none
+    setting: classroom
+    potential_action: give_presentation
+    trigger_source: teacher
+    observable_behavior: stops_before_starting_turns_away
+    eventual_action: not_performed
+    internal_attitude: negative_willingness
+    action_opportunity: present
+    target_state: present
+  sequence: 2
+  experience:
+    episode: In a classroom, a teacher points to the front of the room and says that
+      it is a student's turn to give a presentation. The student stands up and walks
+      toward the board, then stops three steps before the front. They turn their face
+      toward the window and let out a long breath. Their feet stay in place for a
+      few seconds, and then they walk back to their seat. The presentation never starts.
+    observable_evidence:
+    - stops three steps before the front
+    - turns face toward the window
+    - lets out a long breath
+    - feet stay in place for a few seconds
+    - walks back to the seat without starting
+    surface_dimensions:
+    - name: approach
+      baseline: continues to the front and begins speaking
+      deviation: stops three steps short and then returns
+    - name: body orientation
+      baseline: faces the board or the audience
+      deviation: turns toward the window
+    - name: outcome
+      baseline: presentation begins
+      deviation: presentation never starts
+  interaction:
+    question: Which set of behaviors is the key evidence in this scene?
+    answers:
+    - id: a1
+      text: Stopping before the front, turning away, and returning to the seat
+      is_correct: true
+      feedback: These signs point at the available action even though the action was
+        not performed; the stop and turn carry the evidence.
+    - id: a2
+      text: The teacher points and says it is the student's turn
+      is_correct: false
+      feedback: The teacher's words create the opportunity; they do not show how the
+        student feels about it.
+    - id: a3
+      text: The presentation never starts
+      is_correct: false
+      feedback: The missed outcome alone is not evidence; the stopping and turning
+        away are what make the outcome meaningful.
+- id: unit-3
+  role: discrimination
+  hypothesis_target: misc-2
+  preserved_variables:
+  - experiencer
+  - external_constraint
+  changed_variables:
+  - setting
+  - potential_action
+  - trigger_source
+  - observable_behavior
+  - eventual_action
+  semantic_spec:
+    judgment: 本单元要求学习者区分：一个干净利落的‘不’本身只是拒绝动作，不足以标记为目标状态；同一场景中，如果经验者在行动仍可选择时表现出退缩、叹气等抵触行为，则目标状态成立。
+    experiencer: young_person
+    external_constraint: none
+    setting: clinic
+    potential_action: accept_injection
+    trigger_source: nurse
+    observable_behavior: withdrawal_sigh_before_stop
+    eventual_action: not_performed
+    internal_attitude: negative_willingness
+    action_opportunity: present
+    target_state: present_in_target_member
+    foil_case:
+      observable_behavior: clear_no_only
+      eventual_action: not_performed
+      internal_attitude: not_established
+      decisional_state: decisive_no_without_resistance
+      target_state: absent
+    contrast_type: target_vs_clear_no
+  sequence: 3
+  experience:
+    episode: In a clinic, a nurse carrying a tray approaches two young people one
+      after another. The first young person is asked to hold out an arm for an injection.
+      This person steps back as the nurse comes closer, lets out a short sigh, and
+      keeps their arm pressed against their body. Before the nurse reaches them, they
+      turn away, and the injection is not given. The second young person is asked
+      the same question, says no in a calm, even voice, keeps their shoulders relaxed,
+      and leaves without pausing.
+    observable_evidence:
+    - first young person steps back when the nurse approaches
+    - first young person sighs and keeps the arm pressed against the body
+    - first young person turns away and does not receive the injection
+    - second young person says no in a calm, even voice
+    - second young person remains relaxed and leaves without pausing
+    surface_dimensions:
+    - name: approach response
+      baseline: holds the arm out and stays still
+      deviation: first person steps back and presses the arm close; second person
+        stays still but says no
+    - name: visible body signs
+      baseline: no extra signs
+      deviation: first person sighs and turns away; second person shows no extra signs
+    - name: outcome
+      baseline: injection is given
+      deviation: neither person receives the injection
+  interaction:
+    question: Which person's behavior carries the pattern this lesson is about?
+    answers:
+    - id: a1
+      text: The first young person, who steps back, sighs, keeps the arm close, and
+        turns away
+      is_correct: true
+      feedback: Stepping back, sighing, keeping the arm close, and turning away are
+        visible signs attached to the available action, even though the injection
+        is not given.
+    - id: a2
+      text: The second young person, who says no calmly and leaves without pausing
+      is_correct: false
+      feedback: A calm no with no added body signs is only a decision to say no; it
+        does not show the pattern.
+    - id: a3
+      text: The nurse, who carries the tray and makes the request
+      is_correct: false
+      feedback: The nurse provides the opportunity; the evidence must come from the
+        person facing the action.
+- id: unit-4
+  role: perturbation
+  hypothesis_target: misc-3
+  preserved_variables:
+  - setting
+  - potential_action
+  - trigger_source
+  - eventual_action
+  - external_constraint
+  changed_variables:
+  - experiencer
+  - observable_behavior
+  - internal_attitude
+  - cause_of_movement
+  semantic_spec:
+    judgment: 本单元要求学习者判断：慢动作本身不等于目标状态；当同一个可用行动以相同结局完成，但慢是由关节疼痛等身体原因造成，且经验者对行动没有负面意愿时，目标状态缺失。
+    setting: kitchen
+    potential_action: take_medicine
+    trigger_source: caregiver
+    eventual_action: performed
+    external_constraint: none
+    experiencer: elderly_person
+    observable_behavior: slow_gait_wince_then_smooth_compliance
+    internal_attitude: positive_toward_action
+    cause_of_movement: joint_pain
+    action_opportunity: present
+    target_state: absent
+  sequence: 4
+  experience:
+    episode: In a kitchen, an older woman is asked by her caregiver to take her medicine.
+      She stands up from her chair slowly, pressing one hand on her knee and wincing
+      as she straightens. She walks to the table with small, careful steps. When she
+      reaches the medicine, she picks up the spoon immediately, takes the medicine
+      in one smooth motion, and smiles at the caregiver.
+    observable_evidence:
+    - presses one hand on her knee and winces while standing
+    - walks with small, careful steps
+    - picks up the spoon immediately when she reaches the table
+    - takes the medicine in one smooth motion
+    - smiles at the caregiver after taking it
+    surface_dimensions:
+    - name: movement before the task
+      baseline: steady and unforced
+      deviation: slow with wincing and a hand pressed on the knee
+    - name: movement during the task
+      baseline: delayed or broken
+      deviation: immediate and smooth
+    - name: expression after the task
+      baseline: neutral or tense
+      deviation: smiles at the caregiver
+  interaction:
+    question: Why does the woman move slowly in this scene?
+    answers:
+    - id: a1
+      text: Her knee hurts when she stands and straightens, and the slowness stops
+        once she reaches the table
+      is_correct: true
+      feedback: The slow movement is explained by joint pain, and her action with
+        the medicine is immediate and smooth, so the slowness is not evidence of the
+        pattern.
+    - id: a2
+      text: She stops several times on the way to the table to avoid the medicine
+      is_correct: false
+      feedback: The scene shows a slow walk to the table, not repeated stops; once
+        she is at the table, she acts quickly.
+    - id: a3
+      text: The caregiver asks her to move slowly
+      is_correct: false
+      feedback: The caregiver makes the request, but nothing in the scene asks her
+        to walk slowly.
+- id: unit-5
+  role: discrimination
+  hypothesis_target: misc-4
+  preserved_variables:
+  - eventual_action
+  - external_constraint
+  changed_variables:
+  - setting
+  - experiencer
+  - potential_action
+  - trigger_source
+  - observable_behavior
+  semantic_spec:
+    judgment: 本单元要求学习者判断：皱眉或叹气本身不足以证明目标状态；当情绪来自与行动无关的坏消息，且动作流畅即时地完成时，目标状态缺失。只有当表情与退缩、最小接触等行动指向性证据同时出现时，目标状态成立。
+    eventual_action: performed
+    external_constraint: none
+    setting: office
+    experiencer: adult
+    potential_action: sign_document
+    trigger_source: supervisor
+    observable_behavior: frown_sigh_turn_away_minimal_contact_then_sign
+    internal_attitude: negative_willingness
+    action_opportunity: present
+    target_state: present_in_target_member
+    foil_case:
+      observable_behavior: frown_sigh_then_smooth_prompt_sign
+      eventual_action: performed
+      internal_attitude: not_negative_toward_action
+      emotional_source: unrelated_bad_news
+      target_state: absent
+    contrast_type: target_vs_expression_alone
+  sequence: 5
+  experience:
+    episode: In an office, a supervisor places a form in front of two employees and
+      asks for a signature. The first employee looks at the form, frowns slightly,
+      and lets out a sigh. They turn their chair slightly away from the desk, pick
+      up the pen with only their fingertips, pause, and then sign. The second employee
+      frowns and sighs after reading a message on their phone, but when the supervisor
+      asks them to sign, they pick up the pen immediately and sign in one quick motion.
+    observable_evidence:
+    - first employee frowns and sighs while looking at the form
+    - first employee turns the chair away and touches the pen with fingertips
+    - first employee pauses before signing, then signs
+    - second employee frowns and sighs after reading a phone message
+    - second employee signs immediately and smoothly when asked
+    surface_dimensions:
+    - name: source of expression
+      baseline: expression appears while facing the requested action
+      deviation: first employee's expression appears while looking at the form; second
+        employee's expression follows a phone message
+    - name: approach to signing
+      baseline: reaches for the pen and signs promptly
+      deviation: first employee turns away, touches the pen minimally, and pauses;
+        second employee signs promptly
+    - name: completion
+      baseline: no signature
+      deviation: both employees sign
+  interaction:
+    question: Which employee's behavior carries the pattern this lesson is about?
+    answers:
+    - id: a1
+      text: The first employee, who frowns, sighs, turns away, touches the pen minimally,
+        pauses, and then signs
+      is_correct: true
+      feedback: The signs stay visible during the action itself; the fact that the
+        form is signed does not cancel them.
+    - id: a2
+      text: The second employee, who frowns and sighs after reading a phone message,
+        then signs quickly and smoothly
+      is_correct: false
+      feedback: The frown and sigh come from unrelated news, and the signature itself
+        is immediate and smooth, so the expression alone is not enough.
+    - id: a3
+      text: The supervisor, who places the form and asks for a signature
+      is_correct: false
+      feedback: The supervisor sets up the available action; the evidence must come
+        from the person performing it.
+- id: unit-6
+  role: discrimination
+  hypothesis_target: misc-5
+  preserved_variables:
+  - eventual_action
+  - external_constraint
+  changed_variables:
+  - setting
+  - experiencer
+  - potential_action
+  - trigger_source
+  - observable_behavior
+  semantic_spec:
+    judgment: 本单元要求学习者区分：平静而坚定地决定不做、没有情绪冲突，与带着情绪挣扎仍然去做，是不同的状态；后者即使行动最终完成，目标状态仍然成立。
+    eventual_action: performed
+    external_constraint: none
+    setting: community_hall
+    experiencer: adult
+    potential_action: perform_at_open_mic
+    trigger_source: organizer
+    observable_behavior: sigh_turn_away_minimal_contact_then_compliance
+    internal_attitude: negative_willingness
+    decisional_state: acts_despite_inner_resistance
+    action_opportunity: present
+    target_state: present_in_target_member
+    foil_case:
+      observable_behavior: calm_clear_decline_no_additional_signs
+      eventual_action: not_performed
+      internal_attitude: no_emotional_conflict
+      decisional_state: firm_decision_not_to_act
+      target_state: absent
+    contrast_type: target_vs_firm_decision_no_conflict
+  sequence: 6
+  experience:
+    episode: In a community hall, an organizer asks an adult to go on stage for the
+      open mic. The adult looks at the stage, exhales loudly, and turns their body
+      away from the microphone. They walk up slowly, touch the microphone once to
+      adjust it, and then speak into it in a low, flat voice. Later, another adult
+      is asked the same question. This second adult says no in a calm, even voice,
+      keeps their arms relaxed, and walks away without pausing.
+    observable_evidence:
+    - first adult exhales loudly and turns away from the microphone
+    - first adult walks up slowly
+    - first adult touches the microphone only once, to adjust it
+    - first adult performs in a low, flat voice
+    - second adult says no calmly and leaves without pausing
+    surface_dimensions:
+    - name: approach to stage
+      baseline: walks directly to the microphone
+      deviation: first adult turns away first, then walks slowly; second adult does
+        not go to the stage
+    - name: contact with the microphone
+      baseline: holds the microphone and speaks
+      deviation: first adult touches it only once to adjust it
+    - name: voice during the action
+      baseline: clear and lively
+      deviation: first adult uses a low, flat voice
+  interaction:
+    question: Which adult's behavior carries the pattern this lesson is about?
+    answers:
+    - id: a1
+      text: The adult who exhales, turns away, barely touches the microphone, and
+        then performs in a flat voice
+      is_correct: true
+      feedback: The action is performed, but the flat voice, turning away, and minimal
+        contact keep the negative feeling visible from start to finish.
+    - id: a2
+      text: The adult who says no calmly and walks away with relaxed shoulders and
+        no pause
+      is_correct: false
+      feedback: A calm no with no added body signs is a firm decision not to act;
+        it lacks the visible pattern.
+    - id: a3
+      text: The organizer who makes the request
+      is_correct: false
+      feedback: The request creates the opportunity; the evidence comes from the person
+        facing the action.
+- id: unit-7
+  role: transfer
+  hypothesis_target: null
+  preserved_variables:
+  - internal_attitude
+  - eventual_action
+  - external_constraint
+  changed_variables:
+  - setting
+  - experiencer
+  - potential_action
+  - trigger_source
+  - observable_behavior
+  semantic_spec:
+    judgment: 本单元要求学习者把目标状态迁移到全新的表面组合：面对新的经验者、新场景、新行动与新的触发来源，只要可见行为指向对该行动的负面意愿，且行动在抵触中完成，目标状态仍然成立。
+    internal_attitude: negative_willingness
+    eventual_action: performed
+    external_constraint: none
+    setting: bus
+    experiencer: adult
+    potential_action: offer_seat
+    trigger_source: passenger_in_need
+    observable_behavior: turns_away_flat_voice_minimal_offer
+    action_opportunity: present
+    target_state: present
+  sequence: 7
+  experience:
+    episode: On a crowded bus, an adult sits by the window. A passenger carrying heavy
+      bags stands directly in front of them. The seated adult looks out the window
+      for a moment, then says 'You can take it' in a flat, quiet voice without turning
+      their head. They gather their bag slowly, stand up, and move to the door area
+      with their shoulders lowered, leaving the seat without looking at the passenger.
+    observable_evidence:
+    - looks out the window instead of at the passenger
+    - says 'You can take it' in a flat, quiet voice
+    - gathers the bag slowly
+    - stands up with shoulders lowered
+    - moves to the door area without looking at the passenger
+    surface_dimensions:
+    - name: eye contact
+      baseline: faces the passenger while offering the seat
+      deviation: keeps looking out the window
+    - name: voice
+      baseline: clear and warm
+      deviation: flat and quiet
+    - name: body movement
+      baseline: quick, direct stand and handover
+      deviation: slow gathering, lowered shoulders, and no glance at the passenger
+  interaction:
+    question: Which set of details is the key evidence in this scene?
+    answers:
+    - id: a1
+      text: A flat voice, no eye contact, slow standing, and moving away after giving
+        up the seat
+      is_correct: true
+      feedback: The seat is given up, but these signs stay visible during the action;
+        the completed action does not erase them.
+    - id: a2
+      text: A crowded bus and a passenger with heavy bags
+      is_correct: false
+      feedback: The crowd and the bags make the seat useful to the passenger; they
+        do not show the giver's feeling about giving it up.
+    - id: a3
+      text: A quick smile and a cheerful offer
+      is_correct: false
+      feedback: This is not what happens in the scene; the actual offer is flat, slow,
+        and turned away.
+symbol_binding:
+  reveal:
+    l2_word: reluctant
+    ipa: rɪˈlʌktənt
+    presentation: 'Replay the first kitchen scene in the mind: the young person pauses,
+      sighs, barely touches the spoon, and drinks the medicine slowly. That whole
+      pattern — a specific action is available, the person''s inner feeling toward
+      doing it is negative, and that feeling stays visible in the body while the action
+      happens — is named by the English word reluctant. Present the written form and
+      say rɪˈlʌktənt. Point out that the word does not say whether the action is completed:
+      the classroom scene, where the presentation never started, also fits.'
+  minimal_l1_gloss: 不情愿的
+grounding:
+  source_experience_id: unit-1
+  l2_realization: The young person is reluctant to take the medicine, but after a
+    long pause and a quiet sigh, the young person drinks it.
+  constructions:
+  - be reluctant to [verb]
+  - feel reluctant about [noun]
+  - give a reluctant nod
+  collocations:
+  - reluctant to [verb]
+  - reluctant participant
+  - reluctant hero
+  - reluctant agreement
+review_pool:
+- id: review-1
+  semantic_spec:
+    judgment: 新场景复习：行动没有执行，但经验者在门口停顿、叹气并最终没有开始，抵触行为指向该行动；目标状态成立。
+    target_state: present
+    eventual_action: not_performed
+    observable_behavior: pauses_at_door_sighs_does_not_start
+    misconception_focus: non_performance_does_not_negate_target
+  experience:
+    episode: At a dental office, a teenager hears their name called from the waiting
+      room. They walk to the door, stop with one hand on the frame, and let out a
+      slow breath. After a moment, they step back, sit down, and pick up a magazine.
+      The appointment is not attended.
+    observable_evidence:
+    - stops at the door with one hand on the frame
+    - lets out a slow breath
+    - steps back and sits down instead of entering
+    - does not attend the appointment
+    surface_dimensions:
+    - name: approach to the door
+      baseline: walks in when called
+      deviation: stops at the threshold and holds the frame
+    - name: breath
+      baseline: normal breathing
+      deviation: lets out a slow breath before stepping back
+    - name: outcome
+      baseline: appointment begins
+      deviation: person returns to the waiting room
+- id: review-2
+  semantic_spec:
+    judgment: 新场景复习：一个平静而清晰的‘不’回应，没有额外的退缩、叹气或最小接触证据；这个场景只支持拒绝/决定不做，不支持目标状态。
+    target_state: absent
+    eventual_action: not_performed
+    observable_behavior: calm_clear_no_no_resistance_signs
+    misconception_focus: clear_no_alone_insufficient
+  experience:
+    episode: At a food stall, a vendor holds out a free sample to a customer. The
+      customer looks at the sample, says no thanks in a bright, even voice, and keeps
+      their hands at their sides. Then the customer walks on without pausing.
+    observable_evidence:
+    - says no thanks in a bright, even voice
+    - keeps hands at the sides
+    - walks on without pausing
+    surface_dimensions:
+    - name: voice
+      baseline: neutral or interested
+      deviation: bright and even while saying no
+    - name: body motion
+      baseline: some pause or gesture
+      deviation: no pause and no gesture
+    - name: outcome
+      baseline: sample is taken
+      deviation: sample is not taken
+- id: review-3
+  semantic_spec:
+    judgment: 新场景复习：上楼很慢是因为搬运重物，而不是因为对可用行动有负面意愿；放下重物后愉快地接受另一项任务，目标状态缺失。
+    target_state: absent
+    eventual_action: performed
+    observable_behavior: slow_upstairs_due_to_load_then_cheerful_task_acceptance
+    misconception_focus: slowness_alone_insufficient
+  experience:
+    episode: In a stairwell, a person carries a heavy box up two flights of stairs,
+      stopping twice and breathing hard. After setting the box down, the person is
+      asked to help move a chair. The person nods quickly, walks over with energy,
+      and lifts the chair right away.
+    observable_evidence:
+    - stops twice and breathes hard while carrying the box
+    - nods quickly when asked to help move a chair
+    - walks over with energy and lifts the chair right away
+    surface_dimensions:
+    - name: movement speed
+      baseline: normal walking speed
+      deviation: slow with stops and heavy breathing while carrying the box
+    - name: response to the next request
+      baseline: flat or delayed
+      deviation: quick nod and energetic walk
+    - name: action after the request
+      baseline: starts slowly
+      deviation: lifts the chair right away
+- id: review-4
+  semantic_spec:
+    judgment: 新场景复习：行动虽然完成，但语音平板、目光低垂、参与最小化；执行过程中的负面意愿仍然可见，目标状态成立。
+    target_state: present
+    eventual_action: performed
+    observable_behavior: flat_voice_low_eyes_minimal_engagement_while_completing
+    misconception_focus: completion_with_visible_resistance_supports_target
+  experience:
+    episode: In a bookstore, an employee is asked to read a notice aloud to customers.
+      The employee stands near the shelf, looks down at the paper, and reads in a
+      low, flat voice without looking up. When the reading is finished, the employee
+      puts the paper down and steps back without saying anything extra.
+    observable_evidence:
+    - stands near the shelf instead of facing the customers
+    - looks down at the paper while reading
+    - reads in a low, flat voice
+    - puts the paper down and steps back as soon as the reading ends
+    surface_dimensions:
+    - name: eye contact
+      baseline: looks at the listeners while reading
+      deviation: keeps eyes down for the whole reading
+    - name: voice
+      baseline: clear and lively
+      deviation: low and flat
+    - name: closing behavior
+      baseline: waits briefly for questions
+      deviation: steps back and says nothing extra
+metadata:
+  compiler_version: 1.0.0
+  prompt_versions:
+    semantic_planner: v1
+    program_planner: v1
+    surface_generator: v1
+    quality_gate: v1
+  generated_at: '2026-08-13T02:40:29Z'
+  source_semantic_revision: 2
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids: []
+  quality_gate:
+    passed: true
+    dimensions:
+    - name: semantic_correctness
+      verdict: pass
+      note: All target-present scenes (unit-1, unit-2, unit-3 first member, unit-5
+        first employee, unit-6 first adult, unit-7, review-1, review-4) include a
+        specific available action and observable negative-willingness behavior, with
+        both performed and non-performed outcomes represented. Target-absent scenes
+        (unit-4, unit-3 second member, unit-5 second employee, unit-6 second adult,
+        review-2, review-3) lack the required internal-resistance evidence. No unit
+        presents a neighboring category as the target state.
+    - name: sense_purity
+      verdict: pass
+      note: 'Boundaries from WordSense are respected. Unit-3 first member is not a
+        bare refusal: it adds withdrawal, sigh, and arm-press. Unit-2 is resistance
+        to one identified action, not hesitation between options. Unit-6 second adult
+        is a calm decision not to act, correctly excluded. No slide into refuse/unwilling/hesitant.'
+    - name: prototype_quality
+      verdict: pass
+      note: 'unit-1 is an excellent prototype: child, caregiver, medicine, long pause
+        before reaching, quiet sigh, two-fingertip contact, a stop during the motion,
+        then completion. It creates the least ambiguous baseline and also teaches
+        that completion does not cancel reluctance.'
+    - name: definition_leakage
+      verdict: pass
+      note: Pre-reveal episodes, observable_evidence, surface_dimensions, interaction
+        options, and feedback do not name the target word or provide a definition;
+        they reference visible behavioral evidence only. The only explicit label/definition
+        is in symbol_binding.reveal, the sanctioned teaching layer, so there is no
+        leakage.
+    - name: l2_leakage
+      verdict: pass
+      note: All pre-reveal learner-visible text was checked (episodes, observable_evidence,
+        surface_dimensions, questions, options, feedback). It contains no target L2
+        word and no adjacent L2 word (reluctant/unwilling/hesitant/refuse). The word
+        appears only in symbol_binding.reveal and grounding after the reveal.
+    - name: variable_isolation
+      verdict: warn
+      note: 'Unit-3 and unit-5 correctly hold the foil outcome constant and vary only
+        the evidence type/source. Unit-6, however, lists eventual_action as preserved
+        while its foil_case changes it to not_performed; the outcome shift is semantically
+        motivated but creates a possible shortcut and an inconsistency in the preserved_variables
+        metadata. Fix: update unit-6''s preserved_variables to exclude eventual_action,
+        or add a same-outcome control if the goal is to isolate resistance evidence
+        alone.'
+    - name: accidental_invariant
+      verdict: pass
+      note: 'No accidental invariant across positive examples: action outcome varies
+        (performed in unit-1/5/6/7/review-4; not performed in unit-2/3/review-1),
+        settings and actions vary (kitchen, classroom, clinic, office, community hall,
+        bus, dental office, bookstore), and the negative-willingness signs are distributed
+        across pause, sigh, turn-away, minimal contact, and flat voice rather than
+        any single behavior.'
+    - name: transfer_novelty
+      verdict: pass
+      note: 'unit-7 changes multiple surface dimensions from unit-1: setting (kitchen
+        to bus), experiencer (young person to adult), potential_action (take medicine
+        to offer seat), trigger_source (caregiver to passenger in need), and observable_behavior
+        (delay/sigh/minimal contact to flat voice/no eye contact/slow stand). It enters
+        a clearly different public-transport/social-courtesy domain while preserving
+        the semantic conditions (available action, negative willingness, visible resistance,
+        performed outcome).'
+    - name: cognitive_noise
+      verdict: pass
+      note: Scenes are short and single-focus; interactions ask directly about behavioral
+        evidence. Uncommon words such as wince and open mic are context-supported
+        (hand on knee, stage/microphone) and do not add material unrelated cognitive
+        load. No unit introduces an irrelevant subplot or ambiguous choice that distracts
+        from the target category.
+    scores:
+      semantic_correctness: 9.0
+      sense_purity: 9.0
+      prototype_quality: 9.5
+      definition_leakage: 9.0
+      l2_leakage: 10.0
+      variable_isolation: 7.5
+      accidental_invariant: 9.0
+      transfer_novelty: 9.5
+      cognitive_noise: 8.5

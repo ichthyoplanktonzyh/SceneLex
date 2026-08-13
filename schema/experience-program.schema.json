@@ -1,0 +1,394 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scenelex.dev/schema/experience-program.schema.json",
+  "title": "ExperienceProgram Contract v1",
+  "description": "一个 WordSense 编译为一个可教学、可引用、可版本化的经验程序：语义模型（semantic_model）、有序概念单元（units）、揭示与落地（symbol_binding / grounding）、复习池（review_pool）与元数据（metadata）。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "program_id",
+    "program_version",
+    "status",
+    "target",
+    "semantic_model",
+    "units",
+    "symbol_binding",
+    "grounding",
+    "review_pool",
+    "metadata"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "description": "本契约版本。未来契约变更递增此字段。"
+    },
+    "program_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "稳定的程序身份字符串，例如 'reluctant-01-program'。不要求 UUID。"
+    },
+    "program_version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "同一 program_id 的编译版本，从 1 开始递增。"
+    },
+    "status": {
+      "enum": ["draft", "reviewed", "published"],
+      "description": "人工审核状态。模型编译结果默认为 draft；fixture 冻结为 reviewed 表示已人工可审查。"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sense_id", "lemma", "pos", "locale_l1"],
+      "properties": {
+        "sense_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z_]*(-[a-z_]*)?-\\d{2}$",
+          "description": "编译输入权威 WordSense 的 ID。"
+        },
+        "lemma": {
+          "type": "string",
+          "description": "目标 L2 词头。"
+        },
+        "pos": {
+          "type": "string",
+          "description": "词性，例如 adjective / adverb / verb / noun。"
+        },
+        "ipa": {
+          "type": "string",
+          "description": "可选 IPA 音标；缺失时由 symbol_binding 阶段自行决定是否呈现发音。"
+        },
+        "locale_l1": {
+          "type": "string",
+          "description": "学习者 L1 语言代码，例如 'zh'。"
+        }
+      }
+    },
+    "semantic_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "invariant",
+        "necessary_conditions",
+        "non_entailments",
+        "typical_correlates",
+        "misconceptions",
+        "l1_interference"
+      ],
+      "properties": {
+        "invariant": {
+          "type": "string",
+          "description": "核心不变式：该经验范畴成立的判定性陈述，是所有经验单元的语义锚点。"
+        },
+        "necessary_conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" },
+          "description": "词义成立的必要条件。必须与 WordSense 语义契约一致。"
+        },
+        "non_entailments": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" },
+          "description": "明确不蕴涵的结论（例如 '最终没有行动' 不蕴涵 '不是 reluctant'）。"
+        },
+        "typical_correlates": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "常见的伴随表现。只能是相关性证据，不能升格为必要条件。"
+        },
+        "misconceptions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "description", "correction"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_-]*$",
+                "description": "稳定误解 ID，供 ExperienceUnit.hypothesis_target 引用。"
+              },
+              "description": { "type": "string" },
+              "correction": { "type": "string" }
+            }
+          },
+          "description": "目标学习者的常见误解；每个误解必须有单元以 hypothesis_target 覆盖。"
+        },
+        "l1_interference": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "L1 经验切割与本词义不一致造成的典型干扰，供 discrimination/transfer 单元使用。"
+        }
+      }
+    },
+    "units": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "$ref": "#/$defs/experience_unit" },
+      "description": "有序概念单元。数组顺序与 sequence 都是权威顺序；本契约不规定固定角色组合。"
+    },
+    "symbol_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reveal", "minimal_l1_gloss"],
+      "properties": {
+        "reveal": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["l2_word", "ipa", "presentation"],
+          "properties": {
+            "l2_word": { "type": "string" },
+            "ipa": { "type": "string" },
+            "presentation": {
+              "type": "string",
+              "description": "把 L2 声音/字形绑定到刚才体验过的经验的教学呈现说明。"
+            }
+          }
+        },
+        "minimal_l1_gloss": {
+          "type": "string",
+          "description": "最小 L1 释义，用于确认而不是定义；不得携带完整 L2 语义分析。"
+        }
+      },
+      "description": "独立于概念单元；所有 concept units（含 Concept Transfer）都必须发生在 symbol_binding 之前。"
+    },
+    "grounding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_experience_id",
+        "l2_realization",
+        "constructions",
+        "collocations"
+      ],
+      "properties": {
+        "source_experience_id": {
+          "type": "string",
+          "description": "引用首学中真实存在的 experience 的 unit id（grounding 的语义来源）。"
+        },
+        "l2_realization": {
+          "type": "string",
+          "description": "在 source experience 场景中用 L2 语言自然化该经验的例句。"
+        },
+        "constructions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" },
+          "description": "承载该词义的关键 L2 结构式，例如 'reluctant to [verb]'。"
+        },
+        "collocations": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "review_pool": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "semantic_spec", "experience"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "semantic_spec": { "$ref": "#/$defs/semantic_spec" },
+          "experience": { "$ref": "#/$defs/experience" }
+        }
+      },
+      "description": "复习池。必须使用首学未出现的新经验，不能重新播放首学故事。"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "compiler_version",
+        "prompt_versions",
+        "generated_at",
+        "source_semantic_revision",
+        "model_provider",
+        "model_name",
+        "quality_gate"
+      ],
+      "properties": {
+        "compiler_version": { "type": "string" },
+        "prompt_versions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "semantic_planner",
+            "program_planner",
+            "surface_generator",
+            "quality_gate"
+          ],
+          "properties": {
+            "semantic_planner": { "type": "string" },
+            "program_planner": { "type": "string" },
+            "surface_generator": { "type": "string" },
+            "quality_gate": { "type": "string" }
+          }
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO-8601 UTC 生成时间。"
+        },
+        "source_semantic_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "编译所依据的 WordSense semantic_revision; 1.0 legacy WordSense 没有修订概念, 统一按 1 处理。"
+        },
+        "model_provider": { "type": ["string", "null"] },
+        "model_name": { "type": ["string", "null"] },
+        "request_ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "可选的各阶段非敏感 request ID（只记录标识，不记录任何认证信息）。"
+        },
+        "quality_gate": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["passed", "dimensions"],
+          "properties": {
+            "passed": { "type": "boolean" },
+            "dimensions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["name", "verdict", "note"],
+                "properties": {
+                  "name": { "type": "string" },
+                  "verdict": { "enum": ["pass", "fail", "warn"] },
+                  "note": { "type": "string" }
+                }
+              }
+            },
+            "scores": {
+              "type": "object",
+              "additionalProperties": { "type": "number", "minimum": 0, "maximum": 10 },
+              "description": "可选维度分数 (0-10)，不是通过门的依据。"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "semantic_spec": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["judgment"],
+      "properties": {
+        "judgment": {
+          "type": "string",
+          "description": "本单元要求学习者形成的语义判断（学习者视角的问题化陈述）。"
+        }
+      },
+      "description": "模型无关的语义事件规格：描述学习者应感知/判断的语义事件，不描述模型提示词。"
+    },
+    "experience": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["episode", "observable_evidence", "surface_dimensions"],
+      "properties": {
+        "episode": {
+          "type": "string",
+          "description": "learner-visible 的经验叙事。不得出现目标 L2 词、相邻 L2 词、内部 ref、Compiler 元数据或 sense ID。"
+        },
+        "observable_evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" },
+          "description": "观众/学习者可观察到的证据条目；每条都必须能被直接看到或听到。"
+        },
+        "surface_dimensions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "baseline", "deviation"],
+            "properties": {
+              "name": { "type": "string" },
+              "baseline": { "type": "string" },
+              "deviation": { "type": "string" }
+            }
+          },
+          "description": "可检查的表面维度及其相对基线（预期状态）的偏离。"
+        }
+      }
+    },
+    "experience_unit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "sequence",
+        "role",
+        "hypothesis_target",
+        "preserved_variables",
+        "changed_variables",
+        "semantic_spec",
+        "experience",
+        "interaction"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "description": "稳定 unit ID，供 grounding.source_experience_id 与内部引用使用。"
+        },
+        "sequence": { "type": "integer", "minimum": 1 },
+        "role": {
+          "enum": ["anchor", "variation", "perturbation", "discrimination", "transfer"],
+          "description": "教学 primitive。本契约不规定所有词必须使用完全相同的 role 组合。"
+        },
+        "hypothesis_target": {
+          "type": ["string", "null"],
+          "description": "本单元用于纠正/反驳的 misconception id；无对应误解时为 null。"
+        },
+        "preserved_variables": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" },
+          "description": "受控不变的经验变量。"
+        },
+        "changed_variables": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" },
+          "description": "相对上一/基线单元改变的变量。transfer 单元必须至少改变两个表面维度。"
+        },
+        "semantic_spec": { "$ref": "#/$defs/semantic_spec" },
+        "experience": { "$ref": "#/$defs/experience" },
+        "interaction": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["question", "answers"],
+          "properties": {
+            "question": { "type": "string" },
+            "answers": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["id", "text", "is_correct", "feedback"],
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "text": { "type": "string" },
+                  "is_correct": { "type": "boolean" },
+                  "feedback": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

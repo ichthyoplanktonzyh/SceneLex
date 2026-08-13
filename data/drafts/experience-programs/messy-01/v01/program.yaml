@@ -1,0 +1,812 @@
+schema_version: '1.0'
+program_id: messy-01-program
+program_version: 1
+status: draft
+target:
+  sense_id: messy-01
+  lemma: messy
+  pos: adjective
+  ipa: /ˈmɛsi/
+  locale_l1: zh
+semantic_model:
+  invariant: An entity is messy iff its visible components are observably disorganized
+    relative to the entity's expected tidy arrangement, to a degree that the whole
+    entity appears disordered.
+  necessary_conditions:
+  - There is a space, surface, object, or visible product that can be observed as
+    a whole.
+  - The whole consists of multiple components (items, parts, lines, or other visible
+    details).
+  - The components deviate from their usual, expected, or neat arrangement or form.
+  - There is insufficient order, consistent direction, or neat form among the components.
+  - The disorder is directly observable and is judged relative to the normal tidy
+    state of that specific entity.
+  - The disorder is visible at the level of the whole entity, not merely one unimportant
+    local deviation.
+  - The disorder is a current visible state, not an ongoing process.
+  non_entailments:
+  - Having stains, dust, or dirt on a surface does not entail being messy, because
+    a dirty but neatly arranged scene is not messy.
+  - Being messy does not entail being dirty or unsanitary; objects can be out of place
+    yet clean.
+  - Showing damage or a wrecked appearance does not entail being messy; a damaged
+    space can still have its items in an orderly arrangement.
+  - Having many objects in a space (cluttered) does not entail being messy, because
+    many objects can be arranged neatly.
+  - Being messy does not entail cluttered; a small number of components can still
+    be disordered.
+  - Being messy does not entail that an active mess-making process is happening; the
+    word names the resulting visible state.
+  - A single unimportant local deviation does not entail being messy; the disorder
+    must be perceivable in the whole entity.
+  - Visible physical untidiness does not entail abstract chaos or behavioral disorder;
+    'messy' in this sense is about physical appearance.
+  typical_correlates:
+  - Often, clothes are scattered on the floor or chairs rather than put away in the
+    wardrobe.
+  - Often, books and papers are piled without aligned edges or a consistent direction.
+  - Often, cups and bowls are left in various places on a desk instead of being returned
+    to their usual spot.
+  - Often, shoes are scattered at the entrance, one here and one there.
+  - Often, a bed is unmade and the quilt is crumpled into a heap.
+  - Often, the same kind of small item (e.g., pens) is found in multiple separated
+    locations.
+  - Often, hair strands stick in many directions and the head outline lacks a neat
+    shape.
+  - Often, handwriting has uneven spacing, inconsistent slant, and crossing correction
+    strokes, making the whole text hard to read.
+  misconceptions:
+  - id: misc-1
+    description: Learners equate messy with dirty (influenced by L1 '脏'/'脏乱'), so
+      a neat but dirty room is labeled messy.
+    correction: Show a room whose surfaces have stains/dust but whose objects are
+      all in their expected places; because the room is no longer called messy, the
+      learner's criterion must shift from cleanliness to positional order.
+  - id: misc-2
+    description: Learners overextend messy to any kind of '乱', including chaotic situations,
+      abstract disorder, or unruly behavior.
+    correction: Present an abstract chaotic event (e.g., a confusing meeting or traffic
+      jam) with no visible spatial disarray; if messy is rejected while '乱' is accepted,
+      the learner can distinguish the visible-physical meaning of messy.
+  - id: misc-3
+    description: Learners think messy means 'there are too many things', conflating
+      messy with cluttered.
+    correction: Show a room with many objects neatly sorted and aligned; if 'not messy'
+      is accepted despite the high number of items, the decisive variable is order,
+      not quantity.
+  - id: misc-4
+    description: Learners use messy for any single misplaced detail, ignoring the
+      requirement of whole-level visible disorder.
+    correction: Compare one crooked book on an otherwise ordered shelf with a room
+      where many objects are scattered in random directions; only the latter warrants
+      messy, showing that a single local deviation is insufficient.
+  - id: misc-5
+    description: Learners interpret messy as an ongoing action or event ('making a
+      mess') rather than a current visible state.
+    correction: Observe a room after the mess-maker has stopped; it is still messy
+      with no action in progress, demonstrating that the word applies to the resulting
+      visible condition, not the process.
+  l1_interference:
+  - 'Mandarin ''乱'' is broader than messy: it covers physical messiness, chaotic situations,
+    abstract disorder, and behavioral disorder, so learners may accept messy for an
+    abstractly chaotic situation that has no visible spatial untidiness.'
+  - Mandarin '脏' and the conjoined '脏乱' treat dirt and untidiness as one combined
+    concept, so learners may treat clean-but-disordered as '脏' or call dirty-but-ordered
+    spaces messy; the L1 dimension cuts across the messy/dirty boundary.
+units:
+- id: unit-1
+  role: anchor
+  hypothesis_target: misc-5
+  preserved_variables:
+  - observed_entity
+  - scene_domain
+  - cleanliness
+  - quantity
+  - disorder_visibility
+  - state_vs_process
+  - component_kind
+  - order_type
+  changed_variables:
+  - physical_order_state
+  semantic_spec:
+    judgment: 建立基线：同一空间在组成部分归位与错位之间对照，只有整体可见错位的静止状态被归入目标范畴；该范畴命名的是当前可见结果，而非正在发生的过程。
+    observed_entity: room
+    scene_domain: physical_space
+    cleanliness: clean
+    quantity: moderate
+    disorder_visibility: whole_level
+    state_vs_process: state
+    component_kind: household_items
+    order_type: spatial_placement
+    physical_order_state: disorderly
+    target_status: positive
+  sequence: 1
+  experience:
+    episode: 'The room is quiet. From the doorway, the whole space is visible: a jacket
+      lies on the floor, a mug rests near the edge of the desk, shoes sit on opposite
+      sides of the rug, and pens are separated across the desk. In another view, the
+      same jacket hangs in the closet, the mug sits on its coaster, and the shoes
+      are together by the door. Nobody enters or moves anything, and the scattered
+      arrangement stays exactly the same.'
+    observable_evidence:
+    - A jacket lies on the floor instead of hanging in the closet.
+    - A coffee mug sits near the edge of the desk, away from its coaster.
+    - The two shoes are on opposite sides of the rug.
+    - Pens sit in two separate places on the desk.
+    - No person enters or moves anything during the observation.
+    surface_dimensions:
+    - name: object positions
+      baseline: each object in a room has a usual place
+      deviation: jacket, mug, shoes, and pens are all in non-usual places at the same
+        time
+    - name: whole-level visibility
+      baseline: a small detail can change a room's look
+      deviation: non-usual positions appear across different parts of the room, so
+        the whole room shows them
+    - name: motion
+      baseline: the room may be changing at the moment
+      deviation: no person or wind moves anything; the state is fixed
+  interaction:
+    question: Does this room show the state that the concept refers to?
+    answers:
+    - id: a1
+      text: Yes — the room's objects are out of their expected places in several spots
+        at once.
+      is_correct: true
+      feedback: Correct. The jacket is on the floor, the mug is near the edge, the
+        shoes are separated, and the pens are apart. These visible positions happen
+        together, and nothing is moving, so the room is in that state.
+    - id: a2
+      text: No — the room does not show that state.
+      is_correct: false
+      feedback: Actually, it does. Look at the jacket on the floor, the mug away from
+        its coaster, and the shoes on opposite sides of the rug. Several objects are
+        out of their expected places at the same time.
+- id: unit-2
+  role: discrimination
+  hypothesis_target: misc-1
+  preserved_variables:
+  - observed_entity
+  - scene_domain
+  - quantity
+  - state_vs_process
+  - component_kind
+  - order_type
+  changed_variables:
+  - physical_order_state
+  - cleanliness
+  - disorder_visibility
+  semantic_spec:
+    judgment: 反例对照：表面有污渍但组成部分均在预期位置，整个实体仍不应归入目标范畴；与单元1的‘干净但错位’相比，判断依据是排列秩序而非表面清洁。
+    observed_entity: room
+    scene_domain: physical_space
+    quantity: moderate
+    state_vs_process: state
+    component_kind: household_items
+    order_type: spatial_placement
+    physical_order_state: orderly
+    cleanliness: dirty
+    disorder_visibility: none
+    target_status: negative
+  sequence: 2
+  experience:
+    episode: The kitchen is empty. Dark smudges spread beside the sink and a light
+      dust film covers the windowsill. The cutting board sits centered under the cabinet,
+      the knife block stands in its corner, and the jars line up with their labels
+      facing the same way. The chairs are pushed in, the mug hangs on its usual hook,
+      and nobody is moving. The surface marks stay visible while the objects remain
+      in their expected places.
+    observable_evidence:
+    - Dark smudges are visible beside the sink.
+    - A dust film covers the windowsill.
+    - The cutting board is centered under the cabinet.
+    - The jars are lined up with labels facing the same way.
+    - The chairs are pushed in and the mug hangs on its usual hook.
+    surface_dimensions:
+    - name: surface marks
+      baseline: surface is free of marks
+      deviation: smudges and dust are visible on the counter and windowsill
+    - name: object positions
+      baseline: objects follow their expected positions
+      deviation: no positional deviation; every object stays in its expected place
+    - name: source of the look
+      baseline: the look can come from placement or from surface marks
+      deviation: the look comes from surface marks only; placement does not vary
+  interaction:
+    question: Does this kitchen show the state that the concept refers to?
+    answers:
+    - id: a1
+      text: No — the objects are all in their expected places, even though the surfaces
+        have marks.
+      is_correct: true
+      feedback: Correct. The smudges and dust are surface marks, but the cutting board,
+        knife block, jars, chairs, and mug all stay where they belong. The concept
+        depends on visible placement, not surface marks.
+    - id: a2
+      text: Yes — the visible marks make it fit.
+      is_correct: false
+      feedback: The marks are visible, but they only change the surface. The objects
+        themselves are still in their expected spots, so this scene does not fit the
+        concept.
+- id: unit-3
+  role: perturbation
+  hypothesis_target: misc-3
+  preserved_variables:
+  - observed_entity
+  - scene_domain
+  - physical_order_state
+  - disorder_visibility
+  - state_vs_process
+  - component_kind
+  - order_type
+  changed_variables:
+  - cleanliness
+  - quantity
+  semantic_spec:
+    judgment: 反例对照：实体包含大量组成部分但被整齐分类、对齐放置时，目标范畴不成立；判断依据是整体秩序而非数量多少。
+    observed_entity: room
+    scene_domain: physical_space
+    physical_order_state: orderly
+    cleanliness: clean
+    quantity: many
+    disorder_visibility: none
+    state_vs_process: state
+    component_kind: household_items
+    order_type: spatial_placement
+    target_status: negative
+  sequence: 3
+  experience:
+    episode: The storage room is filled with dozens of boxes, bins, and files. The
+      boxes on the shelves are grouped by size, with labels facing the aisle; the
+      files on the table stand in rows with their tabs evenly spaced. Colored binders
+      are grouped by color and year, and every stack is flush with the table edge.
+      The floor is clear and the cart sits in its marked corner. No one is carrying
+      anything, and the arranged rows remain still.
+    observable_evidence:
+    - Dozens of boxes and bins fill the shelves.
+    - Box labels face the aisle and boxes are grouped by size.
+    - File folders stand in rows with evenly spaced tabs.
+    - Colored binders are grouped by color and year.
+    - No one is moving or carrying anything during the observation.
+    surface_dimensions:
+    - name: number of objects
+      baseline: a room can have few or many objects
+      deviation: the room holds dozens of boxes, files, and binders
+    - name: placement pattern
+      baseline: objects can be placed without shared direction
+      deviation: objects are grouped, labeled, and aligned in rows
+    - name: overall impression
+      baseline: many objects may create a crowded feel
+      deviation: despite the high number, the rows and groups create a uniform pattern
+  interaction:
+    question: Does this storage room show the state that the concept refers to?
+    answers:
+    - id: a1
+      text: No — the large number of objects is paired with clear grouping and alignment.
+      is_correct: true
+      feedback: Correct. The boxes, files, and binders are many, but they are sorted
+        and lined up. Quantity alone does not create the concept; the arrangement
+        of the objects is what counts.
+    - id: a2
+      text: Yes — there are too many objects.
+      is_correct: false
+      feedback: There are many objects, but they are placed in groups with labels
+        facing the same direction. High quantity alone does not make the concept apply.
+- id: unit-4
+  role: discrimination
+  hypothesis_target: misc-4
+  preserved_variables:
+  - scene_domain
+  - physical_order_state
+  - cleanliness
+  - quantity
+  - state_vs_process
+  changed_variables:
+  - observed_entity
+  - disorder_visibility
+  - component_kind
+  - order_type
+  semantic_spec:
+    judgment: 反例对照：仅一个局部偏离而其余组成部分全部规整时，目标范畴不成立；需要整体水平的可见偏离。
+    observed_entity: shelf
+    scene_domain: physical_space
+    physical_order_state: orderly
+    cleanliness: clean
+    quantity: many
+    disorder_visibility: single_local
+    state_vs_process: state
+    component_kind: books
+    order_type: alignment
+    target_status: negative
+  sequence: 4
+  experience:
+    episode: A wooden shelf runs along the wall, filled with many books. The books
+      stand upright in close rows, and their spines are almost flush with the front
+      edge of the shelf. Near the right end, one thin book leans sideways against
+      its neighbor. No hand is touching the shelf, and the rows do not move. From
+      the other side of the room, the shelf still looks like one straight line except
+      for that single lean.
+    observable_evidence:
+    - Many books stand upright in close rows.
+    - The book spines are almost flush with the shelf edge.
+    - One thin book near the right end leans sideways against its neighbor.
+    - No hand is touching the shelf and the rows do not move.
+    surface_dimensions:
+    - name: scope of deviation
+      baseline: a visible difference can be local or spread out
+      deviation: only one book at the right end is tilted; the rest are upright
+    - name: whole-shelf shape
+      baseline: the shelf's outline can be straight or uneven
+      deviation: the shelf's outline is straight except for one small gap
+    - name: state
+      baseline: objects may be moving or still
+      deviation: the shelf is still and no hand is changing it
+  interaction:
+    question: Does this shelf show the state that the concept refers to?
+    answers:
+    - id: a1
+      text: No — only one book is tilted and the rest are aligned.
+      is_correct: true
+      feedback: Correct. The tilted book is a single local detail; the shelf as a
+        whole still forms a straight row. The concept needs a visible deviation across
+        the whole, not one small difference.
+    - id: a2
+      text: Yes — the tilted book is enough.
+      is_correct: false
+      feedback: A single tilted book is only one local difference. The other books
+        stand upright and flush with the shelf edge, so the shelf as a whole stays
+        in its expected line.
+- id: unit-5
+  role: discrimination
+  hypothesis_target: misc-2
+  preserved_variables:
+  - state_vs_process
+  changed_variables:
+  - observed_entity
+  - scene_domain
+  - physical_order_state
+  - cleanliness
+  - quantity
+  - disorder_visibility
+  - component_kind
+  - order_type
+  semantic_spec:
+    judgment: 反例对照：一个处于逻辑/局面混乱状态的事件不具备任何可见的物体排列无序，目标范畴不成立；该范畴的无序必须落在可观察的物理属性上。
+    observed_entity: meeting_situation
+    scene_domain: abstract_situation
+    physical_order_state: not_applicable
+    cleanliness: not_applicable
+    quantity: not_applicable
+    disorder_visibility: not_applicable
+    state_vs_process: state
+    component_kind: agenda_topics
+    order_type: logical_flow
+    abstract_disorder_present: 'yes'
+    target_status: negative
+  sequence: 5
+  experience:
+    episode: 'In a meeting room, people sit around a table. The spoken topics jump
+      from the budget to parking to staffing and then back to the budget. One person
+      proposes a Monday start for the new schedule; another proposes the day after
+      the holiday, and no final choice is made. The physical room is still: chairs
+      are pushed in, the projector remote lies on the table''s center line, and notepads
+      are stacked at the side. The objects do not move while the conversation changes
+      direction.'
+    observable_evidence:
+    - The spoken topics move from budget to parking to staffing and back.
+    - Two different start dates are proposed and no final choice is made.
+    - The chairs are pushed in around the table.
+    - The projector remote lies on the table's center line.
+    - The notepads are stacked at the side and do not move.
+    surface_dimensions:
+    - name: type of confusion
+      baseline: confusion can be visible or verbal
+      deviation: confusion is in the spoken topics and decisions, not in any object
+        position
+    - name: physical arrangement
+      baseline: room objects can be out of place
+      deviation: chairs, remote, and notepads remain in their expected places
+    - name: evidence channel
+      baseline: evidence can be seen in space
+      deviation: the evidence is heard in the changing topic flow, not seen in space
+  interaction:
+    question: Does this meeting show the state that the concept refers to?
+    answers:
+    - id: a1
+      text: No — the confusion is in the spoken flow, not in the objects' positions.
+      is_correct: true
+      feedback: Correct. The topics jump and no decision is reached, but the chairs,
+        remote, and notepads stay in their expected places. The concept is about a
+        visible physical arrangement, not a logical tangle.
+    - id: a2
+      text: Yes — the discussion is all over the place.
+      is_correct: false
+      feedback: The discussion is all over the place, but that is in the spoken topic
+        flow. The chairs, remote, and notepads stay in their expected places, so no
+        visible physical arrangement is out of place.
+- id: unit-6
+  role: transfer
+  hypothesis_target: null
+  preserved_variables:
+  - cleanliness
+  - state_vs_process
+  changed_variables:
+  - observed_entity
+  - scene_domain
+  - physical_order_state
+  - quantity
+  - disorder_visibility
+  - component_kind
+  - order_type
+  semantic_spec:
+    judgment: 迁移至新的表面维度组合：多个可见细节的发丝方向彼此不一致，整体轮廓缺乏整齐形式，目标范畴成立。
+    observed_entity: hair
+    scene_domain: physical_form
+    physical_order_state: disorderly
+    cleanliness: not_applicable
+    quantity: many
+    disorder_visibility: whole_level
+    state_vs_process: state
+    component_kind: hair_strands
+    order_type: direction_and_contour
+    target_status: positive
+  sequence: 6
+  experience:
+    episode: A person stands in front of a plain wall in still air. Some strands of
+      hair stand up, some curve over the forehead, and others stick out at the sides.
+      The outline of the head has gaps and bumps instead of a smooth curve. The person
+      does not touch their hair, and no wind crosses the room. The uneven shape stays
+      fixed for several seconds.
+    observable_evidence:
+    - Some hair strands stand upward.
+    - Some strands curve over the forehead.
+    - Other strands stick out at the sides.
+    - The outer outline of the hair has gaps and bumps.
+    - The person does not touch their hair and no wind moves it.
+    surface_dimensions:
+    - name: direction of strands
+      baseline: hair strands usually follow one direction
+      deviation: strands point up, forward, and sideways at the same time
+    - name: outer contour
+      baseline: a head of hair has a smooth outline
+      deviation: the outline has gaps and bumps
+    - name: cause
+      baseline: appearance may be caused by motion
+      deviation: no motion or wind is acting; the state is fixed
+  interaction:
+    question: Does this person's hair show the state that the concept refers to?
+    answers:
+    - id: a1
+      text: Yes — the strands point in different directions and the outline is uneven.
+      is_correct: true
+      feedback: Correct. Many strands point up, forward, and sideways, and the head
+        outline has gaps and bumps. No wind or hand is changing it, so the state is
+        fixed.
+    - id: a2
+      text: No — the hair is just naturally uneven.
+      is_correct: false
+      feedback: It may be natural, but that does not matter. What matters is that
+        many visible strands are not following a consistent direction and the whole
+        outline is uneven, which makes it the state the concept refers to.
+- id: unit-7
+  role: transfer
+  hypothesis_target: null
+  preserved_variables:
+  - cleanliness
+  - quantity
+  - disorder_visibility
+  - state_vs_process
+  - physical_order_state
+  changed_variables:
+  - observed_entity
+  - scene_domain
+  - component_kind
+  - order_type
+  semantic_spec:
+    judgment: 迁移至另一个表面维度组合：可见产物的字母方向、间距与涂改痕迹交叠，整体难以辨认，目标范畴成立。
+    observed_entity: handwriting
+    scene_domain: visible_product
+    physical_order_state: disorderly
+    cleanliness: not_applicable
+    quantity: many
+    disorder_visibility: whole_level
+    state_vs_process: state
+    component_kind: letterforms
+    order_type: spacing_slant_overlap
+    target_status: positive
+  sequence: 7
+  experience:
+    episode: A handwritten note lies on a desk under a bright lamp. In each line,
+      letters lean left in some words and right in others, and the same letter is
+      formed two ways within one line. The spaces between words alternate between
+      wide and narrow, so the line has no steady rhythm. Dark crossing marks pass
+      through several words, and extra letters are squeezed above the crossed-out
+      parts. No one is writing now, and the marks remain exactly as they are.
+    observable_evidence:
+    - Letters lean left in some words and right in others.
+    - The same letter is formed two ways within one line.
+    - Spaces between words vary from wide to narrow.
+    - Dark crossing marks pass through several words.
+    - No one is writing now and the marks do not change.
+    surface_dimensions:
+    - name: letter slant
+      baseline: letters in one text share a consistent slant
+      deviation: letters lean left and right within the same line
+    - name: spacing pattern
+      baseline: spaces between words are even
+      deviation: spaces alternate between wide and narrow
+    - name: legibility of whole
+      baseline: the page can be taken in as a clear text
+      deviation: crossed marks and squeezed letters make the whole page hard to take
+        in
+  interaction:
+    question: Does this handwritten note show the state that the concept refers to?
+    answers:
+    - id: a1
+      text: Yes — the letters and spaces are inconsistent and the whole page is hard
+        to read.
+      is_correct: true
+      feedback: Correct. The slant changes, the spacing jumps, and crossing marks
+        overlap with added letters. No one is writing now, so this is the fixed visible
+        state of the page.
+    - id: a2
+      text: No — the page is just difficult to read.
+      is_correct: false
+      feedback: Difficulty in reading is not the reason. The reason is that the letter
+        directions, spacing, and crossing marks all lack a consistent visible pattern,
+        and they affect the whole page.
+symbol_binding:
+  reveal:
+    l2_word: messy
+    ipa: /ˈmɛsi/
+    presentation: 'After all seven concept units, display the spelling m-e-s-s-y and
+      play the sound /ˈmɛsi/. Explain: this word names the experience you have been
+      observing — objects scattered across a room, hair pointing in many directions,
+      letters with uneven spacing. It describes a visible state where the whole thing
+      lacks its expected arrangement. It is not about how clean the surface is, not
+      about how many things there are, and not about an action.'
+  minimal_l1_gloss: 凌乱的
+grounding:
+  source_experience_id: unit-1
+  l2_realization: This room looks messy.
+  constructions:
+  - '[place/thing] is messy'
+  - a messy [noun]
+  - '[entity] looks messy'
+  collocations:
+  - messy room
+  - messy desk
+  - messy hair
+  - messy handwriting
+  - messy kitchen
+  - get messy
+review_pool:
+- id: review-1
+  semantic_spec:
+    judgment: 新经验：厨房台面有污渍，但所有餐具、调料瓶都归位且排列整齐；判断目标范畴是否成立。
+    expected_outcome: 'no'
+    targeted_misconception: misc-1
+  experience:
+    episode: A kitchen counter has a coffee ring, a few oil spots near the stove,
+      and a light dusting of flour on the cutting board. The sponge sits in its holder,
+      the dish rack holds plates with their rims facing the same way, and the jars
+      on the shelf are arranged in height order. The trash bin stands in its marked
+      corner with the lid closed. No one is cooking or wiping anything; the stains
+      and the positions stay exactly as they are.
+    observable_evidence:
+    - A coffee ring and oil spots are visible on the counter.
+    - A light dusting of flour covers the cutting board.
+    - The sponge, dish rack, and jars remain in their usual places.
+    - Plates in the dish rack face the same direction.
+    - No person is moving or cleaning; the scene is still.
+    surface_dimensions:
+    - name: surface condition
+      baseline: no visible marks
+      deviation: coffee ring, oil spots, and flour dust are visible
+    - name: object placement
+      baseline: objects can be in any position
+      deviation: all objects are in their expected positions
+    - name: visible state
+      baseline: marks can affect the label
+      deviation: marks do not change the placement of any object
+- id: review-2
+  semantic_spec:
+    judgment: 新经验：办公室中有大量文件柜和文件夹，但全部按类别与字母对齐排列；判断目标范畴是否成立。
+    expected_outcome: 'no'
+    targeted_misconception: misc-3
+  experience:
+    episode: An office wall is lined with tall file cabinets. The drawer fronts are
+      labeled A–M and N–Z, and when a drawer opens, the folders inside stand in alphabetical
+      order with tabs staggered evenly. On the open shelves, binders are grouped by
+      color and year, each group starting at the left edge. A desk holds only a keyboard
+      and a monitor, both aligned with the desk edge. No one is moving the folders
+      during the time the drawer is open.
+    observable_evidence:
+    - Drawer labels and alphabetical folders are visible.
+    - Folders stand with tabs staggered evenly.
+    - Binder groups are sorted by color and year.
+    - Keyboard and monitor are aligned with the desk edge.
+    - No one is moving objects while observed.
+    surface_dimensions:
+    - name: quantity
+      baseline: a small collection of items
+      deviation: a large collection of files, binders, and cabinets
+    - name: arrangement pattern
+      baseline: items could be arranged in any order
+      deviation: items are labeled, grouped, and aligned
+    - name: visual outcome
+      baseline: many items could appear as a jumble
+      deviation: the visible outcome is even rows and clear sections
+- id: review-3
+  semantic_spec:
+    judgment: 新经验：玩耍室中玩具散落在地面、椅子和角落多处，且没有任何人正在制造混乱，只有静止状态；判断目标范畴是否成立。
+    expected_outcome: 'yes'
+    targeted_misconception: misc-5
+  experience:
+    episode: A playroom is empty of people. A red toy car rests under the table, a
+      doll lies upside down on the couch, and building blocks are spread across the
+      rug with no shared direction. Crayons lie at the base of the bookshelf, and
+      one yellow crayon is on the windowsill. The door is open, but nobody enters,
+      and the objects stay in their places for the whole time.
+    observable_evidence:
+    - A toy car is under the table rather than in a toy bin.
+    - A doll is upside down on the couch.
+    - Blocks are spread across the rug in different directions.
+    - One crayon is on the windowsill while other crayons are by the bookshelf.
+    - No person is moving or picking anything up.
+    surface_dimensions:
+    - name: object positions
+      baseline: toys returned to bins or shelves
+      deviation: toys are in multiple unexpected positions
+    - name: whole view
+      baseline: room can be seen as arranged
+      deviation: one glance shows objects in different locations with no shared placement
+    - name: activity
+      baseline: someone could be creating the appearance
+      deviation: no one is present, so the appearance is a fixed state
+- id: review-4
+  semantic_spec:
+    judgment: 新经验：客厅中仅一幅挂画歪斜，其余家具、摆件全部对齐并在原位；判断目标范畴是否成立。
+    expected_outcome: 'no'
+    targeted_misconception: misc-4
+  experience:
+    episode: A living room has a sofa centered on the rug and two side tables at equal
+      distances from it. The cushions are aligned, and the books on the coffee table
+      form a flat stack. Along the wall, five picture frames are spaced evenly, but
+      the middle frame tilts slightly to the right and leaves a small gap above its
+      right corner. The room is still; no one is straightening the frame.
+    observable_evidence:
+    - Sofa and side tables are centered at equal distances.
+    - Cushions are aligned and the book stack is flat.
+    - Four of the five frames are level; the middle frame tilts slightly.
+    - No one touches the frame.
+    surface_dimensions:
+    - name: scope of deviation
+      baseline: a deviation can affect the whole
+      deviation: only the middle frame is tilted
+    - name: overall uniformity
+      baseline: the room can appear even
+      deviation: the room appears even apart from one tilted frame
+    - name: state
+      baseline: motion could be present
+      deviation: the scene is static
+- id: review-5
+  semantic_spec:
+    judgment: 新经验：会议讨论中各议题跳跃、结论不一致，但会议室物品全部整齐归位；判断目标范畴是否成立。
+    expected_outcome: 'no'
+    targeted_misconception: misc-2
+  experience:
+    episode: A conference room has a long table and chairs pushed in all around it.
+      The whiteboard shows arrows pointing in four different directions. The speaker
+      moves from sales targets to office furniture to training schedules without settling
+      on any one; two different deadlines are named for the same task. The table surface
+      is clear except for a single notebook at the center, and the pens in the holder
+      all point the same way. The room's objects do not change while the spoken topics
+      shift.
+    observable_evidence:
+    - Whiteboard arrows point in four different directions.
+    - Spoken topics change without a final decision.
+    - Two different deadlines are named for the same task.
+    - Chairs are pushed in, the notebook is at the center, and pens point the same
+      way.
+    surface_dimensions:
+    - name: logical flow
+      baseline: topics move in a connected sequence
+      deviation: topics jump and two deadlines conflict
+    - name: physical arrangement
+      baseline: objects may be out of place
+      deviation: all visible objects remain in expected positions
+    - name: observable channel
+      baseline: the state appears in object placement
+      deviation: the state appears in spoken words and drawn arrows, not in object
+        placement
+metadata:
+  compiler_version: 1.0.0
+  prompt_versions:
+    semantic_planner: v1
+    program_planner: v1
+    surface_generator: v1
+    quality_gate: v1
+  generated_at: '2026-08-13T04:01:55Z'
+  source_semantic_revision: 1
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids: []
+  quality_gate:
+    passed: true
+    dimensions:
+    - name: semantic_correctness
+      verdict: pass
+      note: All seven units align with WordSense messy-01. Unit-1 establishes the
+        positive room case (whole-level positional disorder, static state); unit-6
+        (hair) and unit-7 (handwriting) are positive examples explicitly listed in
+        externalization; unit-2, unit-3, unit-4, unit-5 are valid negatives (dirty-but-ordered,
+        many-but-ordered, single-local deviation, abstract chaos). No unit expresses
+        a neighboring category as the target.
+    - name: sense_purity
+      verdict: warn
+      note: The seven delivered units avoid boundary slippage. One review-pool item,
+        review-5, includes 'whiteboard shows arrows pointing in four different directions';
+        a visible whiteboard diagram is itself a visible product, so if the arrows
+        appear haphazard the scene could legitimately be messy and the expected 'no'
+        becomes ambiguous. Specify that the whiteboard is a neat/structured diagram
+        or remove the arrows from the negative example.
+    - name: prototype_quality
+      verdict: pass
+      note: 'Unit-1 is a clear baseline prototype: a clean, moderately filled room
+        with everyday household items simultaneously out of place, visible as a whole,
+        and static. The internal tidy contrast strengthens the prototype without adding
+        confusable dirt or clutter.'
+    - name: definition_leakage
+      verdict: warn
+      note: 'Episodes do not define the word, but several feedback messages state
+        the semantic criterion before reveal: unit-2 (''The concept depends on visible
+        placement, not surface marks''), unit-3 (''Quantity alone does not create
+        the concept''), unit-4 (''The concept needs a visible deviation across the
+        whole''), and unit-7 (''The reason is that...''). These are mild definitional
+        explanations. Keep feedback tied to observable evidence, or move such generalizations
+        to the reveal step.'
+    - name: l2_leakage
+      verdict: pass
+      note: No occurrence of 'messy' or the listed confusable/adjacent L2 words (dirty,
+        chaotic, cluttered, untidy, sloppy) appears in learner-visible pre-reveal
+        content. The target word first appears in symbol_binding.reveal.
+    - name: variable_isolation
+      verdict: pass
+      note: Declared changed variables match the intended contrasts. Unit-2 changes
+        both cleanliness and order only because the dirty-but-ordered negative requires
+        that combination; unit-3 uses many-but-ordered to attack the quantity misconception;
+        unit-5 shifts domains to abstract chaos. These are declared contrast variables,
+        not silent confounds. Unit-1's disorder_visibility changes as a consequence
+        of physical_order_state, not as an independent variable.
+    - name: accidental_invariant
+      verdict: pass
+      note: 'Positive examples vary surface domain and component kind: room/household_items
+        in unit-1, hair/hair_strands in unit-6, handwriting/letterforms in unit-7,
+        playroom/toys in review-3. All are static states, but that is a required WordSense
+        condition (current visible state, not process), so it is a necessary invariant
+        rather than an accidental one.'
+    - name: transfer_novelty
+      verdict: pass
+      note: Unit-6 shifts from room/spatial placement to hair/form, and unit-7 shifts
+        to handwriting/visible product. In each, at least observed_entity, scene_domain,
+        component_kind, and order_type change, while the necessary conditions (whole-level
+        visible disorder, static state) are preserved.
+    - name: cognitive_noise
+      verdict: warn
+      note: 'Several learner-visible episodes/options use vocabulary and idioms likely
+        above basic level and not needed for the semantic judgment: unit-2 (''smudges'',
+        ''windowsill'', ''cutting board''), unit-3 (''tabs'', ''aisle'', ''flush''),
+        unit-5 (''projector remote'', ''staffing'', and the distractor idiom ''all
+        over the place''), unit-7 (''slant'', ''legibility''). Replace with high-frequency
+        wording or make the visuals carry these details.'
+    scores:
+      semantic_correctness: 9.0
+      sense_purity: 7.5
+      prototype_quality: 9.5
+      definition_leakage: 7.0
+      l2_leakage: 9.0
+      variable_isolation: 8.5
+      accidental_invariant: 9.0
+      transfer_novelty: 9.5
+      cognitive_noise: 6.5

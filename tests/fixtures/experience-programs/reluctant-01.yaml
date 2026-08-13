@@ -1,0 +1,444 @@
+schema_version: "1.0"
+program_id: reluctant-01-program
+program_version: 1
+status: reviewed
+target:
+  sense_id: reluctant-01
+  lemma: reluctant
+  pos: adjective
+  ipa: rɪˈlʌktənt
+  locale_l1: zh
+semantic_model:
+  invariant: >-
+    面对一个可执行行动或行动方案时，主观意愿为负（unwillingness / inner
+    resistance）；行为上必须有可观察证据支持该负意愿，但任何单一行为都不是定义条件。
+  necessary_conditions:
+    - 体验者正面对一个可执行行动或行动方案。
+    - 体验者对该行动的主观意愿为负（内在抵触或不愿意）。
+    - 负意愿由可观察行为支持，但不要求任何特定行为（叹气、拖延、表情、拒绝等都不是必要条件）。
+    - 行动最终是否发生不影响词义：做与不做都成立。
+  non_entailments:
+    - 最终没有行动不蕴涵"不是 reluctant"（"最终没做"绝不能被排除）。
+    - 拒绝了（bare refusal）不蕴涵 reluctant——拒绝本身不足够，需要额外的负意愿行为证据。
+    - 最终完成了行动不蕴涵"不是 reluctant"。
+    - 外部压力存在与否不蕴涵 reluctant——没有外部压力也可以 reluctant。
+    - 叹气、拖延、皱眉等任何单一现象都不蕴涵 reluctant。
+  typical_correlates:
+    - 行动前有明显的启动延迟或反复试探。
+    - 叹气、撇嘴、眉头紧皱等面部信号。
+    - 身体回避：转身、后退、身体远离行动对象。
+    - 若行动发生，动作变慢、幅度变小、接触时间变短。
+  misconceptions:
+    - id: misc-1
+      description: 只有"最终没做"才叫不情愿；做了就不算。
+      correction: >-
+        即使最终完成了行动，只要在行动过程中负意愿清晰可观察（慢、叹气、皱眉），
+        仍然是 reluctant；eventual_action=yes 与 =no 都兼容。
+    - id: misc-2
+      description: 最终没做 + 拒绝 = 一定不是 reluctant（把 no-action 结果与 refuse 绑定）。
+      correction: >-
+        只要拒绝之外有独立的负意愿行为证据（转身、停顿、叹气），最终没做同样支持
+        reluctant；只有 bare refusal 本身不足够。
+    - id: misc-3
+      description: 必须有外部压力（别人要求、命令）才算 reluctant。
+      correction: >-
+        面对任何可执行行动，即使没有任何人要求或监督，内心的负意愿同样成立。
+    - id: misc-4
+      description: 犹豫（在两个选项间权衡）就等于不想做。
+      correction: >-
+        积极的犹豫（愿意但不确定选哪个）不是 reluctant；reluctant 是已经确定的
+        负意愿，两者要在同一判断任务中区分。
+  l1_interference:
+    - 中文"不情愿"常同时覆盖 reluctant 与 unwilling；学习者容易忽略 reluctant 的
+      "可能仍会做"的一面，把"不愿做"与"拒绝做"混为一谈。
+    - 中文"犹豫"覆盖 hesitant，学习者容易把"拿不定主意"当成"不想做"。
+units:
+  - id: unit-1
+    sequence: 1
+    role: anchor
+    hypothesis_target: misc-1
+    preserved_variables:
+      - action_type
+      - setting
+      - available
+    changed_variables:
+      - willingness
+      - observable_signs
+    semantic_spec:
+      judgment: 主角对眼前可做的行动意愿如何？
+      action: eating the boiled greens
+      eventual_action: "yes"
+      external_pressure: "yes"
+      willingness: "negative"
+      observable_signs: sigh, head turn, slow pace
+    experience:
+      episode: >-
+        At dinner, Leo's mother sets a bowl of boiled greens in front of him. He
+        stares at the bowl, picks up his fork, then puts it down again. He lets
+        out a long sigh, turns his head away, and finally lifts a single small
+        piece to his mouth, chewing it very slowly with his brows pressed together.
+      observable_evidence:
+        - He picks up the fork, then puts it down before starting.
+        - A long audible sigh before he eats anything.
+        - He turns his head away from the bowl while still eating.
+        - He chews the single piece very slowly with his brows pressed together.
+      surface_dimensions:
+        - name: approach_speed
+          baseline: reaches for the food without pausing
+          deviation: starts and stops, then moves very slowly
+        - name: body_orientation
+          baseline: faces the bowl directly
+          deviation: turns the head away while still complying
+        - name: vocal_evidence
+          baseline: no audible sighs
+          deviation: a long audible sigh before starting
+    interaction:
+      question: What did Leo's behavior show about how he felt about eating the greens?
+      answers:
+        - id: a1
+          text: He did not want to eat them, and his body showed it while he still ate a little.
+          is_correct: true
+          feedback: >-
+            His pauses, his sigh, and his turned-away head are signs that he did not
+            want to do it; he still ate a little, which is allowed — doing it does not
+            erase the inner resistance.
+        - id: a2
+          text: He was hungry and enjoyed the food.
+          is_correct: false
+          feedback: >-
+            A hungry, happy eater would not pause, sigh, and turn away; his behavior
+            pointed the other way.
+  - id: unit-2
+    sequence: 2
+    role: variation
+    hypothesis_target: misc-2
+    preserved_variables:
+      - social_setting
+      - external_pressure
+      - available
+    changed_variables:
+      - eventual_action
+      - observable_signs
+    semantic_spec:
+      judgment: 最终没有行动时，负意愿还能被读出来吗？
+      action: joining the team lunch
+      eventual_action: "no"
+      external_pressure: "yes"
+      observable_signs: door-frame grip, held breath, turned back
+    experience:
+      episode: >-
+        At noon, a colleague waves to Mira and calls her name for the team lunch.
+        Mira walks to the door, grabs the door frame with her fingers, takes a
+        slow deep breath, then turns around and walks back to her desk. She does
+        not join the lunch.
+      observable_evidence:
+        - She walks toward the door but stops there.
+        - Her fingers grip the door frame instead of opening the door.
+        - A slow deep breath before she turns around.
+        - She walks back to her desk and stays there.
+      surface_dimensions:
+        - name: approach_distance
+          baseline: walks out through the door
+          deviation: stops at the door and never crosses it
+        - name: grip_behavior
+          baseline: opens the door with a smooth reach
+          deviation: grips the door frame and pauses
+        - name: outcome
+          baseline: joins the lunch
+          deviation: returns to the desk, no action
+    interaction:
+      question: Mira did not go to the lunch at all. What does her behavior show?
+      answers:
+        - id: a1
+          text: She did not want to go, and her body showed it even though she never went.
+          is_correct: true
+          feedback: >-
+            She was not pushed, and she never said no out loud; her grip on the door
+            frame and her breath before turning back are the readable signs. The fact
+            that she stayed at her desk does not cancel them.
+        - id: a2
+          text: Because she did not go, there is no way to know what she felt.
+          is_correct: false
+          feedback: >-
+            Her behavior at the door happened before she turned back; that behavior
+            is evidence even though the action never happened.
+  - id: unit-3
+    sequence: 3
+    role: perturbation
+    hypothesis_target: misc-3
+    preserved_variables:
+      - action_type
+      - eventual_action
+      - available
+    changed_variables:
+      - external_pressure
+      - setting
+    semantic_spec:
+      judgment: 没有人要求、没有外部压力时，负意愿还成立吗？
+      action: taking a cookie
+      eventual_action: "no"
+      external_pressure: "no"
+      setting: "kitchen"
+    experience:
+      episode: >-
+        Home alone, Tom sees a jar of cookies on the table. No one asked him to
+        eat one, and no one is watching. He walks over, reaches out, his fingers
+        touch the lid, then he pulls his hand back, sighs, and walks away.
+      observable_evidence:
+        - He walks to the jar on his own.
+        - His fingers touch the lid, then pull back.
+        - He sighs after pulling his hand away.
+        - He walks away and does not come back.
+      surface_dimensions:
+        - name: source_of_request
+          baseline: someone asks the person to act
+          deviation: nobody asks and nobody watches
+        - name: contact
+          baseline: takes the cookie with a smooth reach
+          deviation: touches the lid, then withdraws the hand
+        - name: outcome
+          baseline: takes a cookie
+          deviation: walks away, nothing taken
+    interaction:
+      question: Nobody asked Tom to take a cookie. What does his behavior show?
+      answers:
+        - id: a1
+          text: He did not want to take one even though he easily could have.
+          is_correct: true
+          feedback: >-
+            The action was available and nothing blocked him; his hand touching the
+            lid and pulling back is the readable sign. No outside pressure is needed
+            for this meaning to hold.
+        - id: a2
+          text: Without a request, his behavior shows nothing about what he wanted.
+          is_correct: false
+          feedback: >-
+            A person can face an available action without any request; the reach-and-
+            withdraw movement still shows how he felt about doing it.
+  - id: unit-4
+    sequence: 4
+    role: discrimination
+    hypothesis_target: misc-4
+    preserved_variables:
+      - activity_type
+      - participant_age
+      - available
+    changed_variables:
+      - willingness_sign
+      - decision_state
+    semantic_spec:
+      judgment: 积极的犹豫（愿意但不确定）与消极的抵触（不愿意）如何区分？
+      positive_case: choosing between two cakes
+      negative_case: facing a swing
+      willingness_sign: visible in approach and tone, not in the decision
+      decision_state: negative case reaches a decision with resistance
+    experience:
+      episode: >-
+        In one corner, a boy stands in front of two cupcakes. He looks at the
+        strawberry one, then at the chocolate one, smiles, tilts his head, and
+        happily picks the strawberry one. In the other corner, a girl stands in
+        front of a swing. She steps toward it slowly, her hand touches the chain,
+        then pulls back; she presses her lips together and lets out a small sigh.
+      observable_evidence:
+        - The boy smiles and tilts his head while comparing the two cakes.
+        - The boy picks one cake quickly after looking at both.
+        - The girl steps toward the swing very slowly.
+        - The girl's hand touches the chain, then pulls back.
+        - The girl presses her lips together and sighs.
+      surface_dimensions:
+        - name: deciding_state
+          baseline: no weighing between options
+          deviation: boy weighs two options (positive case); girl faces one known action (negative case)
+        - name: affective_tone
+          baseline: neutral or negative body signals
+          deviation: boy's signals are positive; girl's signals are negative
+        - name: approach_behavior
+          baseline: smooth approach
+          deviation: girl's approach is slow with a pull-back
+    interaction:
+      question: Which child was facing an action he or she could take but did not want to do?
+      answers:
+        - id: a1
+          text: The girl with the swing.
+          is_correct: true
+          feedback: >-
+            Her slow approach, the hand that touches and pulls back, and her sigh are
+            negative signs about one known action. The boy is not sure which cake to
+            pick, but his smile and quick pick show a positive attitude, so he is not
+            the one.
+        - id: a2
+          text: The boy with the cupcakes.
+          is_correct: false
+          feedback: >-
+            He is weighing two options and looks pleased while doing it; being unsure
+            which one to choose is not the same as not wanting to do something.
+  - id: unit-5
+    sequence: 5
+    role: transfer
+    hypothesis_target: null
+    preserved_variables:
+      - willingness_sign
+      - observable_evidence
+    changed_variables:
+      - domain
+      - participant_age
+      - setting
+      - action_type
+    semantic_spec:
+      judgment: 换到成年人的工作场合，负意愿还能被读出来吗？
+      action: walking into the meeting room
+      eventual_action: "yes"
+      external_pressure: "yes"
+      domain: adult workplace
+      participant_age: adult
+      setting: "office"
+      action_type: walking into a meeting
+    experience:
+      episode: >-
+        In a quiet office hallway, a manager calls out to Maya about the afternoon
+        report. Maya is walking toward the meeting room. Her steps slow down, she
+        looks down at her phone for a moment, lets out a soft sigh, then pushes
+        the door and walks in.
+      observable_evidence:
+        - Her steps slow down after the call.
+        - She looks down at her phone instead of answering at once.
+        - A soft sigh before she opens the door.
+        - She still pushes the door and walks in.
+      surface_dimensions:
+        - name: walking_speed
+          baseline: keeps the same pace
+          deviation: visibly slows down after the request
+        - name: attention
+          baseline: keeps walking toward the room
+          deviation: stops to look at her phone for a moment
+        - name: outcome
+          baseline: goes to the meeting
+          deviation: goes in the end, with the slow-down still readable
+    interaction:
+      question: Maya did go to the meeting. What did her behavior show about how she felt?
+      answers:
+        - id: a1
+          text: She did not want to go, and the slow-down and sigh showed it while she went anyway.
+          is_correct: true
+          feedback: >-
+            The slowing steps, the pause to look at her phone, and the sigh are
+            negative signs, and they stay readable even though she ended up going.
+        - id: a2
+          text: Because she went, she must have wanted to go.
+          is_correct: false
+          feedback: >-
+            Going to the meeting does not erase the signs she gave on the way; her
+            body showed one thing while she still did the action.
+symbol_binding:
+  reveal:
+    l2_word: reluctant
+    ipa: rɪˈlʌktənt
+    presentation: >-
+      Return to the dinner scene. The word "reluctant" names the state Leo was in:
+      an available action, an inner "I do not want to do this", and a body that shows
+      it — whether he finally does the action or not.
+  minimal_l1_gloss: 不情愿的
+grounding:
+  source_experience_id: unit-1
+  l2_realization: Leo was reluctant to eat his greens.
+  constructions:
+    - reluctant to [verb]
+    - '[noun] is reluctant about [noun]'
+    - a reluctant [noun]
+  collocations:
+    - reluctant to go
+    - reluctant participant
+    - reluctant agreement
+    - reluctant hero
+review_pool:
+  - id: review-1
+    semantic_spec:
+      judgment: 换到健身房场景，负意愿 + 最终行动是否仍然成立？
+    experience:
+      episode: >-
+        A new gym member walks onto the floor for the first time. She stands in
+        front of a treadmill for a long time, reties her shoelaces twice, then
+        finally steps on and starts walking slowly.
+      observable_evidence:
+        - She stands in front of the treadmill without stepping on.
+        - She reties her shoelaces a second time.
+        - She steps on in the end and walks slowly.
+      surface_dimensions:
+        - name: start_delay
+          baseline: steps on the treadmill at once
+          deviation: stands still, then ties her shoes again
+        - name: outcome
+          baseline: starts walking quickly
+          deviation: starts slowly in the end
+  - id: review-2
+    semantic_spec:
+      judgment: 负意愿 + 最终没有行动，在厨房场景是否仍然成立？
+    experience:
+      episode: >-
+        After washing the dishes, a man picks up a plate from the rack, looks at
+        the cupboard, holds the plate for a moment, then puts it back on the
+        counter, turns around, and leaves the kitchen. The plate stays on the
+        counter.
+      observable_evidence:
+        - He picks the plate up but does not open the cupboard.
+        - He holds the plate for a moment, then sets it back down.
+        - He leaves the plate on the counter and walks away.
+      surface_dimensions:
+        - name: approach
+          baseline: opens the cupboard and puts the plate away
+          deviation: picks the plate up, then puts it back on the counter
+        - name: outcome
+          baseline: plate is put away
+          deviation: plate stays on the counter
+metadata:
+  compiler_version: 1.0.0
+  prompt_versions:
+    semantic_planner: v1
+    program_planner: v1
+    surface_generator: v1
+    quality_gate: v1
+  generated_at: "2026-08-01T00:00:00Z"
+  source_semantic_revision: 2
+  model_provider: fake-adapter
+  model_name: fixture-writer
+  request_ids: []
+  quality_gate:
+    passed: true
+    dimensions:
+      - name: semantic_correctness
+        verdict: pass
+        note: 全部正例落在"面对可执行行动时主观意愿为负"的 invariant 内。
+      - name: sense_purity
+        verdict: pass
+        note: eventual_action yes/no 双值、无外部压力、无行动三种结果均保持词义成立，未滑向 refuse/unwilling。
+      - name: prototype_quality
+        verdict: pass
+        note: anchor 是最典型的"愿意负但做了"实例，行为证据充分。
+      - name: definition_leakage
+        verdict: pass
+        note: 语义全部由行为承载，无旁白式定义。
+      - name: l2_leakage
+        verdict: pass
+        note: 揭示前内容无目标词与相邻词。
+      - name: variable_isolation
+        verdict: pass
+        note: 每个单元单变量或少数受控变量变化，其余保持。
+      - name: accidental_invariant
+        verdict: pass
+        note: eventual_action 在正例间显式变化，没有假不变式。
+      - name: transfer_novelty
+        verdict: pass
+        note: transfer 换到成年人办公场景，改变四个表面维度。
+      - name: cognitive_noise
+        verdict: pass
+        note: 叙事短、动作单一，无无关认知负担。
+    scores:
+      semantic_correctness: 9.0
+      sense_purity: 9.0
+      prototype_quality: 8.5
+      definition_leakage: 9.0
+      l2_leakage: 9.0
+      variable_isolation: 8.0
+      accidental_invariant: 9.0
+      transfer_novelty: 8.5
+      cognitive_noise: 8.5
