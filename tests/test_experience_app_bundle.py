@@ -29,13 +29,34 @@ def run_bundle(*args: str) -> subprocess.CompletedProcess[str]:
 
 def test_bundle_shape_and_source_statuses() -> None:
     built = bundle.build_bundle()
-    assert built["bundle_version"] == 1
+    assert built["bundle_version"] == bundle.BUNDLE_VERSION
     assert built["schema_version"] == "1.0"
     assert tuple(built["programs"]) == EXPECTED_SENSE_IDS
     for sense_id in EXPECTED_SENSE_IDS:
         program = built["programs"][sense_id]
         assert program["status"] in ("reviewed", "published")
         assert program["target"]["sense_id"] == sense_id
+
+
+def test_catalog_entries_are_consumer_shaped() -> None:
+    built = bundle.build_bundle()
+    catalog = built["catalog"]
+    assert tuple(catalog) == EXPECTED_SENSE_IDS
+    for sense_id in EXPECTED_SENSE_IDS:
+        entry = catalog[sense_id]
+        assert entry["sense_id"] == sense_id
+        assert entry["lemma"]
+        assert entry["pos"]
+        assert entry["semantic_type"]
+        assert entry["locale_l1"] == "zh"
+        assert entry["program_id"] == built["programs"][sense_id]["program_id"]
+        assert entry["program_version"] == built["programs"][sense_id]["program_version"]
+        assert entry["boundaries"] == []
+        assert entry["boundaries_status"] == "not_collected"
+        assert isinstance(entry["l1_confusables"], list)
+        # semantic_model 原始结构不得泄漏进 catalog
+        assert "semantic_model" not in entry
+        assert "units" not in entry
 
 
 def test_render_is_byte_stable() -> None:

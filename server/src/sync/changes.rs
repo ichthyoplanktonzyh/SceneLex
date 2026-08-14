@@ -6,11 +6,12 @@ use sqlx::{Postgres, Transaction};
 use uuid::Uuid;
 
 /// Record a hot change inside the caller's transaction. Returns the change id.
+/// [entity_id] is the textual content/list identity (Contract string IDs).
 pub async fn record_hot_change(
     tx: &mut Transaction<'_, Postgres>,
     workspace_id: Uuid,
     entity_type: &str,
-    entity_id: Uuid,
+    entity_id: &str,
     replica_id: Uuid,
     operation_id: Uuid,
     client_updated_at: DateTime<Utc>,
@@ -48,10 +49,8 @@ pub async fn latest_change_id(
     pool: &sqlx::PgPool,
     workspace_id: Uuid,
 ) -> Result<Option<i64>, sqlx::Error> {
-    sqlx::query_scalar(
-        "SELECT MAX(change_id) FROM sync.hot_changes WHERE workspace_id = $1",
-    )
-    .bind(workspace_id)
-    .fetch_one(pool)
-    .await
+    sqlx::query_scalar("SELECT MAX(change_id) FROM sync.hot_changes WHERE workspace_id = $1")
+        .bind(workspace_id)
+        .fetch_one(pool)
+        .await
 }

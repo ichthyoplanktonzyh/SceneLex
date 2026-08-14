@@ -8,9 +8,12 @@ final RegExp _headingPattern = RegExp(r'^\s{0,3}#{1,6}\s+');
 final RegExp _blockquotePattern = RegExp(r'^\s{0,3}>\s?');
 final RegExp _unorderedListPattern = RegExp(r'^\s{0,3}[-*+]\s+');
 final RegExp _orderedListPattern = RegExp(r'^\s{0,3}\d+\.\s+');
-final RegExp _thematicBreakPattern = RegExp(r'^\s{0,3}(?:-{3,}|\*{3,}|_{3,})\s*$');
-final RegExp _tableSeparatorPattern =
-    RegExp(r'^\s*\|?(?:\s*:?-{3,}:?\s*\|)+\s*:?-{3,}:?\s*\|?\s*$');
+final RegExp _thematicBreakPattern = RegExp(
+  r'^\s{0,3}(?:-{3,}|\*{3,}|_{3,})\s*$',
+);
+final RegExp _tableSeparatorPattern = RegExp(
+  r'^\s*\|?(?:\s*:?-{3,}:?\s*\|)+\s*:?-{3,}:?\s*\|?\s*$',
+);
 
 String _sanitizeLanguageTag(String languageTag) {
   final normalized = languageTag.replaceAll('_', '-').trim();
@@ -78,7 +81,10 @@ String makeSpeakableText(String text) {
       activeFenceMarker = marker;
       continue;
     }
-    final normalized = _normalizeMarkdownSpeakableLine(line, startsAtLineBoundary);
+    final normalized = _normalizeMarkdownSpeakableLine(
+      line,
+      startsAtLineBoundary,
+    );
     if (normalized.isNotEmpty) {
       speakableLines.add(normalized);
     }
@@ -87,12 +93,96 @@ String makeSpeakableText(String text) {
 }
 
 const _latinLanguageHeuristics = <({String tag, List<String> markers})>[
-  (tag: 'es-ES', markers: [' el ', ' la ', ' que ', ' de ', ' y ', ' por ', ' para ', ' hola ', ' gracias ', ' cómo ', ' está ']),
-  (tag: 'fr-FR', markers: [' le ', ' la ', ' les ', ' des ', ' une ', ' bonjour ', ' merci ', ' avec ', ' pour ', ' est ']),
-  (tag: 'de-DE', markers: [' der ', ' die ', ' das ', ' und ', ' nicht ', ' danke ', ' bitte ', ' ist ', ' wie ', ' ich ']),
-  (tag: 'it-IT', markers: [' il ', ' lo ', ' gli ', ' una ', ' ciao ', ' grazie ', ' per ', ' non ', ' come ', ' che ']),
-  (tag: 'pt-PT', markers: [' não ', ' você ', ' obrigado ', ' olá ', ' para ', ' com ', ' uma ', ' que ', ' está ']),
-  (tag: 'en-US', markers: [' the ', ' and ', ' you ', ' are ', ' with ', ' this ', ' that ', ' hello ', ' thanks ', ' what ']),
+  (
+    tag: 'es-ES',
+    markers: [
+      ' el ',
+      ' la ',
+      ' que ',
+      ' de ',
+      ' y ',
+      ' por ',
+      ' para ',
+      ' hola ',
+      ' gracias ',
+      ' cómo ',
+      ' está ',
+    ],
+  ),
+  (
+    tag: 'fr-FR',
+    markers: [
+      ' le ',
+      ' la ',
+      ' les ',
+      ' des ',
+      ' une ',
+      ' bonjour ',
+      ' merci ',
+      ' avec ',
+      ' pour ',
+      ' est ',
+    ],
+  ),
+  (
+    tag: 'de-DE',
+    markers: [
+      ' der ',
+      ' die ',
+      ' das ',
+      ' und ',
+      ' nicht ',
+      ' danke ',
+      ' bitte ',
+      ' ist ',
+      ' wie ',
+      ' ich ',
+    ],
+  ),
+  (
+    tag: 'it-IT',
+    markers: [
+      ' il ',
+      ' lo ',
+      ' gli ',
+      ' una ',
+      ' ciao ',
+      ' grazie ',
+      ' per ',
+      ' non ',
+      ' come ',
+      ' che ',
+    ],
+  ),
+  (
+    tag: 'pt-PT',
+    markers: [
+      ' não ',
+      ' você ',
+      ' obrigado ',
+      ' olá ',
+      ' para ',
+      ' com ',
+      ' uma ',
+      ' que ',
+      ' está ',
+    ],
+  ),
+  (
+    tag: 'en-US',
+    markers: [
+      ' the ',
+      ' and ',
+      ' you ',
+      ' are ',
+      ' with ',
+      ' this ',
+      ' that ',
+      ' hello ',
+      ' thanks ',
+      ' what ',
+    ],
+  ),
 ];
 
 int _scoreLanguageHeuristic(String text, List<String> markers) {

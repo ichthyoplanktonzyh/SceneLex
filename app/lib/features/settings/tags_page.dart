@@ -59,8 +59,7 @@ class TagsPage extends ConsumerWidget {
                           .read(reviewFilterProvider.notifier)
                           .set(ReviewFilter.tags({entry.key}));
                       ref.read(selectedTabProvider.notifier).setTab(0);
-                      Navigator.of(context)
-                          .popUntil((route) => route.isFirst);
+                      Navigator.of(context).popUntil((route) => route.isFirst);
                     },
                   ),
             ],

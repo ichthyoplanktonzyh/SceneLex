@@ -25,7 +25,9 @@ class WorkspacePage extends ConsumerWidget {
             for (final ws in items)
               ListTile(
                 leading: Icon(
-                  ws.isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
+                  ws.isSelected
+                      ? Icons.radio_button_checked
+                      : Icons.radio_button_off,
                   color: ws.isSelected
                       ? Theme.of(context).colorScheme.primary
                       : null,
@@ -34,9 +36,7 @@ class WorkspacePage extends ConsumerWidget {
                 subtitle: Text(
                   ws.isSelected ? l10n.settingsWorkspaceSelected : '',
                 ),
-                onTap: ws.isSelected
-                    ? null
-                    : () => _switchTo(context, ref, ws),
+                onTap: ws.isSelected ? null : () => _switchTo(context, ref, ws),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -63,24 +63,30 @@ class WorkspacePage extends ConsumerWidget {
   }
 
   Future<void> _switchTo(
-      BuildContext context, WidgetRef ref, Workspace workspace) async {
+    BuildContext context,
+    WidgetRef ref,
+    Workspace workspace,
+  ) async {
     final l10n = AppLocalizations.of(context);
     try {
-      await ref.read(apiClientProvider).post(
-            '/workspaces/${workspace.workspaceId}/select',
-          );
+      await ref
+          .read(apiClientProvider)
+          .post('/workspaces/${workspace.workspaceId}/select');
       await reloadWorkspaceData(ref);
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.loadingFailed(''))),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.loadingFailed(''))));
       }
     }
   }
 
   Future<void> _rename(
-      BuildContext context, WidgetRef ref, Workspace workspace) async {
+    BuildContext context,
+    WidgetRef ref,
+    Workspace workspace,
+  ) async {
     final l10n = AppLocalizations.of(context);
     final nameController = TextEditingController(text: workspace.name);
     final name = await showDialog<String>(
@@ -106,7 +112,9 @@ class WorkspacePage extends ConsumerWidget {
     );
     if (name == null || name.isEmpty) return;
     try {
-      await ref.read(apiClientProvider).post(
+      await ref
+          .read(apiClientProvider)
+          .post(
             '/workspaces/${workspace.workspaceId}/rename',
             body: {'name': name},
           );
@@ -155,9 +163,9 @@ class WorkspacePage extends ConsumerWidget {
       }
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.loadingFailed(''))),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.loadingFailed(''))));
       }
     }
   }

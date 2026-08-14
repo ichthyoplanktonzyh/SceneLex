@@ -36,8 +36,10 @@ class _ScheduleCardState extends State<ScheduleCard> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 24),
                 child: Center(
-                  child: Text(l10n.scheduleEmpty,
-                      style: theme.textTheme.bodySmall),
+                  child: Text(
+                    l10n.scheduleEmpty,
+                    style: theme.textTheme.bodySmall,
+                  ),
                 ),
               )
             else ...[
@@ -167,8 +169,9 @@ class _DonutPainter extends CustomPainter {
           ..style = PaintingStyle.stroke
           ..strokeWidth = outer - inner
           ..strokeCap = StrokeCap.butt
-          ..color = Color(scheduleBucketColors[view.bucket]!)
-              .withValues(alpha: isSelected ? 1.0 : (selected == null ? 0.95 : 0.35)),
+          ..color = Color(scheduleBucketColors[view.bucket]!).withValues(
+            alpha: isSelected ? 1.0 : (selected == null ? 0.95 : 0.35),
+          ),
       );
       start += sweep;
     }
@@ -236,8 +239,8 @@ class _BucketRow extends StatelessWidget {
               child: Text(
                 _bucketLabel(context, view.bucket),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-                    ),
+                  fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+                ),
               ),
             ),
             Text(

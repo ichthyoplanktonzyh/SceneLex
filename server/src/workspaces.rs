@@ -91,13 +91,11 @@ pub async fn ensure_user_bootstrap(pool: &PgPool, user: &AuthUser) -> Result<Uui
         }
     };
 
-    sqlx::query(
-        "UPDATE org.user_settings SET selected_workspace_id = $1 WHERE user_id = $2",
-    )
-    .bind(workspace_id)
-    .bind(user_id)
-    .execute(pool)
-    .await?;
+    sqlx::query("UPDATE org.user_settings SET selected_workspace_id = $1 WHERE user_id = $2")
+        .bind(workspace_id)
+        .bind(user_id)
+        .execute(pool)
+        .await?;
 
     Ok(workspace_id)
 }
@@ -140,13 +138,11 @@ pub async fn create_workspace(
     .bind(user_id)
     .execute(pool)
     .await?;
-    sqlx::query(
-        "UPDATE org.user_settings SET selected_workspace_id = $1 WHERE user_id = $2",
-    )
-    .bind(id)
-    .bind(user_id)
-    .execute(pool)
-    .await?;
+    sqlx::query("UPDATE org.user_settings SET selected_workspace_id = $1 WHERE user_id = $2")
+        .bind(id)
+        .bind(user_id)
+        .execute(pool)
+        .await?;
     list_workspace(pool, id).await
 }
 
@@ -191,8 +187,7 @@ async fn list_workspace(pool: &PgPool, workspace_id: Uuid) -> Result<WorkspaceRo
 
 /// Confirmation texts (reference behavior).
 pub const DELETE_WORKSPACE_CONFIRMATION: &str = "delete workspace";
-pub const RESET_PROGRESS_CONFIRMATION: &str =
-    "reset all progress for all cards in this workspace";
+pub const RESET_PROGRESS_CONFIRMATION: &str = "reset all progress for all cards in this workspace";
 
 /// Member count + role of the user in the workspace (None when not a member).
 pub(crate) async fn member_role(
@@ -227,7 +222,9 @@ pub async fn rename_workspace(
         return Ok(None);
     };
     if role_name != "owner" {
-        return Err(sqlx::Error::Protocol("only the workspace owner can rename it".into()));
+        return Err(sqlx::Error::Protocol(
+            "only the workspace owner can rename it".into(),
+        ));
     }
     sqlx::query("UPDATE org.workspaces SET name = $1 WHERE workspace_id = $2")
         .bind(name)
@@ -244,18 +241,16 @@ pub async fn delete_preview(
     pool: &PgPool,
     workspace_id: Uuid,
 ) -> Result<(i64, i64, i64), sqlx::Error> {
-    let learning_states: i64 = sqlx::query_scalar(
-        "SELECT count(*) FROM content.learning_states WHERE workspace_id = $1",
-    )
-    .bind(workspace_id)
-    .fetch_one(pool)
-    .await?;
-    let review_events: i64 = sqlx::query_scalar(
-        "SELECT count(*) FROM content.review_events WHERE workspace_id = $1",
-    )
-    .bind(workspace_id)
-    .fetch_one(pool)
-    .await?;
+    let learning_states: i64 =
+        sqlx::query_scalar("SELECT count(*) FROM content.learning_states WHERE workspace_id = $1")
+            .bind(workspace_id)
+            .fetch_one(pool)
+            .await?;
+    let review_events: i64 =
+        sqlx::query_scalar("SELECT count(*) FROM content.review_events WHERE workspace_id = $1")
+            .bind(workspace_id)
+            .fetch_one(pool)
+            .await?;
     let lists: i64 = sqlx::query_scalar(
         "SELECT count(*) FROM content.lists
          WHERE workspace_id = $1 AND deleted_at IS NULL",
@@ -273,18 +268,16 @@ pub async fn reset_progress_preview(
     pool: &PgPool,
     workspace_id: Uuid,
 ) -> Result<(i64, i64), sqlx::Error> {
-    let learning_states: i64 = sqlx::query_scalar(
-        "SELECT count(*) FROM content.learning_states WHERE workspace_id = $1",
-    )
-    .bind(workspace_id)
-    .fetch_one(pool)
-    .await?;
-    let review_events: i64 = sqlx::query_scalar(
-        "SELECT count(*) FROM content.review_events WHERE workspace_id = $1",
-    )
-    .bind(workspace_id)
-    .fetch_one(pool)
-    .await?;
+    let learning_states: i64 =
+        sqlx::query_scalar("SELECT count(*) FROM content.learning_states WHERE workspace_id = $1")
+            .bind(workspace_id)
+            .fetch_one(pool)
+            .await?;
+    let review_events: i64 =
+        sqlx::query_scalar("SELECT count(*) FROM content.review_events WHERE workspace_id = $1")
+            .bind(workspace_id)
+            .fetch_one(pool)
+            .await?;
     Ok((learning_states, review_events))
 }
 
@@ -304,7 +297,9 @@ pub async fn delete_workspace(
         return Ok(None);
     };
     if role_name != "owner" {
-        return Err(sqlx::Error::Protocol("only the workspace owner can delete it".into()));
+        return Err(sqlx::Error::Protocol(
+            "only the workspace owner can delete it".into(),
+        ));
     }
     if member_count != 1 {
         return Err(sqlx::Error::Protocol(
@@ -312,12 +307,11 @@ pub async fn delete_workspace(
         ));
     }
 
-    let deleted_cards: i64 = sqlx::query_scalar(
-        "SELECT count(*) FROM content.learning_states WHERE workspace_id = $1",
-    )
-    .bind(workspace_id)
-    .fetch_one(pool)
-    .await?;
+    let deleted_cards: i64 =
+        sqlx::query_scalar("SELECT count(*) FROM content.learning_states WHERE workspace_id = $1")
+            .bind(workspace_id)
+            .fetch_one(pool)
+            .await?;
 
     let mut tx = pool.begin().await?;
     sqlx::query("DELETE FROM org.workspaces WHERE workspace_id = $1")
@@ -348,13 +342,11 @@ pub async fn delete_workspace(
         .bind(workspace_id)
         .fetch_optional(&mut *tx)
         .await?;
-        sqlx::query(
-            "UPDATE org.user_settings SET selected_workspace_id = $1 WHERE user_id = $2",
-        )
-        .bind(earliest)
-        .bind(user_id)
-        .execute(&mut *tx)
-        .await?;
+        sqlx::query("UPDATE org.user_settings SET selected_workspace_id = $1 WHERE user_id = $2")
+            .bind(earliest)
+            .bind(user_id)
+            .execute(&mut *tx)
+            .await?;
         earliest
     } else {
         None
@@ -392,12 +384,11 @@ pub async fn reset_workspace_progress(
     }
 
     let mut tx = pool.begin().await?;
-    let deleted: i64 = sqlx::query_scalar(
-        "SELECT count(*) FROM content.learning_states WHERE workspace_id = $1",
-    )
-    .bind(workspace_id)
-    .fetch_one(&mut *tx)
-    .await?;
+    let deleted: i64 =
+        sqlx::query_scalar("SELECT count(*) FROM content.learning_states WHERE workspace_id = $1")
+            .bind(workspace_id)
+            .fetch_one(&mut *tx)
+            .await?;
     sqlx::query("DELETE FROM content.learning_states WHERE workspace_id = $1")
         .bind(workspace_id)
         .execute(&mut *tx)

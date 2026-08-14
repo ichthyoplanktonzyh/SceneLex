@@ -2,19 +2,18 @@
   "@@locale": "en",
   "appTitle": "SceneLex",
   "appTagline": "Meaning is experience; micro-worlds are experience.",
-
   "tabReview": "Review",
   "tabProgress": "Progress",
   "tabCards": "Cards",
   "tabSettings": "Settings",
-
   "loadingFailed": "Failed to load: {error}",
   "@loadingFailed": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-
   "loginEmailLabel": "Email",
   "loginOtpLabel": "8-digit code",
   "loginSendCode": "Send code",
@@ -24,7 +23,9 @@
   "loginResendIn": "Resend code ({seconds}s)",
   "@loginResendIn": {
     "placeholders": {
-      "seconds": {"type": "int"}
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "loginChangeEmail": "Use a different email",
@@ -36,7 +37,6 @@
   "loginErrorInvalidCode": "Invalid code.",
   "loginErrorInternalError": "Something went wrong. Please try again.",
   "loginErrorUnknown": "Sign-in failed. Please try again.",
-
   "cardsTitle": "Cards",
   "cardsSearchHint": "Search senses",
   "cardsEmptyLibrary": "Empty library. Run import_content.py first.",
@@ -51,29 +51,36 @@
   "cardStateNext": "next {date}",
   "@cardStateNext": {
     "placeholders": {
-      "date": {"type": "String"}
+      "date": {
+        "type": "String"
+      }
     }
   },
   "cardMetaDue": "Due",
   "cardStatDue": "{count} due",
   "@cardStatDue": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "cardStatReps": "{count} reps",
   "@cardStatReps": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "cardStatLapses": "{count} lapses",
   "@cardStatLapses": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "reviewTitle": "Today",
   "reviewEmptyNoSenses": "No senses being studied yet",
   "reviewEmptyNoDue": "Nothing due today",
@@ -85,13 +92,14 @@
   "reviewFilterTags": "Tags",
   "reviewFilterManage": "Manage lists",
   "reviewFilterDone": "Done",
-
   "listsTitle": "Lists",
   "listsAllCards": "All Cards",
   "listsAllCardsBody": "{count} cards",
   "@listsAllCardsBody": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "listsCreate": "New list",
@@ -107,7 +115,9 @@
   "listsMatchedCount": "{count} matching cards",
   "@listsMatchedCount": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "listsDetailRules": "Rule",
@@ -117,11 +127,9 @@
   "listsStatMatched": "Matched",
   "listsStatDue": "Due now",
   "listsReviewThisDeck": "Review this list",
-
   "cardRemove": "Remove",
   "cardRemoveTitle": "Remove from study?",
   "cardRemoveBody": "This removes the word from the local list and the next sync. You can add it again any time.",
-
   "stageAnchor": "Prototype",
   "stageVariation": "Variation",
   "stagePerturbation": "Perturbation",
@@ -139,7 +147,9 @@
   "playerLoadFailed": "Failed to load program: {error}",
   "@playerLoadFailed": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
   "speechListen": "Listen",
@@ -152,13 +162,17 @@
   "reviewRepetitionCount": "{count} reps",
   "@reviewRepetitionCount": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "reviewQueueBadgeTooltip": "{count} words due",
   "@reviewQueueBadgeTooltip": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "reviewEmptyBrowseCards": "Browse words",
@@ -175,54 +189,68 @@
   "ratingHard": "Hard",
   "ratingGood": "Good",
   "ratingEasy": "Easy",
-
   "reviewIntervalLessThanMinute": "in less than a minute",
   "reviewIntervalMinutes": "{count, plural, =1{in {count} minute} other{in {count} minutes}}",
   "@reviewIntervalMinutes": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "reviewIntervalHours": "{count, plural, =1{in {count} hour} other{in {count} hours}}",
   "@reviewIntervalHours": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "reviewIntervalDays": "{count, plural, =1{in {count} day} other{in {count} days}}",
   "@reviewIntervalDays": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "progressTitle": "Progress",
   "progressNoData": "No review data yet",
   "streakCardTitle": "Streak",
   "streakDaysLabel": "{count} days",
   "@streakDaysLabel": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "streakLongest": "Longest: {count} days",
   "@streakLongest": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "streakFreezeLabel": "Freeze",
   "streakFreezeCount": "{credits}/{capacity}",
   "@streakFreezeCount": {
     "placeholders": {
-      "credits": {"type": "int"},
-      "capacity": {"type": "int"}
+      "credits": {
+        "type": "int"
+      },
+      "capacity": {
+        "type": "int"
+      }
     }
   },
   "streakFreezeInfo": "Review {needed} days to earn a freeze credit. A freeze keeps your streak alive for one missed day.",
   "@streakFreezeInfo": {
     "placeholders": {
-      "needed": {"type": "int"}
+      "needed": {
+        "type": "int"
+      }
     }
   },
   "streakFreezeFull": "Freeze credits full",
@@ -230,7 +258,9 @@
   "reviewsDayTotal": "{count} reviews",
   "@reviewsDayTotal": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "reviewScheduleTitle": "Review Schedule",
@@ -243,7 +273,6 @@
   "bucket1to2y": "1-2 years",
   "bucketLater": "Later",
   "scheduleEmpty": "No cards in the schedule",
-
   "settingsTitle": "Settings",
   "settingsAccountSection": "Account",
   "settingsAccountEmail": "Email",
@@ -258,7 +287,9 @@
   "settingsLastSyncValue": "Last synced {time}",
   "@settingsLastSyncValue": {
     "placeholders": {
-      "time": {"type": "String"}
+      "time": {
+        "type": "String"
+      }
     }
   },
   "settingsSyncNow": "Sync now",
@@ -295,13 +326,17 @@
   "settingsNotificationsHours": "{count} hours",
   "@settingsNotificationsHours": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsNotificationsMinutes": "{count} minutes",
   "@settingsNotificationsMinutes": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsNotificationsBadge": "Show app icon badge",
@@ -325,16 +360,26 @@
   "settingsDeletePreviewBody": "This will delete {learningStates} word states, {reviewEvents} review records, and {lists} lists.",
   "@settingsDeletePreviewBody": {
     "placeholders": {
-      "learningStates": {"type": "int"},
-      "reviewEvents": {"type": "int"},
-      "lists": {"type": "int"}
+      "learningStates": {
+        "type": "int"
+      },
+      "reviewEvents": {
+        "type": "int"
+      },
+      "lists": {
+        "type": "int"
+      }
     }
   },
   "settingsResetProgressPreviewBody": "This will clear {learningStates} word states and delete {reviewEvents} review records.",
   "@settingsResetProgressPreviewBody": {
     "placeholders": {
-      "learningStates": {"type": "int"},
-      "reviewEvents": {"type": "int"}
+      "learningStates": {
+        "type": "int"
+      },
+      "reviewEvents": {
+        "type": "int"
+      }
     }
   },
   "settingsPreviewLearningStates": "Word states",
@@ -345,7 +390,9 @@
   "settingsWorkspaceNotSoleMember": "This workspace has other members, so it cannot be {action}.",
   "@settingsWorkspaceNotSoleMember": {
     "placeholders": {
-      "action": {"type": "String"}
+      "action": {
+        "type": "String"
+      }
     }
   },
   "settingsDeleteAccount": "Delete account",
@@ -355,7 +402,9 @@
   "settingsTypeToConfirm": "Type {phrase} to confirm",
   "@settingsTypeToConfirm": {
     "placeholders": {
-      "phrase": {"type": "String"}
+      "phrase": {
+        "type": "String"
+      }
     }
   },
   "settingsAboutSection": "About",
@@ -380,7 +429,9 @@
   "settingsWorkspaceCreated": "Workspace created: {name}",
   "@settingsWorkspaceCreated": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "settingsWorkspaceLists": "Lists",
@@ -391,54 +442,60 @@
   "tagsScreenCountLabel": "{count} tags",
   "@tagsScreenCountLabel": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tagsScreenEmpty": "No tags yet. Tags appear once words are added to study.",
   "tagsScreenLearnedCount": "{count} words",
   "@tagsScreenLearnedCount": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsReset": "Reset",
   "settingsDelete": "Delete",
   "settingsVersion": "Version",
   "settingsComingSoon": "Coming soon",
-
   "notificationDailyBody": "Time for today's SceneLex review session.",
   "notificationChannelName": "Daily review reminder",
-
   "reviewHardReminderTitle": "Quick reminder",
   "reviewHardReminderBody": "If you did not know the answer, choose \"Again\". \"Hard\" is only for answers you knew but it was difficult to recall.",
   "reviewHardReminderDismiss": "Got it",
-
   "reviewSubmitError": "Review wasn't saved",
-
   "reviewBadgeTooltip": "Review streak {days} days. Not reviewed today.",
   "@reviewBadgeTooltip": {
     "placeholders": {
-      "days": {"type": "int"}
+      "days": {
+        "type": "int"
+      }
     }
   },
   "reviewBadgeTooltipReviewed": "Review streak {days} days. Reviewed today.",
   "@reviewBadgeTooltipReviewed": {
     "placeholders": {
-      "days": {"type": "int"}
+      "days": {
+        "type": "int"
+      }
     }
   },
-
   "experienceRuntimeRoleAnchor": "First look",
   "experienceRuntimeRoleVariation": "What stays the same",
   "experienceRuntimeRolePerturbation": "Change one thing",
   "experienceRuntimeRoleDiscrimination": "Choose the right one",
   "experienceRuntimeRoleTransfer": "Take it further",
-
   "experienceRuntimeProgress": "{current}/{total}",
   "@experienceRuntimeProgress": {
     "placeholders": {
-      "current": {"type": "int"},
-      "total": {"type": "int"}
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "experienceRuntimeContinue": "Continue",
@@ -446,23 +503,472 @@
   "experienceRuntimeEvidenceLabel": "What you can see",
   "experienceRuntimeCorrect": "Correct",
   "experienceRuntimeIncorrect": "Not quite",
-
   "experienceRuntimePronunciation": "Listen",
   "experienceRuntimeGroundingBackToExperience": "The moment you just saw",
   "experienceRuntimeConstructions": "Structures",
   "experienceRuntimeCollocations": "Word partners",
-
   "experienceRuntimeCompleteTitle": "Session complete",
   "experienceRuntimeCompleteExperiences": "experiences completed",
   "experienceRuntimeCompleteFirstAttempt": "{correct} of {total} correct on the first try",
   "@experienceRuntimeCompleteFirstAttempt": {
     "placeholders": {
-      "correct": {"type": "int"},
-      "total": {"type": "int"}
+      "correct": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "experienceRuntimeReplay": "Re-experience",
-
   "experienceRuntimeLoadErrorTitle": "Could not load this experience",
-  "experienceRuntimeRetry": "Try again"
+  "experienceRuntimeRetry": "Try again",
+  "tabHome": "Home",
+  "tabMap": "Concept map",
+  "tabContent": "My content",
+  "tabStudy": "My study",
+  "homeLearnCta": "Learn",
+  "homeReviewCta": "Review",
+  "homeNewSensesLabel": "new senses to learn",
+  "homeDueLabel": "senses due for review",
+  "homeCheckin": "Check in",
+  "homeCheckedIn": "Checked in",
+  "homeToday": "Today",
+  "homeCheckinDone": "Daily check-in recorded",
+  "homeSubtitle": "SceneLex · product v1",
+  "homeSkyAlt": "SceneLex night sky",
+  "homeLoadError": "Could not load content",
+  "learnExitTitle": "Exit this learning session?",
+  "learnExitBody": "Progress is saved and you can resume later.",
+  "learnResume": "Resume learning",
+  "learnQuit": "Quit",
+  "learnRemovedFavorite": "Removed from experience favorites",
+  "learnAddedFavorite": "Added to experience favorites",
+  "noteHint": "Write something…",
+  "noteDelete": "Delete",
+  "noteSave": "Save",
+  "phaseSymbolReveal": "Symbol reveal",
+  "phaseSymbolRevealSub": "From experience to L2",
+  "phaseSymbolBinding": "Bind L2 symbol",
+  "phaseL2Usage": "L2 usage",
+  "phaseTransfer": "L1 transfer",
+  "phaseFormation": "L1 formation",
+  "learnFinishGroup": "Finish group",
+  "learnNextWord": "Next word",
+  "learnContinue": "Continue",
+  "learnAnswerFirst": "Answer first",
+  "learnWriteNote": "Write note",
+  "learnPreferences": "Learning preferences",
+  "learnRetreat": "Back",
+  "learnFavorite": "Favorite this experience",
+  "learnKnown": "Known",
+  "learnMore": "More",
+  "knownCheckUnavailable": "No transfer check for this sense",
+  "knownCheckFailHint": "Fail: return to the normal anchor flow.",
+  "knownCheckSkip": "Skip remaining concept formation",
+  "knownCheckAnchor": "Back to anchor flow",
+  "learnEmptyTitle": "The catalog is fully studied",
+  "learnEmptyBody": "New content appears here when published.",
+  "learnBackHome": "Back to home",
+  "reviewQuit": "Quit",
+  "reviewTransferTitle": "Symbol recall check",
+  "reviewLoadError": "Failed to load",
+  "recallDelayedRetrieval": "Delayed retrieval · new experience",
+  "recallRevisit": "Revisit · a passage you have not seen",
+  "recallPrompt": "Which word fits this situation?",
+  "recallHint": "Recall it yourself first, then look at the answer",
+  "revealShowAnswer": "Show answer",
+  "reviewTransferDone": "Symbol recall check complete",
+  "reviewDone": "This round of review complete",
+  "reviewRetrieved": "Recalled",
+  "reviewReviewed": "Reviewed",
+  "reviewBackHome": "Back to home",
+  "groupNoneInProgress": "No group session in progress",
+  "groupBackHome": "Back to home",
+  "groupDoneTitle": "Group understanding complete",
+  "groupNewExperiences": "New experiences",
+  "groupBoundaryDiscrimination": "Boundary discrimination",
+  "groupMinutes": "min",
+  "groupRest": "Back home and rest",
+  "groupStartRecall": "Start symbol recall check",
+  "groupGoReview": "Go to review",
+  "mapTitle": "Concept map",
+  "mapAll": "All",
+  "mapLearned": "Learned",
+  "mapEmpty": "Nothing matches this filter",
+  "mapDiffDim": "Different dimension",
+  "mapOverlap": "Overlap",
+  "libNone": "None",
+  "libTitle": "My content",
+  "libReplay": "Experience replay",
+  "libPreview": "Preview",
+  "libTransfer": "Transfer check",
+  "libTransferBody": "Learned senses",
+  "libStudyLists": "Study lists",
+  "libRecentLearned": "Recently learned",
+  "libAllLearned": "All learned",
+  "libConceptMap": "My concept map",
+  "libFavorites": "Experience favorites",
+  "libNotes": "Notes",
+  "libReplayLabel": "Replay",
+  "libReviewLabel": "Review",
+  "libPreviewLabel": "Preview",
+  "libLookFirst": "Look first",
+  "libToday": "Today",
+  "replayTitle": "Experience replay",
+  "replayEmptyTitle": "No learned experiences yet",
+  "replayEmptyBody": "Finish a first-learn group, then replay.",
+  "replayNoExperience": "No experience",
+  "replayUnfavorite": "Unfavorite",
+  "replayFavorite": "Favorite",
+  "replayPrev": "Previous",
+  "replayNext": "Next",
+  "previewTitle": "Preview",
+  "previewEmpty": "Nothing to preview",
+  "previewEnterLearn": "Start first learn (next group)",
+  "previewNewSense": "New sense · watch the anchor experience first",
+  "previewFromExperience": "From experience into first learn",
+  "learnedRecent": "Recently learned",
+  "learnedAll": "All learned",
+  "learnedEmpty": "No learned senses yet",
+  "learnedDue": "Due for review",
+  "favTitle": "Experience favorites",
+  "favUnfavorite": "Unfavorite",
+  "notesTitle": "Notes",
+  "studyTitle": "My study",
+  "studyPreferences": "Learning preferences",
+  "studyPlan": "Plan",
+  "studyLists": "Lists",
+  "studyScope": "Current learning scope",
+  "studyBySense": "Organized by sense, not by headword",
+  "studyDailyNew": "New senses per day",
+  "studyStats": "Stats",
+  "studyTodayLearnReview": "Learned & reviewed today",
+  "studySenses": "senses",
+  "studyCumulativeLearned": "Cumulative learned",
+  "studyTodayMinutes": "Minutes today",
+  "studyMinutes": "min",
+  "studyCumulativeMinutes": "Cumulative minutes",
+  "studyCheckinCalendar": "Check-in calendar",
+  "studyTodayCol": "T",
+  "profileLearning": "Learning",
+  "profileReviewing": "Reviewing",
+  "profileRelearning": "Re-learning",
+  "profileNewCards": "New",
+  "profileBack": "Back",
+  "profileLearner": "SceneLex learner",
+  "profileNoMember": "No membership",
+  "profileLearnedSenses": "Learned senses",
+  "profileExperiencesLoading": "Counting experiences…",
+  "profileMastery": "Mastery",
+  "profileAppearance": "Appearance",
+  "profilePreferences": "Learning preferences",
+  "profileMoreSettings": "More settings",
+  "profileNoRecords": "No study records yet",
+  "prefSectionUnderstanding": "Understanding flow",
+  "prefTransferTiming": "Symbol recall timing",
+  "prefBoundaryPerturbation": "Boundary perturbation",
+  "prefSymbolRecall": "Symbol recall",
+  "prefScaffold": "L1 scaffolding",
+  "prefScaffoldLevel": "Narrative language level",
+  "prefScaffoldCurrent": "Current level",
+  "prefAutoScaffoldRemoval": "Auto removal",
+  "prefZhLabelBeforeReveal": "Chinese label before reveal",
+  "prefSectionRhythm": "Rhythm",
+  "prefNewGroup": "New learn group",
+  "prefNewGroupHint": "About 90 seconds per sense",
+  "prefReviewGroup": "Review group",
+  "prefSectionVoice": "Pronunciation & reminders",
+  "prefAccent": "Accent",
+  "prefAccentUs": "American",
+  "prefAccentUk": "British",
+  "prefAutoPronounce": "Auto pronounce",
+  "prefReminder": "Study reminder",
+  "prefReminderHint": "Maps to notification settings",
+  "prefTransferEndOfDay": "End of day",
+  "prefTransferEndOfFirstLearning": "End of first learn",
+  "prefTransferFirstReview": "First review",
+  "prefScaffoldZh": "Chinese",
+  "prefScaffoldMixed": "Mixed",
+  "prefScaffoldEn": "Pure English",
+  "prefReminderReveal": "At symbol reveal",
+  "prefReminderRevealExample": "Reveal + example",
+  "prefReminderOff": "Off",
+  "prefReminderSmart": "Smart reminder",
+  "prefReminderFixed": "Fixed time",
+  "prefTitle": "Learning preferences",
+  "homeProfile": "Profile",
+  "brandTagline": "Meaning is experience; micro-worlds are experience.",
+  "knownCheckTitle": "Known · transfer check · will not mark as learned",
+  "knownCheckPassHint": "Pass: recognize the concept → skip the rest of concept formation.",
+  "recallNewExperience": "New experience · you have not seen this one",
+  "gradeNextUsesNewExperience": "FSRS-6 · next review uses an unseen experience",
+  "reviewTransferDoneBody": "Completed the delayed experience-to-symbol recall with brand-new experiences",
+  "transferIntro": "Transfer was completed before each reveal. What follows is delayed symbol recall:",
+  "transferIntro2": "Watch a new experience — can you recall the L2 symbol you just bound?",
+  "transferDeferred": "Transfer testing is deferred to the first review (current preference: first review).",
+  "transferAtEnd": "Transfer testing already completed at the end of each first learn (current preference: end of first learn).",
+  "mapBoundariesNotCollected": "Boundary relations (relations.boundaries) not yet collected — content debt, pending the compiler output.",
+  "replayOnlyScene": "Only the scene replays — recalling the word is for review",
+  "favEmpty": "Nothing yet. Star an experience while learning or replaying.",
+  "notesEmpty": "No notes yet. Use the More menu in a first-learn session to note the current sense.",
+  "prefTransferTimingHint": "Transfer is fixed before the reveal; this controls when experience-to-symbol is tested",
+  "prefBoundaryPerturbationHint": "Contrast / counter-example scenes crush wrong generalizations",
+  "prefSymbolRecallHint": "One scene-to-word retrieval after the reveal",
+  "prefAutoScaffoldRemovalHint": "Steps down to pure English as reviews accumulate",
+  "prefZhLabelBeforeRevealHint": "On = back to give-the-translation-first; off by default",
+  "noteTitle": "Note · {senseId}",
+  "@noteTitle": {
+    "placeholders": {
+      "senseId": {
+        "type": "Object"
+      }
+    }
+  },
+  "learnLoadError": "Failed to load: {errorMessage}",
+  "@learnLoadError": {
+    "placeholders": {
+      "errorMessage": {
+        "type": "Object"
+      }
+    }
+  },
+  "learnWordProgress": "Word {index} / {count}",
+  "@learnWordProgress": {
+    "placeholders": {
+      "index": {
+        "type": "Object"
+      },
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "reviewDoneBody": "{gradedCount} review events written locally",
+  "@reviewDoneBody": {
+    "placeholders": {
+      "gradedCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "groupDoneBody": "Experiences for {senseCount} senses have been built",
+  "@groupDoneBody": {
+    "placeholders": {
+      "senseCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "mapLoadError": "Failed to load: {error}",
+  "@mapLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "mapBoundaryCriterion": "Criterion: {diagnostic}",
+  "@mapBoundaryCriterion": {
+    "placeholders": {
+      "diagnostic": {
+        "type": "Object"
+      }
+    }
+  },
+  "libRecent7d": "Past 7 days · {recentCount} senses",
+  "@libRecent7d": {
+    "placeholders": {
+      "recentCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "libReplayBody": "{learnedCount} sense experiences",
+  "@libReplayBody": {
+    "placeholders": {
+      "learnedCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "libPreviewBody": "{clamped} scenes",
+  "@libPreviewBody": {
+    "placeholders": {
+      "clamped": {
+        "type": "Object"
+      }
+    }
+  },
+  "libStudyListsBody": "{learnedCount} senses",
+  "@libStudyListsBody": {
+    "placeholders": {
+      "learnedCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "libAllLearnedBody": "{learnedCount} senses",
+  "@libAllLearnedBody": {
+    "placeholders": {
+      "learnedCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "libConceptMapBody": "{catalogSize} senses",
+  "@libConceptMapBody": {
+    "placeholders": {
+      "catalogSize": {
+        "type": "Object"
+      }
+    }
+  },
+  "libFavoritesBody": "{favoritesCount} items",
+  "@libFavoritesBody": {
+    "placeholders": {
+      "favoritesCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "libNotesBody": "{notesCount} notes",
+  "@libNotesBody": {
+    "placeholders": {
+      "notesCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "replayLoadError": "Failed to load: {error}",
+  "@replayLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "replayCounter": "Experience {index} / {total}",
+  "@replayCounter": {
+    "placeholders": {
+      "index": {
+        "type": "Object"
+      },
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "previewLoadError": "Failed to load: {error}",
+  "@previewLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "learnedLoadError": "Failed to load: {error}",
+  "@learnedLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "learnedReviewedN": "Reviewed {reps} times",
+  "@learnedReviewedN": {
+    "placeholders": {
+      "reps": {
+        "type": "Object"
+      }
+    }
+  },
+  "favLoadError": "Failed to load: {error}",
+  "@favLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "notesLoadError": "Failed to load: {error}",
+  "@notesLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "studyLoadError": "Failed to load: {error}",
+  "@studyLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "studyLearned": "Learned {learnedCount}",
+  "@studyLearned": {
+    "placeholders": {
+      "learnedCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "studyCatalogSize": "Total senses {catalogSize}",
+  "@studyCatalogSize": {
+    "placeholders": {
+      "catalogSize": {
+        "type": "Object"
+      }
+    }
+  },
+  "studyDailyGoal": "{dailyGoal} / day",
+  "@studyDailyGoal": {
+    "placeholders": {
+      "dailyGoal": {
+        "type": "Object"
+      }
+    }
+  },
+  "studyStreak": "{streakDays}-day streak",
+  "@studyStreak": {
+    "placeholders": {
+      "streakDays": {
+        "type": "Object"
+      }
+    }
+  },
+  "profileExperienceCount": "{count} experience scenes",
+  "@profileExperienceCount": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "profileFsrsSummary": "FSRS state distribution · {total} senses",
+  "@profileFsrsSummary": {
+    "placeholders": {
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "prefNewGroupSize": "{groupSize} senses / group",
+  "@prefNewGroupSize": {
+    "placeholders": {
+      "groupSize": {
+        "type": "Object"
+      }
+    }
+  },
+  "prefReviewGroupSize": "{groupSize} senses / group",
+  "@prefReviewGroupSize": {
+    "placeholders": {
+      "groupSize": {
+        "type": "Object"
+      }
+    }
+  }
 }

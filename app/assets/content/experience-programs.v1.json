@@ -1,5 +1,79 @@
 {
-  "bundle_version": 1,
+  "bundle_version": 2,
+  "catalog": {
+    "almost-01": {
+      "boundaries": [],
+      "boundaries_status": "not_collected",
+      "invariant": "存在一个可辨识的达成阈值，实际状态沿某维度逼近到极近处，但最终未跨越阈值。",
+      "ipa": "/ˈɔːlmoʊst/",
+      "l1_confusables": [
+        "中文\"几乎\"也覆盖 nearly/practically；中文\"几乎不\"表达 hardly/barely， 学习者容易把 almost not 直译。",
+        "中文\"差点\"偏向未发生的负面事件并带庆幸语气，almost 无此限制。"
+      ],
+      "lemma": "almost",
+      "locale_l1": "zh",
+      "pos": "adverb",
+      "program_id": "almost-01-program",
+      "program_version": 1,
+      "semantic_type": "scalar_degree",
+      "sense_id": "almost-01",
+      "sense_key": "almost-01"
+    },
+    "dirty-01": {
+      "boundaries": [],
+      "boundaries_status": "not_collected",
+      "invariant": "对象表面附着了一种不受欢迎的外来物质，使表面偏离其应有的洁净基线；该偏离 可被直接感知。判断对象是表面状态，不是位置的秩序。",
+      "ipa": "/ˈdɜːrti/",
+      "l1_confusables": [
+        "中文\"脏乱\"常连用，使学习者把 dirty（表面附着）与 messy（位置无序）绑定成 一个概念，需要分别验证两条维度。",
+        "中文\"脏\"同时覆盖物理不洁与言语粗俗（dirty-02），物理表面义项须与引申义分开。"
+      ],
+      "lemma": "dirty",
+      "locale_l1": "zh",
+      "pos": "adjective",
+      "program_id": "dirty-01-program",
+      "program_version": 1,
+      "semantic_type": "attribute",
+      "sense_id": "dirty-01",
+      "sense_key": "dirty-01"
+    },
+    "messy-01": {
+      "boundaries": [],
+      "boundaries_status": "not_collected",
+      "invariant": "一个可被整体观察的空间或对象，其组成部分偏离了预期/常规的排列与形态，形成 整体可见的无序；判断对象是位置与排列秩序，不是表面附着。",
+      "ipa": "/ˈmɛsi/",
+      "l1_confusables": [
+        "中文\"乱\"覆盖物理空间、抽象局面与行为秩序；messy 在日常英语中主要指可见的 物理无序，需要把\"乱\"的经验范围收窄到可观察的排列。",
+        "中文\"脏乱\"连用使学习者把 messy 与 dirty 绑定，需要分别验证两条维度。"
+      ],
+      "lemma": "messy",
+      "locale_l1": "zh",
+      "pos": "adjective",
+      "program_id": "messy-01-program",
+      "program_version": 1,
+      "semantic_type": "attribute",
+      "sense_id": "messy-01",
+      "sense_key": "messy-01"
+    },
+    "reluctant-01": {
+      "boundaries": [],
+      "boundaries_status": "not_collected",
+      "invariant": "面对一个可执行行动或行动方案时，主观意愿为负（unwillingness / inner resistance）；行为上必须有可观察证据支持该负意愿，但任何单一行为都不是定义条件。",
+      "ipa": "rɪˈlʌktənt",
+      "l1_confusables": [
+        "中文\"不情愿\"常同时覆盖 reluctant 与 unwilling；学习者容易忽略 reluctant 的 \"可能仍会做\"的一面，把\"不愿做\"与\"拒绝做\"混为一谈。",
+        "中文\"犹豫\"覆盖 hesitant，学习者容易把\"拿不定主意\"当成\"不想做\"。"
+      ],
+      "lemma": "reluctant",
+      "locale_l1": "zh",
+      "pos": "adjective",
+      "program_id": "reluctant-01-program",
+      "program_version": 1,
+      "semantic_type": "mental_state",
+      "sense_id": "reluctant-01",
+      "sense_key": "reluctant-01"
+    }
+  },
   "programs": {
     "almost-01": {
       "grounding": {

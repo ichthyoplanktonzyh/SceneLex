@@ -30,7 +30,9 @@ class PowerModeService {
   Future<void> start() async {
     if (!isSupported) return;
     try {
-      final current = await _methodChannel.invokeMethod<bool>('isLowPowerEnabled');
+      final current = await _methodChannel.invokeMethod<bool>(
+        'isLowPowerEnabled',
+      );
       _setLowPower(current ?? false);
     } catch (_) {
       // Native side missing (e.g. tests) — default to false.

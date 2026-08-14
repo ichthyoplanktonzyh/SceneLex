@@ -55,9 +55,7 @@ impl IntoResponse for OtpError {
                 "RATE_LIMITED",
                 "Too many requests. Try again later.",
             ),
-            OtpError::AccountDeleted => {
-                (StatusCode::GONE, "ACCOUNT_DELETED", "Account deleted.")
-            }
+            OtpError::AccountDeleted => (StatusCode::GONE, "ACCOUNT_DELETED", "Account deleted."),
             OtpError::Expired => (
                 StatusCode::BAD_REQUEST,
                 "CODE_EXPIRED",
@@ -73,9 +71,7 @@ impl IntoResponse for OtpError {
                 "TOO_MANY_ATTEMPTS",
                 "Too many invalid attempts. Request a new code.",
             ),
-            OtpError::InvalidCode => {
-                (StatusCode::BAD_REQUEST, "INVALID_CODE", "Invalid code.")
-            }
+            OtpError::InvalidCode => (StatusCode::BAD_REQUEST, "INVALID_CODE", "Invalid code."),
             OtpError::Db(_) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "INTERNAL_ERROR",
@@ -153,10 +149,7 @@ async fn verify_code(
     )
     .bind(token::hash_refresh_token(&refresh_token))
     .bind(user.user_id)
-    .bind(
-        chrono::Utc::now()
-            + chrono::Duration::seconds(token::refresh_token_ttl_seconds()),
-    )
+    .bind(chrono::Utc::now() + chrono::Duration::seconds(token::refresh_token_ttl_seconds()))
     .execute(&state.pool)
     .await
     .map_err(OtpError::Db)?;
@@ -179,14 +172,17 @@ async fn refresh_token(
     }
 
     let token_hash = token::hash_refresh_token(&req.refresh_token);
-    let row: Option<(uuid::Uuid, chrono::DateTime<chrono::Utc>, Option<chrono::DateTime<chrono::Utc>>)> =
-        sqlx::query_as(
-            "SELECT user_id, expires_at, revoked_at FROM auth.refresh_tokens WHERE token_hash = $1",
-        )
-        .bind(&token_hash)
-        .fetch_optional(&state.pool)
-        .await
-        .map_err(|_| REFRESH_TOKEN_FAILED)?;
+    let row: Option<(
+        uuid::Uuid,
+        chrono::DateTime<chrono::Utc>,
+        Option<chrono::DateTime<chrono::Utc>>,
+    )> = sqlx::query_as(
+        "SELECT user_id, expires_at, revoked_at FROM auth.refresh_tokens WHERE token_hash = $1",
+    )
+    .bind(&token_hash)
+    .fetch_optional(&state.pool)
+    .await
+    .map_err(|_| REFRESH_TOKEN_FAILED)?;
 
     let Some((user_id, expires_at, revoked_at)) = row else {
         return Err(REFRESH_TOKEN_FAILED);
@@ -197,13 +193,12 @@ async fn refresh_token(
 
     // Deleted accounts: stale refresh tokens are rejected with 410
     // ACCOUNT_DELETED, matching the bearer-token extractor semantics.
-    let deleted: Option<uuid::Uuid> = sqlx::query_scalar(
-        "SELECT subject_key FROM auth.deleted_subjects WHERE subject_key = $1",
-    )
-    .bind(user_id)
-    .fetch_optional(&state.pool)
-    .await
-    .map_err(|_| REFRESH_TOKEN_FAILED)?;
+    let deleted: Option<uuid::Uuid> =
+        sqlx::query_scalar("SELECT subject_key FROM auth.deleted_subjects WHERE subject_key = $1")
+            .bind(user_id)
+            .fetch_optional(&state.pool)
+            .await
+            .map_err(|_| REFRESH_TOKEN_FAILED)?;
     if deleted.is_some() {
         return Err(ACCOUNT_DELETED);
     }

@@ -15,7 +15,11 @@ String get syncPlatform => kIsWeb ? 'web' : Platform.operatingSystem;
 /// Sync engine: bootstrap hydration, outbox push, hot pull, review-history pull.
 /// Mirrors the reference flow: bootstrap -> push -> pull hot -> pull history.
 class SyncEngine {
-  SyncEngine({required this.api, required this.local, required this.workspaceId});
+  SyncEngine({
+    required this.api,
+    required this.local,
+    required this.workspaceId,
+  });
 
   final ApiClient api;
   final LocalRepository local;
@@ -85,20 +89,27 @@ class SyncEngine {
     final sensesRes = await api.get('/content/senses');
     await local.cacheSenses(
       ((sensesRes['senses'] as List<dynamic>?) ?? const [])
-          .cast<Map<String, dynamic>>(),
+          .cast<Map<String, dynamic>>()
+          .map(_senseRowFromContract)
+          .toList(),
     );
-    final settings = await api.post('/workspaces/$workspaceId/sync/bootstrap', body: {
-      'mode': 'pull',
-      'limit': 1,
-      'installationId': _installationId,
-      'platform': syncPlatform,
-    });
+    final settings = await api.post(
+      '/workspaces/$workspaceId/sync/bootstrap',
+      body: {
+        'mode': 'pull',
+        'limit': 1,
+        'installationId': _installationId,
+        'platform': syncPlatform,
+      },
+    );
     final entries = (settings['entries'] as List<dynamic>?) ?? const [];
     for (final entry in entries) {
       final e = entry as Map<String, dynamic>;
       if (e['entityType'] == 'workspace_scheduler_settings') {
         await local.cacheWorkspaceSettings(
-            workspaceId, e['payload'] as Map<String, dynamic>);
+          workspaceId,
+          e['payload'] as Map<String, dynamic>,
+        );
       }
     }
   }
@@ -156,10 +167,11 @@ class SyncEngine {
           .toList();
       if (rejected.isNotEmpty) {
         final message = rejected
-            .map((op) =>
-                '${op.operationId} (${op.entityType}/${op.entityId})')
+            .map((op) => '${op.operationId} (${op.entityType}/${op.entityId})')
             .join('; ');
-        throw StateError('Cloud sync rejected one or more operations: $message');
+        throw StateError(
+          'Cloud sync rejected one or more operations: $message',
+        );
       }
     }
   }
@@ -206,22 +218,27 @@ class SyncEngine {
       );
       for (final event in (res['reviewEvents'] as List<dynamic>?) ?? const []) {
         final e = event as Map<String, dynamic>;
-        await local.db.into(local.db.localReviewEvents).insertOnConflictUpdate(
+        await local.db
+            .into(local.db.localReviewEvents)
+            .insertOnConflictUpdate(
               LocalReviewEventsCompanion.insert(
                 reviewEventId: e['reviewEventId'] as String,
                 wordSenseId: e['wordSenseId'] as String,
                 programVersion: (e['programVersion'] as num?)?.toInt() ?? 1,
                 experienceUnitId: e['experienceUnitId'] as String,
                 rating: (e['rating'] as num).toInt(),
-                reviewedAtClient:
-                    DateTime.parse(e['reviewedAtClient'] as String).toUtc(),
+                reviewedAtClient: DateTime.parse(
+                  e['reviewedAtClient'] as String,
+                ).toUtc(),
                 reviewedTimeZone: Value(e['reviewedTimeZone'] as String?),
                 reviewedLocalDate: Value(e['reviewedLocalDate'] as String?),
               ),
             );
       }
       after = (res['nextReviewSequenceId'] as num?)?.toInt() ?? after;
-      await local.db.into(local.db.syncStateTable).insertOnConflictUpdate(
+      await local.db
+          .into(local.db.syncStateTable)
+          .insertOnConflictUpdate(
             SyncStateTableCompanion.insert(
               workspaceId: workspaceId,
               lastAppliedReviewSequenceId: Value(after),
@@ -240,13 +257,34 @@ class SyncEngine {
     switch (entityType) {
       case 'learning_state':
         await local.applyLearningState(
-            wordSenseId: entityId, payloadJson: payloadJson);
+          wordSenseId: entityId,
+          payloadJson: payloadJson,
+        );
       case 'workspace_scheduler_settings':
         await local.cacheWorkspaceSettings(
-            workspaceId, jsonDecode(payloadJson) as Map<String, dynamic>);
+          workspaceId,
+          jsonDecode(payloadJson) as Map<String, dynamic>,
+        );
       case 'list':
         await local.applyList(listId: entityId, payloadJson: payloadJson);
     }
+  }
+
+  /// Convert a canonical (snake_case) server sense row to the local cache
+  /// row shape expected by [LocalRepository.cacheSenses].
+  static Map<String, dynamic> _senseRowFromContract(
+    Map<String, dynamic> sense,
+  ) {
+    return {
+      'wordSenseId': sense['word_sense_id'],
+      'senseKey': sense['sense_key'],
+      'lemma': sense['lemma'],
+      'pos': sense['pos'],
+      'semanticType': sense['semantic_type'],
+      'localeL1': sense['locale_l1'],
+      'programVersion': sense['program_version'],
+      'programId': sense['program_id'],
+    };
   }
 
   String? _installationId;

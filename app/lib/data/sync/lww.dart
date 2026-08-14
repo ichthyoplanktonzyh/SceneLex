@@ -27,15 +27,19 @@ class LwwMetadata {
 /// -1 when [left] sorts before [right], 1 when after, 0 when equal.
 int compareLww(LwwMetadata left, LwwMetadata right) {
   final timestampComparison = _compareInstants(
-      left.clientUpdatedAt, right.clientUpdatedAt);
+    left.clientUpdatedAt,
+    right.clientUpdatedAt,
+  );
   if (timestampComparison != 0) return timestampComparison < 0 ? -1 : 1;
 
-  final replicaComparison =
-      left.lastModifiedByReplicaId.compareTo(right.lastModifiedByReplicaId);
+  final replicaComparison = left.lastModifiedByReplicaId.compareTo(
+    right.lastModifiedByReplicaId,
+  );
   if (replicaComparison != 0) return replicaComparison < 0 ? -1 : 1;
 
-  final operationComparison =
-      left.lastOperationId.compareTo(right.lastOperationId);
+  final operationComparison = left.lastOperationId.compareTo(
+    right.lastOperationId,
+  );
   if (operationComparison != 0) return operationComparison < 0 ? -1 : 1;
 
   return 0;
@@ -50,5 +54,4 @@ int _compareInstants(String left, String right) {
   return leftInstant.compareTo(rightInstant);
 }
 
-DateTime? _parseInstant(String raw) =>
-    DateTime.tryParse(raw)?.toUtc();
+DateTime? _parseInstant(String raw) => DateTime.tryParse(raw)?.toUtc();

@@ -77,7 +77,12 @@ class ExperienceRuntimeViewModel extends ChangeNotifier {
 
   bool isAnswered(String unitId) => _answers.containsKey(unitId);
 
-  bool get canProceed => isCurrentUnitAnswered;
+  bool get canProceed {
+    if (_phase == ExperienceRuntimePhase.conceptUnit) {
+      return isCurrentUnitAnswered;
+    }
+    return true;
+  }
 
   bool get canGoBack =>
       _phase == ExperienceRuntimePhase.conceptUnit && _unitIndex > 0;
@@ -157,12 +162,69 @@ class ExperienceRuntimeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Skips the remaining concept formation without recording answers. Used
+  /// by the group-level Known Check when the learner already proved mastery.
+  void skipRemainingConceptUnits() {
+    if (_phase != ExperienceRuntimePhase.conceptUnit) return;
+    _phase = ExperienceRuntimePhase.symbolBinding;
+    notifyListeners();
+  }
+
   /// Restart the whole flow (complete page's "re-experience" button).
   void restart() {
     _unitIndex = 0;
     _answers.clear();
     _firstAttemptCorrect = 0;
     _phase = ExperienceRuntimePhase.conceptUnit;
+    notifyListeners();
+  }
+
+  /// Serializable snapshot for interrupted-session recovery. Only learner
+  /// state is captured; the program itself reloads from the repository.
+  Map<String, dynamic> toJson() => {
+    'phase': _phase.name,
+    'unitIndex': _unitIndex,
+    'firstAttemptCorrect': _firstAttemptCorrect,
+    'answers': {
+      for (final entry in _answers.entries)
+        entry.key: {
+          'answerId': entry.value.answer.id,
+          'wasCorrect': entry.value.wasCorrectOnFirstAttempt,
+        },
+    },
+  };
+
+  /// Replay a [toJson] snapshot on a freshly loaded program. Unknown unit or
+  /// answer ids are skipped (content may have changed between sessions).
+  void restore(Map<String, dynamic> json) {
+    final program = _program;
+    if (program == null) return;
+    final phaseName = json['phase'];
+    _phase = ExperienceRuntimePhase.values.firstWhere(
+      (p) => p.name == phaseName,
+      orElse: () => ExperienceRuntimePhase.conceptUnit,
+    );
+    _unitIndex = (json['unitIndex'] as num?)?.toInt() ?? 0;
+    _unitIndex = _unitIndex.clamp(0, program.units.length);
+    _firstAttemptCorrect = (json['firstAttemptCorrect'] as num?)?.toInt() ?? 0;
+    _answers.clear();
+    final rawAnswers = json['answers'];
+    if (rawAnswers is Map) {
+      for (final entry in rawAnswers.entries) {
+        final unit = program.units.where((u) => u.id == entry.key).firstOrNull;
+        final record = entry.value;
+        if (unit == null || record is! Map) continue;
+        final answerId = record['answerId'];
+        final answer = unit.interaction.answers
+            .where((a) => a.id == answerId)
+            .firstOrNull;
+        if (answer == null) continue;
+        _answers[unit.id] = UnitAnswerRecord(
+          answer: answer,
+          wasCorrectOnFirstAttempt: record['wasCorrect'] == true,
+        );
+      }
+    }
     notifyListeners();
   }
 }

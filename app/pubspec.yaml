@@ -19,6 +19,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_riverpod: ^3.4.2
+  go_router: ^14.8.1
   http: ^1.6.0
   intl: any
   path_provider: ^2.1.6

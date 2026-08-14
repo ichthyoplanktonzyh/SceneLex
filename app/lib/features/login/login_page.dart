@@ -86,7 +86,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       _errorCode = null;
     });
     try {
-      await ref.read(authControllerProvider.notifier).sendCode(_emailController.text);
+      await ref
+          .read(authControllerProvider.notifier)
+          .sendCode(_emailController.text);
       _startResendTimer();
       _codeController.clear();
       setState(() => _codeSent = true);
@@ -205,7 +207,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 if (error != null) ...[
                   Text(
                     _errorMessage(l10n, error),
-                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
                   ),
                   const SizedBox(height: 16),
                 ],

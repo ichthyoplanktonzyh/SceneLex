@@ -61,14 +61,16 @@ class NotificationsService {
     if (Platform.isIOS || Platform.isMacOS) {
       final granted = await _plugin
           .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>()
+            IOSFlutterLocalNotificationsPlugin
+          >()
           ?.requestPermissions(alert: true, badge: false, sound: true);
       return granted ?? false;
     }
     if (Platform.isAndroid) {
       final granted = await _plugin
           .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
+            AndroidFlutterLocalNotificationsPlugin
+          >()
           ?.requestNotificationsPermission();
       return granted ?? true;
     }
@@ -76,21 +78,17 @@ class NotificationsService {
   }
 
   NotificationDetails _details() => NotificationDetails(
-        android: AndroidNotificationDetails(
-          'daily_review_reminder',
-          'daily_review_reminder',
-          channelDescription: 'Daily review reminder',
-          importance: Importance.defaultImportance,
-          priority: Priority.defaultPriority,
-          channelShowBadge: _showBadge,
-        ),
-        iOS: DarwinNotificationDetails(
-          badgeNumber: _showBadge ? 1 : null,
-        ),
-        macOS: DarwinNotificationDetails(
-          badgeNumber: _showBadge ? 1 : null,
-        ),
-      );
+    android: AndroidNotificationDetails(
+      'daily_review_reminder',
+      'daily_review_reminder',
+      channelDescription: 'Daily review reminder',
+      importance: Importance.defaultImportance,
+      priority: Priority.defaultPriority,
+      channelShowBadge: _showBadge,
+    ),
+    iOS: DarwinNotificationDetails(badgeNumber: _showBadge ? 1 : null),
+    macOS: DarwinNotificationDetails(badgeNumber: _showBadge ? 1 : null),
+  );
 
   Future<void> _scheduleOneShot(
     int id,
@@ -169,8 +167,11 @@ class NotificationsService {
         var index = 0;
         while (candidate.isBefore(end) && index < 12) {
           if (!candidate.isBefore(earliest)) {
-            await _scheduleOneShot(_inactivityIdBase + index, candidate,
-                repeatDaily: false);
+            await _scheduleOneShot(
+              _inactivityIdBase + index,
+              candidate,
+              repeatDaily: false,
+            );
           }
           candidate = candidate.add(Duration(minutes: settings.idleMinutes));
           index++;
@@ -261,23 +262,20 @@ class NotificationSettings {
     int? idleMinutes,
     bool? showBadge,
     bool? strictRemindersEnabled,
-  }) =>
-      NotificationSettings(
-        enabled: enabled ?? this.enabled,
-        mode: mode ?? this.mode,
-        dailyHour: dailyHour ?? this.dailyHour,
-        dailyMinute: dailyMinute ?? this.dailyMinute,
-        inactivityStartHour: inactivityStartHour ?? this.inactivityStartHour,
-        inactivityStartMinute:
-            inactivityStartMinute ?? this.inactivityStartMinute,
-        inactivityEndHour: inactivityEndHour ?? this.inactivityEndHour,
-        inactivityEndMinute:
-            inactivityEndMinute ?? this.inactivityEndMinute,
-        idleMinutes: idleMinutes ?? this.idleMinutes,
-        showBadge: showBadge ?? this.showBadge,
-        strictRemindersEnabled:
-            strictRemindersEnabled ?? this.strictRemindersEnabled,
-      );
+  }) => NotificationSettings(
+    enabled: enabled ?? this.enabled,
+    mode: mode ?? this.mode,
+    dailyHour: dailyHour ?? this.dailyHour,
+    dailyMinute: dailyMinute ?? this.dailyMinute,
+    inactivityStartHour: inactivityStartHour ?? this.inactivityStartHour,
+    inactivityStartMinute: inactivityStartMinute ?? this.inactivityStartMinute,
+    inactivityEndHour: inactivityEndHour ?? this.inactivityEndHour,
+    inactivityEndMinute: inactivityEndMinute ?? this.inactivityEndMinute,
+    idleMinutes: idleMinutes ?? this.idleMinutes,
+    showBadge: showBadge ?? this.showBadge,
+    strictRemindersEnabled:
+        strictRemindersEnabled ?? this.strictRemindersEnabled,
+  );
 }
 
 class NotificationsController extends Notifier<NotificationSettings> {
@@ -354,17 +352,17 @@ class NotificationsController extends Notifier<NotificationSettings> {
     NotificationSettings settings, {
     String? title,
     String? body,
-  }) =>
-      NotificationsService().scheduleAll(
-        settings: settings,
-        title: title ?? 'SceneLex',
-        body: body ?? '',
-      );
+  }) => NotificationsService().scheduleAll(
+    settings: settings,
+    title: title ?? 'SceneLex',
+    body: body ?? '',
+  );
 }
 
 final notificationsControllerProvider =
     NotifierProvider<NotificationsController, NotificationSettings>(
-        NotificationsController.new);
+      NotificationsController.new,
+    );
 
 /// YYYY-MM-DD in the device-local timezone.
 String _localDateString(DateTime local) =>

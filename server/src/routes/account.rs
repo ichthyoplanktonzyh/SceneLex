@@ -45,12 +45,11 @@ async fn delete_account(
 
     // Sole-member workspaces are deleted (cascade: learning states, review
     // events, lists, sync metadata). Multi-member workspaces keep their data.
-    let workspace_ids: Vec<Uuid> = sqlx::query_scalar(
-        "SELECT workspace_id FROM org.workspace_memberships WHERE user_id = $1",
-    )
-    .bind(user.user_id)
-    .fetch_all(&mut *tx)
-    .await?;
+    let workspace_ids: Vec<Uuid> =
+        sqlx::query_scalar("SELECT workspace_id FROM org.workspace_memberships WHERE user_id = $1")
+            .bind(user.user_id)
+            .fetch_all(&mut *tx)
+            .await?;
     for workspace_id in workspace_ids {
         let member_count: i64 = sqlx::query_scalar(
             "SELECT count(*) FROM org.workspace_memberships WHERE workspace_id = $1",

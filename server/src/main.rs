@@ -5,15 +5,16 @@ use scenelex_server::config::Config;
 use scenelex_server::db;
 use scenelex_server::routes;
 use scenelex_server::state::AppState;
-use sqlx::PgPool;
 use sqlx::migrate::Migrator;
+use sqlx::PgPool;
 use tracing_subscriber::EnvFilter;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt()
         .with_env_filter(
-            EnvFilter::try_from_default_env().unwrap_or_else(|_| "scenelex_server=info,sqlx=warn".into()),
+            EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| "scenelex_server=info,sqlx=warn".into()),
         )
         .init();
 

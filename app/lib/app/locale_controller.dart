@@ -49,5 +49,6 @@ class LocaleController extends Notifier<AppLocale> {
   }
 }
 
-final localeControllerProvider =
-    NotifierProvider<LocaleController, AppLocale>(LocaleController.new);
+final localeControllerProvider = NotifierProvider<LocaleController, AppLocale>(
+  LocaleController.new,
+);

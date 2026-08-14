@@ -31,10 +31,7 @@ pub fn router() -> Router<AppState> {
 }
 
 fn bad_request(message: &str) -> (StatusCode, Json<Value>) {
-    (
-        StatusCode::BAD_REQUEST,
-        Json(json!({ "error": message })),
-    )
+    (StatusCode::BAD_REQUEST, Json(json!({ "error": message })))
 }
 
 fn internal_error(error: impl std::fmt::Display) -> (StatusCode, Json<Value>) {
@@ -68,7 +65,9 @@ async fn list(
             })
         })
         .collect();
-    Ok(Json(json!({ "workspaces": items, "selectedWorkspaceId": selected })))
+    Ok(Json(
+        json!({ "workspaces": items, "selectedWorkspaceId": selected }),
+    ))
 }
 
 #[derive(Debug, Deserialize)]

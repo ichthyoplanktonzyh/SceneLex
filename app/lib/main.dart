@@ -3,31 +3,36 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app/locale_controller.dart';
+import 'app/routing/app_router.dart';
 import 'auth/auth_controller.dart';
 import 'data/content/experience_program_repository.dart';
+import 'data/product_providers.dart';
 import 'data/providers.dart';
 import 'features/experience_runtime/experience_runtime_page.dart';
 import 'features/experience_runtime/experience_runtime_view_model.dart';
 import 'features/login/login_page.dart';
 import 'features/settings/notifications_service.dart';
 import 'l10n/gen/app_localizations.dart';
-import 'shell/app_shell.dart';
+import 'ui/theme/scenelex_tokens.dart';
 
 /// Development-only entry: `--dart-define=SCENELEX_EXPERIENCE_PREVIEW=<sense>`
-/// opens the Experience Runtime directly, without login, API, workspace or
-/// sync. An empty define keeps the normal app behavior.
+/// opens the single-program Experience Runtime directly, without login, API,
+/// workspace or sync. The production App is the new IA shell (no preview
+/// define); the preview does not replace the production entry.
 const String kExperiencePreviewSense = String.fromEnvironment(
   'SCENELEX_EXPERIENCE_PREVIEW',
 );
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final themeMode = await loadThemeMode();
   final Widget app = kExperiencePreviewSense.isEmpty
-      ? const SceneLexApp()
+      ? SceneLexApp(initialThemeMode: themeMode)
       : ExperiencePreviewApp(senseId: kExperiencePreviewSense);
   runApp(ProviderScope(child: app));
 }
 
-/// Standalone Experience Runtime preview shell (no auth, no server, no db).
+/// Standalone single-program preview (no auth, no server, no db).
 class ExperiencePreviewApp extends StatelessWidget {
   const ExperiencePreviewApp({super.key, required this.senseId});
 
@@ -42,9 +47,7 @@ class ExperiencePreviewApp extends StatelessWidget {
     viewModel.load();
     return MaterialApp(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
-      ),
+      theme: buildSceneLexTheme(),
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [
         AppLocalizations.delegate,
@@ -57,13 +60,35 @@ class ExperiencePreviewApp extends StatelessWidget {
   }
 }
 
-class SceneLexApp extends ConsumerWidget {
-  const SceneLexApp({super.key});
+class SceneLexApp extends ConsumerStatefulWidget {
+  const SceneLexApp({super.key, required this.initialThemeMode});
+
+  final ThemeMode initialThemeMode;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SceneLexApp> createState() => _SceneLexAppState();
+}
+
+class _SceneLexAppState extends ConsumerState<SceneLexApp> {
+  @override
+  void initState() {
+    super.initState();
+    // Apply the persisted theme after the first frame: mutating a provider
+    // during build/initState is illegal in Riverpod 3.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ref
+            .read(appearanceThemeModeProvider.notifier)
+            .setThemeMode(widget.initialThemeMode);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final auth = ref.watch(authControllerProvider);
     final locale = ref.watch(localeControllerProvider);
+    final themeMode = ref.watch(appearanceThemeModeProvider);
 
     // Record app activity (inactivity reminders) and clear delivered badges.
     ref.listen(authControllerProvider, (previous, next) {
@@ -73,11 +98,11 @@ class SceneLexApp extends ConsumerWidget {
       }
     });
 
-    return MaterialApp(
+    return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
-      ),
+      theme: buildSceneLexTheme(),
+      darkTheme: buildSceneLexTheme(dark: true),
+      themeMode: themeMode,
       locale: locale.locale,
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [
@@ -86,12 +111,27 @@ class SceneLexApp extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      home: switch (auth.status) {
-        AuthStatus.loading => const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
-        ),
-        AuthStatus.signedOut => const LoginPage(),
-        AuthStatus.signedIn => const AppShell(),
+      routerConfig: appRouter,
+      builder: (context, child) {
+        return switch (auth.status) {
+          AuthStatus.loading => const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          ),
+          // Keep the Navigator (Overlay) mounted under the login page and
+          // give the login page its own Overlay so text fields (selection
+          // toolbars) have an Overlay ancestor.
+          AuthStatus.signedOut => Stack(
+            children: [
+              child ?? const SizedBox.shrink(),
+              Overlay(
+                initialEntries: [
+                  OverlayEntry(builder: (_) => const LoginPage()),
+                ],
+              ),
+            ],
+          ),
+          AuthStatus.signedIn => child!,
+        };
       },
     );
   }

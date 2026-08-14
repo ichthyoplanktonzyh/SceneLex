@@ -49,8 +49,9 @@ class ListsPage extends ConsumerWidget {
                   ListTile(
                     leading: const Icon(Icons.playlist_play),
                     title: Text(list.name),
-                    subtitle: Text(l10n.listsMatchedCount(
-                        lib.matchedCount(list))),
+                    subtitle: Text(
+                      l10n.listsMatchedCount(lib.matchedCount(list)),
+                    ),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () => Navigator.push(
                       context,
@@ -66,9 +67,7 @@ class ListsPage extends ConsumerWidget {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Navigator.push(
           context,
-          MaterialPageRoute<void>(
-            builder: (_) => const ListEditorPage(),
-          ),
+          MaterialPageRoute<void>(builder: (_) => const ListEditorPage()),
         ),
         icon: const Icon(Icons.add),
         label: Text(l10n.listsCreate),
@@ -110,9 +109,11 @@ class ListDetailPage extends ConsumerWidget {
         error: (e, _) => Center(child: Text(l10n.loadingFailed('$e'))),
         data: (lib) {
           final matched = lib.senses
-              .where((s) =>
-                  lib.states.containsKey(s.wordSenseId) &&
-                  lib.senseHasAnyTag(s.wordSenseId, list.tags))
+              .where(
+                (s) =>
+                    lib.states.containsKey(s.wordSenseId) &&
+                    lib.senseHasAnyTag(s.wordSenseId, list.tags),
+              )
               .toList();
           final due = matched.where((s) {
             final state = lib.states[s.wordSenseId];
@@ -127,9 +128,7 @@ class ListDetailPage extends ConsumerWidget {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: [
-                  for (final tag in list.tags) _TagChip(tag: tag),
-                ],
+                children: [for (final tag in list.tags) _TagChip(tag: tag)],
               ),
               const SizedBox(height: 24),
               Text(l10n.listsDetailStats, style: theme.textTheme.titleMedium),
@@ -144,10 +143,7 @@ class ListDetailPage extends ConsumerWidget {
                         label: l10n.listsStatMatched,
                         value: matched.length,
                       ),
-                      _StatColumn(
-                        label: l10n.listsStatDue,
-                        value: due,
-                      ),
+                      _StatColumn(label: l10n.listsStatDue, value: due),
                     ],
                   ),
                 ),
@@ -157,18 +153,15 @@ class ListDetailPage extends ConsumerWidget {
                 icon: const Icon(Icons.style),
                 label: Text(l10n.listsReviewThisDeck),
                 onPressed: () {
-                  ref.read(reviewFilterProvider.notifier).set(
-                        ReviewFilter.list(list.listId),
-                      );
+                  ref
+                      .read(reviewFilterProvider.notifier)
+                      .set(ReviewFilter.list(list.listId));
                   ref.read(selectedTabProvider.notifier).setTab(0);
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
               ),
               const SizedBox(height: 24),
-              Text(
-                l10n.listsDetailMatched,
-                style: theme.textTheme.titleMedium,
-              ),
+              Text(l10n.listsDetailMatched, style: theme.textTheme.titleMedium),
               const SizedBox(height: 4),
               if (matched.isEmpty)
                 Padding(
@@ -234,10 +227,9 @@ class _ListEditorPageState extends ConsumerState<ListEditorPage> {
       name: _nameController.text.trim(),
       tags: _selectedTags.toList()..sort(),
     );
-    await ref.read(localRepositoryProvider).saveList(
-          workspaceId: ws,
-          list: list,
-        );
+    await ref
+        .read(localRepositoryProvider)
+        .saveList(workspaceId: ws, list: list);
     ref.read(syncTriggerProvider)();
     ref.invalidate(libraryProvider);
     if (mounted) Navigator.pop(context);
@@ -294,7 +286,10 @@ class _ListEditorPageState extends ConsumerState<ListEditorPage> {
               // panel so both surfaces agree.
               final tags = lib.tagPool.toList()..sort();
               if (tags.isEmpty) {
-                return Text(l10n.listsNoTags, style: Theme.of(context).textTheme.bodySmall);
+                return Text(
+                  l10n.listsNoTags,
+                  style: Theme.of(context).textTheme.bodySmall,
+                );
               }
               return Wrap(
                 spacing: 8,
@@ -320,8 +315,8 @@ class _ListEditorPageState extends ConsumerState<ListEditorPage> {
           Text(
             l10n.listsSaveHint,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ],
       ),
@@ -349,7 +344,9 @@ class _ListEditorPageState extends ConsumerState<ListEditorPage> {
     );
     if (confirmed != true) return;
     final ws = await ref.read(workspaceProvider.future);
-    await ref.read(localRepositoryProvider).saveList(
+    await ref
+        .read(localRepositoryProvider)
+        .saveList(
           workspaceId: ws,
           list: widget.existing!,
           deletedAt: DateTime.now(),

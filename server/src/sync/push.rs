@@ -26,7 +26,7 @@ pub struct PushOperation {
     #[serde(rename = "entityType")]
     pub entity_type: String,
     #[serde(rename = "entityId")]
-    pub entity_id: Uuid,
+    pub entity_id: String,
     #[serde(default)]
     pub action: String,
     #[serde(rename = "clientUpdatedAt")]
@@ -37,7 +37,7 @@ pub struct PushOperation {
 pub struct PushOutcome {
     pub operation_id: Uuid,
     pub entity_type: String,
-    pub entity_id: Uuid,
+    pub entity_id: String,
     pub status: &'static str,
     pub resulting_hot_change_id: Option<i64>,
     pub error: Option<String>,
@@ -56,7 +56,11 @@ pub async fn process_push(
         workspace_id,
         user.user_id,
         req.installation_id,
-        if req.platform.is_empty() { "web" } else { &req.platform },
+        if req.platform.is_empty() {
+            "web"
+        } else {
+            &req.platform
+        },
         req.app_version.as_deref(),
     )
     .await?;
@@ -81,7 +85,7 @@ pub async fn process_push(
             outcomes.push(PushOutcome {
                 operation_id: op.operation_id,
                 entity_type: op.entity_type.clone(),
-                entity_id: op.entity_id,
+                entity_id: op.entity_id.clone(),
                 status: "duplicate",
                 resulting_hot_change_id: Some(change_id),
                 error: None,
@@ -89,34 +93,26 @@ pub async fn process_push(
             continue;
         }
 
-        let (status, change_id, error) = match apply_operation(
-            &mut tx,
-            workspace_id,
-            user,
-            replica_id,
-            op,
-        )
-        .await
-        {
-            Ok((applied, change_id)) => {
-                if applied {
-                    ("applied", change_id, None)
-                } else {
-                    // LWW loser: acknowledged so the client can advance its cursor.
-                    ("ignored", None, None)
+        let (status, change_id, error) =
+            match apply_operation(&mut tx, workspace_id, user, replica_id, op).await {
+                Ok((applied, change_id)) => {
+                    if applied {
+                        ("applied", change_id, None)
+                    } else {
+                        // LWW loser: acknowledged so the client can advance its cursor.
+                        ("ignored", None, None)
+                    }
                 }
-            }
-            Err(e) => {
-                tracing::warn!(
-                    "push operation rejected: entity={} entity_id={} err={}",
-                    op.entity_type,
-                    op.entity_id,
-                    e
-                );
-                ("rejected", None, Some(e.to_string()))
-            }
-        };
-
+                Err(e) => {
+                    tracing::warn!(
+                        "push operation rejected: entity={} entity_id={} err={}",
+                        op.entity_type,
+                        op.entity_id,
+                        e
+                    );
+                    ("rejected", None, Some(e.to_string()))
+                }
+            };
         // Record the operation in the idempotency ledger (applied or not).
         if status == "applied" {
             sqlx::query(
@@ -130,7 +126,7 @@ pub async fn process_push(
             .bind(op.operation_id)
             .bind(&op.action)
             .bind(&op.entity_type)
-            .bind(op.entity_id)
+            .bind(&op.entity_id)
             .bind(op.client_updated_at)
             .bind(change_id)
             .execute(&mut *tx)
@@ -140,7 +136,7 @@ pub async fn process_push(
         outcomes.push(PushOutcome {
             operation_id: op.operation_id,
             entity_type: op.entity_type.clone(),
-            entity_id: op.entity_id,
+            entity_id: op.entity_id.clone(),
             status,
             resulting_hot_change_id: change_id,
             error,
@@ -165,7 +161,7 @@ async fn apply_operation(
                 tx,
                 workspace_id,
                 user.user_id,
-                op.entity_id,
+                &op.entity_id,
                 &op.payload,
                 replica_id,
                 op.operation_id,
@@ -173,8 +169,17 @@ async fn apply_operation(
             .await
         }
         "list" => {
-            entities::upsert_list(tx, workspace_id, op.entity_id, &op.payload, replica_id, op.operation_id)
-                .await
+            let list_id = Uuid::parse_str(&op.entity_id)
+                .map_err(|_| sqlx::Error::Protocol("list entityId must be a UUID".into()))?;
+            entities::upsert_list(
+                tx,
+                workspace_id,
+                list_id,
+                &op.payload,
+                replica_id,
+                op.operation_id,
+            )
+            .await
         }
         "workspace_scheduler_settings" => {
             entities::upsert_workspace_settings(
@@ -187,10 +192,13 @@ async fn apply_operation(
             .await
         }
         "review_event" => {
-            let (applied, _seq) = entities::append_review_event(tx, workspace_id, &op.payload, replica_id).await?;
+            let (applied, _seq) =
+                entities::append_review_event(tx, workspace_id, &op.payload, replica_id).await?;
             Ok((applied, None))
         }
-        other => Err(sqlx::Error::Protocol(format!("unknown entity type {other}"))),
+        other => Err(sqlx::Error::Protocol(format!(
+            "unknown entity type {other}"
+        ))),
     }
 }
 

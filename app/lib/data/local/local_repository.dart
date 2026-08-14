@@ -4,6 +4,12 @@ import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../api/models.dart';
+import '../fsrs.dart'
+    show
+        SchedulerSettings,
+        ScheduleState,
+        ReviewRating,
+        computeReviewSchedule;
 import '../sync/lww.dart';
 import 'database.dart';
 
@@ -20,8 +26,9 @@ class LocalRepository {
   // ------------------------------------------------------------------
 
   Future<List<LocalLearningState>> allStates(String workspaceId) {
-    return (db.select(db.localLearningStates)..where((t) => t.deletedAt.isNull()))
-        .get();
+    return (db.select(
+      db.localLearningStates,
+    )..where((t) => t.deletedAt.isNull())).get();
   }
 
   /// All review events in local order (single-workspace client: no workspace
@@ -30,9 +37,9 @@ class LocalRepository {
       db.select(db.localReviewEvents).get();
 
   Future<LocalLearningState?> stateFor(String wordSenseId) {
-    return (db.select(db.localLearningStates)
-          ..where((t) => t.wordSenseId.equals(wordSenseId)))
-        .getSingleOrNull();
+    return (db.select(
+      db.localLearningStates,
+    )..where((t) => t.wordSenseId.equals(wordSenseId))).getSingleOrNull();
   }
 
   /// Create a learning state locally (new card) and queue an outbox upsert.
@@ -40,6 +47,7 @@ class LocalRepository {
     required String workspaceId,
     required String wordSenseId,
     required String nowIso,
+    String? dueAtIso,
   }) async {
     // One id triple shared by the local row and the outbox payload, so the
     // server-side LWW merge never sees two different identities/replicas for
@@ -47,14 +55,34 @@ class LocalRepository {
     final operationId = _uuidGen.v4();
     final learningStateId = _uuidGen.v4();
     final replicaId = _uuidGen.v4();
+    final dueAt = dueAtIso ?? nowIso;
+    // Freshly learned cards enter the learning stage as if rated once
+    // (Good), so the persisted state satisfies the FSRS invariants (a
+    // learning card must carry stability/difficulty/step), while the due
+    // time is the moment learning finished: consolidation happens the same
+    // day (the server-side 'new' invariant forbids a due_at on new cards).
+    final schedule = computeReviewSchedule(
+      const ScheduleState(),
+      const SchedulerSettings(),
+      ReviewRating.good,
+      DateTime.now(),
+    );
     await db.transaction(() async {
-      await db.into(db.localLearningStates).insertOnConflictUpdate(
+      await db
+          .into(db.localLearningStates)
+          .insertOnConflictUpdate(
             LocalLearningStatesCompanion.insert(
               wordSenseId: wordSenseId,
               learningStateId: learningStateId,
-              reps: 0,
-              lapses: 0,
-              fsrsCardState: 'new',
+              reps: schedule.reps,
+              lapses: schedule.lapses,
+              fsrsCardState: schedule.state.name,
+              dueAt: Value(_dt(dueAt)),
+              fsrsStability: Value(schedule.stability),
+              fsrsDifficulty: Value(schedule.difficulty),
+              fsrsLastReviewedAt: Value(schedule.lastReviewedAt),
+              fsrsScheduledDays: Value(schedule.scheduledDays),
+              fsrsStepIndex: Value(schedule.stepIndex),
               clientUpdatedAt: nowIso,
               lastModifiedByReplicaId: replicaId,
               lastOperationId: operationId,
@@ -70,15 +98,16 @@ class LocalRepository {
         payload: {
           'learningStateId': learningStateId,
           'wordSenseId': wordSenseId,
-          'dueAt': null,
-          'reps': 0,
-          'lapses': 0,
-          'fsrsStability': null,
-          'fsrsDifficulty': null,
-          'fsrsLastReviewedAt': null,
-          'fsrsScheduledDays': null,
-          'fsrsCardState': 'new',
-          'fsrsStepIndex': null,
+          'dueAt': dueAt,
+          'reps': schedule.reps,
+          'lapses': schedule.lapses,
+          'fsrsStability': schedule.stability,
+          'fsrsDifficulty': schedule.difficulty,
+          'fsrsLastReviewedAt':
+              schedule.lastReviewedAt.toUtc().toIso8601String(),
+          'fsrsScheduledDays': schedule.scheduledDays,
+          'fsrsCardState': schedule.state.name,
+          'fsrsStepIndex': schedule.stepIndex,
           'clientUpdatedAt': nowIso,
           'lastModifiedByReplicaId': replicaId,
           'lastOperationId': operationId,
@@ -96,9 +125,9 @@ class LocalRepository {
     required String payloadJson,
   }) async {
     final p = jsonDecode(payloadJson) as Map<String, dynamic>;
-    final existing = await (db.select(db.localLearningStates)
-          ..where((t) => t.wordSenseId.equals(wordSenseId)))
-        .getSingleOrNull();
+    final existing = await (db.select(
+      db.localLearningStates,
+    )..where((t) => t.wordSenseId.equals(wordSenseId))).getSingleOrNull();
     if (existing != null &&
         compareLww(
               LwwMetadata(
@@ -116,7 +145,9 @@ class LocalRepository {
             0) {
       return;
     }
-    await db.into(db.localLearningStates).insertOnConflictUpdate(
+    await db
+        .into(db.localLearningStates)
+        .insertOnConflictUpdate(
           LocalLearningStatesCompanion.insert(
             wordSenseId: wordSenseId,
             learningStateId: p['learningStateId']?.toString() ?? wordSenseId,
@@ -155,7 +186,9 @@ class LocalRepository {
     final reviewedLocalDate = _localDateString(DateTime.now());
 
     await db.transaction(() async {
-      await db.into(db.localReviewEvents).insert(
+      await db
+          .into(db.localReviewEvents)
+          .insert(
             LocalReviewEventsCompanion.insert(
               reviewEventId: reviewEventId,
               wordSenseId: wordSenseId,
@@ -169,17 +202,25 @@ class LocalRepository {
           );
 
       final state = jsonDecode(newStateJson) as Map<String, dynamic>;
-      await db.into(db.localLearningStates).insertOnConflictUpdate(
+      await db
+          .into(db.localLearningStates)
+          .insertOnConflictUpdate(
             LocalLearningStatesCompanion.insert(
               wordSenseId: wordSenseId,
               learningStateId: learningStateId,
               dueAt: Value(_dt(state['dueAt'])),
               reps: (state['reps'] as num?)?.toInt() ?? 0,
               lapses: (state['lapses'] as num?)?.toInt() ?? 0,
-              fsrsStability: Value((state['fsrsStability'] as num?)?.toDouble()),
-              fsrsDifficulty: Value((state['fsrsDifficulty'] as num?)?.toDouble()),
+              fsrsStability: Value(
+                (state['fsrsStability'] as num?)?.toDouble(),
+              ),
+              fsrsDifficulty: Value(
+                (state['fsrsDifficulty'] as num?)?.toDouble(),
+              ),
               fsrsLastReviewedAt: Value(_dt(state['fsrsLastReviewedAt'])),
-              fsrsScheduledDays: Value((state['fsrsScheduledDays'] as num?)?.toInt()),
+              fsrsScheduledDays: Value(
+                (state['fsrsScheduledDays'] as num?)?.toInt(),
+              ),
               fsrsCardState: state['fsrsCardState']?.toString() ?? 'learning',
               fsrsStepIndex: Value((state['fsrsStepIndex'] as num?)?.toInt()),
               clientUpdatedAt: reviewedAtClientIso,
@@ -258,7 +299,9 @@ class LocalRepository {
     required String clientUpdatedAt,
     required Map<String, dynamic> payload,
   }) async {
-    await db.into(db.outboxRecords).insert(
+    await db
+        .into(db.outboxRecords)
+        .insert(
           OutboxRecordsCompanion.insert(
             operationId: operationId,
             workspaceId: workspaceId,
@@ -273,18 +316,20 @@ class LocalRepository {
   }
 
   Future<void> removeOutboxOperation(String operationId) async {
-    await (db.delete(db.outboxRecords)
-          ..where((t) => t.operationId.equals(operationId)))
-        .go();
+    await (db.delete(
+      db.outboxRecords,
+    )..where((t) => t.operationId.equals(operationId))).go();
   }
 
   Future<void> markOutboxFailure(String operationId, String error) async {
-    await (db.update(db.outboxRecords)
-          ..where((t) => t.operationId.equals(operationId)))
-        .write(OutboxRecordsCompanion(
-          attemptCount: const Value(1),
-          lastError: Value(error),
-        ));
+    await (db.update(
+      db.outboxRecords,
+    )..where((t) => t.operationId.equals(operationId))).write(
+      OutboxRecordsCompanion(
+        attemptCount: const Value(1),
+        lastError: Value(error),
+      ),
+    );
   }
 
   // ------------------------------------------------------------------
@@ -292,9 +337,9 @@ class LocalRepository {
   // ------------------------------------------------------------------
 
   Future<SyncStateTableData> syncState(String workspaceId) async {
-    final existing = await (db.select(db.syncStateTable)
-          ..where((t) => t.workspaceId.equals(workspaceId)))
-        .getSingleOrNull();
+    final existing = await (db.select(
+      db.syncStateTable,
+    )..where((t) => t.workspaceId.equals(workspaceId))).getSingleOrNull();
     if (existing != null) return existing;
     return SyncStateTableData(
       workspaceId: workspaceId,
@@ -309,7 +354,9 @@ class LocalRepository {
   /// Advances the hot cursor only; the hydration flag is owned by
   /// [setHydrated] (bootstrap pull calls setHotCursor then setHydrated).
   Future<void> setHotCursor(String workspaceId, int changeId) async {
-    await db.into(db.syncStateTable).insertOnConflictUpdate(
+    await db
+        .into(db.syncStateTable)
+        .insertOnConflictUpdate(
           SyncStateTableCompanion.insert(
             workspaceId: workspaceId,
             lastAppliedHotChangeId: Value(changeId),
@@ -319,7 +366,9 @@ class LocalRepository {
   }
 
   Future<void> setHydrated(String workspaceId, {bool hot = true}) async {
-    await db.into(db.syncStateTable).insertOnConflictUpdate(
+    await db
+        .into(db.syncStateTable)
+        .insertOnConflictUpdate(
           SyncStateTableCompanion.insert(
             workspaceId: workspaceId,
             hasHydratedHotState: Value(hot),
@@ -334,30 +383,33 @@ class LocalRepository {
 
   Future<void> cacheSenses(List<Map<String, dynamic>> senses) async {
     await db.batch((batch) {
-      batch.insertAllOnConflictUpdate(
-        db.localSenses,
-        [
-          for (final s in senses)
-            LocalSensesCompanion.insert(
-              wordSenseId: s['wordSenseId'] as String,
-              senseKey: s['senseKey'] as String,
-              lemma: s['lemma'] as String,
-              pos: s['pos']?.toString() ?? '',
-              semanticType: s['semanticType']?.toString() ?? '',
-              localeL1: s['localeL1']?.toString() ?? '',
-              programVersion: Value(s['programVersion'] as int?),
-              programId: Value(s['programId'] as String?),
+      batch.insertAllOnConflictUpdate(db.localSenses, [
+        for (final s in senses)
+          LocalSensesCompanion.insert(
+            wordSenseId: (s['word_sense_id'] ?? s['wordSenseId']) as String,
+            senseKey: (s['sense_key'] ?? s['senseKey']) as String,
+            lemma: s['lemma'] as String,
+            pos: s['pos']?.toString() ?? '',
+            semanticType: s['semantic_type']?.toString() ?? '',
+            localeL1: s['locale_l1']?.toString() ?? '',
+            programVersion: Value(
+              (s['program_version'] ?? s['programVersion']) as int?,
             ),
-        ],
-      );
+            programId: Value((s['program_id'] ?? s['programId']) as String?),
+          ),
+      ]);
     });
   }
 
   Future<List<LocalSense>> cachedSenses() => db.select(db.localSenses).get();
 
   Future<void> cacheProgram(
-      String programId, Map<String, dynamic> program) async {
-    await db.into(db.localPrograms).insertOnConflictUpdate(
+    String programId,
+    Map<String, dynamic> program,
+  ) async {
+    await db
+        .into(db.localPrograms)
+        .insertOnConflictUpdate(
           LocalProgramsCompanion.insert(
             programId: programId,
             json: jsonEncode(program),
@@ -366,16 +418,173 @@ class LocalRepository {
   }
 
   Future<Map<String, dynamic>?> cachedProgram(String programId) async {
-    final row = await (db.select(db.localPrograms)
-          ..where((t) => t.programId.equals(programId)))
-        .getSingleOrNull();
+    final row = await (db.select(
+      db.localPrograms,
+    )..where((t) => t.programId.equals(programId))).getSingleOrNull();
     if (row == null) return null;
     return jsonDecode(row.json) as Map<String, dynamic>;
   }
 
+  // ------------------------------------------------------------------
+  // Content catalog snapshot (server-sourced override of the bundle)
+  // ------------------------------------------------------------------
+
+  Future<String?> cachedCatalogJson() async {
+    final row = await db.select(db.localContentCatalog).getSingleOrNull();
+    return row?.json;
+  }
+
+  Future<void> cacheCatalogJson(String json) async {
+    await db
+        .into(db.localContentCatalog)
+        .insertOnConflictUpdate(
+          LocalContentCatalogCompanion.insert(
+            version: const Value(1),
+            json: json,
+          ),
+        );
+  }
+
+  // ------------------------------------------------------------------
+  // Favorites (场景收藏)
+  // ------------------------------------------------------------------
+
+  Future<List<LocalFavorite>> allFavorites() {
+    return (db.select(
+      db.localFavorites,
+    )..orderBy([(t) => OrderingTerm.desc(t.createdAt)])).get();
+  }
+
+  Future<bool> isFavorite(String experienceKey) async {
+    final row = await (db.select(
+      db.localFavorites,
+    )..where((t) => t.experienceKey.equals(experienceKey))).getSingleOrNull();
+    return row != null;
+  }
+
+  Future<void> addFavorite({
+    required String programId,
+    required String experienceUnitId,
+  }) async {
+    final key = '$programId:$experienceUnitId';
+    await db
+        .into(db.localFavorites)
+        .insertOnConflictUpdate(
+          LocalFavoritesCompanion.insert(
+            experienceKey: key,
+            programId: programId,
+            experienceUnitId: experienceUnitId,
+            createdAt: DateTime.now(),
+          ),
+        );
+  }
+
+  Future<void> removeFavorite(String experienceKey) async {
+    await (db.delete(
+      db.localFavorites,
+    )..where((t) => t.experienceKey.equals(experienceKey))).go();
+  }
+
+  // ------------------------------------------------------------------
+  // Notes (笔记)
+  // ------------------------------------------------------------------
+
+  Future<LocalNote?> noteFor(String senseId) async {
+    return (db.select(
+      db.localNotes,
+    )..where((t) => t.senseId.equals(senseId))).getSingleOrNull();
+  }
+
+  Future<List<LocalNote>> allNotes() {
+    return (db.select(
+      db.localNotes,
+    )..orderBy([(t) => OrderingTerm.desc(t.updatedAt)])).get();
+  }
+
+  Future<void> saveNote(String senseId, String text) async {
+    await db
+        .into(db.localNotes)
+        .insertOnConflictUpdate(
+          LocalNotesCompanion.insert(
+            senseId: senseId,
+            noteText: text,
+            updatedAt: DateTime.now(),
+          ),
+        );
+  }
+
+  Future<void> deleteNote(String senseId) async {
+    await (db.delete(
+      db.localNotes,
+    )..where((t) => t.senseId.equals(senseId))).go();
+  }
+
+  // ------------------------------------------------------------------
+  // Check-ins (签到)
+  // ------------------------------------------------------------------
+
+  /// Day key in the device-local timezone, YYYY-MM-DD.
+  static String dayKeyOf(DateTime local) =>
+      '${local.year.toString().padLeft(4, '0')}-'
+      '${local.month.toString().padLeft(2, '0')}-'
+      '${local.day.toString().padLeft(2, '0')}';
+
+  Future<bool> checkedInOn(String dayKey) async {
+    final row = await (db.select(
+      db.localDailyCheckins,
+    )..where((t) => t.dayKey.equals(dayKey))).getSingleOrNull();
+    return row != null;
+  }
+
+  Future<List<LocalDailyCheckin>> allCheckins() =>
+      db.select(db.localDailyCheckins).get();
+
+  Future<void> checkIn(DateTime now) async {
+    await db
+        .into(db.localDailyCheckins)
+        .insertOnConflictUpdate(
+          LocalDailyCheckinsCompanion.insert(
+            dayKey: dayKeyOf(now),
+            checkedAt: now,
+          ),
+        );
+  }
+
+  // ------------------------------------------------------------------
+  // Sessions (时长统计)
+  // ------------------------------------------------------------------
+
+  Future<void> recordSession({
+    required String sessionId,
+    required String kind,
+    required DateTime startedAt,
+    required DateTime endedAt,
+  }) async {
+    await db
+        .into(db.localSessions)
+        .insert(
+          LocalSessionsCompanion.insert(
+            sessionId: sessionId,
+            kind: kind,
+            startedAt: startedAt,
+            endedAt: endedAt,
+            durationSeconds: endedAt
+                .difference(startedAt)
+                .inSeconds
+                .clamp(0, 1 << 31),
+          ),
+        );
+  }
+
+  Future<List<LocalSession>> allSessions() => db.select(db.localSessions).get();
+
   Future<void> cacheWorkspaceSettings(
-      String workspaceId, Map<String, dynamic> settings) async {
-    await db.into(db.localWorkspaceSettings).insertOnConflictUpdate(
+    String workspaceId,
+    Map<String, dynamic> settings,
+  ) async {
+    await db
+        .into(db.localWorkspaceSettings)
+        .insertOnConflictUpdate(
           LocalWorkspaceSettingsCompanion.insert(
             workspaceId: workspaceId,
             json: jsonEncode(settings),
@@ -384,10 +593,11 @@ class LocalRepository {
   }
 
   Future<Map<String, dynamic>?> cachedWorkspaceSettings(
-      String workspaceId) async {
-    final row = await (db.select(db.localWorkspaceSettings)
-          ..where((t) => t.workspaceId.equals(workspaceId)))
-        .getSingleOrNull();
+    String workspaceId,
+  ) async {
+    final row = await (db.select(
+      db.localWorkspaceSettings,
+    )..where((t) => t.workspaceId.equals(workspaceId))).getSingleOrNull();
     if (row == null) return null;
     return jsonDecode(row.json) as Map<String, dynamic>;
   }
@@ -403,7 +613,9 @@ class LocalRepository {
     final settingsJson = jsonEncode(settings);
 
     await db.transaction(() async {
-      await db.into(db.localWorkspaceSettings).insertOnConflictUpdate(
+      await db
+          .into(db.localWorkspaceSettings)
+          .insertOnConflictUpdate(
             LocalWorkspaceSettingsCompanion.insert(
               workspaceId: workspaceId,
               json: settingsJson,
@@ -423,7 +635,8 @@ class LocalRepository {
 
   /// Wipe all study data for the current device (workspace switch, reset,
   /// workspace delete, account delete). The installation identity and the
-  /// content cache (senses/programs) are kept.
+  /// content cache (senses/programs/catalog) are kept. Personal content
+  /// (favorites/notes/check-ins/sessions) follows study data.
   Future<void> wipeStudyData() async {
     await db.transaction(() async {
       await db.delete(db.localLearningStates).go();
@@ -431,6 +644,10 @@ class LocalRepository {
       await db.delete(db.outboxRecords).go();
       await db.delete(db.syncStateTable).go();
       await db.delete(db.localLists).go();
+      await db.delete(db.localFavorites).go();
+      await db.delete(db.localNotes).go();
+      await db.delete(db.localDailyCheckins).go();
+      await db.delete(db.localSessions).go();
     });
   }
 
@@ -460,13 +677,16 @@ class LocalRepository {
     );
 
     await db.transaction(() async {
-      await db.into(db.localLists).insertOnConflictUpdate(
+      await db
+          .into(db.localLists)
+          .insertOnConflictUpdate(
             LocalListsCompanion.insert(
               listId: list.listId,
               name: list.name,
-              filterDefinitionJson: jsonEncode(
-                {'version': 2, 'tags': list.tags},
-              ),
+              filterDefinitionJson: jsonEncode({
+                'version': 2,
+                'tags': list.tags,
+              }),
               clientUpdatedAt: nowIso,
               lastModifiedByReplicaId: replicaId,
               lastOperationId: operationId,
@@ -493,9 +713,9 @@ class LocalRepository {
     required String payloadJson,
   }) async {
     final p = jsonDecode(payloadJson) as Map<String, dynamic>;
-    final existing = await (db.select(db.localLists)
-          ..where((t) => t.listId.equals(listId)))
-        .getSingleOrNull();
+    final existing = await (db.select(
+      db.localLists,
+    )..where((t) => t.listId.equals(listId))).getSingleOrNull();
     if (existing != null &&
         compareLww(
               LwwMetadata(
@@ -513,9 +733,12 @@ class LocalRepository {
             0) {
       return;
     }
-    final filter = (p['filterDefinition'] as Map<String, dynamic>?) ??
+    final filter =
+        (p['filterDefinition'] as Map<String, dynamic>?) ??
         const <String, dynamic>{};
-    await db.into(db.localLists).insertOnConflictUpdate(
+    await db
+        .into(db.localLists)
+        .insertOnConflictUpdate(
           LocalListsCompanion.insert(
             listId: listId,
             name: p['name']?.toString() ?? 'Untitled',
@@ -546,14 +769,16 @@ class LocalRepository {
     final replicaId = _uuidGen.v4();
 
     await db.transaction(() async {
-      await (db.update(db.localLearningStates)
-            ..where((t) => t.wordSenseId.equals(wordSenseId)))
-          .write(LocalLearningStatesCompanion(
-            clientUpdatedAt: Value(nowIso),
-            lastModifiedByReplicaId: Value(replicaId),
-            lastOperationId: Value(operationId),
-            deletedAt: Value(DateTime.parse(nowIso)),
-          ));
+      await (db.update(
+        db.localLearningStates,
+      )..where((t) => t.wordSenseId.equals(wordSenseId))).write(
+        LocalLearningStatesCompanion(
+          clientUpdatedAt: Value(nowIso),
+          lastModifiedByReplicaId: Value(replicaId),
+          lastOperationId: Value(operationId),
+          deletedAt: Value(DateTime.parse(nowIso)),
+        ),
+      );
       await _enqueueOutbox(
         workspaceId: workspaceId,
         operationId: operationId,
@@ -569,8 +794,9 @@ class LocalRepository {
           'lapses': existing.lapses,
           'fsrsStability': existing.fsrsStability,
           'fsrsDifficulty': existing.fsrsDifficulty,
-          'fsrsLastReviewedAt':
-              existing.fsrsLastReviewedAt?.toUtc().toIso8601String(),
+          'fsrsLastReviewedAt': existing.fsrsLastReviewedAt
+              ?.toUtc()
+              .toIso8601String(),
           'fsrsScheduledDays': existing.fsrsScheduledDays,
           'fsrsCardState': existing.fsrsCardState,
           'fsrsStepIndex': existing.fsrsStepIndex,

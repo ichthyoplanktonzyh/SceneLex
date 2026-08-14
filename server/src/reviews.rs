@@ -22,9 +22,9 @@ pub struct ReviewRequest {
     #[serde(default)]
     pub platform: String,
     #[serde(rename = "wordSenseId")]
-    pub word_sense_id: Uuid,
+    pub word_sense_id: String,
     #[serde(rename = "experienceUnitId")]
-    pub experience_unit_id: Uuid,
+    pub experience_unit_id: String,
     #[serde(rename = "programVersion", default)]
     pub program_version: i32,
     pub rating: i32,
@@ -39,19 +39,22 @@ async fn current_state(
     pool: &PgPool,
     workspace_id: Uuid,
     user_id: Uuid,
-    word_sense_id: Uuid,
+    word_sense_id: &str,
 ) -> Result<ScheduleState, sqlx::Error> {
-    let row = sqlx::query_as::<_, (
-        Option<DateTime<Utc>>,
-        i32,
-        i32,
-        Option<f64>,
-        Option<f64>,
-        Option<DateTime<Utc>>,
-        Option<i32>,
-        String,
-        Option<i32>,
-    )>(
+    let row = sqlx::query_as::<
+        _,
+        (
+            Option<DateTime<Utc>>,
+            i32,
+            i32,
+            Option<f64>,
+            Option<f64>,
+            Option<DateTime<Utc>>,
+            Option<i32>,
+            String,
+            Option<i32>,
+        ),
+    >(
         "SELECT due_at, reps, lapses, fsrs_stability, fsrs_difficulty,
                 fsrs_last_reviewed_at, fsrs_scheduled_days, fsrs_card_state, fsrs_step_index
          FROM content.learning_states
@@ -134,7 +137,7 @@ pub async fn submit_review(
     let rating = ReviewRating::from_i32(req.rating)
         .ok_or_else(|| sqlx::Error::Protocol("rating out of range".into()))?;
 
-    let state = current_state(pool, workspace_id, user.user_id, req.word_sense_id).await?;
+    let state = current_state(pool, workspace_id, user.user_id, &req.word_sense_id).await?;
     let settings = workspace_settings(pool, workspace_id).await?;
     let next = compute_review_schedule(&state, &settings, rating, req.reviewed_at_client);
 
@@ -144,7 +147,11 @@ pub async fn submit_review(
         workspace_id,
         user.user_id,
         req.installation_id,
-        if req.platform.is_empty() { "web" } else { &req.platform },
+        if req.platform.is_empty() {
+            "web"
+        } else {
+            &req.platform
+        },
         None,
     )
     .await?;
@@ -189,7 +196,7 @@ pub async fn submit_review(
         &mut tx,
         workspace_id,
         user.user_id,
-        req.word_sense_id,
+        &req.word_sense_id,
         &state_payload,
         replica_id,
         operation_id,

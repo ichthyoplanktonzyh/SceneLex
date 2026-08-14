@@ -64,8 +64,10 @@ class _SyncSchedulerState extends ConsumerState<SyncScheduler> {
     // the next attempt (exponential, capped at 5 minutes); success cancels
     // it and resets the backoff window. ref.listen is not allowed in
     // initState, so use listenManual and close the subscription on dispose.
-    _statusSubscription = ref.listenManual<SyncStateInfo>(syncStatusProvider,
-        (previous, next) {
+    _statusSubscription = ref.listenManual<SyncStateInfo>(syncStatusProvider, (
+      previous,
+      next,
+    ) {
       switch (next.status) {
         case SyncStateStatus.synced:
           _retrying = false;

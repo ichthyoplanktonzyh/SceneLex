@@ -13,7 +13,10 @@ pub fn router() -> Router<AppState> {
     Router::new()
         .route("/workspaces/{workspace_id}/sync/push", post(sync_push))
         .route("/workspaces/{workspace_id}/sync/pull", post(sync_pull))
-        .route("/workspaces/{workspace_id}/sync/bootstrap", post(sync_bootstrap))
+        .route(
+            "/workspaces/{workspace_id}/sync/bootstrap",
+            post(sync_bootstrap),
+        )
         .route(
             "/workspaces/{workspace_id}/sync/review-history/pull",
             post(sync_review_history_pull),
@@ -83,7 +86,8 @@ async fn sync_review_history_pull(
     Json(req): Json<review_history::ReviewHistoryRequest>,
 ) -> Result<Json<Value>, ApiError> {
     check_workspace_access(&state, user.user_id, workspace_id).await?;
-    let result = review_history::process_review_history_pull(&state.pool, workspace_id, &req).await?;
+    let result =
+        review_history::process_review_history_pull(&state.pool, workspace_id, &req).await?;
     Ok(Json(result))
 }
 

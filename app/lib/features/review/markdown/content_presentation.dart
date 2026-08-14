@@ -8,14 +8,28 @@ enum ContentPresentationMode { shortPlain, paragraphPlain, markdown }
 
 final _markdownHeadingPattern = RegExp(r'^\s{0,3}#{1,6}\s+\S', multiLine: true);
 final _markdownBlockquotePattern = RegExp(r'^\s{0,3}>\s+\S', multiLine: true);
-final _markdownUnorderedListPattern = RegExp(r'^\s{0,3}[-*+]\s+\S', multiLine: true);
-final _markdownOrderedListPattern = RegExp(r'^\s{0,3}\d+\.\s+\S', multiLine: true);
-final _markdownFencedCodePattern = RegExp(r'^\s{0,3}(?:```|~~~)', multiLine: true);
+final _markdownUnorderedListPattern = RegExp(
+  r'^\s{0,3}[-*+]\s+\S',
+  multiLine: true,
+);
+final _markdownOrderedListPattern = RegExp(
+  r'^\s{0,3}\d+\.\s+\S',
+  multiLine: true,
+);
+final _markdownFencedCodePattern = RegExp(
+  r'^\s{0,3}(?:```|~~~)',
+  multiLine: true,
+);
 final _markdownLinkOrMediaPattern = RegExp(r'!?\[[^\]]*]\([^)]+\)');
 final _markdownReferenceLinkOrMediaPattern = RegExp(r'!?\[[^\]]+]\[[^\]]*]');
-final _markdownReferenceDefinitionPattern =
-    RegExp(r'^\s{0,3}\[(?:\\.|[^\\\]])+]:\s+\S', multiLine: true);
-final _markdownThematicBreakPattern = RegExp(r'^\s{0,3}(?:-{3,}|\*{3,}|_{3,})\s*$', multiLine: true);
+final _markdownReferenceDefinitionPattern = RegExp(
+  r'^\s{0,3}\[(?:\\.|[^\\\]])+]:\s+\S',
+  multiLine: true,
+);
+final _markdownThematicBreakPattern = RegExp(
+  r'^\s{0,3}(?:-{3,}|\*{3,}|_{3,})\s*$',
+  multiLine: true,
+);
 final _markdownTableSeparatorPattern = RegExp(
   r'^\s*\|?(?:\s*:?-{3,}:?\s*\|)+\s*:?-{3,}:?\s*\|?\s*$',
   multiLine: true,
@@ -71,13 +85,17 @@ ContentPresentationMode classifyContentPresentation(String text) {
 /// math becomes inline code, so formulas render as monospace text.
 String downgradeLatex(String text) {
   var out = text.replaceAllMapped(_displayMathPattern, (match) {
-    final formula = match.group(0)!
+    final formula = match
+        .group(0)!
         .substring(2, match.group(0)!.length - 2)
         .trim();
     return formula.isEmpty ? match.group(0)! : '```\n$formula\n```';
   });
   out = out.replaceAllMapped(_inlineMathPattern, (match) {
-    final formula = match.group(0)!.substring(1, match.group(0)!.length - 1).trim();
+    final formula = match
+        .group(0)!
+        .substring(1, match.group(0)!.length - 1)
+        .trim();
     return formula.isEmpty ? match.group(0)! : '`$formula`';
   });
   return out;

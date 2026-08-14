@@ -97,7 +97,9 @@ final libraryProvider = FutureProvider<Library>((ref) async {
   }
 
   final senseRows = await local.cachedSenses();
-  final senses = [for (final s in senseRows) Sense.fromJson({
+  final senses = [
+    for (final s in senseRows)
+      Sense.fromJson({
         'wordSenseId': s.wordSenseId,
         'senseKey': s.senseKey,
         'lemma': s.lemma,
@@ -106,7 +108,8 @@ final libraryProvider = FutureProvider<Library>((ref) async {
         'localeL1': s.localeL1,
         'programVersion': s.programVersion,
         'programId': s.programId,
-      })];
+      }),
+  ];
 
   final stateRows = await local.allStates(ws);
   final states = <String, LearningState>{};
@@ -166,7 +169,10 @@ Future<void> addSenseToStudy(WidgetRef ref, String wordSenseId) async {
   final ws = await ref.read(workspaceProvider.future);
   final now = DateTime.now().toUtc().toIso8601String();
   await local.createLearningState(
-      workspaceId: ws, wordSenseId: wordSenseId, nowIso: now);
+    workspaceId: ws,
+    wordSenseId: wordSenseId,
+    nowIso: now,
+  );
   final trigger = ref.read(syncTriggerProvider);
   trigger();
 }
@@ -178,17 +184,15 @@ Future<void> addSenseToStudy(WidgetRef ref, String wordSenseId) async {
 SchedulerSettings schedulerSettingsFromJson(Map<String, dynamic>? json) {
   if (json == null) return const SchedulerSettings();
   return SchedulerSettings(
-    desiredRetention:
-        (json['desiredRetention'] as num?)?.toDouble() ?? 0.90,
-    learningStepsMinutes: ((json['learningStepsMinutes'] as List<dynamic>?) ??
-            const [])
-        .map((e) => (e as num).toInt())
-        .toList(),
-    relearningStepsMinutes: ((json['relearningStepsMinutes']
-                as List<dynamic>?) ??
-            const [10])
-        .map((e) => (e as num).toInt())
-        .toList(),
+    desiredRetention: (json['desiredRetention'] as num?)?.toDouble() ?? 0.90,
+    learningStepsMinutes:
+        ((json['learningStepsMinutes'] as List<dynamic>?) ?? const [])
+            .map((e) => (e as num).toInt())
+            .toList(),
+    relearningStepsMinutes:
+        ((json['relearningStepsMinutes'] as List<dynamic>?) ?? const [10])
+            .map((e) => (e as num).toInt())
+            .toList(),
     maximumIntervalDays:
         (json['maximumIntervalDays'] as num?)?.toInt() ?? 36500,
     enableFuzz: json['enableFuzz'] as bool? ?? true,
@@ -229,7 +233,11 @@ Future<void> submitReview(
 
   final scheduleState = scheduleStateFromRow(stateRow);
   final next = computeReviewSchedule(
-      scheduleState, settings, _ratingOf(rating), reviewedAtClient.toUtc());
+    scheduleState,
+    settings,
+    _ratingOf(rating),
+    reviewedAtClient.toUtc(),
+  );
 
   final newState = {
     'dueAt': next.dueAt.toIso8601String(),
@@ -262,25 +270,25 @@ Future<void> submitReview(
 }
 
 FsrsCardState _stateOf(String name) => switch (name) {
-      'learning' => FsrsCardState.learning,
-      'review' => FsrsCardState.review,
-      'relearning' => FsrsCardState.relearning,
-      _ => FsrsCardState.new_,
-    };
+  'learning' => FsrsCardState.learning,
+  'review' => FsrsCardState.review,
+  'relearning' => FsrsCardState.relearning,
+  _ => FsrsCardState.new_,
+};
 
 String _stateName(FsrsCardState state) => switch (state) {
-      FsrsCardState.learning => 'learning',
-      FsrsCardState.review => 'review',
-      FsrsCardState.relearning => 'relearning',
-      FsrsCardState.new_ => 'new',
-    };
+  FsrsCardState.learning => 'learning',
+  FsrsCardState.review => 'review',
+  FsrsCardState.relearning => 'relearning',
+  FsrsCardState.new_ => 'new',
+};
 
 ReviewRating _ratingOf(int rating) => switch (rating) {
-      0 => ReviewRating.again,
-      1 => ReviewRating.hard,
-      2 => ReviewRating.good,
-      _ => ReviewRating.easy,
-    };
+  0 => ReviewRating.again,
+  1 => ReviewRating.hard,
+  2 => ReviewRating.good,
+  _ => ReviewRating.easy,
+};
 
 /// Review hard-usage reminder: non-blocking dialog after repeated Hard
 /// answers (port of the reference reviewHardReminder: a rolling window of the
@@ -308,13 +316,13 @@ class ReviewHardReminderController extends Notifier<bool> {
     }
     if (_recentRatings.length < _windowSize || state) return;
 
-    final hardCount =
-        _recentRatings.where((r) => r == ReviewRating.hard.index).length;
+    final hardCount = _recentRatings
+        .where((r) => r == ReviewRating.hard.index)
+        .length;
     if (hardCount < _hardThreshold) return;
 
     final lastShown = _lastShownAt;
-    if (lastShown != null &&
-        DateTime.now().difference(lastShown) < _cooldown) {
+    if (lastShown != null && DateTime.now().difference(lastShown) < _cooldown) {
       return;
     }
 
@@ -335,13 +343,16 @@ class ReviewHardReminderController extends Notifier<bool> {
   Future<void> _saveShownAt() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
-        _storageKey, DateTime.now().toUtc().toIso8601String());
+      _storageKey,
+      DateTime.now().toUtc().toIso8601String(),
+    );
   }
 }
 
 final reviewHardReminderProvider =
     NotifierProvider<ReviewHardReminderController, bool>(
-        ReviewHardReminderController.new);
+      ReviewHardReminderController.new,
+    );
 
 /// Selected bottom-tab index (lets the lists page jump to the Review tab).
 class SelectedTabController extends Notifier<int> {
@@ -351,15 +362,15 @@ class SelectedTabController extends Notifier<int> {
   void setTab(int index) => state = index;
 }
 
-final selectedTabProvider =
-    NotifierProvider<SelectedTabController, int>(SelectedTabController.new);
+final selectedTabProvider = NotifierProvider<SelectedTabController, int>(
+  SelectedTabController.new,
+);
 
 /// Progress section the user asked to jump to (e.g. from the Review streak
 /// badge); consumed by ProgressPage which scrolls the section into view.
 enum ProgressScrollTarget { streak, reviews, schedule }
 
-class ProgressScrollTargetController
-    extends Notifier<ProgressScrollTarget?> {
+class ProgressScrollTargetController extends Notifier<ProgressScrollTarget?> {
   @override
   ProgressScrollTarget? build() => null;
 
@@ -370,7 +381,8 @@ class ProgressScrollTargetController
 
 final progressScrollTargetProvider =
     NotifierProvider<ProgressScrollTargetController, ProgressScrollTarget?>(
-        ProgressScrollTargetController.new);
+      ProgressScrollTargetController.new,
+    );
 
 /// Review queue filter: All Cards / a word list / a tag set (persisted).
 sealed class ReviewFilter {
@@ -383,10 +395,10 @@ sealed class ReviewFilter {
   String get persistenceKey => jsonEncode(_toJson());
 
   Map<String, dynamic> _toJson() => switch (this) {
-        ReviewFilterAll() => {'kind': 'all'},
-        ReviewFilterList(:final listId) => {'kind': 'list', 'listId': listId},
-        ReviewFilterTags(:final tags) => {'kind': 'tags', 'tags': tags.toList()},
-      };
+    ReviewFilterAll() => {'kind': 'all'},
+    ReviewFilterList(:final listId) => {'kind': 'list', 'listId': listId},
+    ReviewFilterTags(:final tags) => {'kind': 'tags', 'tags': tags.toList()},
+  };
 
   static ReviewFilter fromPersistenceKey(String stored) {
     try {
@@ -394,10 +406,10 @@ sealed class ReviewFilter {
       return switch (json['kind']) {
         'list' => ReviewFilter.list(json['listId'] as String),
         'tags' => ReviewFilter.tags(
-            ((json['tags'] as List<dynamic>?) ?? const [])
-                .map((t) => t.toString())
-                .toSet(),
-          ),
+          ((json['tags'] as List<dynamic>?) ?? const [])
+              .map((t) => t.toString())
+              .toSet(),
+        ),
         _ => const ReviewFilter.all(),
       };
     } catch (_) {
@@ -420,8 +432,10 @@ class ReviewFilterTags extends ReviewFilter {
   final Set<String> tags;
 }
 
-final reviewFilterProvider = NotifierProvider<ReviewFilterController, ReviewFilter>(
-    ReviewFilterController.new);
+final reviewFilterProvider =
+    NotifierProvider<ReviewFilterController, ReviewFilter>(
+      ReviewFilterController.new,
+    );
 
 class ReviewFilterController extends Notifier<ReviewFilter> {
   static const _key = 'review_filter';
@@ -437,7 +451,9 @@ class ReviewFilterController extends Notifier<ReviewFilter> {
     final stored = prefs.getString(_key);
     if (stored == null) return;
     final restored = ReviewFilter.fromPersistenceKey(stored);
-    if (restored is ReviewFilterAll || restored is ReviewFilterList || restored is ReviewFilterTags) {
+    if (restored is ReviewFilterAll ||
+        restored is ReviewFilterList ||
+        restored is ReviewFilterTags) {
       state = restored;
     }
   }

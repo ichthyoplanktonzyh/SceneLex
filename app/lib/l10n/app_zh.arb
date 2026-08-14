@@ -2,14 +2,11 @@
   "@@locale": "zh",
   "appTitle": "SceneLex",
   "appTagline": "经验即词义,微世界即体验",
-
   "tabReview": "今日学习",
   "tabProgress": "进度",
   "tabCards": "词表",
   "tabSettings": "设置",
-
   "loadingFailed": "加载失败: {error}",
-
   "loginEmailLabel": "Email",
   "loginOtpLabel": "8 位验证码",
   "loginSendCode": "发送验证码",
@@ -26,7 +23,6 @@
   "loginErrorInvalidCode": "验证码不正确。",
   "loginErrorInternalError": "出了点问题,请重试。",
   "loginErrorUnknown": "登录失败,请重试。",
-
   "cardsTitle": "词表",
   "cardsSearchHint": "搜索词义",
   "cardsEmptyLibrary": "词义库为空,先运行 import_content.py",
@@ -43,7 +39,6 @@
   "cardStatDue": "{count} 张到期",
   "cardStatReps": "复习 {count} 次",
   "cardStatLapses": "失误 {count} 次",
-
   "reviewTitle": "今日学习",
   "reviewEmptyNoSenses": "还没有学习中的词义",
   "reviewEmptyNoDue": "今天没有到期内容",
@@ -55,7 +50,6 @@
   "reviewFilterTags": "标签",
   "reviewFilterManage": "管理词单",
   "reviewFilterDone": "完成",
-
   "listsTitle": "词单",
   "listsAllCards": "全部词义",
   "listsAllCardsBody": "{count} 个词义",
@@ -77,11 +71,9 @@
   "listsStatMatched": "已匹配",
   "listsStatDue": "当前到期",
   "listsReviewThisDeck": "复习这个词单",
-
   "cardRemove": "移除",
   "cardRemoveTitle": "移出学习?",
   "cardRemoveBody": "该词将从本地列表和下次同步中移除。之后可以随时重新添加。",
-
   "stageAnchor": "经验原型",
   "stageVariation": "变式",
   "stagePerturbation": "边界扰动",
@@ -107,13 +99,17 @@
   "reviewRepetitionCount": "{count} 次",
   "@reviewRepetitionCount": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "reviewQueueBadgeTooltip": "{count} 个词待复习",
   "@reviewQueueBadgeTooltip": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "reviewEmptyBrowseCards": "浏览词库",
@@ -130,27 +126,31 @@
   "ratingHard": "困难",
   "ratingGood": "良好",
   "ratingEasy": "轻松",
-
   "reviewIntervalLessThanMinute": "不到 1 分钟后",
   "reviewIntervalMinutes": "{count, plural, other{{count} 分钟后}}",
   "@reviewIntervalMinutes": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "reviewIntervalHours": "{count, plural, other{{count} 小时后}}",
   "@reviewIntervalHours": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "reviewIntervalDays": "{count, plural, other{{count} 天后}}",
   "@reviewIntervalDays": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "progressTitle": "进度",
   "progressNoData": "还没有复习数据",
   "streakCardTitle": "连续学习",
@@ -172,7 +172,6 @@
   "bucket1to2y": "1-2 年",
   "bucketLater": "更久",
   "scheduleEmpty": "日程里还没有卡片",
-
   "settingsTitle": "设置",
   "settingsAccountSection": "账号",
   "settingsAccountEmail": "邮箱",
@@ -187,7 +186,9 @@
   "settingsLastSyncValue": "上次同步 {time}",
   "@settingsLastSyncValue": {
     "placeholders": {
-      "time": {"type": "String"}
+      "time": {
+        "type": "String"
+      }
     }
   },
   "settingsSyncNow": "立即同步",
@@ -244,16 +245,26 @@
   "settingsDeletePreviewBody": "将删除 {learningStates} 个学习状态、{reviewEvents} 条复习记录和 {lists} 个词表。",
   "@settingsDeletePreviewBody": {
     "placeholders": {
-      "learningStates": {"type": "int"},
-      "reviewEvents": {"type": "int"},
-      "lists": {"type": "int"}
+      "learningStates": {
+        "type": "int"
+      },
+      "reviewEvents": {
+        "type": "int"
+      },
+      "lists": {
+        "type": "int"
+      }
     }
   },
   "settingsResetProgressPreviewBody": "将清零 {learningStates} 个学习状态并删除 {reviewEvents} 条复习记录。",
   "@settingsResetProgressPreviewBody": {
     "placeholders": {
-      "learningStates": {"type": "int"},
-      "reviewEvents": {"type": "int"}
+      "learningStates": {
+        "type": "int"
+      },
+      "reviewEvents": {
+        "type": "int"
+      }
     }
   },
   "settingsPreviewLearningStates": "学习状态",
@@ -264,7 +275,9 @@
   "settingsWorkspaceNotSoleMember": "此工作区还有其他成员,无法{action}。",
   "@settingsWorkspaceNotSoleMember": {
     "placeholders": {
-      "action": {"type": "String"}
+      "action": {
+        "type": "String"
+      }
     }
   },
   "settingsDeleteAccount": "删除账号",
@@ -300,54 +313,60 @@
   "tagsScreenCountLabel": "{count} 个标签",
   "@tagsScreenCountLabel": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tagsScreenEmpty": "暂无标签。词加入学习后会出现标签。",
   "tagsScreenLearnedCount": "{count} 个词",
   "@tagsScreenLearnedCount": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsReset": "重置",
   "settingsDelete": "删除",
   "settingsVersion": "版本",
   "settingsComingSoon": "即将上线",
-
   "notificationDailyBody": "该进行今天的 SceneLex 复习了。",
   "notificationChannelName": "每日复习提醒",
-
   "reviewHardReminderTitle": "快速提醒",
   "reviewHardReminderBody": "如果您不知道答案,请选择「重来」。「困难」只适用于您知道答案但回忆起来较困难的情况。",
   "reviewHardReminderDismiss": "知道了",
-
   "reviewSubmitError": "复习记录未能保存",
-
   "reviewBadgeTooltip": "连续复习 {days} 天。今天还没复习。",
   "@reviewBadgeTooltip": {
     "placeholders": {
-      "days": {"type": "int"}
+      "days": {
+        "type": "int"
+      }
     }
   },
   "reviewBadgeTooltipReviewed": "连续复习 {days} 天。今天已复习。",
   "@reviewBadgeTooltipReviewed": {
     "placeholders": {
-      "days": {"type": "int"}
+      "days": {
+        "type": "int"
+      }
     }
   },
-
   "experienceRuntimeRoleAnchor": "初次遇见",
   "experienceRuntimeRoleVariation": "什么没变",
   "experienceRuntimeRolePerturbation": "只改一点",
   "experienceRuntimeRoleDiscrimination": "分辨选择",
   "experienceRuntimeRoleTransfer": "进一步迁移",
-
   "experienceRuntimeProgress": "{current}/{total}",
   "@experienceRuntimeProgress": {
     "placeholders": {
-      "current": {"type": "int"},
-      "total": {"type": "int"}
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "experienceRuntimeContinue": "继续",
@@ -355,23 +374,601 @@
   "experienceRuntimeEvidenceLabel": "你能看到的证据",
   "experienceRuntimeCorrect": "正确",
   "experienceRuntimeIncorrect": "不太对",
-
   "experienceRuntimePronunciation": "听发音",
   "experienceRuntimeGroundingBackToExperience": "你刚才看到的场景",
   "experienceRuntimeConstructions": "句式",
   "experienceRuntimeCollocations": "搭配",
-
   "experienceRuntimeCompleteTitle": "本次学习完成",
   "experienceRuntimeCompleteExperiences": "个经验已完成",
   "experienceRuntimeCompleteFirstAttempt": "首次作答正确 {correct}/{total}",
   "@experienceRuntimeCompleteFirstAttempt": {
     "placeholders": {
-      "correct": {"type": "int"},
-      "total": {"type": "int"}
+      "correct": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "experienceRuntimeReplay": "重新体验",
-
   "experienceRuntimeLoadErrorTitle": "无法加载这个经验",
-  "experienceRuntimeRetry": "重试"
+  "experienceRuntimeRetry": "重试",
+  "tabHome": "首页",
+  "tabMap": "概念地图",
+  "tabContent": "我的内容",
+  "tabStudy": "我的学习",
+  "homeLearnCta": "开始学习",
+  "homeReviewCta": "复习",
+  "homeNewSensesLabel": "个新义项待学",
+  "homeDueLabel": "个义项待复习",
+  "homeCheckin": "签到",
+  "homeCheckedIn": "已签到",
+  "homeToday": "今日",
+  "homeCheckinDone": "今日签到已记录",
+  "homeSubtitle": "SceneLex · 产品 v1",
+  "homeSkyAlt": "SceneLex 夜空",
+  "homeLoadError": "内容加载失败",
+  "learnExitTitle": "退出本次学习？",
+  "learnExitBody": "进度会保存，下次可以继续。",
+  "learnResume": "继续学习",
+  "learnQuit": "退出",
+  "learnRemovedFavorite": "已移出场景收藏",
+  "learnAddedFavorite": "已加入场景收藏",
+  "noteHint": "写点什么…",
+  "noteDelete": "删除",
+  "noteSave": "保存",
+  "phaseSymbolReveal": "符号揭示",
+  "phaseSymbolRevealSub": "从经验落到 L2",
+  "phaseSymbolBinding": "绑定 L2 符号",
+  "phaseL2Usage": "L2 使用",
+  "phaseTransfer": "L1 概念迁移",
+  "phaseFormation": "L1 概念形成",
+  "learnFinishGroup": "完成本组",
+  "learnNextWord": "下一词",
+  "learnContinue": "继续",
+  "learnAnswerFirst": "先作答",
+  "learnWriteNote": "写笔记",
+  "learnPreferences": "学习偏好",
+  "learnRetreat": "撤回",
+  "learnFavorite": "收藏当前经验",
+  "learnKnown": "熟",
+  "learnMore": "更多",
+  "knownCheckUnavailable": "当前义项没有迁移检查",
+  "knownCheckFailHint": "未通过：回到正常锚点流程。",
+  "knownCheckSkip": "跳过剩余概念形成",
+  "knownCheckAnchor": "回到锚点流程",
+  "learnEmptyTitle": "当前内容目录已全部在学",
+  "learnEmptyBody": "新内容发布后会出现在这里。",
+  "learnBackHome": "回首页",
+  "reviewQuit": "退出",
+  "reviewTransferTitle": "符号检索验收",
+  "reviewLoadError": "加载失败",
+  "recallDelayedRetrieval": "延迟检索 · 新经验",
+  "recallRevisit": "经验回访 · 换一段没见过的",
+  "recallPrompt": "这种状态，你会用哪个词？",
+  "recallHint": "先自己想出来，再看答案",
+  "revealShowAnswer": "显示答案",
+  "reviewTransferDone": "符号检索验收完成",
+  "reviewDone": "本轮复习完成",
+  "reviewRetrieved": "已检索",
+  "reviewReviewed": "已复习",
+  "reviewBackHome": "回首页",
+  "groupNoneInProgress": "没有进行中的组会话",
+  "groupBackHome": "回首页",
+  "groupDoneTitle": "本组理解完成",
+  "groupNewExperiences": "新建经验",
+  "groupBoundaryDiscrimination": "边界判别",
+  "groupMinutes": "分钟",
+  "groupRest": "回首页休息一下",
+  "groupStartRecall": "开始符号检索验收",
+  "groupGoReview": "去复习",
+  "mapTitle": "概念地图",
+  "mapAll": "全部",
+  "mapLearned": "已学习",
+  "mapEmpty": "当前筛选下没有内容",
+  "mapDiffDim": "不同维度",
+  "mapOverlap": "重叠",
+  "libNone": "暂无",
+  "libTitle": "我的内容",
+  "libReplay": "经验回放",
+  "libPreview": "预习",
+  "libTransfer": "迁移验收",
+  "libTransferBody": "已学义项数",
+  "libStudyLists": "在学词单",
+  "libRecentLearned": "近日已理解",
+  "libAllLearned": "全部已理解",
+  "libConceptMap": "我的概念地图",
+  "libFavorites": "场景收藏",
+  "libNotes": "笔记",
+  "libReplayLabel": "经验回放",
+  "libReviewLabel": "回顾",
+  "libPreviewLabel": "预习",
+  "libLookFirst": "先看",
+  "libToday": "今日",
+  "replayTitle": "经验回放",
+  "replayEmptyTitle": "还没有已学习的经验",
+  "replayEmptyBody": "先完成一组首学，再来回放。",
+  "replayNoExperience": "暂无经验",
+  "replayUnfavorite": "取消收藏",
+  "replayFavorite": "收藏",
+  "replayPrev": "上一个",
+  "replayNext": "下一个",
+  "previewTitle": "预习",
+  "previewEmpty": "没有待预习的内容",
+  "previewEnterLearn": "进入首学（下一组）",
+  "previewNewSense": "新义项 · 先看锚点经验",
+  "previewFromExperience": "从经验进入首学",
+  "learnedRecent": "近日已理解",
+  "learnedAll": "全部已理解",
+  "learnedEmpty": "还没有已理解的义项",
+  "learnedDue": "待复习",
+  "favTitle": "场景收藏",
+  "favUnfavorite": "取消收藏",
+  "notesTitle": "笔记",
+  "studyTitle": "我的学习",
+  "studyPreferences": "学习偏好",
+  "studyPlan": "计划",
+  "studyLists": "词单",
+  "studyScope": "当前学习范围",
+  "studyBySense": "按义项组织，不按词头",
+  "studyDailyNew": "每日新理解义项",
+  "studyStats": "统计",
+  "studyTodayLearnReview": "今日理解&复习",
+  "studySenses": "义项",
+  "studyCumulativeLearned": "累计理解",
+  "studyTodayMinutes": "今日总时长",
+  "studyMinutes": "分钟",
+  "studyCumulativeMinutes": "累计时长",
+  "studyCheckinCalendar": "签到日历",
+  "studyTodayCol": "今",
+  "profileLearning": "学习中",
+  "profileReviewing": "复习中",
+  "profileRelearning": "再学中",
+  "profileNewCards": "新卡",
+  "profileBack": "返回",
+  "profileLearner": "SceneLex 学习者",
+  "profileNoMember": "未开通会员",
+  "profileLearnedSenses": "已理解义项",
+  "profileExperiencesLoading": "经验场景统计中…",
+  "profileMastery": "掌握度",
+  "profileAppearance": "外观",
+  "profilePreferences": "学习偏好",
+  "profileMoreSettings": "更多设置",
+  "profileNoRecords": "暂无学习记录",
+  "prefSectionUnderstanding": "理解流程",
+  "prefTransferTiming": "符号检索验收时机",
+  "prefBoundaryPerturbation": "边界扰动题",
+  "prefSymbolRecall": "符号回指",
+  "prefScaffold": "L1 脚手架",
+  "prefScaffoldLevel": "叙事语言档位",
+  "prefScaffoldCurrent": "当前档位",
+  "prefAutoScaffoldRemoval": "自动撤除",
+  "prefZhLabelBeforeReveal": "揭示前显示中文标签",
+  "prefSectionRhythm": "节奏",
+  "prefNewGroup": "新学节奏",
+  "prefNewGroupHint": "一个义项约 90 秒",
+  "prefReviewGroup": "复习节奏",
+  "prefSectionVoice": "发音与提醒",
+  "prefAccent": "发音类型",
+  "prefAccentUs": "美式",
+  "prefAccentUk": "英式",
+  "prefAutoPronounce": "自动发音",
+  "prefReminder": "学习提醒",
+  "prefReminderHint": "映射到通知设置",
+  "prefTransferEndOfDay": "当天收尾",
+  "prefTransferEndOfFirstLearning": "首学末尾",
+  "prefTransferFirstReview": "首次复习",
+  "prefScaffoldZh": "中文",
+  "prefScaffoldMixed": "中英混排",
+  "prefScaffoldEn": "纯英文",
+  "prefReminderReveal": "符号揭示时",
+  "prefReminderRevealExample": "揭示 + 例句",
+  "prefReminderOff": "关闭",
+  "prefReminderSmart": "智能提醒",
+  "prefReminderFixed": "固定时间",
+  "prefTitle": "学习偏好",
+  "homeProfile": "个人中心",
+  "brandTagline": "意义即经验；微世界即经验。",
+  "knownCheckTitle": "熟 · 概念迁移检查 · 不会直接标为已会",
+  "knownCheckPassHint": "通过：已能识别该概念 → 跳过剩余概念形成。",
+  "recallNewExperience": "新经验 · 之前没见过这一个",
+  "gradeNextUsesNewExperience": "FSRS-6 · 下次复习会换一段没见过的经验",
+  "reviewTransferDoneBody": "用全新经验完成了延迟的「经验 → 符号」检索",
+  "transferIntro": "概念迁移已经在每个词的符号揭示前完成。这里开始的是延迟符号检索：",
+  "transferIntro2": "看一个新经验，能不能重新想起刚绑定的 L2 符号。",
+  "transferDeferred": "迁移测试已推迟到第一次复习时进行（当前偏好：首次复习）。",
+  "transferAtEnd": "迁移测试已在每个义项的首学末尾完成（当前偏好：首学末尾）。",
+  "mapBoundariesNotCollected": "边界关系（relations.boundaries）尚未收录 — 内容欠账，待编译器输出。",
+  "replayOnlyScene": "只重看场景，不重看词——回忆词是复习的事",
+  "favEmpty": "还没有收藏。首学或回放时点星标即可收藏经验。",
+  "notesEmpty": "还没有写过笔记。首学「更多」菜单里可以为当前义项写笔记。",
+  "prefTransferTimingHint": "概念迁移已固定在揭示前；这里控制何时测试「经验 → L2 符号」",
+  "prefBoundaryPerturbationHint": "用对比 / 反例场景压掉错误泛化",
+  "prefSymbolRecallHint": "揭示后补一次「场景 → 词」的检索",
+  "prefAutoScaffoldRemovalHint": "复习次数增加后逐档切到纯英文",
+  "prefZhLabelBeforeRevealHint": "打开等于回到「先给翻译」，默认关闭",
+  "@loadingFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@loginResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@cardStateNext": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@cardStatDue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@cardStatReps": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@cardStatLapses": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@listsAllCardsBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@listsMatchedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@playerLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@streakLongest": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@streakFreezeCount": {
+    "placeholders": {
+      "credits": {
+        "type": "int"
+      },
+      "capacity": {
+        "type": "int"
+      }
+    }
+  },
+  "@streakFreezeInfo": {
+    "placeholders": {
+      "needed": {
+        "type": "int"
+      }
+    }
+  },
+  "@reviewsDayTotal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@settingsNotificationsHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@settingsNotificationsMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@settingsTypeToConfirm": {
+    "placeholders": {
+      "phrase": {
+        "type": "String"
+      }
+    }
+  },
+  "@settingsWorkspaceCreated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "noteTitle": "笔记 · {senseId}",
+  "@noteTitle": {
+    "placeholders": {
+      "senseId": {
+        "type": "Object"
+      }
+    }
+  },
+  "learnLoadError": "加载失败：{errorMessage}",
+  "@learnLoadError": {
+    "placeholders": {
+      "errorMessage": {
+        "type": "Object"
+      }
+    }
+  },
+  "learnWordProgress": "第 {index} / {count} 词",
+  "@learnWordProgress": {
+    "placeholders": {
+      "index": {
+        "type": "Object"
+      },
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "reviewDoneBody": "{gradedCount} 条复习记录已写入本地 review events",
+  "@reviewDoneBody": {
+    "placeholders": {
+      "gradedCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "groupDoneBody": "{senseCount} 个义项的经验已经建立",
+  "@groupDoneBody": {
+    "placeholders": {
+      "senseCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "mapLoadError": "加载失败：{error}",
+  "@mapLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "mapBoundaryCriterion": "判据：{diagnostic}",
+  "@mapBoundaryCriterion": {
+    "placeholders": {
+      "diagnostic": {
+        "type": "Object"
+      }
+    }
+  },
+  "libRecent7d": "近 7 天 {recentCount} 义项",
+  "@libRecent7d": {
+    "placeholders": {
+      "recentCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "libReplayBody": "{learnedCount} 义项经验",
+  "@libReplayBody": {
+    "placeholders": {
+      "learnedCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "libPreviewBody": "{clamped} 场景",
+  "@libPreviewBody": {
+    "placeholders": {
+      "clamped": {
+        "type": "Object"
+      }
+    }
+  },
+  "libStudyListsBody": "{learnedCount} 义项",
+  "@libStudyListsBody": {
+    "placeholders": {
+      "learnedCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "libAllLearnedBody": "{learnedCount} 义项",
+  "@libAllLearnedBody": {
+    "placeholders": {
+      "learnedCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "libConceptMapBody": "{catalogSize} 义项",
+  "@libConceptMapBody": {
+    "placeholders": {
+      "catalogSize": {
+        "type": "Object"
+      }
+    }
+  },
+  "libFavoritesBody": "{favoritesCount} 个",
+  "@libFavoritesBody": {
+    "placeholders": {
+      "favoritesCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "libNotesBody": "{notesCount} 条",
+  "@libNotesBody": {
+    "placeholders": {
+      "notesCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "replayLoadError": "加载失败：{error}",
+  "@replayLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "replayCounter": "经验 {index} / {total}",
+  "@replayCounter": {
+    "placeholders": {
+      "index": {
+        "type": "Object"
+      },
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "previewLoadError": "加载失败：{error}",
+  "@previewLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "learnedLoadError": "加载失败：{error}",
+  "@learnedLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "learnedReviewedN": "已复习 {reps} 次",
+  "@learnedReviewedN": {
+    "placeholders": {
+      "reps": {
+        "type": "Object"
+      }
+    }
+  },
+  "favLoadError": "加载失败：{error}",
+  "@favLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "notesLoadError": "加载失败：{error}",
+  "@notesLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "studyLoadError": "加载失败：{error}",
+  "@studyLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "studyLearned": "已理解 {learnedCount}",
+  "@studyLearned": {
+    "placeholders": {
+      "learnedCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "studyCatalogSize": "总义项 {catalogSize}",
+  "@studyCatalogSize": {
+    "placeholders": {
+      "catalogSize": {
+        "type": "Object"
+      }
+    }
+  },
+  "studyDailyGoal": "{dailyGoal} / 天",
+  "@studyDailyGoal": {
+    "placeholders": {
+      "dailyGoal": {
+        "type": "Object"
+      }
+    }
+  },
+  "studyStreak": "连续签到 {streakDays} 天",
+  "@studyStreak": {
+    "placeholders": {
+      "streakDays": {
+        "type": "Object"
+      }
+    }
+  },
+  "profileExperienceCount": "{count} 个经验场景",
+  "@profileExperienceCount": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "profileFsrsSummary": "FSRS 状态分布 · {total} 义项",
+  "@profileFsrsSummary": {
+    "placeholders": {
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "prefNewGroupSize": "{groupSize} 义项/组",
+  "@prefNewGroupSize": {
+    "placeholders": {
+      "groupSize": {
+        "type": "Object"
+      }
+    }
+  },
+  "prefReviewGroupSize": "{groupSize} 义项/组",
+  "@prefReviewGroupSize": {
+    "placeholders": {
+      "groupSize": {
+        "type": "Object"
+      }
+    }
+  },
+  "@streakDaysLabel": {
+    "placeholders": {
+      "days": {
+        "type": "Object"
+      }
+    }
+  }
 }

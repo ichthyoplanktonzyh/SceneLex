@@ -956,4 +956,760 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get experienceRuntimeRetry => 'Try again';
+
+  @override
+  String get tabHome => 'Home';
+
+  @override
+  String get tabMap => 'Concept map';
+
+  @override
+  String get tabContent => 'My content';
+
+  @override
+  String get tabStudy => 'My study';
+
+  @override
+  String get homeLearnCta => 'Learn';
+
+  @override
+  String get homeReviewCta => 'Review';
+
+  @override
+  String get homeNewSensesLabel => 'new senses to learn';
+
+  @override
+  String get homeDueLabel => 'senses due for review';
+
+  @override
+  String get homeCheckin => 'Check in';
+
+  @override
+  String get homeCheckedIn => 'Checked in';
+
+  @override
+  String get homeToday => 'Today';
+
+  @override
+  String get homeCheckinDone => 'Daily check-in recorded';
+
+  @override
+  String get homeSubtitle => 'SceneLex · product v1';
+
+  @override
+  String get homeSkyAlt => 'SceneLex night sky';
+
+  @override
+  String get homeLoadError => 'Could not load content';
+
+  @override
+  String get learnExitTitle => 'Exit this learning session?';
+
+  @override
+  String get learnExitBody => 'Progress is saved and you can resume later.';
+
+  @override
+  String get learnResume => 'Resume learning';
+
+  @override
+  String get learnQuit => 'Quit';
+
+  @override
+  String get learnRemovedFavorite => 'Removed from experience favorites';
+
+  @override
+  String get learnAddedFavorite => 'Added to experience favorites';
+
+  @override
+  String get noteHint => 'Write something…';
+
+  @override
+  String get noteDelete => 'Delete';
+
+  @override
+  String get noteSave => 'Save';
+
+  @override
+  String get phaseSymbolReveal => 'Symbol reveal';
+
+  @override
+  String get phaseSymbolRevealSub => 'From experience to L2';
+
+  @override
+  String get phaseSymbolBinding => 'Bind L2 symbol';
+
+  @override
+  String get phaseL2Usage => 'L2 usage';
+
+  @override
+  String get phaseTransfer => 'L1 transfer';
+
+  @override
+  String get phaseFormation => 'L1 formation';
+
+  @override
+  String get learnFinishGroup => 'Finish group';
+
+  @override
+  String get learnNextWord => 'Next word';
+
+  @override
+  String get learnContinue => 'Continue';
+
+  @override
+  String get learnAnswerFirst => 'Answer first';
+
+  @override
+  String get learnWriteNote => 'Write note';
+
+  @override
+  String get learnPreferences => 'Learning preferences';
+
+  @override
+  String get learnRetreat => 'Back';
+
+  @override
+  String get learnFavorite => 'Favorite this experience';
+
+  @override
+  String get learnKnown => 'Known';
+
+  @override
+  String get learnMore => 'More';
+
+  @override
+  String get knownCheckUnavailable => 'No transfer check for this sense';
+
+  @override
+  String get knownCheckFailHint => 'Fail: return to the normal anchor flow.';
+
+  @override
+  String get knownCheckSkip => 'Skip remaining concept formation';
+
+  @override
+  String get knownCheckAnchor => 'Back to anchor flow';
+
+  @override
+  String get learnEmptyTitle => 'The catalog is fully studied';
+
+  @override
+  String get learnEmptyBody => 'New content appears here when published.';
+
+  @override
+  String get learnBackHome => 'Back to home';
+
+  @override
+  String get reviewQuit => 'Quit';
+
+  @override
+  String get reviewTransferTitle => 'Symbol recall check';
+
+  @override
+  String get reviewLoadError => 'Failed to load';
+
+  @override
+  String get recallDelayedRetrieval => 'Delayed retrieval · new experience';
+
+  @override
+  String get recallRevisit => 'Revisit · a passage you have not seen';
+
+  @override
+  String get recallPrompt => 'Which word fits this situation?';
+
+  @override
+  String get recallHint => 'Recall it yourself first, then look at the answer';
+
+  @override
+  String get revealShowAnswer => 'Show answer';
+
+  @override
+  String get reviewTransferDone => 'Symbol recall check complete';
+
+  @override
+  String get reviewDone => 'This round of review complete';
+
+  @override
+  String get reviewRetrieved => 'Recalled';
+
+  @override
+  String get reviewReviewed => 'Reviewed';
+
+  @override
+  String get reviewBackHome => 'Back to home';
+
+  @override
+  String get groupNoneInProgress => 'No group session in progress';
+
+  @override
+  String get groupBackHome => 'Back to home';
+
+  @override
+  String get groupDoneTitle => 'Group understanding complete';
+
+  @override
+  String get groupNewExperiences => 'New experiences';
+
+  @override
+  String get groupBoundaryDiscrimination => 'Boundary discrimination';
+
+  @override
+  String get groupMinutes => 'min';
+
+  @override
+  String get groupRest => 'Back home and rest';
+
+  @override
+  String get groupStartRecall => 'Start symbol recall check';
+
+  @override
+  String get groupGoReview => 'Go to review';
+
+  @override
+  String get mapTitle => 'Concept map';
+
+  @override
+  String get mapAll => 'All';
+
+  @override
+  String get mapLearned => 'Learned';
+
+  @override
+  String get mapEmpty => 'Nothing matches this filter';
+
+  @override
+  String get mapDiffDim => 'Different dimension';
+
+  @override
+  String get mapOverlap => 'Overlap';
+
+  @override
+  String get libNone => 'None';
+
+  @override
+  String get libTitle => 'My content';
+
+  @override
+  String get libReplay => 'Experience replay';
+
+  @override
+  String get libPreview => 'Preview';
+
+  @override
+  String get libTransfer => 'Transfer check';
+
+  @override
+  String get libTransferBody => 'Learned senses';
+
+  @override
+  String get libStudyLists => 'Study lists';
+
+  @override
+  String get libRecentLearned => 'Recently learned';
+
+  @override
+  String get libAllLearned => 'All learned';
+
+  @override
+  String get libConceptMap => 'My concept map';
+
+  @override
+  String get libFavorites => 'Experience favorites';
+
+  @override
+  String get libNotes => 'Notes';
+
+  @override
+  String get libReplayLabel => 'Replay';
+
+  @override
+  String get libReviewLabel => 'Review';
+
+  @override
+  String get libPreviewLabel => 'Preview';
+
+  @override
+  String get libLookFirst => 'Look first';
+
+  @override
+  String get libToday => 'Today';
+
+  @override
+  String get replayTitle => 'Experience replay';
+
+  @override
+  String get replayEmptyTitle => 'No learned experiences yet';
+
+  @override
+  String get replayEmptyBody => 'Finish a first-learn group, then replay.';
+
+  @override
+  String get replayNoExperience => 'No experience';
+
+  @override
+  String get replayUnfavorite => 'Unfavorite';
+
+  @override
+  String get replayFavorite => 'Favorite';
+
+  @override
+  String get replayPrev => 'Previous';
+
+  @override
+  String get replayNext => 'Next';
+
+  @override
+  String get previewTitle => 'Preview';
+
+  @override
+  String get previewEmpty => 'Nothing to preview';
+
+  @override
+  String get previewEnterLearn => 'Start first learn (next group)';
+
+  @override
+  String get previewNewSense => 'New sense · watch the anchor experience first';
+
+  @override
+  String get previewFromExperience => 'From experience into first learn';
+
+  @override
+  String get learnedRecent => 'Recently learned';
+
+  @override
+  String get learnedAll => 'All learned';
+
+  @override
+  String get learnedEmpty => 'No learned senses yet';
+
+  @override
+  String get learnedDue => 'Due for review';
+
+  @override
+  String get favTitle => 'Experience favorites';
+
+  @override
+  String get favUnfavorite => 'Unfavorite';
+
+  @override
+  String get notesTitle => 'Notes';
+
+  @override
+  String get studyTitle => 'My study';
+
+  @override
+  String get studyPreferences => 'Learning preferences';
+
+  @override
+  String get studyPlan => 'Plan';
+
+  @override
+  String get studyLists => 'Lists';
+
+  @override
+  String get studyScope => 'Current learning scope';
+
+  @override
+  String get studyBySense => 'Organized by sense, not by headword';
+
+  @override
+  String get studyDailyNew => 'New senses per day';
+
+  @override
+  String get studyStats => 'Stats';
+
+  @override
+  String get studyTodayLearnReview => 'Learned & reviewed today';
+
+  @override
+  String get studySenses => 'senses';
+
+  @override
+  String get studyCumulativeLearned => 'Cumulative learned';
+
+  @override
+  String get studyTodayMinutes => 'Minutes today';
+
+  @override
+  String get studyMinutes => 'min';
+
+  @override
+  String get studyCumulativeMinutes => 'Cumulative minutes';
+
+  @override
+  String get studyCheckinCalendar => 'Check-in calendar';
+
+  @override
+  String get studyTodayCol => 'T';
+
+  @override
+  String get profileLearning => 'Learning';
+
+  @override
+  String get profileReviewing => 'Reviewing';
+
+  @override
+  String get profileRelearning => 'Re-learning';
+
+  @override
+  String get profileNewCards => 'New';
+
+  @override
+  String get profileBack => 'Back';
+
+  @override
+  String get profileLearner => 'SceneLex learner';
+
+  @override
+  String get profileNoMember => 'No membership';
+
+  @override
+  String get profileLearnedSenses => 'Learned senses';
+
+  @override
+  String get profileExperiencesLoading => 'Counting experiences…';
+
+  @override
+  String get profileMastery => 'Mastery';
+
+  @override
+  String get profileAppearance => 'Appearance';
+
+  @override
+  String get profilePreferences => 'Learning preferences';
+
+  @override
+  String get profileMoreSettings => 'More settings';
+
+  @override
+  String get profileNoRecords => 'No study records yet';
+
+  @override
+  String get prefSectionUnderstanding => 'Understanding flow';
+
+  @override
+  String get prefTransferTiming => 'Symbol recall timing';
+
+  @override
+  String get prefBoundaryPerturbation => 'Boundary perturbation';
+
+  @override
+  String get prefSymbolRecall => 'Symbol recall';
+
+  @override
+  String get prefScaffold => 'L1 scaffolding';
+
+  @override
+  String get prefScaffoldLevel => 'Narrative language level';
+
+  @override
+  String get prefScaffoldCurrent => 'Current level';
+
+  @override
+  String get prefAutoScaffoldRemoval => 'Auto removal';
+
+  @override
+  String get prefZhLabelBeforeReveal => 'Chinese label before reveal';
+
+  @override
+  String get prefSectionRhythm => 'Rhythm';
+
+  @override
+  String get prefNewGroup => 'New learn group';
+
+  @override
+  String get prefNewGroupHint => 'About 90 seconds per sense';
+
+  @override
+  String get prefReviewGroup => 'Review group';
+
+  @override
+  String get prefSectionVoice => 'Pronunciation & reminders';
+
+  @override
+  String get prefAccent => 'Accent';
+
+  @override
+  String get prefAccentUs => 'American';
+
+  @override
+  String get prefAccentUk => 'British';
+
+  @override
+  String get prefAutoPronounce => 'Auto pronounce';
+
+  @override
+  String get prefReminder => 'Study reminder';
+
+  @override
+  String get prefReminderHint => 'Maps to notification settings';
+
+  @override
+  String get prefTransferEndOfDay => 'End of day';
+
+  @override
+  String get prefTransferEndOfFirstLearning => 'End of first learn';
+
+  @override
+  String get prefTransferFirstReview => 'First review';
+
+  @override
+  String get prefScaffoldZh => 'Chinese';
+
+  @override
+  String get prefScaffoldMixed => 'Mixed';
+
+  @override
+  String get prefScaffoldEn => 'Pure English';
+
+  @override
+  String get prefReminderReveal => 'At symbol reveal';
+
+  @override
+  String get prefReminderRevealExample => 'Reveal + example';
+
+  @override
+  String get prefReminderOff => 'Off';
+
+  @override
+  String get prefReminderSmart => 'Smart reminder';
+
+  @override
+  String get prefReminderFixed => 'Fixed time';
+
+  @override
+  String get prefTitle => 'Learning preferences';
+
+  @override
+  String get homeProfile => 'Profile';
+
+  @override
+  String get brandTagline =>
+      'Meaning is experience; micro-worlds are experience.';
+
+  @override
+  String get knownCheckTitle =>
+      'Known · transfer check · will not mark as learned';
+
+  @override
+  String get knownCheckPassHint =>
+      'Pass: recognize the concept → skip the rest of concept formation.';
+
+  @override
+  String get recallNewExperience =>
+      'New experience · you have not seen this one';
+
+  @override
+  String get gradeNextUsesNewExperience =>
+      'FSRS-6 · next review uses an unseen experience';
+
+  @override
+  String get reviewTransferDoneBody =>
+      'Completed the delayed experience-to-symbol recall with brand-new experiences';
+
+  @override
+  String get transferIntro =>
+      'Transfer was completed before each reveal. What follows is delayed symbol recall:';
+
+  @override
+  String get transferIntro2 =>
+      'Watch a new experience — can you recall the L2 symbol you just bound?';
+
+  @override
+  String get transferDeferred =>
+      'Transfer testing is deferred to the first review (current preference: first review).';
+
+  @override
+  String get transferAtEnd =>
+      'Transfer testing already completed at the end of each first learn (current preference: end of first learn).';
+
+  @override
+  String get mapBoundariesNotCollected =>
+      'Boundary relations (relations.boundaries) not yet collected — content debt, pending the compiler output.';
+
+  @override
+  String get replayOnlyScene =>
+      'Only the scene replays — recalling the word is for review';
+
+  @override
+  String get favEmpty =>
+      'Nothing yet. Star an experience while learning or replaying.';
+
+  @override
+  String get notesEmpty =>
+      'No notes yet. Use the More menu in a first-learn session to note the current sense.';
+
+  @override
+  String get prefTransferTimingHint =>
+      'Transfer is fixed before the reveal; this controls when experience-to-symbol is tested';
+
+  @override
+  String get prefBoundaryPerturbationHint =>
+      'Contrast / counter-example scenes crush wrong generalizations';
+
+  @override
+  String get prefSymbolRecallHint =>
+      'One scene-to-word retrieval after the reveal';
+
+  @override
+  String get prefAutoScaffoldRemovalHint =>
+      'Steps down to pure English as reviews accumulate';
+
+  @override
+  String get prefZhLabelBeforeRevealHint =>
+      'On = back to give-the-translation-first; off by default';
+
+  @override
+  String noteTitle(Object senseId) {
+    return 'Note · $senseId';
+  }
+
+  @override
+  String learnLoadError(Object errorMessage) {
+    return 'Failed to load: $errorMessage';
+  }
+
+  @override
+  String learnWordProgress(Object index, Object count) {
+    return 'Word $index / $count';
+  }
+
+  @override
+  String reviewDoneBody(Object gradedCount) {
+    return '$gradedCount review events written locally';
+  }
+
+  @override
+  String groupDoneBody(Object senseCount) {
+    return 'Experiences for $senseCount senses have been built';
+  }
+
+  @override
+  String mapLoadError(Object error) {
+    return 'Failed to load: $error';
+  }
+
+  @override
+  String mapBoundaryCriterion(Object diagnostic) {
+    return 'Criterion: $diagnostic';
+  }
+
+  @override
+  String libRecent7d(Object recentCount) {
+    return 'Past 7 days · $recentCount senses';
+  }
+
+  @override
+  String libReplayBody(Object learnedCount) {
+    return '$learnedCount sense experiences';
+  }
+
+  @override
+  String libPreviewBody(Object clamped) {
+    return '$clamped scenes';
+  }
+
+  @override
+  String libStudyListsBody(Object learnedCount) {
+    return '$learnedCount senses';
+  }
+
+  @override
+  String libAllLearnedBody(Object learnedCount) {
+    return '$learnedCount senses';
+  }
+
+  @override
+  String libConceptMapBody(Object catalogSize) {
+    return '$catalogSize senses';
+  }
+
+  @override
+  String libFavoritesBody(Object favoritesCount) {
+    return '$favoritesCount items';
+  }
+
+  @override
+  String libNotesBody(Object notesCount) {
+    return '$notesCount notes';
+  }
+
+  @override
+  String replayLoadError(Object error) {
+    return 'Failed to load: $error';
+  }
+
+  @override
+  String replayCounter(Object index, Object total) {
+    return 'Experience $index / $total';
+  }
+
+  @override
+  String previewLoadError(Object error) {
+    return 'Failed to load: $error';
+  }
+
+  @override
+  String learnedLoadError(Object error) {
+    return 'Failed to load: $error';
+  }
+
+  @override
+  String learnedReviewedN(Object reps) {
+    return 'Reviewed $reps times';
+  }
+
+  @override
+  String favLoadError(Object error) {
+    return 'Failed to load: $error';
+  }
+
+  @override
+  String notesLoadError(Object error) {
+    return 'Failed to load: $error';
+  }
+
+  @override
+  String studyLoadError(Object error) {
+    return 'Failed to load: $error';
+  }
+
+  @override
+  String studyLearned(Object learnedCount) {
+    return 'Learned $learnedCount';
+  }
+
+  @override
+  String studyCatalogSize(Object catalogSize) {
+    return 'Total senses $catalogSize';
+  }
+
+  @override
+  String studyDailyGoal(Object dailyGoal) {
+    return '$dailyGoal / day';
+  }
+
+  @override
+  String studyStreak(Object streakDays) {
+    return '$streakDays-day streak';
+  }
+
+  @override
+  String profileExperienceCount(Object count) {
+    return '$count experience scenes';
+  }
+
+  @override
+  String profileFsrsSummary(Object total) {
+    return 'FSRS state distribution · $total senses';
+  }
+
+  @override
+  String prefNewGroupSize(Object groupSize) {
+    return '$groupSize senses / group';
+  }
+
+  @override
+  String prefReviewGroupSize(Object groupSize) {
+    return '$groupSize senses / group';
+  }
 }

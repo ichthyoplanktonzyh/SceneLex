@@ -78,8 +78,9 @@ class StreakFreeze {
   final int nextCreditProgressUnits;
   final int nextCreditRequiredUnits;
 
-  int get unitsUntilNextCredit =>
-      availableCredits >= capacity ? 0 : unitsPerCredit - balanceUnits % unitsPerCredit;
+  int get unitsUntilNextCredit => availableCredits >= capacity
+      ? 0
+      : unitsPerCredit - balanceUnits % unitsPerCredit;
 }
 
 class StreakEvaluation {
@@ -103,16 +104,18 @@ int get _initialBalanceUnits =>
 int get _maximumBalanceUnits =>
     streakFreezeMaxCapacity * streakFreezeUnitsPerCredit;
 
-int _availableCredits(int balanceUnits) =>
-    math.min(streakFreezeMaxCapacity, balanceUnits ~/ streakFreezeUnitsPerCredit);
+int _availableCredits(int balanceUnits) => math.min(
+  streakFreezeMaxCapacity,
+  balanceUnits ~/ streakFreezeUnitsPerCredit,
+);
 
 class _StreakComputationState {
   _StreakComputationState()
-      : balanceUnits = _initialBalanceUnits,
-        currentStreakDays = 0,
-        longestStreakDays = 0,
-        hasActiveSegment = false,
-        lastEvaluatedDate = null;
+    : balanceUnits = _initialBalanceUnits,
+      currentStreakDays = 0,
+      longestStreakDays = 0,
+      hasActiveSegment = false,
+      lastEvaluatedDate = null;
 
   _StreakComputationState._raw({
     required this.balanceUnits,
@@ -155,7 +158,9 @@ _StreakComputationState _addReviewedDay(
         streakFreezeEarnedUnitsPerStreakDay,
     _maximumBalanceUnits,
   );
-  final currentStreakDays = state.hasActiveSegment ? state.currentStreakDays + 1 : 1;
+  final currentStreakDays = state.hasActiveSegment
+      ? state.currentStreakDays + 1
+      : 1;
   statesByDate[date] = StreakDayState.reviewed;
 
   return _StreakComputationState._raw(
@@ -225,8 +230,13 @@ _StreakComputationState _addNonReviewedDaysBeforeReview(
       ? nextReviewDate
       : shiftLocalDate(state.lastEvaluatedDate!, 1);
 
-  while (state.lastEvaluatedDate != null && currentDate.compareTo(nextReviewDate) < 0) {
-    currentState = _addNonReviewedCompletedDay(currentState, currentDate, statesByDate);
+  while (state.lastEvaluatedDate != null &&
+      currentDate.compareTo(nextReviewDate) < 0) {
+    currentState = _addNonReviewedCompletedDay(
+      currentState,
+      currentDate,
+      statesByDate,
+    );
     currentDate = shiftLocalDate(currentDate, 1);
   }
 
@@ -254,7 +264,11 @@ _StreakComputationState _addTrailingDaysThroughToday(
         lastEvaluatedDate: today,
       );
     } else {
-      currentState = _addNonReviewedCompletedDay(currentState, currentDate, statesByDate);
+      currentState = _addNonReviewedCompletedDay(
+        currentState,
+        currentDate,
+        statesByDate,
+      );
     }
     currentDate = shiftLocalDate(currentDate, 1);
   }
@@ -317,8 +331,9 @@ List<List<StreakWeekDay>> buildStreakWeeks(
   final todayDate = parseLocalDate(today);
   final dayOfWeek = todayDate.weekday % 7; // 0 = Sunday ... keep Monday start
   final offsetFromMonday = (dayOfWeek - 1 + 7) % 7;
-  final currentWeekStart =
-      formatLocalDate(todayDate.subtract(Duration(days: offsetFromMonday)));
+  final currentWeekStart = formatLocalDate(
+    todayDate.subtract(Duration(days: offsetFromMonday)),
+  );
 
   final weeks = <List<StreakWeekDay>>[];
   for (var w = streakWeekCount - 1; w >= 0; w--) {
@@ -326,15 +341,17 @@ List<List<StreakWeekDay>> buildStreakWeeks(
     final days = <StreakWeekDay>[];
     for (var d = 0; d < 7; d++) {
       final date = formatLocalDate(weekStart.add(Duration(days: d)));
-      days.add(StreakWeekDay(
-        date: date,
-        state: date.compareTo(today) > 0
-            ? StreakDayState.pending
-            : statesByDate[date] ?? StreakDayState.missed,
-        isFuture: date.compareTo(today) > 0,
-        isToday: date == today,
-        dayLabel: '${parseLocalDate(date).day}',
-      ));
+      days.add(
+        StreakWeekDay(
+          date: date,
+          state: date.compareTo(today) > 0
+              ? StreakDayState.pending
+              : statesByDate[date] ?? StreakDayState.missed,
+          isFuture: date.compareTo(today) > 0,
+          isToday: date == today,
+          dayLabel: '${parseLocalDate(date).day}',
+        ),
+      );
     }
     weeks.add(days);
   }
@@ -363,11 +380,11 @@ class DailyReviewPoint {
   int get reviewCount => againCount + hardCount + goodCount + easyCount;
 
   int countFor(ChartRatingKey rating) => switch (rating) {
-        ChartRatingKey.again => againCount,
-        ChartRatingKey.hard => hardCount,
-        ChartRatingKey.good => goodCount,
-        ChartRatingKey.easy => easyCount,
-      };
+    ChartRatingKey.again => againCount,
+    ChartRatingKey.hard => hardCount,
+    ChartRatingKey.good => goodCount,
+    ChartRatingKey.easy => easyCount,
+  };
 }
 
 /// Group local review events into per-day points (YYYY-MM-DD keys, device
@@ -375,8 +392,8 @@ class DailyReviewPoint {
 List<DailyReviewPoint> aggregateDailyReviews(List<LocalReviewEvent> events) {
   final byDate = <String, List<int>>{};
   for (final e in events) {
-    final date = e.reviewedLocalDate ??
-        formatLocalDate(e.reviewedAtClient.toLocal());
+    final date =
+        e.reviewedLocalDate ?? formatLocalDate(e.reviewedAtClient.toLocal());
     byDate.putIfAbsent(date, () => [0, 0, 0, 0]);
     final counts = byDate[date]!;
     final rating = e.rating.clamp(0, 3);
@@ -465,8 +482,12 @@ class ChartSelection {
 int _weekIndex(DateTime d) {
   final monday = d.subtract(Duration(days: ((d.weekday - 1 + 7) % 7)));
   // Use UTC calendar days to avoid timezone-offset drift when rebuilding.
-  return DateTime.utc(monday.year, monday.month, monday.day)
-      .millisecondsSinceEpoch ~/ Duration.millisecondsPerDay;
+  return DateTime.utc(
+        monday.year,
+        monday.month,
+        monday.day,
+      ).millisecondsSinceEpoch ~/
+      Duration.millisecondsPerDay;
 }
 
 double _chartUpperBound(List<DailyReviewPoint> points, ChartRatingKey? rating) {
@@ -497,8 +518,9 @@ List<ChartPage> buildChartPages(
   final pages = <ChartPage>[];
   for (final week in weekIndexes) {
     final monday = DateTime.fromMillisecondsSinceEpoch(
-        week * Duration.millisecondsPerDay,
-        isUtc: true).toLocal();
+      week * Duration.millisecondsPerDay,
+      isUtc: true,
+    ).toLocal();
     final byDate = {for (final p in byWeek[week]!) p.date: p};
     final days = <ChartDay>[];
     for (var d = 0; d < 7; d++) {
@@ -511,27 +533,32 @@ List<ChartPage> buildChartPages(
       if (point != null) {
         for (final rating in ChartRatingKey.values) {
           final count = point.countFor(rating);
-          if (count > 0 && (selectedRating == null || selectedRating == rating)) {
-            segments.add(ChartRatingSegment(
-              rating: rating,
-              count: count,
-              heightPercentage: display <= 0 ? 0 : count / display * 100,
-            ));
+          if (count > 0 &&
+              (selectedRating == null || selectedRating == rating)) {
+            segments.add(
+              ChartRatingSegment(
+                rating: rating,
+                count: count,
+                heightPercentage: display <= 0 ? 0 : count / display * 100,
+              ),
+            );
           }
         }
       }
-      days.add(ChartDay(
-        date: date,
-        reviewCount: point?.reviewCount ?? 0,
-        displayReviewCount: display,
-        barHeightPercentage: display <= 0 ? 0 : display / upperBound * 100,
-        segments: segments,
-        isToday: date == today,
-        weekdayLabel: _weekdayNarrow(parseLocalDate(date)),
-        dayLabel: '${parseLocalDate(date).day}',
-        monthLabel: _monthShort(parseLocalDate(date)),
-        showMonthLabel: d == 0,
-      ));
+      days.add(
+        ChartDay(
+          date: date,
+          reviewCount: point?.reviewCount ?? 0,
+          displayReviewCount: display,
+          barHeightPercentage: display <= 0 ? 0 : display / upperBound * 100,
+          segments: segments,
+          isToday: date == today,
+          weekdayLabel: _weekdayNarrow(parseLocalDate(date)),
+          dayLabel: '${parseLocalDate(date).day}',
+          monthLabel: _monthShort(parseLocalDate(date)),
+          showMonthLabel: d == 0,
+        ),
+      );
     }
     pages.add(ChartPage(days: days, upperBound: upperBound));
   }
@@ -583,33 +610,47 @@ List<ChartLegendItem> buildChartLegendItems(
 }
 
 String _weekdayNarrow(DateTime d) => switch (d.weekday) {
-      1 => 'M',
-      2 => 'T',
-      3 => 'W',
-      4 => 'T',
-      5 => 'F',
-      6 => 'S',
-      _ => 'S',
-    };
+  1 => 'M',
+  2 => 'T',
+  3 => 'W',
+  4 => 'T',
+  5 => 'F',
+  6 => 'S',
+  _ => 'S',
+};
 
 String _monthShort(DateTime d) => const [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-    ][d.month - 1];
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+][d.month - 1];
 
 // ---------------------------------------------------------------------------
 // Review schedule buckets
 // ---------------------------------------------------------------------------
 
 enum ScheduleBucket {
-  new_, today, days1To7, days8To30, days31To90, days91To360, years1To2, later
+  new_,
+  today,
+  days1To7,
+  days8To30,
+  days31To90,
+  days91To360,
+  years1To2,
+  later,
 }
 
 class ScheduleBucketView {
-  const ScheduleBucketView({
-    required this.bucket,
-    required this.count,
-  });
+  const ScheduleBucketView({required this.bucket, required this.count});
 
   final ScheduleBucket bucket;
   final int count;
@@ -630,17 +671,20 @@ DateTime _localDayStart(DateTime d) => DateTime(d.year, d.month, d.day);
 
 /// Bucket boundaries in UTC, derived from the device-local today (mirrors the
 /// backend SQL: today_start..later boundaries offset from the local date).
-ScheduleBucket bucketForDue(
-  DateTime? dueAtUtc,
-  DateTime localNow,
-) {
+ScheduleBucket bucketForDue(DateTime? dueAtUtc, DateTime localNow) {
   if (dueAtUtc == null) return ScheduleBucket.new_;
-  final tomorrowStart = _localDayStart(localNow.add(const Duration(days: 1))).toUtc();
+  final tomorrowStart = _localDayStart(
+    localNow.add(const Duration(days: 1)),
+  ).toUtc();
   final days8 = _localDayStart(localNow.add(const Duration(days: 8))).toUtc();
   final days31 = _localDayStart(localNow.add(const Duration(days: 31))).toUtc();
   final days91 = _localDayStart(localNow.add(const Duration(days: 91))).toUtc();
-  final days361 = _localDayStart(localNow.add(const Duration(days: 361))).toUtc();
-  final days721 = _localDayStart(localNow.add(const Duration(days: 721))).toUtc();
+  final days361 = _localDayStart(
+    localNow.add(const Duration(days: 361)),
+  ).toUtc();
+  final days721 = _localDayStart(
+    localNow.add(const Duration(days: 721)),
+  ).toUtc();
 
   final due = dueAtUtc.toUtc();
   if (due.isBefore(tomorrowStart)) return ScheduleBucket.today;
@@ -658,7 +702,8 @@ List<ScheduleBucketView> aggregateSchedule(
 ) {
   final counts = {for (final b in ScheduleBucket.values) b: 0};
   for (final s in states) {
-    counts[bucketForDue(s.dueAt, localNow)] = counts[bucketForDue(s.dueAt, localNow)]! + 1;
+    counts[bucketForDue(s.dueAt, localNow)] =
+        counts[bucketForDue(s.dueAt, localNow)]! + 1;
   }
   return [
     for (final b in ScheduleBucket.values)

@@ -75,4 +75,8 @@ class ReviewItem {
       ReviewItem(raw: Map<String, dynamic>.unmodifiable(json));
 
   final Map<String, dynamic> raw;
+
+  String? get id => raw['id'] as String?;
+  Map<String, dynamic>? get experience =>
+      raw['experience'] as Map<String, dynamic>?;
 }

@@ -6,7 +6,11 @@ import '../../l10n/gen/app_localizations.dart';
 /// Reviews card: stacked daily bar chart with week paging, day selection and
 /// rating legend filtering (mirrors the flashcards chart model).
 class ReviewsChartCard extends StatefulWidget {
-  const ReviewsChartCard({super.key, required this.dailyReviews, required this.today});
+  const ReviewsChartCard({
+    super.key,
+    required this.dailyReviews,
+    required this.today,
+  });
 
   final List<DailyReviewPoint> dailyReviews;
   final String today;
@@ -33,7 +37,11 @@ class _ReviewsChartCardState extends State<ReviewsChartCard> {
   }
 
   void _rebuildPages() {
-    _pages = buildChartPages(widget.dailyReviews, widget.today, _selection.rating);
+    _pages = buildChartPages(
+      widget.dailyReviews,
+      widget.today,
+      _selection.rating,
+    );
     if (_pages.isNotEmpty) {
       _pageIndex = _pages.length - 1;
     }
@@ -53,25 +61,27 @@ class _ReviewsChartCardState extends State<ReviewsChartCard> {
             Row(
               children: [
                 Expanded(
-                  child: Text(l10n.reviewsCardTitle,
-                      style: theme.textTheme.titleMedium),
+                  child: Text(
+                    l10n.reviewsCardTitle,
+                    style: theme.textTheme.titleMedium,
+                  ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.chevron_left),
                   onPressed: _pageIndex > 0
                       ? () => setState(() {
-                            _pageIndex--;
-                            _selection = const ChartSelection.none();
-                          })
+                          _pageIndex--;
+                          _selection = const ChartSelection.none();
+                        })
                       : null,
                 ),
                 IconButton(
                   icon: const Icon(Icons.chevron_right),
                   onPressed: _pageIndex < _pages.length - 1
                       ? () => setState(() {
-                            _pageIndex++;
-                            _selection = const ChartSelection.none();
-                          })
+                          _pageIndex++;
+                          _selection = const ChartSelection.none();
+                        })
                       : null,
                 ),
               ],
@@ -80,8 +90,10 @@ class _ReviewsChartCardState extends State<ReviewsChartCard> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 32),
                 child: Center(
-                  child: Text(l10n.progressNoData,
-                      style: theme.textTheme.bodySmall),
+                  child: Text(
+                    l10n.progressNoData,
+                    style: theme.textTheme.bodySmall,
+                  ),
                 ),
               )
             else
@@ -143,27 +155,39 @@ class _ChartView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           if (day.showMonthLabel)
-                            Text(day.monthLabel,
-                                style: theme.textTheme.labelSmall?.copyWith(
-                                    color: theme.colorScheme.outline)),
+                            Text(
+                              day.monthLabel,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.outline,
+                              ),
+                            ),
                           const SizedBox(height: 2),
                           Container(
                             width: double.infinity,
                             height: 110,
                             alignment: Alignment.bottomCenter,
-                            child: _DayBar(day: day, selected: selection.day == day.date),
+                            child: _DayBar(
+                              day: day,
+                              selected: selection.day == day.date,
+                            ),
                           ),
                           const SizedBox(height: 2),
-                          Text(day.weekdayLabel,
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                  fontSize: 10,
-                                  color: theme.colorScheme.outline)),
-                          Text(day.dayLabel,
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                  fontSize: 10,
-                                  color: day.isToday
-                                      ? theme.colorScheme.primary
-                                      : theme.colorScheme.outline)),
+                          Text(
+                            day.weekdayLabel,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              fontSize: 10,
+                              color: theme.colorScheme.outline,
+                            ),
+                          ),
+                          Text(
+                            day.dayLabel,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              fontSize: 10,
+                              color: day.isToday
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.outline,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -208,7 +232,12 @@ class _DayBar extends StatelessWidget {
               ? Theme.of(context).colorScheme.surfaceContainerHighest
               : Colors.transparent,
           borderRadius: BorderRadius.circular(4),
-          border: selected ? Border.all(color: Theme.of(context).colorScheme.primary, width: 1.5) : null,
+          border: selected
+              ? Border.all(
+                  color: Theme.of(context).colorScheme.primary,
+                  width: 1.5,
+                )
+              : null,
         ),
         child: height == 0
             ? null
@@ -217,7 +246,10 @@ class _DayBar extends StatelessWidget {
                 children: [
                   for (final segment in day.segments)
                     Expanded(
-                      flex: (segment.heightPercentage * 100).round().clamp(1, 1000000),
+                      flex: (segment.heightPercentage * 100).round().clamp(
+                        1,
+                        1000000,
+                      ),
                       child: Container(
                         decoration: BoxDecoration(
                           color: Color(chartRatingColors[segment.rating]!),
@@ -258,7 +290,9 @@ class _LegendChip extends StatelessWidget {
           ),
           child: Text(
             '${_ratingLabel(context, item.rating)} · ${item.count} (${item.percentageLabel})',
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(color: color),
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(color: color),
           ),
         ),
       ),

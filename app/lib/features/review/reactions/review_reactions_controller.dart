@@ -8,17 +8,15 @@ import 'power_mode_service.dart';
 import 'review_reaction.dart';
 
 class ReviewReactionsState {
-  const ReviewReactionsState({
-    required this.enabled,
-    this.events = const [],
-  });
+  const ReviewReactionsState({required this.enabled, this.events = const []});
 
   final bool enabled;
   final List<ReviewReactionEvent> events;
 }
 
-final powerModeStreamProvider = StreamProvider<bool>((ref) =>
-    PowerModeService.instance.changes);
+final powerModeStreamProvider = StreamProvider<bool>(
+  (ref) => PowerModeService.instance.changes,
+);
 
 /// Owns the active rating-reaction events and the "Review Animations"
 /// preference. Mirrors the reference: max 3 events on screen, random
@@ -29,8 +27,7 @@ class ReviewReactionsController extends Notifier<ReviewReactionsState> {
 
   final Map<String, Timer> _cleanupTimers = {};
 
-  bool get _lowPowerEnabled =>
-      ref.read(powerModeStreamProvider).value ?? false;
+  bool get _lowPowerEnabled => ref.read(powerModeStreamProvider).value ?? false;
 
   @override
   ReviewReactionsState build() {
@@ -65,8 +62,7 @@ class ReviewReactionsController extends Notifier<ReviewReactionsState> {
     if (!enabled) dismissAll();
   }
 
-  bool get _animationsEnabled =>
-      state.enabled && !_lowPowerEnabled;
+  bool get _animationsEnabled => state.enabled && !_lowPowerEnabled;
 
   /// Emits a reaction for a rating (0=Again … 3=Easy). No-op when the
   /// setting is off or the OS is in low power mode.
@@ -74,8 +70,10 @@ class ReviewReactionsController extends Notifier<ReviewReactionsState> {
     if (!_animationsEnabled) return;
     final reactionRating = makeReviewReactionRating(rating);
     final totalWeight = reviewReactionVariantTotalWeight(reactionRating);
-    final variant =
-        selectReviewReactionVariant(reactionRating, _randomRoll(totalWeight));
+    final variant = selectReviewReactionVariant(
+      reactionRating,
+      _randomRoll(totalWeight),
+    );
     final event = ReviewReactionEvent(
       id: _newEventId(),
       rating: reactionRating,
@@ -139,4 +137,5 @@ class ReviewReactionsController extends Notifier<ReviewReactionsState> {
 
 final reviewReactionsControllerProvider =
     NotifierProvider<ReviewReactionsController, ReviewReactionsState>(
-        ReviewReactionsController.new);
+      ReviewReactionsController.new,
+    );

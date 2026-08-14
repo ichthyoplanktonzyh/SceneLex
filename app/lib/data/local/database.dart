@@ -120,6 +120,58 @@ class LocalLists extends Table {
   Set<Column> get primaryKey => {listId};
 }
 
+/// Favorited experience units (my content → 场景收藏).
+class LocalFavorites extends Table {
+  TextColumn get experienceKey => text()();
+  TextColumn get programId => text()();
+  TextColumn get experienceUnitId => text()();
+  DateTimeColumn get createdAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {experienceKey};
+}
+
+/// Notes per sense/program (my content → 笔记, learn 更多菜单).
+class LocalNotes extends Table {
+  TextColumn get senseId => text()();
+  TextColumn get noteText => text()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {senseId};
+}
+
+/// Daily check-ins (home 签到), keyed by local YYYY-MM-DD.
+class LocalDailyCheckins extends Table {
+  TextColumn get dayKey => text()();
+  DateTimeColumn get checkedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {dayKey};
+}
+
+/// Completed study sessions (learn/review) for time-based stats.
+class LocalSessions extends Table {
+  TextColumn get sessionId => text()();
+  TextColumn get kind => text()();
+  DateTimeColumn get startedAt => dateTime()();
+  DateTimeColumn get endedAt => dateTime()();
+  IntColumn get durationSeconds => integer()();
+
+  @override
+  Set<Column> get primaryKey => {sessionId};
+}
+
+/// Server-sourced catalog snapshot (single row), overrides the bundled
+/// catalog once a newer server catalog has been observed.
+class LocalContentCatalog extends Table {
+  IntColumn get version => integer().withDefault(const Constant(1))();
+  TextColumn get json => text()();
+
+  @override
+  Set<Column> get primaryKey => {version};
+}
+
 @DriftDatabase(
   tables: [
     LocalLearningStates,
@@ -130,11 +182,17 @@ class LocalLists extends Table {
     LocalPrograms,
     LocalWorkspaceSettings,
     LocalLists,
+    LocalFavorites,
+    LocalNotes,
+    LocalDailyCheckins,
+    LocalSessions,
+    LocalContentCatalog,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase({QueryExecutor? executor})
-      : super(executor ??
+    : super(
+        executor ??
             driftDatabase(
               name: 'scenelex',
               // Web assets (sqlite3.wasm + drift_worker.js) live in web/.
@@ -143,26 +201,34 @@ class AppDatabase extends _$AppDatabase {
                 sqlite3Wasm: Uri.parse('sqlite3.wasm'),
                 driftWorker: Uri.parse('drift_worker.js'),
               ),
-            ));
+            ),
+      );
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onUpgrade: (migrator, from, to) async {
-          if (from < 2) {
-            await migrator.addColumn(
-              localReviewEvents,
-              localReviewEvents.reviewedLocalDate,
-            );
-          }
-          if (from < 3) {
-            await migrator.createTable(localLists);
-          }
-        },
-        beforeOpen: (details) async {
-          await customStatement('PRAGMA foreign_keys = ON');
-        },
-      );
+    onUpgrade: (migrator, from, to) async {
+      if (from < 2) {
+        await migrator.addColumn(
+          localReviewEvents,
+          localReviewEvents.reviewedLocalDate,
+        );
+      }
+      if (from < 3) {
+        await migrator.createTable(localLists);
+      }
+      if (from < 4) {
+        await migrator.createTable(localFavorites);
+        await migrator.createTable(localNotes);
+        await migrator.createTable(localDailyCheckins);
+        await migrator.createTable(localSessions);
+        await migrator.createTable(localContentCatalog);
+      }
+    },
+    beforeOpen: (details) async {
+      await customStatement('PRAGMA foreign_keys = ON');
+    },
+  );
 }

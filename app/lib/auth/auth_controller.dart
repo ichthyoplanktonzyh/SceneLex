@@ -52,13 +52,16 @@ class AuthController extends Notifier<AuthState> {
     client.token = token;
     client.refreshToken = prefs.getString(_refreshTokenKey);
     final expiresAt = prefs.getString(_tokenExpiresAtKey);
-    client.tokenExpiresAt =
-        expiresAt == null ? null : DateTime.tryParse(expiresAt)?.toUtc();
+    client.tokenExpiresAt = expiresAt == null
+        ? null
+        : DateTime.tryParse(expiresAt)?.toUtc();
     return prefs.getString('auth_email');
   }
 
   Future<void> sendCode(String email) async {
-    await ref.read(apiClientProvider).post('/auth/send-code', body: {'email': email});
+    await ref
+        .read(apiClientProvider)
+        .post('/auth/send-code', body: {'email': email});
   }
 
   Future<void> verifyCode(String email, String code) async {
@@ -69,15 +72,17 @@ class AuthController extends Notifier<AuthState> {
     final client = ref.read(apiClientProvider);
     client.token = session.idToken;
     client.refreshToken = session.refreshToken;
-    client.tokenExpiresAt = DateTime.now()
-        .toUtc()
-        .add(Duration(seconds: session.expiresIn));
+    client.tokenExpiresAt = DateTime.now().toUtc().add(
+      Duration(seconds: session.expiresIn),
+    );
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_tokenKey, session.idToken);
     await prefs.setString(_refreshTokenKey, session.refreshToken);
     await prefs.setString(
-        _tokenExpiresAtKey, client.tokenExpiresAt!.toIso8601String());
+      _tokenExpiresAtKey,
+      client.tokenExpiresAt!.toIso8601String(),
+    );
     await prefs.setString('auth_email', session.email);
 
     state = AuthState(status: AuthStatus.signedIn, email: session.email);
@@ -95,8 +100,10 @@ class AuthController extends Notifier<AuthState> {
       final refreshToken = client.refreshToken;
       if (refreshToken != null && refreshToken.isNotEmpty) {
         try {
-          await client.post('/auth/revoke-token',
-              body: {'refreshToken': refreshToken});
+          await client.post(
+            '/auth/revoke-token',
+            body: {'refreshToken': refreshToken},
+          );
         } catch (_) {
           // Revocation is best effort; local cleanup proceeds regardless.
         }
@@ -118,5 +125,6 @@ class AuthController extends Notifier<AuthState> {
   }
 }
 
-final authControllerProvider =
-    NotifierProvider<AuthController, AuthState>(AuthController.new);
+final authControllerProvider = NotifierProvider<AuthController, AuthState>(
+  AuthController.new,
+);

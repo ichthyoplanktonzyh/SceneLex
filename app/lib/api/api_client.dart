@@ -15,7 +15,7 @@ final apiClientProvider = Provider<ApiClient>((ref) => ApiClient());
 ///  - when a refresh fails, [onSessionExpired] is invoked (sign-out flow).
 class ApiClient {
   ApiClient({String? baseUrl, this.onSessionExpired})
-      : baseUrl = baseUrl ?? 'http://127.0.0.1:8081/v1';
+    : baseUrl = baseUrl ?? 'http://127.0.0.1:8081/v1';
 
   /// Mutable so the integration harness can simulate connectivity loss by
   /// pointing it at an unreachable endpoint.
@@ -35,9 +35,9 @@ class ApiClient {
   static const _refreshLeadSeconds = 300;
 
   Map<String, String> get _headers => {
-        'Content-Type': 'application/json',
-        if (token != null) 'Authorization': 'Bearer $token',
-      };
+    'Content-Type': 'application/json',
+    if (token != null) 'Authorization': 'Bearer $token',
+  };
 
   Future<Map<String, dynamic>> get(String path) async {
     await _ensureFreshToken();
@@ -48,8 +48,10 @@ class ApiClient {
     return _decode(res);
   }
 
-  Future<Map<String, dynamic>> post(String path,
-      {Map<String, dynamic>? body}) async {
+  Future<Map<String, dynamic>> post(
+    String path, {
+    Map<String, dynamic>? body,
+  }) async {
     await _ensureFreshToken();
     final uri = Uri.parse('$baseUrl$path');
     var res = await http.post(
@@ -125,8 +127,7 @@ class ApiClient {
     final decoded = jsonDecode(res.body) as Map<String, dynamic>;
     token = decoded['idToken'] as String;
     final expiresIn = (decoded['expiresIn'] as num).toInt();
-    tokenExpiresAt =
-        DateTime.now().toUtc().add(Duration(seconds: expiresIn));
+    tokenExpiresAt = DateTime.now().toUtc().add(Duration(seconds: expiresIn));
   }
 
   /// Best-effort extraction of the structured error fields
@@ -145,7 +146,9 @@ class ApiClient {
   }
 
   Map<String, dynamic> _decode(http.Response res) {
-    final decoded = res.body.isEmpty ? <String, dynamic>{} : jsonDecode(res.body);
+    final decoded = res.body.isEmpty
+        ? <String, dynamic>{}
+        : jsonDecode(res.body);
     if (res.statusCode >= 200 && res.statusCode < 300) {
       return decoded is Map<String, dynamic> ? decoded : <String, dynamic>{};
     }

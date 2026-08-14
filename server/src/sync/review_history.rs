@@ -18,7 +18,21 @@ pub async fn process_review_history_pull(
 ) -> Result<Value, sqlx::Error> {
     let limit = req.limit.clamp(1, 500);
 
-    let rows = sqlx::query_as::<_, (i64, Uuid, Uuid, i32, Uuid, i16, chrono::DateTime<chrono::Utc>, chrono::DateTime<chrono::Utc>, Option<String>, Option<chrono::NaiveDate>)>(
+    let rows = sqlx::query_as::<
+        _,
+        (
+            i64,
+            Uuid,
+            String,
+            i32,
+            String,
+            i16,
+            chrono::DateTime<chrono::Utc>,
+            chrono::DateTime<chrono::Utc>,
+            Option<String>,
+            Option<chrono::NaiveDate>,
+        ),
+    >(
         "SELECT review_sequence, review_event_id, word_sense_id, program_version,
                 experience_unit_id, rating, reviewed_at_client, reviewed_at_server,
                 reviewed_time_zone, reviewed_local_date
@@ -38,7 +52,19 @@ pub async fn process_review_history_pull(
 
     let mut next_sequence = req.after_review_sequence_id;
     let mut events: Vec<Value> = Vec::with_capacity(rows.len());
-    for (sequence, event_id, word_sense_id, program_version, unit_id, rating, at_client, at_server, tz, local_date) in rows {
+    for (
+        sequence,
+        event_id,
+        word_sense_id,
+        program_version,
+        unit_id,
+        rating,
+        at_client,
+        at_server,
+        tz,
+        local_date,
+    ) in rows
+    {
         next_sequence = sequence;
         events.push(json!({
             "reviewEventId": event_id,

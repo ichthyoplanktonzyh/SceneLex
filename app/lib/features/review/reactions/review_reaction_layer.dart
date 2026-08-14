@@ -87,8 +87,8 @@ class _ReviewReactionEventViewState extends State<_ReviewReactionEventView>
       animation: _controller,
       builder: (context, _) {
         final progress = _controller.value;
-        final side = _shortestSide *
-            reviewReactionFrameScale(widget.event.variant);
+        final side =
+            _shortestSide * reviewReactionFrameScale(widget.event.variant);
         return Opacity(
           // Reference fade: in over the first 10%, out over the last 22%.
           opacity: reviewReactionOpacity(progress),

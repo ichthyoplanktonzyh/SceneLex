@@ -77,9 +77,27 @@ class ReviewSchedule {
 // ---------------------------------------------------------------------------
 
 const List<double> _defaultW = [
-  0.212, 1.2931, 2.3065, 8.2956, 6.4133, 0.8334, 3.0194, 0.001, 1.8722,
-  0.1666, 0.796, 1.4835, 0.0614, 0.2629, 1.6483, 0.6014, 1.8729, 0.5425,
-  0.0912, 0.0658, 0.1542,
+  0.212,
+  1.2931,
+  2.3065,
+  8.2956,
+  6.4133,
+  0.8334,
+  3.0194,
+  0.001,
+  1.8722,
+  0.1666,
+  0.796,
+  1.4835,
+  0.0614,
+  0.2629,
+  1.6483,
+  0.6014,
+  1.8729,
+  0.5425,
+  0.0912,
+  0.0658,
+  0.1542,
 ];
 
 const double _sMin = 0.001;
@@ -92,7 +110,6 @@ double get _factor =>
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
 
 double _roundTo8(double value) => (value * 1e8).round() / 1e8;
 
@@ -108,13 +125,18 @@ int _dateDiffInDays(DateTime lastReviewedAt, DateTime now) {
   if (now.isBefore(lastReviewedAt)) {
     throw StateError('Review timestamp moved backwards');
   }
-  final last = DateTime.utc(lastReviewedAt.year, lastReviewedAt.month, lastReviewedAt.day);
+  final last = DateTime.utc(
+    lastReviewedAt.year,
+    lastReviewedAt.month,
+    lastReviewedAt.day,
+  );
   final nowDay = DateTime.utc(now.year, now.month, now.day);
   return nowDay.difference(last).inDays;
 }
 
-double _getIntervalModifier(double requestRetention) =>
-    _roundTo8((math.pow(requestRetention, 1 / _decay).toDouble() - 1) / _factor);
+double _getIntervalModifier(double requestRetention) => _roundTo8(
+  (math.pow(requestRetention, 1 / _decay).toDouble() - 1) / _factor,
+);
 
 String _formatSeedNumber(double value) {
   if (value == 0) return '0';
@@ -125,8 +147,8 @@ int _gradeOf(ReviewRating rating) => rating.index + 1;
 
 List<int> _getStepsForState(SchedulerSettings settings, FsrsCardState state) =>
     (state == FsrsCardState.relearning || state == FsrsCardState.review)
-        ? settings.relearningStepsMinutes
-        : settings.learningStepsMinutes;
+    ? settings.relearningStepsMinutes
+    : settings.learningStepsMinutes;
 
 int _getCurrentStepIndex(ScheduleState state) => state.stepIndex ?? 0;
 
@@ -144,7 +166,10 @@ int _getHardStepMinutes(List<int> steps) {
 }
 
 ({int? scheduledMinutes, int nextStepIndex}) _getLearningStepResult(
-    SchedulerSettings settings, ScheduleState state, int grade) {
+  SchedulerSettings settings,
+  ScheduleState state,
+  int grade,
+) {
   final steps = _getStepsForState(settings, state.state);
   final strategyStepIndex = _getLearningStrategyStepIndex(state, grade);
 
@@ -179,8 +204,9 @@ double _initDifficulty(int grade) =>
     _roundTo8(_defaultW[4] - math.exp((grade - 1) * _defaultW[5]) + 1);
 
 double _meanReversion(double initialDifficulty, double currentDifficulty) =>
-    _roundTo8(_defaultW[7] * initialDifficulty +
-        (1 - _defaultW[7]) * currentDifficulty);
+    _roundTo8(
+      _defaultW[7] * initialDifficulty + (1 - _defaultW[7]) * currentDifficulty,
+    );
 
 double _linearDamping(double deltaDifficulty, double difficulty) =>
     _roundTo8(deltaDifficulty * (10 - difficulty) / 9);
@@ -191,44 +217,57 @@ double _nextDifficulty(double difficulty, int grade) {
   return _clamp(_meanReversion(_initDifficulty(4), next), 1, 10);
 }
 
-double _forgettingCurve(int elapsedDays, double stability) =>
-    _roundTo8(math.pow(1 + _factor * elapsedDays / stability, _decay).toDouble());
+double _forgettingCurve(int elapsedDays, double stability) => _roundTo8(
+  math.pow(1 + _factor * elapsedDays / stability, _decay).toDouble(),
+);
 
 double _nextRecallStability(
-    double difficulty, double stability, double retrievability, int grade) {
+  double difficulty,
+  double stability,
+  double retrievability,
+  int grade,
+) {
   final hardPenalty = grade == 2 ? _defaultW[15] : 1.0;
   final easyBound = grade == 4 ? _defaultW[16] : 1.0;
-  return _roundTo8(_clamp(
-    stability *
-        (1 +
-            math.exp(_defaultW[8]) *
-                (11 - difficulty) *
-                math.pow(stability, -_defaultW[9]).toDouble() *
-                (math.exp((1 - retrievability) * _defaultW[10]) - 1) *
-                hardPenalty *
-                easyBound),
-    _sMin,
-    36500,
-  ));
+  return _roundTo8(
+    _clamp(
+      stability *
+          (1 +
+              math.exp(_defaultW[8]) *
+                  (11 - difficulty) *
+                  math.pow(stability, -_defaultW[9]).toDouble() *
+                  (math.exp((1 - retrievability) * _defaultW[10]) - 1) *
+                  hardPenalty *
+                  easyBound),
+      _sMin,
+      36500,
+    ),
+  );
 }
 
 double _nextForgetStability(
-    double difficulty, double stability, double retrievability) {
-  return _roundTo8(_clamp(
-    _defaultW[11] *
-        math.pow(difficulty, -_defaultW[12]).toDouble() *
-        (math.pow(stability + 1, _defaultW[13]).toDouble() - 1) *
-        math.exp((1 - retrievability) * _defaultW[14]),
-    _sMin,
-    36500,
-  ));
+  double difficulty,
+  double stability,
+  double retrievability,
+) {
+  return _roundTo8(
+    _clamp(
+      _defaultW[11] *
+          math.pow(difficulty, -_defaultW[12]).toDouble() *
+          (math.pow(stability + 1, _defaultW[13]).toDouble() - 1) *
+          math.exp((1 - retrievability) * _defaultW[14]),
+      _sMin,
+      36500,
+    ),
+  );
 }
 
 ({double w17, double w18}) _getShortTermWeights(SchedulerSettings settings) {
   if (settings.relearningStepsMinutes.length <= 1) {
     return (w17: _defaultW[17], w18: _defaultW[18]);
   }
-  final value = -(math.log(_defaultW[11]) +
+  final value =
+      -(math.log(_defaultW[11]) +
           math.log(math.pow(2, _defaultW[13]).toDouble() - 1) +
           _defaultW[14] * 0.3) /
       settings.relearningStepsMinutes.length;
@@ -240,9 +279,13 @@ double _nextForgetStability(
 }
 
 double _nextShortTermStability(
-    double stability, int grade, SchedulerSettings settings) {
+  double stability,
+  int grade,
+  SchedulerSettings settings,
+) {
   final weights = _getShortTermWeights(settings);
-  final sinc = math.pow(stability, -_defaultW[19]).toDouble() *
+  final sinc =
+      math.pow(stability, -_defaultW[19]).toDouble() *
       math.exp(weights.w17 * (grade - 3 + weights.w18));
   final masked = grade >= 3 ? math.max(sinc, 1) : sinc;
   return _roundTo8(_clamp(stability * masked, _sMin, 36500));
@@ -255,22 +298,32 @@ double _nextShortTermStability(
     );
 
 ({double stability, double difficulty}) _computeNextShortTermMemoryState(
-    ({double stability, double difficulty}) memory, int grade, SchedulerSettings settings) =>
-    (
-      stability: _nextShortTermStability(memory.stability, grade, settings),
-      difficulty: _nextDifficulty(memory.difficulty, grade),
-    );
+  ({double stability, double difficulty}) memory,
+  int grade,
+  SchedulerSettings settings,
+) => (
+  stability: _nextShortTermStability(memory.stability, grade, settings),
+  difficulty: _nextDifficulty(memory.difficulty, grade),
+);
 
 ({double stability, double difficulty}) _computeNextReviewMemoryState(
-    ({double stability, double difficulty}) memory,
-    int elapsedDays,
-    int grade,
-    SchedulerSettings settings) {
+  ({double stability, double difficulty}) memory,
+  int elapsedDays,
+  int grade,
+  SchedulerSettings settings,
+) {
   final retrievability = _forgettingCurve(elapsedDays, memory.stability);
   final afterSuccess = _nextRecallStability(
-      memory.difficulty, memory.stability, retrievability, grade);
-  final afterFailure =
-      _nextForgetStability(memory.difficulty, memory.stability, retrievability);
+    memory.difficulty,
+    memory.stability,
+    retrievability,
+    grade,
+  );
+  final afterFailure = _nextForgetStability(
+    memory.difficulty,
+    memory.stability,
+    retrievability,
+  );
 
   var nextStability = afterSuccess;
   if (grade == 1) {
@@ -284,9 +337,17 @@ double _nextShortTermStability(
   );
 }
 
-({int min, int max}) _getFuzzRange(int interval, int elapsedDays, int maximumInterval) {
+({int min, int max}) _getFuzzRange(
+  int interval,
+  int elapsedDays,
+  int maximumInterval,
+) {
   var delta = 1.0;
-  const ranges = [(2.5, 7.0, 0.15), (7.0, 20.0, 0.1), (20.0, double.infinity, 0.05)];
+  const ranges = [
+    (2.5, 7.0, 0.15),
+    (7.0, 20.0, 0.1),
+    (20.0, double.infinity, 0.05),
+  ];
   for (final (start, end, factor) in ranges) {
     // Rust `f64 as i64` saturates at i64::MAX; emulate with a non-finite guard.
     final boundedEnd = end.isFinite ? end.truncate() : interval;
@@ -294,7 +355,10 @@ double _nextShortTermStability(
   }
   final clampedInterval = math.min(interval, maximumInterval);
   var minInterval = math.max((clampedInterval - delta).round(), 2);
-  final maxInterval = math.min((clampedInterval + delta).round(), maximumInterval);
+  final maxInterval = math.min(
+    (clampedInterval + delta).round(),
+    maximumInterval,
+  );
   if (clampedInterval > elapsedDays) {
     minInterval = math.max(minInterval, elapsedDays + 1);
   }
@@ -305,12 +369,18 @@ double _nextShortTermStability(
 String _getIntervalSeed(DateTime now, int reps, double? memoryProduct) =>
     '${now.millisecondsSinceEpoch}_${reps}_${_formatSeedNumber(memoryProduct ?? 0)}';
 
-int _nextInterval(double stability, int elapsedDays, SchedulerSettings settings,
-    String intervalSeed) {
+int _nextInterval(
+  double stability,
+  int elapsedDays,
+  SchedulerSettings settings,
+  String intervalSeed,
+) {
   final modifier = _getIntervalModifier(settings.desiredRetention);
-  final raw =
-      _clamp((stability * modifier).roundToDouble(), 1, settings.maximumIntervalDays.toDouble())
-          .round();
+  final raw = _clamp(
+    (stability * modifier).roundToDouble(),
+    1,
+    settings.maximumIntervalDays.toDouble(),
+  ).round();
 
   if (!settings.enableFuzz || raw < 3) return raw;
 
@@ -349,21 +419,29 @@ int _nextInterval(double stability, int elapsedDays, SchedulerSettings settings,
 }
 
 ReviewSchedule _buildShortTermSchedule(
-    ScheduleState state,
-    ({double stability, double difficulty}) nextMemory,
-    ReviewRating rating,
-    DateTime now,
-    int reps,
-    int lapses,
-    SchedulerSettings settings,
-    FsrsCardState nextState,
-    int elapsedDays,
-    String intervalSeed) {
+  ScheduleState state,
+  ({double stability, double difficulty}) nextMemory,
+  ReviewRating rating,
+  DateTime now,
+  int reps,
+  int lapses,
+  SchedulerSettings settings,
+  FsrsCardState nextState,
+  int elapsedDays,
+  String intervalSeed,
+) {
   final grade = _gradeOf(rating);
   final step = _getLearningStepResult(settings, state, grade);
   if (step.scheduledMinutes == null) {
-    return _buildGraduatedReviewSchedule(nextMemory, now, reps, lapses, settings,
-        elapsedDays, intervalSeed);
+    return _buildGraduatedReviewSchedule(
+      nextMemory,
+      now,
+      reps,
+      lapses,
+      settings,
+      elapsedDays,
+      intervalSeed,
+    );
   }
   return ReviewSchedule(
     dueAt: _addMinutes(now, step.scheduledMinutes!),
@@ -379,15 +457,20 @@ ReviewSchedule _buildShortTermSchedule(
 }
 
 ReviewSchedule _buildGraduatedReviewSchedule(
-    ({double stability, double difficulty}) nextMemory,
-    DateTime now,
-    int reps,
-    int lapses,
-    SchedulerSettings settings,
-    int elapsedDays,
-    String intervalSeed) {
-  final scheduledDays =
-      _nextInterval(nextMemory.stability, elapsedDays, settings, intervalSeed);
+  ({double stability, double difficulty}) nextMemory,
+  DateTime now,
+  int reps,
+  int lapses,
+  SchedulerSettings settings,
+  int elapsedDays,
+  String intervalSeed,
+) {
+  final scheduledDays = _nextInterval(
+    nextMemory.stability,
+    elapsedDays,
+    settings,
+    intervalSeed,
+  );
   return ReviewSchedule(
     dueAt: _addDays(now, scheduledDays),
     reps: reps,
@@ -402,42 +485,48 @@ ReviewSchedule _buildGraduatedReviewSchedule(
 }
 
 ReviewSchedule _buildReviewSuccessSchedule(
-    DateTime now,
-    int reps,
-    int lapses,
-    SchedulerSettings settings,
-    int elapsedDays,
-    ({double stability, double difficulty}) hardMemory,
-    ({double stability, double difficulty}) goodMemory,
-    ({double stability, double difficulty}) easyMemory,
-    ReviewRating rating,
-    String intervalSeed) {
-  var hardInterval =
-      _nextInterval(hardMemory.stability, elapsedDays, settings, intervalSeed);
-  var goodInterval =
-      _nextInterval(goodMemory.stability, elapsedDays, settings, intervalSeed);
+  DateTime now,
+  int reps,
+  int lapses,
+  SchedulerSettings settings,
+  int elapsedDays,
+  ({double stability, double difficulty}) hardMemory,
+  ({double stability, double difficulty}) goodMemory,
+  ({double stability, double difficulty}) easyMemory,
+  ReviewRating rating,
+  String intervalSeed,
+) {
+  var hardInterval = _nextInterval(
+    hardMemory.stability,
+    elapsedDays,
+    settings,
+    intervalSeed,
+  );
+  var goodInterval = _nextInterval(
+    goodMemory.stability,
+    elapsedDays,
+    settings,
+    intervalSeed,
+  );
   hardInterval = math.min(hardInterval, goodInterval);
   goodInterval = math.max(goodInterval, hardInterval + 1);
   final easyInterval = math.max(
-      _nextInterval(easyMemory.stability, elapsedDays, settings, intervalSeed),
-      goodInterval + 1);
+    _nextInterval(easyMemory.stability, elapsedDays, settings, intervalSeed),
+    goodInterval + 1,
+  );
 
   final (dueAt, memory, scheduledDays) = switch (rating) {
     ReviewRating.hard => (
-        _addDays(now, hardInterval),
-        hardMemory,
-        hardInterval,
-      ),
+      _addDays(now, hardInterval),
+      hardMemory,
+      hardInterval,
+    ),
     ReviewRating.good => (
-        _addDays(now, goodInterval),
-        goodMemory,
-        goodInterval,
-      ),
-    _ => (
-        _addDays(now, easyInterval),
-        easyMemory,
-        easyInterval,
-      ),
+      _addDays(now, goodInterval),
+      goodMemory,
+      goodInterval,
+    ),
+    _ => (_addDays(now, easyInterval), easyMemory, easyInterval),
   };
 
   return ReviewSchedule(
@@ -454,46 +543,99 @@ ReviewSchedule _buildReviewSuccessSchedule(
 }
 
 /// Compute the next scheduler state for one review.
-ReviewSchedule computeReviewSchedule(ScheduleState state,
-    SchedulerSettings settings, ReviewRating rating, DateTime now) {
+ReviewSchedule computeReviewSchedule(
+  ScheduleState state,
+  SchedulerSettings settings,
+  ReviewRating rating,
+  DateTime now,
+) {
   final memory = _getMemoryState(state);
   final grade = _gradeOf(rating);
   final elapsedDays = state.lastReviewedAt == null
       ? 0
       : _dateDiffInDays(state.lastReviewedAt!, now);
   final reps = state.reps + 1;
-  final lapses = rating == ReviewRating.again && state.state == FsrsCardState.review
+  final lapses =
+      rating == ReviewRating.again && state.state == FsrsCardState.review
       ? state.lapses + 1
       : state.lapses;
-  final intervalSeed =
-      _getIntervalSeed(now, reps, memory == null ? null : memory.stability * memory.difficulty);
+  final intervalSeed = _getIntervalSeed(
+    now,
+    reps,
+    memory == null ? null : memory.stability * memory.difficulty,
+  );
 
   if (state.state == FsrsCardState.new_) {
     final nextMemory = _createInitialMemoryState(grade);
-    return _buildShortTermSchedule(state, nextMemory, rating, now, reps, lapses,
-        settings, FsrsCardState.learning, 0, intervalSeed);
+    return _buildShortTermSchedule(
+      state,
+      nextMemory,
+      rating,
+      now,
+      reps,
+      lapses,
+      settings,
+      FsrsCardState.learning,
+      0,
+      intervalSeed,
+    );
   }
 
   final m = memory!;
   if (state.state == FsrsCardState.learning ||
       state.state == FsrsCardState.relearning) {
     final nextMemory = _computeNextShortTermMemoryState(m, grade, settings);
-    return _buildShortTermSchedule(state, nextMemory, rating, now, reps, lapses,
-        settings, state.state, elapsedDays, intervalSeed);
+    return _buildShortTermSchedule(
+      state,
+      nextMemory,
+      rating,
+      now,
+      reps,
+      lapses,
+      settings,
+      state.state,
+      elapsedDays,
+      intervalSeed,
+    );
   }
 
-  final againMemory = _computeNextReviewMemoryState(m, elapsedDays, 1, settings);
+  final againMemory = _computeNextReviewMemoryState(
+    m,
+    elapsedDays,
+    1,
+    settings,
+  );
   final hardMemory = _computeNextReviewMemoryState(m, elapsedDays, 2, settings);
   final goodMemory = _computeNextReviewMemoryState(m, elapsedDays, 3, settings);
   final easyMemory = _computeNextReviewMemoryState(m, elapsedDays, 4, settings);
 
   if (rating == ReviewRating.again) {
-    return _buildShortTermSchedule(state, againMemory, rating, now, reps, lapses,
-        settings, FsrsCardState.relearning, elapsedDays, intervalSeed);
+    return _buildShortTermSchedule(
+      state,
+      againMemory,
+      rating,
+      now,
+      reps,
+      lapses,
+      settings,
+      FsrsCardState.relearning,
+      elapsedDays,
+      intervalSeed,
+    );
   }
 
-  return _buildReviewSuccessSchedule(now, reps, lapses, settings, elapsedDays,
-      hardMemory, goodMemory, easyMemory, rating, intervalSeed);
+  return _buildReviewSuccessSchedule(
+    now,
+    reps,
+    lapses,
+    settings,
+    elapsedDays,
+    hardMemory,
+    goodMemory,
+    easyMemory,
+    rating,
+    intervalSeed,
+  );
 }
 
 // ---------------------------------------------------------------------------

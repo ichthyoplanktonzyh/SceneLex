@@ -51,9 +51,7 @@ pub fn issue(user: &AuthUser, secret: &str) -> String {
 
 /// Verify and decode a bearer token.
 pub fn verify(token: &str, secret: &str) -> Result<AuthUser, TokenError> {
-    let (encoded, signature) = token
-        .split_once('.')
-        .ok_or(TokenError::Malformed)?;
+    let (encoded, signature) = token.split_once('.').ok_or(TokenError::Malformed)?;
 
     let expected = sign(encoded, secret);
     // Constant-time comparison via hmac crate internals is overkill here;

@@ -54,7 +54,15 @@ pub async fn process_bootstrap(
         return bootstrap_push(pool, workspace_id, user, req, bootstrap_hot_change_id).await;
     }
 
-    bootstrap_pull(pool, workspace_id, user, req, bootstrap_hot_change_id, remote_is_empty).await
+    bootstrap_pull(
+        pool,
+        workspace_id,
+        user,
+        req,
+        bootstrap_hot_change_id,
+        remote_is_empty,
+    )
+    .await
 }
 
 /// pull mode: paged full snapshot ordered by (rank, entity_id).
@@ -69,16 +77,13 @@ async fn bootstrap_pull(
 ) -> Result<Value, sqlx::Error> {
     let limit = req.limit.unwrap_or(1000).clamp(1, 1000);
     let (rank, after_id) = match &req.cursor {
-        None => (0i32, Uuid::nil()),
+        None => (0i32, String::new()),
         Some(c) => {
             let parts: Vec<&str> = c.split(':').collect();
             if parts.len() == 2 {
-                (
-                    parts[0].parse().unwrap_or(0),
-                    Uuid::parse_str(parts[1]).unwrap_or(Uuid::nil()),
-                )
+                (parts[0].parse().unwrap_or(0), parts[1].to_string())
             } else {
-                (0i32, Uuid::nil())
+                (0i32, String::new())
             }
         }
     };
@@ -90,7 +95,7 @@ async fn bootstrap_pull(
     let mut current_after = after_id;
 
     // Rank 0: workspace scheduler settings (emitted once per bootstrap).
-    if current_rank == 0 && current_after == Uuid::nil() {
+    if current_rank == 0 && current_after.is_empty() {
         let settings = entities::workspace_settings_snapshot(pool, workspace_id).await?;
         entries.push(json!({
             "entityType": "workspace_scheduler_settings",
@@ -99,13 +104,13 @@ async fn bootstrap_pull(
             "payload": settings,
         }));
         current_rank = 1;
-        current_after = Uuid::nil();
+        current_after = String::new();
     }
 
     // Rank 1: learning states (keyset by word_sense_id).
     if entries.len() < limit as usize && current_rank <= 1 {
         let want = (limit as usize - entries.len()) as i64 + 1;
-        let rows = sqlx::query_as::<_, (Uuid,)>(
+        let rows = sqlx::query_as::<_, (String,)>(
             "SELECT word_sense_id
              FROM content.learning_states
              WHERE workspace_id = $1 AND user_id = $2 AND deleted_at IS NULL
@@ -115,16 +120,20 @@ async fn bootstrap_pull(
         )
         .bind(workspace_id)
         .bind(user.user_id)
-        .bind(current_after)
+        .bind(&current_after)
         .bind(want)
         .fetch_all(pool)
         .await?;
 
         has_more = rows.len() as i64 > want - 1;
-        let rows = rows.into_iter().take((want - 1) as usize).collect::<Vec<_>>();
+        let rows = rows
+            .into_iter()
+            .take((want - 1) as usize)
+            .collect::<Vec<_>>();
         for (word_sense_id,) in &rows {
             if let Some(payload) =
-                entities::learning_state_snapshot(pool, workspace_id, user.user_id, *word_sense_id).await?
+                entities::learning_state_snapshot(pool, workspace_id, user.user_id, word_sense_id)
+                    .await?
             {
                 entries.push(json!({
                     "entityType": "learning_state",
@@ -140,7 +149,7 @@ async fn bootstrap_pull(
             }
         } else {
             current_rank = 2;
-            current_after = Uuid::nil();
+            current_after = String::new();
         }
     }
 
@@ -156,15 +165,18 @@ async fn bootstrap_pull(
              LIMIT $3",
         )
         .bind(workspace_id)
-        .bind(current_after)
+        .bind(Uuid::parse_str(&current_after).unwrap_or(Uuid::nil()))
         .bind(want)
         .fetch_all(pool)
         .await?;
 
         has_more = rows.len() as i64 > want - 1;
-        let rows = rows.into_iter().take((want - 1) as usize).collect::<Vec<_>>();
+        let rows = rows
+            .into_iter()
+            .take((want - 1) as usize)
+            .collect::<Vec<_>>();
         for (list_id,) in &rows {
-            if let Some(payload) = entities::list_snapshot(pool, workspace_id, *list_id).await? {
+            if let Some(payload) = entities::list_snapshot(pool, workspace_id, list_id).await? {
                 entries.push(json!({
                     "entityType": "list",
                     "entityId": list_id,
@@ -202,13 +214,16 @@ async fn bootstrap_push(
     let mut applied_count = 0i64;
 
     for entry in &req.entries {
-        let entity_type = entry.get("entityType").and_then(|v| v.as_str()).unwrap_or("");
+        let entity_type = entry
+            .get("entityType")
+            .and_then(|v| v.as_str())
+            .unwrap_or("");
         let payload = entry.get("payload").cloned().unwrap_or_else(|| json!({}));
         let entity_id = entry
             .get("entityId")
             .and_then(|v| v.as_str())
-            .and_then(|s| Uuid::parse_str(s).ok())
-            .unwrap_or_else(Uuid::new_v4);
+            .unwrap_or("")
+            .to_string();
         let operation_id = payload
             .get("lastOperationId")
             .and_then(|v| v.as_str())
@@ -226,7 +241,7 @@ async fn bootstrap_push(
                     &mut tx,
                     workspace_id,
                     user.user_id,
-                    entity_id,
+                    &entity_id,
                     &payload,
                     replica_id,
                     operation_id,
@@ -234,10 +249,12 @@ async fn bootstrap_push(
                 .await
             }
             "list" => {
+                let list_id = Uuid::parse_str(&entity_id)
+                    .map_err(|_| sqlx::Error::Protocol("list entityId must be a UUID".into()))?;
                 entities::upsert_list(
                     &mut tx,
                     workspace_id,
-                    entity_id,
+                    list_id,
                     &payload,
                     replica_id,
                     operation_id,

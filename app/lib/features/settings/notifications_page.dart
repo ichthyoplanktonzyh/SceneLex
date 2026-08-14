@@ -47,9 +47,8 @@ class NotificationsPage extends ConsumerWidget {
               secondary: const Icon(Icons.notifications_active_outlined),
               title: Text(l10n.settingsEnableNotifications),
               value: settings.enabled,
-              onChanged: (enabled) => update(
-                (s) => s.copyWith(enabled: enabled),
-              ),
+              onChanged: (enabled) =>
+                  update((s) => s.copyWith(enabled: enabled)),
             ),
             if (settings.enabled) ...[
               const Divider(height: 1),
@@ -72,9 +71,8 @@ class NotificationsPage extends ConsumerWidget {
                   ),
                 ],
                 selected: {settings.mode},
-                onSelectionChanged: (selection) => update(
-                  (s) => s.copyWith(mode: selection.first),
-                ),
+                onSelectionChanged: (selection) =>
+                    update((s) => s.copyWith(mode: selection.first)),
               ),
               const SizedBox(height: 8),
               if (settings.mode == 'daily')
@@ -108,8 +106,8 @@ class NotificationsPage extends ConsumerWidget {
                 Text(
                   l10n.settingsNotificationsInactivityBody,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 _TimeRow(
                   icon: Icons.wb_sunny_outlined,
@@ -182,8 +180,8 @@ class NotificationsPage extends ConsumerWidget {
                 child: Text(
                   l10n.settingsNotificationsFooter,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
             ],

@@ -4085,6 +4085,1402 @@ class LocalListsCompanion extends UpdateCompanion<LocalList> {
   }
 }
 
+class $LocalFavoritesTable extends LocalFavorites
+    with TableInfo<$LocalFavoritesTable, LocalFavorite> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LocalFavoritesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _experienceKeyMeta = const VerificationMeta(
+    'experienceKey',
+  );
+  @override
+  late final GeneratedColumn<String> experienceKey = GeneratedColumn<String>(
+    'experience_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _programIdMeta = const VerificationMeta(
+    'programId',
+  );
+  @override
+  late final GeneratedColumn<String> programId = GeneratedColumn<String>(
+    'program_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _experienceUnitIdMeta = const VerificationMeta(
+    'experienceUnitId',
+  );
+  @override
+  late final GeneratedColumn<String> experienceUnitId = GeneratedColumn<String>(
+    'experience_unit_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    experienceKey,
+    programId,
+    experienceUnitId,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'local_favorites';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LocalFavorite> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('experience_key')) {
+      context.handle(
+        _experienceKeyMeta,
+        experienceKey.isAcceptableOrUnknown(
+          data['experience_key']!,
+          _experienceKeyMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_experienceKeyMeta);
+    }
+    if (data.containsKey('program_id')) {
+      context.handle(
+        _programIdMeta,
+        programId.isAcceptableOrUnknown(data['program_id']!, _programIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_programIdMeta);
+    }
+    if (data.containsKey('experience_unit_id')) {
+      context.handle(
+        _experienceUnitIdMeta,
+        experienceUnitId.isAcceptableOrUnknown(
+          data['experience_unit_id']!,
+          _experienceUnitIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_experienceUnitIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {experienceKey};
+  @override
+  LocalFavorite map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalFavorite(
+      experienceKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}experience_key'],
+      )!,
+      programId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}program_id'],
+      )!,
+      experienceUnitId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}experience_unit_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $LocalFavoritesTable createAlias(String alias) {
+    return $LocalFavoritesTable(attachedDatabase, alias);
+  }
+}
+
+class LocalFavorite extends DataClass implements Insertable<LocalFavorite> {
+  final String experienceKey;
+  final String programId;
+  final String experienceUnitId;
+  final DateTime createdAt;
+  const LocalFavorite({
+    required this.experienceKey,
+    required this.programId,
+    required this.experienceUnitId,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['experience_key'] = Variable<String>(experienceKey);
+    map['program_id'] = Variable<String>(programId);
+    map['experience_unit_id'] = Variable<String>(experienceUnitId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  LocalFavoritesCompanion toCompanion(bool nullToAbsent) {
+    return LocalFavoritesCompanion(
+      experienceKey: Value(experienceKey),
+      programId: Value(programId),
+      experienceUnitId: Value(experienceUnitId),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory LocalFavorite.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LocalFavorite(
+      experienceKey: serializer.fromJson<String>(json['experienceKey']),
+      programId: serializer.fromJson<String>(json['programId']),
+      experienceUnitId: serializer.fromJson<String>(json['experienceUnitId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'experienceKey': serializer.toJson<String>(experienceKey),
+      'programId': serializer.toJson<String>(programId),
+      'experienceUnitId': serializer.toJson<String>(experienceUnitId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  LocalFavorite copyWith({
+    String? experienceKey,
+    String? programId,
+    String? experienceUnitId,
+    DateTime? createdAt,
+  }) => LocalFavorite(
+    experienceKey: experienceKey ?? this.experienceKey,
+    programId: programId ?? this.programId,
+    experienceUnitId: experienceUnitId ?? this.experienceUnitId,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  LocalFavorite copyWithCompanion(LocalFavoritesCompanion data) {
+    return LocalFavorite(
+      experienceKey: data.experienceKey.present
+          ? data.experienceKey.value
+          : this.experienceKey,
+      programId: data.programId.present ? data.programId.value : this.programId,
+      experienceUnitId: data.experienceUnitId.present
+          ? data.experienceUnitId.value
+          : this.experienceUnitId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalFavorite(')
+          ..write('experienceKey: $experienceKey, ')
+          ..write('programId: $programId, ')
+          ..write('experienceUnitId: $experienceUnitId, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(experienceKey, programId, experienceUnitId, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LocalFavorite &&
+          other.experienceKey == this.experienceKey &&
+          other.programId == this.programId &&
+          other.experienceUnitId == this.experienceUnitId &&
+          other.createdAt == this.createdAt);
+}
+
+class LocalFavoritesCompanion extends UpdateCompanion<LocalFavorite> {
+  final Value<String> experienceKey;
+  final Value<String> programId;
+  final Value<String> experienceUnitId;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const LocalFavoritesCompanion({
+    this.experienceKey = const Value.absent(),
+    this.programId = const Value.absent(),
+    this.experienceUnitId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LocalFavoritesCompanion.insert({
+    required String experienceKey,
+    required String programId,
+    required String experienceUnitId,
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : experienceKey = Value(experienceKey),
+       programId = Value(programId),
+       experienceUnitId = Value(experienceUnitId),
+       createdAt = Value(createdAt);
+  static Insertable<LocalFavorite> custom({
+    Expression<String>? experienceKey,
+    Expression<String>? programId,
+    Expression<String>? experienceUnitId,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (experienceKey != null) 'experience_key': experienceKey,
+      if (programId != null) 'program_id': programId,
+      if (experienceUnitId != null) 'experience_unit_id': experienceUnitId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LocalFavoritesCompanion copyWith({
+    Value<String>? experienceKey,
+    Value<String>? programId,
+    Value<String>? experienceUnitId,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return LocalFavoritesCompanion(
+      experienceKey: experienceKey ?? this.experienceKey,
+      programId: programId ?? this.programId,
+      experienceUnitId: experienceUnitId ?? this.experienceUnitId,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (experienceKey.present) {
+      map['experience_key'] = Variable<String>(experienceKey.value);
+    }
+    if (programId.present) {
+      map['program_id'] = Variable<String>(programId.value);
+    }
+    if (experienceUnitId.present) {
+      map['experience_unit_id'] = Variable<String>(experienceUnitId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalFavoritesCompanion(')
+          ..write('experienceKey: $experienceKey, ')
+          ..write('programId: $programId, ')
+          ..write('experienceUnitId: $experienceUnitId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $LocalNotesTable extends LocalNotes
+    with TableInfo<$LocalNotesTable, LocalNote> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LocalNotesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _senseIdMeta = const VerificationMeta(
+    'senseId',
+  );
+  @override
+  late final GeneratedColumn<String> senseId = GeneratedColumn<String>(
+    'sense_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _noteTextMeta = const VerificationMeta(
+    'noteText',
+  );
+  @override
+  late final GeneratedColumn<String> noteText = GeneratedColumn<String>(
+    'note_text',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [senseId, noteText, updatedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'local_notes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LocalNote> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('sense_id')) {
+      context.handle(
+        _senseIdMeta,
+        senseId.isAcceptableOrUnknown(data['sense_id']!, _senseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_senseIdMeta);
+    }
+    if (data.containsKey('note_text')) {
+      context.handle(
+        _noteTextMeta,
+        noteText.isAcceptableOrUnknown(data['note_text']!, _noteTextMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_noteTextMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {senseId};
+  @override
+  LocalNote map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalNote(
+      senseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sense_id'],
+      )!,
+      noteText: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note_text'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $LocalNotesTable createAlias(String alias) {
+    return $LocalNotesTable(attachedDatabase, alias);
+  }
+}
+
+class LocalNote extends DataClass implements Insertable<LocalNote> {
+  final String senseId;
+  final String noteText;
+  final DateTime updatedAt;
+  const LocalNote({
+    required this.senseId,
+    required this.noteText,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['sense_id'] = Variable<String>(senseId);
+    map['note_text'] = Variable<String>(noteText);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  LocalNotesCompanion toCompanion(bool nullToAbsent) {
+    return LocalNotesCompanion(
+      senseId: Value(senseId),
+      noteText: Value(noteText),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory LocalNote.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LocalNote(
+      senseId: serializer.fromJson<String>(json['senseId']),
+      noteText: serializer.fromJson<String>(json['noteText']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'senseId': serializer.toJson<String>(senseId),
+      'noteText': serializer.toJson<String>(noteText),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  LocalNote copyWith({
+    String? senseId,
+    String? noteText,
+    DateTime? updatedAt,
+  }) => LocalNote(
+    senseId: senseId ?? this.senseId,
+    noteText: noteText ?? this.noteText,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  LocalNote copyWithCompanion(LocalNotesCompanion data) {
+    return LocalNote(
+      senseId: data.senseId.present ? data.senseId.value : this.senseId,
+      noteText: data.noteText.present ? data.noteText.value : this.noteText,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalNote(')
+          ..write('senseId: $senseId, ')
+          ..write('noteText: $noteText, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(senseId, noteText, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LocalNote &&
+          other.senseId == this.senseId &&
+          other.noteText == this.noteText &&
+          other.updatedAt == this.updatedAt);
+}
+
+class LocalNotesCompanion extends UpdateCompanion<LocalNote> {
+  final Value<String> senseId;
+  final Value<String> noteText;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const LocalNotesCompanion({
+    this.senseId = const Value.absent(),
+    this.noteText = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LocalNotesCompanion.insert({
+    required String senseId,
+    required String noteText,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : senseId = Value(senseId),
+       noteText = Value(noteText),
+       updatedAt = Value(updatedAt);
+  static Insertable<LocalNote> custom({
+    Expression<String>? senseId,
+    Expression<String>? noteText,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (senseId != null) 'sense_id': senseId,
+      if (noteText != null) 'note_text': noteText,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LocalNotesCompanion copyWith({
+    Value<String>? senseId,
+    Value<String>? noteText,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return LocalNotesCompanion(
+      senseId: senseId ?? this.senseId,
+      noteText: noteText ?? this.noteText,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (senseId.present) {
+      map['sense_id'] = Variable<String>(senseId.value);
+    }
+    if (noteText.present) {
+      map['note_text'] = Variable<String>(noteText.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalNotesCompanion(')
+          ..write('senseId: $senseId, ')
+          ..write('noteText: $noteText, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $LocalDailyCheckinsTable extends LocalDailyCheckins
+    with TableInfo<$LocalDailyCheckinsTable, LocalDailyCheckin> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LocalDailyCheckinsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _dayKeyMeta = const VerificationMeta('dayKey');
+  @override
+  late final GeneratedColumn<String> dayKey = GeneratedColumn<String>(
+    'day_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _checkedAtMeta = const VerificationMeta(
+    'checkedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> checkedAt = GeneratedColumn<DateTime>(
+    'checked_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [dayKey, checkedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'local_daily_checkins';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LocalDailyCheckin> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('day_key')) {
+      context.handle(
+        _dayKeyMeta,
+        dayKey.isAcceptableOrUnknown(data['day_key']!, _dayKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dayKeyMeta);
+    }
+    if (data.containsKey('checked_at')) {
+      context.handle(
+        _checkedAtMeta,
+        checkedAt.isAcceptableOrUnknown(data['checked_at']!, _checkedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_checkedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {dayKey};
+  @override
+  LocalDailyCheckin map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalDailyCheckin(
+      dayKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}day_key'],
+      )!,
+      checkedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}checked_at'],
+      )!,
+    );
+  }
+
+  @override
+  $LocalDailyCheckinsTable createAlias(String alias) {
+    return $LocalDailyCheckinsTable(attachedDatabase, alias);
+  }
+}
+
+class LocalDailyCheckin extends DataClass
+    implements Insertable<LocalDailyCheckin> {
+  final String dayKey;
+  final DateTime checkedAt;
+  const LocalDailyCheckin({required this.dayKey, required this.checkedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['day_key'] = Variable<String>(dayKey);
+    map['checked_at'] = Variable<DateTime>(checkedAt);
+    return map;
+  }
+
+  LocalDailyCheckinsCompanion toCompanion(bool nullToAbsent) {
+    return LocalDailyCheckinsCompanion(
+      dayKey: Value(dayKey),
+      checkedAt: Value(checkedAt),
+    );
+  }
+
+  factory LocalDailyCheckin.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LocalDailyCheckin(
+      dayKey: serializer.fromJson<String>(json['dayKey']),
+      checkedAt: serializer.fromJson<DateTime>(json['checkedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'dayKey': serializer.toJson<String>(dayKey),
+      'checkedAt': serializer.toJson<DateTime>(checkedAt),
+    };
+  }
+
+  LocalDailyCheckin copyWith({String? dayKey, DateTime? checkedAt}) =>
+      LocalDailyCheckin(
+        dayKey: dayKey ?? this.dayKey,
+        checkedAt: checkedAt ?? this.checkedAt,
+      );
+  LocalDailyCheckin copyWithCompanion(LocalDailyCheckinsCompanion data) {
+    return LocalDailyCheckin(
+      dayKey: data.dayKey.present ? data.dayKey.value : this.dayKey,
+      checkedAt: data.checkedAt.present ? data.checkedAt.value : this.checkedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalDailyCheckin(')
+          ..write('dayKey: $dayKey, ')
+          ..write('checkedAt: $checkedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(dayKey, checkedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LocalDailyCheckin &&
+          other.dayKey == this.dayKey &&
+          other.checkedAt == this.checkedAt);
+}
+
+class LocalDailyCheckinsCompanion extends UpdateCompanion<LocalDailyCheckin> {
+  final Value<String> dayKey;
+  final Value<DateTime> checkedAt;
+  final Value<int> rowid;
+  const LocalDailyCheckinsCompanion({
+    this.dayKey = const Value.absent(),
+    this.checkedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LocalDailyCheckinsCompanion.insert({
+    required String dayKey,
+    required DateTime checkedAt,
+    this.rowid = const Value.absent(),
+  }) : dayKey = Value(dayKey),
+       checkedAt = Value(checkedAt);
+  static Insertable<LocalDailyCheckin> custom({
+    Expression<String>? dayKey,
+    Expression<DateTime>? checkedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (dayKey != null) 'day_key': dayKey,
+      if (checkedAt != null) 'checked_at': checkedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LocalDailyCheckinsCompanion copyWith({
+    Value<String>? dayKey,
+    Value<DateTime>? checkedAt,
+    Value<int>? rowid,
+  }) {
+    return LocalDailyCheckinsCompanion(
+      dayKey: dayKey ?? this.dayKey,
+      checkedAt: checkedAt ?? this.checkedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (dayKey.present) {
+      map['day_key'] = Variable<String>(dayKey.value);
+    }
+    if (checkedAt.present) {
+      map['checked_at'] = Variable<DateTime>(checkedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalDailyCheckinsCompanion(')
+          ..write('dayKey: $dayKey, ')
+          ..write('checkedAt: $checkedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $LocalSessionsTable extends LocalSessions
+    with TableInfo<$LocalSessionsTable, LocalSession> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LocalSessionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _sessionIdMeta = const VerificationMeta(
+    'sessionId',
+  );
+  @override
+  late final GeneratedColumn<String> sessionId = GeneratedColumn<String>(
+    'session_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startedAtMeta = const VerificationMeta(
+    'startedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startedAt = GeneratedColumn<DateTime>(
+    'started_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _endedAtMeta = const VerificationMeta(
+    'endedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> endedAt = GeneratedColumn<DateTime>(
+    'ended_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> durationSeconds = GeneratedColumn<int>(
+    'duration_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    sessionId,
+    kind,
+    startedAt,
+    endedAt,
+    durationSeconds,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'local_sessions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LocalSession> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('session_id')) {
+      context.handle(
+        _sessionIdMeta,
+        sessionId.isAcceptableOrUnknown(data['session_id']!, _sessionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sessionIdMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('started_at')) {
+      context.handle(
+        _startedAtMeta,
+        startedAt.isAcceptableOrUnknown(data['started_at']!, _startedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startedAtMeta);
+    }
+    if (data.containsKey('ended_at')) {
+      context.handle(
+        _endedAtMeta,
+        endedAt.isAcceptableOrUnknown(data['ended_at']!, _endedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_endedAtMeta);
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_durationSecondsMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {sessionId};
+  @override
+  LocalSession map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalSession(
+      sessionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}session_id'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      startedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}started_at'],
+      )!,
+      endedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}ended_at'],
+      )!,
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}duration_seconds'],
+      )!,
+    );
+  }
+
+  @override
+  $LocalSessionsTable createAlias(String alias) {
+    return $LocalSessionsTable(attachedDatabase, alias);
+  }
+}
+
+class LocalSession extends DataClass implements Insertable<LocalSession> {
+  final String sessionId;
+  final String kind;
+  final DateTime startedAt;
+  final DateTime endedAt;
+  final int durationSeconds;
+  const LocalSession({
+    required this.sessionId,
+    required this.kind,
+    required this.startedAt,
+    required this.endedAt,
+    required this.durationSeconds,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['session_id'] = Variable<String>(sessionId);
+    map['kind'] = Variable<String>(kind);
+    map['started_at'] = Variable<DateTime>(startedAt);
+    map['ended_at'] = Variable<DateTime>(endedAt);
+    map['duration_seconds'] = Variable<int>(durationSeconds);
+    return map;
+  }
+
+  LocalSessionsCompanion toCompanion(bool nullToAbsent) {
+    return LocalSessionsCompanion(
+      sessionId: Value(sessionId),
+      kind: Value(kind),
+      startedAt: Value(startedAt),
+      endedAt: Value(endedAt),
+      durationSeconds: Value(durationSeconds),
+    );
+  }
+
+  factory LocalSession.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LocalSession(
+      sessionId: serializer.fromJson<String>(json['sessionId']),
+      kind: serializer.fromJson<String>(json['kind']),
+      startedAt: serializer.fromJson<DateTime>(json['startedAt']),
+      endedAt: serializer.fromJson<DateTime>(json['endedAt']),
+      durationSeconds: serializer.fromJson<int>(json['durationSeconds']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'sessionId': serializer.toJson<String>(sessionId),
+      'kind': serializer.toJson<String>(kind),
+      'startedAt': serializer.toJson<DateTime>(startedAt),
+      'endedAt': serializer.toJson<DateTime>(endedAt),
+      'durationSeconds': serializer.toJson<int>(durationSeconds),
+    };
+  }
+
+  LocalSession copyWith({
+    String? sessionId,
+    String? kind,
+    DateTime? startedAt,
+    DateTime? endedAt,
+    int? durationSeconds,
+  }) => LocalSession(
+    sessionId: sessionId ?? this.sessionId,
+    kind: kind ?? this.kind,
+    startedAt: startedAt ?? this.startedAt,
+    endedAt: endedAt ?? this.endedAt,
+    durationSeconds: durationSeconds ?? this.durationSeconds,
+  );
+  LocalSession copyWithCompanion(LocalSessionsCompanion data) {
+    return LocalSession(
+      sessionId: data.sessionId.present ? data.sessionId.value : this.sessionId,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      startedAt: data.startedAt.present ? data.startedAt.value : this.startedAt,
+      endedAt: data.endedAt.present ? data.endedAt.value : this.endedAt,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalSession(')
+          ..write('sessionId: $sessionId, ')
+          ..write('kind: $kind, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('endedAt: $endedAt, ')
+          ..write('durationSeconds: $durationSeconds')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(sessionId, kind, startedAt, endedAt, durationSeconds);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LocalSession &&
+          other.sessionId == this.sessionId &&
+          other.kind == this.kind &&
+          other.startedAt == this.startedAt &&
+          other.endedAt == this.endedAt &&
+          other.durationSeconds == this.durationSeconds);
+}
+
+class LocalSessionsCompanion extends UpdateCompanion<LocalSession> {
+  final Value<String> sessionId;
+  final Value<String> kind;
+  final Value<DateTime> startedAt;
+  final Value<DateTime> endedAt;
+  final Value<int> durationSeconds;
+  final Value<int> rowid;
+  const LocalSessionsCompanion({
+    this.sessionId = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.startedAt = const Value.absent(),
+    this.endedAt = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LocalSessionsCompanion.insert({
+    required String sessionId,
+    required String kind,
+    required DateTime startedAt,
+    required DateTime endedAt,
+    required int durationSeconds,
+    this.rowid = const Value.absent(),
+  }) : sessionId = Value(sessionId),
+       kind = Value(kind),
+       startedAt = Value(startedAt),
+       endedAt = Value(endedAt),
+       durationSeconds = Value(durationSeconds);
+  static Insertable<LocalSession> custom({
+    Expression<String>? sessionId,
+    Expression<String>? kind,
+    Expression<DateTime>? startedAt,
+    Expression<DateTime>? endedAt,
+    Expression<int>? durationSeconds,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (sessionId != null) 'session_id': sessionId,
+      if (kind != null) 'kind': kind,
+      if (startedAt != null) 'started_at': startedAt,
+      if (endedAt != null) 'ended_at': endedAt,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LocalSessionsCompanion copyWith({
+    Value<String>? sessionId,
+    Value<String>? kind,
+    Value<DateTime>? startedAt,
+    Value<DateTime>? endedAt,
+    Value<int>? durationSeconds,
+    Value<int>? rowid,
+  }) {
+    return LocalSessionsCompanion(
+      sessionId: sessionId ?? this.sessionId,
+      kind: kind ?? this.kind,
+      startedAt: startedAt ?? this.startedAt,
+      endedAt: endedAt ?? this.endedAt,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (sessionId.present) {
+      map['session_id'] = Variable<String>(sessionId.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (startedAt.present) {
+      map['started_at'] = Variable<DateTime>(startedAt.value);
+    }
+    if (endedAt.present) {
+      map['ended_at'] = Variable<DateTime>(endedAt.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<int>(durationSeconds.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalSessionsCompanion(')
+          ..write('sessionId: $sessionId, ')
+          ..write('kind: $kind, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('endedAt: $endedAt, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $LocalContentCatalogTable extends LocalContentCatalog
+    with TableInfo<$LocalContentCatalogTable, LocalContentCatalogData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LocalContentCatalogTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _jsonMeta = const VerificationMeta('json');
+  @override
+  late final GeneratedColumn<String> json = GeneratedColumn<String>(
+    'json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [version, json];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'local_content_catalog';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LocalContentCatalogData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    }
+    if (data.containsKey('json')) {
+      context.handle(
+        _jsonMeta,
+        json.isAcceptableOrUnknown(data['json']!, _jsonMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_jsonMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {version};
+  @override
+  LocalContentCatalogData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalContentCatalogData(
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      json: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}json'],
+      )!,
+    );
+  }
+
+  @override
+  $LocalContentCatalogTable createAlias(String alias) {
+    return $LocalContentCatalogTable(attachedDatabase, alias);
+  }
+}
+
+class LocalContentCatalogData extends DataClass
+    implements Insertable<LocalContentCatalogData> {
+  final int version;
+  final String json;
+  const LocalContentCatalogData({required this.version, required this.json});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['version'] = Variable<int>(version);
+    map['json'] = Variable<String>(json);
+    return map;
+  }
+
+  LocalContentCatalogCompanion toCompanion(bool nullToAbsent) {
+    return LocalContentCatalogCompanion(
+      version: Value(version),
+      json: Value(json),
+    );
+  }
+
+  factory LocalContentCatalogData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LocalContentCatalogData(
+      version: serializer.fromJson<int>(json['version']),
+      json: serializer.fromJson<String>(json['json']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'version': serializer.toJson<int>(version),
+      'json': serializer.toJson<String>(json),
+    };
+  }
+
+  LocalContentCatalogData copyWith({int? version, String? json}) =>
+      LocalContentCatalogData(
+        version: version ?? this.version,
+        json: json ?? this.json,
+      );
+  LocalContentCatalogData copyWithCompanion(LocalContentCatalogCompanion data) {
+    return LocalContentCatalogData(
+      version: data.version.present ? data.version.value : this.version,
+      json: data.json.present ? data.json.value : this.json,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalContentCatalogData(')
+          ..write('version: $version, ')
+          ..write('json: $json')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(version, json);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LocalContentCatalogData &&
+          other.version == this.version &&
+          other.json == this.json);
+}
+
+class LocalContentCatalogCompanion
+    extends UpdateCompanion<LocalContentCatalogData> {
+  final Value<int> version;
+  final Value<String> json;
+  const LocalContentCatalogCompanion({
+    this.version = const Value.absent(),
+    this.json = const Value.absent(),
+  });
+  LocalContentCatalogCompanion.insert({
+    this.version = const Value.absent(),
+    required String json,
+  }) : json = Value(json);
+  static Insertable<LocalContentCatalogData> custom({
+    Expression<int>? version,
+    Expression<String>? json,
+  }) {
+    return RawValuesInsertable({
+      if (version != null) 'version': version,
+      if (json != null) 'json': json,
+    });
+  }
+
+  LocalContentCatalogCompanion copyWith({
+    Value<int>? version,
+    Value<String>? json,
+  }) {
+    return LocalContentCatalogCompanion(
+      version: version ?? this.version,
+      json: json ?? this.json,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (json.present) {
+      map['json'] = Variable<String>(json.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalContentCatalogCompanion(')
+          ..write('version: $version, ')
+          ..write('json: $json')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4099,6 +5495,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $LocalWorkspaceSettingsTable localWorkspaceSettings =
       $LocalWorkspaceSettingsTable(this);
   late final $LocalListsTable localLists = $LocalListsTable(this);
+  late final $LocalFavoritesTable localFavorites = $LocalFavoritesTable(this);
+  late final $LocalNotesTable localNotes = $LocalNotesTable(this);
+  late final $LocalDailyCheckinsTable localDailyCheckins =
+      $LocalDailyCheckinsTable(this);
+  late final $LocalSessionsTable localSessions = $LocalSessionsTable(this);
+  late final $LocalContentCatalogTable localContentCatalog =
+      $LocalContentCatalogTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4112,6 +5515,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     localPrograms,
     localWorkspaceSettings,
     localLists,
+    localFavorites,
+    localNotes,
+    localDailyCheckins,
+    localSessions,
+    localContentCatalog,
   ];
 }
 
@@ -6182,6 +7590,860 @@ typedef $$LocalListsTableProcessedTableManager =
       LocalList,
       PrefetchHooks Function()
     >;
+typedef $$LocalFavoritesTableCreateCompanionBuilder =
+    LocalFavoritesCompanion Function({
+      required String experienceKey,
+      required String programId,
+      required String experienceUnitId,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$LocalFavoritesTableUpdateCompanionBuilder =
+    LocalFavoritesCompanion Function({
+      Value<String> experienceKey,
+      Value<String> programId,
+      Value<String> experienceUnitId,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$LocalFavoritesTableFilterComposer
+    extends Composer<_$AppDatabase, $LocalFavoritesTable> {
+  $$LocalFavoritesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get experienceKey => $composableBuilder(
+    column: $table.experienceKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get programId => $composableBuilder(
+    column: $table.programId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get experienceUnitId => $composableBuilder(
+    column: $table.experienceUnitId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LocalFavoritesTableOrderingComposer
+    extends Composer<_$AppDatabase, $LocalFavoritesTable> {
+  $$LocalFavoritesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get experienceKey => $composableBuilder(
+    column: $table.experienceKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get programId => $composableBuilder(
+    column: $table.programId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get experienceUnitId => $composableBuilder(
+    column: $table.experienceUnitId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LocalFavoritesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LocalFavoritesTable> {
+  $$LocalFavoritesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get experienceKey => $composableBuilder(
+    column: $table.experienceKey,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get programId =>
+      $composableBuilder(column: $table.programId, builder: (column) => column);
+
+  GeneratedColumn<String> get experienceUnitId => $composableBuilder(
+    column: $table.experienceUnitId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$LocalFavoritesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LocalFavoritesTable,
+          LocalFavorite,
+          $$LocalFavoritesTableFilterComposer,
+          $$LocalFavoritesTableOrderingComposer,
+          $$LocalFavoritesTableAnnotationComposer,
+          $$LocalFavoritesTableCreateCompanionBuilder,
+          $$LocalFavoritesTableUpdateCompanionBuilder,
+          (
+            LocalFavorite,
+            BaseReferences<_$AppDatabase, $LocalFavoritesTable, LocalFavorite>,
+          ),
+          LocalFavorite,
+          PrefetchHooks Function()
+        > {
+  $$LocalFavoritesTableTableManager(
+    _$AppDatabase db,
+    $LocalFavoritesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LocalFavoritesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LocalFavoritesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LocalFavoritesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> experienceKey = const Value.absent(),
+                Value<String> programId = const Value.absent(),
+                Value<String> experienceUnitId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LocalFavoritesCompanion(
+                experienceKey: experienceKey,
+                programId: programId,
+                experienceUnitId: experienceUnitId,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String experienceKey,
+                required String programId,
+                required String experienceUnitId,
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => LocalFavoritesCompanion.insert(
+                experienceKey: experienceKey,
+                programId: programId,
+                experienceUnitId: experienceUnitId,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LocalFavoritesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LocalFavoritesTable,
+      LocalFavorite,
+      $$LocalFavoritesTableFilterComposer,
+      $$LocalFavoritesTableOrderingComposer,
+      $$LocalFavoritesTableAnnotationComposer,
+      $$LocalFavoritesTableCreateCompanionBuilder,
+      $$LocalFavoritesTableUpdateCompanionBuilder,
+      (
+        LocalFavorite,
+        BaseReferences<_$AppDatabase, $LocalFavoritesTable, LocalFavorite>,
+      ),
+      LocalFavorite,
+      PrefetchHooks Function()
+    >;
+typedef $$LocalNotesTableCreateCompanionBuilder =
+    LocalNotesCompanion Function({
+      required String senseId,
+      required String noteText,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$LocalNotesTableUpdateCompanionBuilder =
+    LocalNotesCompanion Function({
+      Value<String> senseId,
+      Value<String> noteText,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$LocalNotesTableFilterComposer
+    extends Composer<_$AppDatabase, $LocalNotesTable> {
+  $$LocalNotesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get senseId => $composableBuilder(
+    column: $table.senseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get noteText => $composableBuilder(
+    column: $table.noteText,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LocalNotesTableOrderingComposer
+    extends Composer<_$AppDatabase, $LocalNotesTable> {
+  $$LocalNotesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get senseId => $composableBuilder(
+    column: $table.senseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get noteText => $composableBuilder(
+    column: $table.noteText,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LocalNotesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LocalNotesTable> {
+  $$LocalNotesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get senseId =>
+      $composableBuilder(column: $table.senseId, builder: (column) => column);
+
+  GeneratedColumn<String> get noteText =>
+      $composableBuilder(column: $table.noteText, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$LocalNotesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LocalNotesTable,
+          LocalNote,
+          $$LocalNotesTableFilterComposer,
+          $$LocalNotesTableOrderingComposer,
+          $$LocalNotesTableAnnotationComposer,
+          $$LocalNotesTableCreateCompanionBuilder,
+          $$LocalNotesTableUpdateCompanionBuilder,
+          (
+            LocalNote,
+            BaseReferences<_$AppDatabase, $LocalNotesTable, LocalNote>,
+          ),
+          LocalNote,
+          PrefetchHooks Function()
+        > {
+  $$LocalNotesTableTableManager(_$AppDatabase db, $LocalNotesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LocalNotesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LocalNotesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LocalNotesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> senseId = const Value.absent(),
+                Value<String> noteText = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LocalNotesCompanion(
+                senseId: senseId,
+                noteText: noteText,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String senseId,
+                required String noteText,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => LocalNotesCompanion.insert(
+                senseId: senseId,
+                noteText: noteText,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LocalNotesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LocalNotesTable,
+      LocalNote,
+      $$LocalNotesTableFilterComposer,
+      $$LocalNotesTableOrderingComposer,
+      $$LocalNotesTableAnnotationComposer,
+      $$LocalNotesTableCreateCompanionBuilder,
+      $$LocalNotesTableUpdateCompanionBuilder,
+      (LocalNote, BaseReferences<_$AppDatabase, $LocalNotesTable, LocalNote>),
+      LocalNote,
+      PrefetchHooks Function()
+    >;
+typedef $$LocalDailyCheckinsTableCreateCompanionBuilder =
+    LocalDailyCheckinsCompanion Function({
+      required String dayKey,
+      required DateTime checkedAt,
+      Value<int> rowid,
+    });
+typedef $$LocalDailyCheckinsTableUpdateCompanionBuilder =
+    LocalDailyCheckinsCompanion Function({
+      Value<String> dayKey,
+      Value<DateTime> checkedAt,
+      Value<int> rowid,
+    });
+
+class $$LocalDailyCheckinsTableFilterComposer
+    extends Composer<_$AppDatabase, $LocalDailyCheckinsTable> {
+  $$LocalDailyCheckinsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get dayKey => $composableBuilder(
+    column: $table.dayKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get checkedAt => $composableBuilder(
+    column: $table.checkedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LocalDailyCheckinsTableOrderingComposer
+    extends Composer<_$AppDatabase, $LocalDailyCheckinsTable> {
+  $$LocalDailyCheckinsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get dayKey => $composableBuilder(
+    column: $table.dayKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get checkedAt => $composableBuilder(
+    column: $table.checkedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LocalDailyCheckinsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LocalDailyCheckinsTable> {
+  $$LocalDailyCheckinsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get dayKey =>
+      $composableBuilder(column: $table.dayKey, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get checkedAt =>
+      $composableBuilder(column: $table.checkedAt, builder: (column) => column);
+}
+
+class $$LocalDailyCheckinsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LocalDailyCheckinsTable,
+          LocalDailyCheckin,
+          $$LocalDailyCheckinsTableFilterComposer,
+          $$LocalDailyCheckinsTableOrderingComposer,
+          $$LocalDailyCheckinsTableAnnotationComposer,
+          $$LocalDailyCheckinsTableCreateCompanionBuilder,
+          $$LocalDailyCheckinsTableUpdateCompanionBuilder,
+          (
+            LocalDailyCheckin,
+            BaseReferences<
+              _$AppDatabase,
+              $LocalDailyCheckinsTable,
+              LocalDailyCheckin
+            >,
+          ),
+          LocalDailyCheckin,
+          PrefetchHooks Function()
+        > {
+  $$LocalDailyCheckinsTableTableManager(
+    _$AppDatabase db,
+    $LocalDailyCheckinsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LocalDailyCheckinsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LocalDailyCheckinsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LocalDailyCheckinsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> dayKey = const Value.absent(),
+                Value<DateTime> checkedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LocalDailyCheckinsCompanion(
+                dayKey: dayKey,
+                checkedAt: checkedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String dayKey,
+                required DateTime checkedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => LocalDailyCheckinsCompanion.insert(
+                dayKey: dayKey,
+                checkedAt: checkedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LocalDailyCheckinsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LocalDailyCheckinsTable,
+      LocalDailyCheckin,
+      $$LocalDailyCheckinsTableFilterComposer,
+      $$LocalDailyCheckinsTableOrderingComposer,
+      $$LocalDailyCheckinsTableAnnotationComposer,
+      $$LocalDailyCheckinsTableCreateCompanionBuilder,
+      $$LocalDailyCheckinsTableUpdateCompanionBuilder,
+      (
+        LocalDailyCheckin,
+        BaseReferences<
+          _$AppDatabase,
+          $LocalDailyCheckinsTable,
+          LocalDailyCheckin
+        >,
+      ),
+      LocalDailyCheckin,
+      PrefetchHooks Function()
+    >;
+typedef $$LocalSessionsTableCreateCompanionBuilder =
+    LocalSessionsCompanion Function({
+      required String sessionId,
+      required String kind,
+      required DateTime startedAt,
+      required DateTime endedAt,
+      required int durationSeconds,
+      Value<int> rowid,
+    });
+typedef $$LocalSessionsTableUpdateCompanionBuilder =
+    LocalSessionsCompanion Function({
+      Value<String> sessionId,
+      Value<String> kind,
+      Value<DateTime> startedAt,
+      Value<DateTime> endedAt,
+      Value<int> durationSeconds,
+      Value<int> rowid,
+    });
+
+class $$LocalSessionsTableFilterComposer
+    extends Composer<_$AppDatabase, $LocalSessionsTable> {
+  $$LocalSessionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get sessionId => $composableBuilder(
+    column: $table.sessionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get endedAt => $composableBuilder(
+    column: $table.endedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LocalSessionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $LocalSessionsTable> {
+  $$LocalSessionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get sessionId => $composableBuilder(
+    column: $table.sessionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get endedAt => $composableBuilder(
+    column: $table.endedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LocalSessionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LocalSessionsTable> {
+  $$LocalSessionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get sessionId =>
+      $composableBuilder(column: $table.sessionId, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startedAt =>
+      $composableBuilder(column: $table.startedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endedAt =>
+      $composableBuilder(column: $table.endedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+}
+
+class $$LocalSessionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LocalSessionsTable,
+          LocalSession,
+          $$LocalSessionsTableFilterComposer,
+          $$LocalSessionsTableOrderingComposer,
+          $$LocalSessionsTableAnnotationComposer,
+          $$LocalSessionsTableCreateCompanionBuilder,
+          $$LocalSessionsTableUpdateCompanionBuilder,
+          (
+            LocalSession,
+            BaseReferences<_$AppDatabase, $LocalSessionsTable, LocalSession>,
+          ),
+          LocalSession,
+          PrefetchHooks Function()
+        > {
+  $$LocalSessionsTableTableManager(_$AppDatabase db, $LocalSessionsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LocalSessionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LocalSessionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LocalSessionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> sessionId = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<DateTime> startedAt = const Value.absent(),
+                Value<DateTime> endedAt = const Value.absent(),
+                Value<int> durationSeconds = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LocalSessionsCompanion(
+                sessionId: sessionId,
+                kind: kind,
+                startedAt: startedAt,
+                endedAt: endedAt,
+                durationSeconds: durationSeconds,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String sessionId,
+                required String kind,
+                required DateTime startedAt,
+                required DateTime endedAt,
+                required int durationSeconds,
+                Value<int> rowid = const Value.absent(),
+              }) => LocalSessionsCompanion.insert(
+                sessionId: sessionId,
+                kind: kind,
+                startedAt: startedAt,
+                endedAt: endedAt,
+                durationSeconds: durationSeconds,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LocalSessionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LocalSessionsTable,
+      LocalSession,
+      $$LocalSessionsTableFilterComposer,
+      $$LocalSessionsTableOrderingComposer,
+      $$LocalSessionsTableAnnotationComposer,
+      $$LocalSessionsTableCreateCompanionBuilder,
+      $$LocalSessionsTableUpdateCompanionBuilder,
+      (
+        LocalSession,
+        BaseReferences<_$AppDatabase, $LocalSessionsTable, LocalSession>,
+      ),
+      LocalSession,
+      PrefetchHooks Function()
+    >;
+typedef $$LocalContentCatalogTableCreateCompanionBuilder =
+    LocalContentCatalogCompanion Function({
+      Value<int> version,
+      required String json,
+    });
+typedef $$LocalContentCatalogTableUpdateCompanionBuilder =
+    LocalContentCatalogCompanion Function({
+      Value<int> version,
+      Value<String> json,
+    });
+
+class $$LocalContentCatalogTableFilterComposer
+    extends Composer<_$AppDatabase, $LocalContentCatalogTable> {
+  $$LocalContentCatalogTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get json => $composableBuilder(
+    column: $table.json,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LocalContentCatalogTableOrderingComposer
+    extends Composer<_$AppDatabase, $LocalContentCatalogTable> {
+  $$LocalContentCatalogTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get json => $composableBuilder(
+    column: $table.json,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LocalContentCatalogTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LocalContentCatalogTable> {
+  $$LocalContentCatalogTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<String> get json =>
+      $composableBuilder(column: $table.json, builder: (column) => column);
+}
+
+class $$LocalContentCatalogTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LocalContentCatalogTable,
+          LocalContentCatalogData,
+          $$LocalContentCatalogTableFilterComposer,
+          $$LocalContentCatalogTableOrderingComposer,
+          $$LocalContentCatalogTableAnnotationComposer,
+          $$LocalContentCatalogTableCreateCompanionBuilder,
+          $$LocalContentCatalogTableUpdateCompanionBuilder,
+          (
+            LocalContentCatalogData,
+            BaseReferences<
+              _$AppDatabase,
+              $LocalContentCatalogTable,
+              LocalContentCatalogData
+            >,
+          ),
+          LocalContentCatalogData,
+          PrefetchHooks Function()
+        > {
+  $$LocalContentCatalogTableTableManager(
+    _$AppDatabase db,
+    $LocalContentCatalogTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LocalContentCatalogTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LocalContentCatalogTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$LocalContentCatalogTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> version = const Value.absent(),
+                Value<String> json = const Value.absent(),
+              }) => LocalContentCatalogCompanion(version: version, json: json),
+          createCompanionCallback:
+              ({
+                Value<int> version = const Value.absent(),
+                required String json,
+              }) => LocalContentCatalogCompanion.insert(
+                version: version,
+                json: json,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LocalContentCatalogTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LocalContentCatalogTable,
+      LocalContentCatalogData,
+      $$LocalContentCatalogTableFilterComposer,
+      $$LocalContentCatalogTableOrderingComposer,
+      $$LocalContentCatalogTableAnnotationComposer,
+      $$LocalContentCatalogTableCreateCompanionBuilder,
+      $$LocalContentCatalogTableUpdateCompanionBuilder,
+      (
+        LocalContentCatalogData,
+        BaseReferences<
+          _$AppDatabase,
+          $LocalContentCatalogTable,
+          LocalContentCatalogData
+        >,
+      ),
+      LocalContentCatalogData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6205,4 +8467,14 @@ class $AppDatabaseManager {
       );
   $$LocalListsTableTableManager get localLists =>
       $$LocalListsTableTableManager(_db, _db.localLists);
+  $$LocalFavoritesTableTableManager get localFavorites =>
+      $$LocalFavoritesTableTableManager(_db, _db.localFavorites);
+  $$LocalNotesTableTableManager get localNotes =>
+      $$LocalNotesTableTableManager(_db, _db.localNotes);
+  $$LocalDailyCheckinsTableTableManager get localDailyCheckins =>
+      $$LocalDailyCheckinsTableTableManager(_db, _db.localDailyCheckins);
+  $$LocalSessionsTableTableManager get localSessions =>
+      $$LocalSessionsTableTableManager(_db, _db.localSessions);
+  $$LocalContentCatalogTableTableManager get localContentCatalog =>
+      $$LocalContentCatalogTableTableManager(_db, _db.localContentCatalog);
 }

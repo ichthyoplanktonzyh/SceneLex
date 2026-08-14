@@ -1,13 +1,20 @@
 #!/usr/bin/env python3
 """Build the deterministic ExperienceProgram v1 App bundle asset.
 
-Input:  reviewed/published fixtures under tests/fixtures/experience-programs/.
+Input:  reviewed/published fixtures under tests/fixtures/experience-programs/
+        plus WordSense metadata from data/senses/ (status: reviewed only).
 Output: app/assets/content/experience-programs.v1.json
 
 Each source program is validated with the Experience Compiler's own
 validate_program before it may enter the bundle; draft content (data/drafts/)
 is rejected. The output is byte-stable: same inputs, same bytes. --check
 compares the current asset against a fresh build without writing.
+
+Bundle shape (v2): { bundle_version, schema_version, catalog, programs }.
+catalog maps sense_id -> WordSenseCatalogEntry (consumer-facing WordSense
+summary: semantic_type/locale_l1/program version link + invariant +
+l1_confusables extracted from semantic_model.l1_interference + explicit
+boundaries list, currently empty until content provides relations data).
 """
 
 from __future__ import annotations
@@ -24,10 +31,25 @@ sys.path.insert(0, str(ROOT / "tools"))
 import experience_compiler as compiler  # noqa: E402
 
 FIXTURE_DIR = ROOT / "tests" / "fixtures" / "experience-programs"
+SENSE_DIR = ROOT / "data" / "senses"
 OUTPUT_PATH = ROOT / "app" / "assets" / "content" / "experience-programs.v1.json"
 SENSE_IDS = ("reluctant-01", "messy-01", "almost-01", "dirty-01")
-BUNDLE_VERSION = 1
+BUNDLE_VERSION = 2
 REVIEWABLE_STATUSES = ("reviewed", "published")
+
+
+def _load_reviewed_sense(sense_id: str) -> dict:
+    """WordSense 元数据（semantic_type 等）只采信 status: reviewed 的规格。"""
+    path = SENSE_DIR / f"{sense_id}.yaml"
+    if not path.exists():
+        raise SystemExit(f"{path}: 缺失 WordSense 规格（bundle catalog 需要）")
+    with path.open(encoding="utf-8") as handle:
+        sense = yaml.safe_load(handle)
+    if sense.get("status") != "reviewed":
+        raise SystemExit(
+            f"{path}: status={sense.get('status')!r} 不是 reviewed，"
+            "catalog 只收录已审核的 WordSense")
+    return sense
 
 
 def _validate_source(path: Path) -> dict:
@@ -47,8 +69,37 @@ def _validate_source(path: Path) -> dict:
     return program
 
 
+def _build_catalog_entry(sense_id: str, program: dict) -> dict:
+    """从 WordSense 规格 + program 抽取消费者侧 catalog 条目。
+
+    semantic_model 内部字段不直接进入 catalog；只有显式抽取的 invariant 与
+    l1_confusables（来源 l1_interference）成为可渲染的消费字段。
+    boundaries 当前内容未收录 relations 数据，保持空数组并显式标记 status。
+    """
+    sense = _load_reviewed_sense(sense_id)
+    semantic = program.get("semantic_model") or {}
+    l1_interference = semantic.get("l1_interference") or []
+    target = program["target"]
+    return {
+        "sense_id": sense_id,
+        "sense_key": sense.get("id") or sense_id,
+        "lemma": target["lemma"],
+        "pos": target["pos"],
+        "ipa": target.get("ipa"),
+        "semantic_type": sense.get("semantic_type"),
+        "locale_l1": target.get("locale_l1"),
+        "invariant": semantic.get("invariant") or "",
+        "l1_confusables": [str(item) for item in l1_interference],
+        "boundaries": [],
+        "boundaries_status": "not_collected",
+        "program_id": program["program_id"],
+        "program_version": program["program_version"],
+    }
+
+
 def build_bundle() -> dict:
     programs = {}
+    catalog = {}
     for sense_id in SENSE_IDS:
         path = FIXTURE_DIR / f"{sense_id}.yaml"
         if not path.exists():
@@ -59,9 +110,11 @@ def build_bundle() -> dict:
             raise SystemExit(
                 f"{path}: target.sense_id={actual_sense_id!r} 与输入名 {sense_id} 不一致")
         programs[sense_id] = program
+        catalog[sense_id] = _build_catalog_entry(sense_id, program)
     return {
         "bundle_version": BUNDLE_VERSION,
         "schema_version": compiler.CONTRACT_VERSION,
+        "catalog": catalog,
         "programs": programs,
     }
 
@@ -90,7 +143,8 @@ def main(argv: list[str] | None = None) -> int:
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(rendered, encoding="utf-8")
     print(f"已写入 {OUTPUT_PATH} "
-          f"({len(bundle['programs'])} programs, {len(rendered)} bytes)")
+          f"({len(bundle['programs'])} programs, "
+          f"{len(bundle['catalog'])} catalog entries, {len(rendered)} bytes)")
     return 0
 
 

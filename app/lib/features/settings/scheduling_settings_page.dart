@@ -22,7 +22,8 @@ class SchedulingSettingsPage extends ConsumerStatefulWidget {
       _SchedulingSettingsPageState();
 }
 
-class _SchedulingSettingsPageState extends ConsumerState<SchedulingSettingsPage> {
+class _SchedulingSettingsPageState
+    extends ConsumerState<SchedulingSettingsPage> {
   final _retentionController = TextEditingController();
   final _learningStepsController = TextEditingController();
   final _relearningStepsController = TextEditingController();
@@ -124,18 +125,21 @@ class _SchedulingSettingsPageState extends ConsumerState<SchedulingSettingsPage>
 
     final local = ref.read(localRepositoryProvider);
     final ws = await ref.read(workspaceProvider.future);
-    await local.updateWorkspaceSettings(workspaceId: ws, settings: {
-      'desiredRetention': retention,
-      'learningStepsMinutes': learningSteps,
-      'relearningStepsMinutes': relearningSteps,
-      'maximumIntervalDays': maxInterval,
-      'enableFuzz': _enableFuzz,
-    });
+    await local.updateWorkspaceSettings(
+      workspaceId: ws,
+      settings: {
+        'desiredRetention': retention,
+        'learningStepsMinutes': learningSteps,
+        'relearningStepsMinutes': relearningSteps,
+        'maximumIntervalDays': maxInterval,
+        'enableFuzz': _enableFuzz,
+      },
+    );
     ref.read(syncTriggerProvider)();
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.settingsSaved)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.settingsSaved)));
       Navigator.pop(context);
     }
   }
@@ -194,15 +198,14 @@ class _SchedulingSettingsPageState extends ConsumerState<SchedulingSettingsPage>
                 if (_error != null) ...[
                   Text(
                     _error!,
-                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
                   ),
                   const SizedBox(height: 8),
                 ],
                 const SizedBox(height: 16),
-                FilledButton(
-                  onPressed: _save,
-                  child: Text(l10n.settingsSave),
-                ),
+                FilledButton(onPressed: _save, child: Text(l10n.settingsSave)),
                 TextButton(
                   onPressed: _resetDefaults,
                   child: Text(l10n.settingsResetDefaults),

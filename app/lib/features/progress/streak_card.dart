@@ -23,8 +23,10 @@ class _StreakCardState extends State<StreakCard> {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final freeze = widget.streak.streakFreeze;
-    final hasReviewedToday = widget.weeks.any((week) =>
-        week.any((d) => d.isToday && d.state == StreakDayState.reviewed));
+    final hasReviewedToday = widget.weeks.any(
+      (week) =>
+          week.any((d) => d.isToday && d.state == StreakDayState.reviewed),
+    );
 
     return Card(
       child: Padding(
@@ -50,7 +52,9 @@ class _StreakCardState extends State<StreakCard> {
                       ? const Color(0xFF4FC3F7)
                       : theme.colorScheme.outline,
                   label: l10n.streakFreezeCount(
-                      freeze.availableCredits, freeze.capacity),
+                    freeze.availableCredits,
+                    freeze.capacity,
+                  ),
                   onTap: () => setState(() => _infoVisible = !_infoVisible),
                   trailing: const Icon(Icons.info_outline, size: 14),
                 ),
@@ -80,7 +84,8 @@ class _StreakCardState extends State<StreakCard> {
             for (final week in widget.weeks)
               Row(
                 children: [
-                  for (final day in week) Expanded(child: _StreakDayCell(day: day)),
+                  for (final day in week)
+                    Expanded(child: _StreakDayCell(day: day)),
                 ],
               ),
             const SizedBox(height: 4),
@@ -126,11 +131,12 @@ class _Badge extends StatelessWidget {
           children: [
             Icon(icon, size: 18, color: color),
             const SizedBox(width: 6),
-            Text(label,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(color: color)),
+            Text(
+              label,
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(color: color),
+            ),
             if (trailing != null) ...[const SizedBox(width: 4), trailing!],
           ],
         ),
@@ -152,10 +158,9 @@ class _WeekdayHeader extends StatelessWidget {
         child: Text(
           label,
           textAlign: TextAlign.center,
-          style: Theme.of(context)
-              .textTheme
-              .labelSmall
-              ?.copyWith(color: Theme.of(context).colorScheme.outline),
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: Theme.of(context).colorScheme.outline,
+          ),
         ),
       ),
     );
@@ -182,7 +187,9 @@ class _StreakDayCell extends StatelessWidget {
       default:
         bg = null;
     }
-    final todayBorder = day.isToday ? Border.all(color: theme.colorScheme.primary, width: 2) : null;
+    final todayBorder = day.isToday
+        ? Border.all(color: theme.colorScheme.primary, width: 2)
+        : null;
 
     // The caller wraps this cell in Expanded; nesting another one here would
     // trigger "Incorrect use of ParentDataWidget" at runtime.
@@ -191,7 +198,13 @@ class _StreakDayCell extends StatelessWidget {
       child: Container(
         height: 34,
         decoration: BoxDecoration(
-          color: bg?.withValues(alpha: 0.25) ?? (day.isFuture ? null : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4)),
+          color:
+              bg?.withValues(alpha: 0.25) ??
+              (day.isFuture
+                  ? null
+                  : theme.colorScheme.surfaceContainerHighest.withValues(
+                      alpha: 0.4,
+                    )),
           borderRadius: BorderRadius.circular(8),
           border: todayBorder,
         ),

@@ -31,7 +31,10 @@ class TtsService {
 
   /// Speaks [text] (markdown-stripped, language auto-detected).
   /// Returns an error message on failure, null on success.
-  Future<String?> speak(String text, {required String fallbackLanguageTag}) async {
+  Future<String?> speak(
+    String text, {
+    required String fallbackLanguageTag,
+  }) async {
     await _ensureInitialized();
     final speakable = makeSpeakableText(text);
     if (speakable.isEmpty) return null;

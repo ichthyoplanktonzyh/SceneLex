@@ -24,7 +24,7 @@ pub async fn process_pull(
     let after = req.after_hot_change_id;
 
     // Latest change per entity, then ascending by change_id.
-    let rows = sqlx::query_as::<_, (i64, String, Uuid, chrono::DateTime<chrono::Utc>)>(
+    let rows = sqlx::query_as::<_, (i64, String, String, chrono::DateTime<chrono::Utc>)>(
         "SELECT DISTINCT ON (entity_type, entity_id) change_id, entity_type, entity_id, client_updated_at
          FROM sync.hot_changes
          WHERE workspace_id = $1 AND change_id > $2
@@ -46,9 +46,17 @@ pub async fn process_pull(
     for (change_id, entity_type, entity_id, _ts) in rows {
         next_hot_change_id = change_id;
         let payload = match entity_type.as_str() {
-            "learning_state" => entities::learning_state_snapshot(pool, workspace_id, user.user_id, entity_id).await?,
-            "list" => entities::list_snapshot(pool, workspace_id, entity_id).await?,
-            "workspace_scheduler_settings" => Some(entities::workspace_settings_snapshot(pool, workspace_id).await?),
+            "learning_state" => {
+                entities::learning_state_snapshot(pool, workspace_id, user.user_id, &entity_id)
+                    .await?
+            }
+            "list" => match Uuid::parse_str(&entity_id) {
+                Ok(list_id) => entities::list_snapshot(pool, workspace_id, &list_id).await?,
+                Err(_) => None,
+            },
+            "workspace_scheduler_settings" => {
+                Some(entities::workspace_settings_snapshot(pool, workspace_id).await?)
+            }
             _ => None,
         };
         if let Some(payload) = payload {

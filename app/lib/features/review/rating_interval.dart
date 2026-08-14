@@ -15,7 +15,8 @@ String formatReviewInterval(
   AppLocalizations l10n,
 ) {
   final durationMilliseconds = dueAt.difference(now).inMilliseconds;
-  final durationSeconds = (durationMilliseconds < 0 ? 0 : durationMilliseconds) ~/ 1000;
+  final durationSeconds =
+      (durationMilliseconds < 0 ? 0 : durationMilliseconds) ~/ 1000;
 
   if (durationSeconds < 60) {
     return l10n.reviewIntervalLessThanMinute;
@@ -70,12 +71,7 @@ List<RatingOption> buildRatingOptions({
         title: titles[rating],
         interval: formatReviewInterval(
           now,
-          computeReviewSchedule(
-            state,
-            settings,
-            _ratingOf(rating),
-            now,
-          ).dueAt,
+          computeReviewSchedule(state, settings, _ratingOf(rating), now).dueAt,
           l10n,
         ),
       ),
@@ -83,8 +79,8 @@ List<RatingOption> buildRatingOptions({
 }
 
 ReviewRating _ratingOf(int rating) => switch (rating) {
-      0 => ReviewRating.again,
-      1 => ReviewRating.hard,
-      2 => ReviewRating.good,
-      _ => ReviewRating.easy,
-    };
+  0 => ReviewRating.again,
+  1 => ReviewRating.hard,
+  2 => ReviewRating.good,
+  _ => ReviewRating.easy,
+};

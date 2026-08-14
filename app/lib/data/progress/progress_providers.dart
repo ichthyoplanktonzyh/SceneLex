@@ -21,7 +21,9 @@ class ProgressData {
 
 /// Aggregates progress statistics from the local database (offline-safe).
 /// Refresh = run a best-effort sync first, then re-read local rows.
-final progressDataProvider = FutureProvider.autoDispose<ProgressData>((ref) async {
+final progressDataProvider = FutureProvider.autoDispose<ProgressData>((
+  ref,
+) async {
   final local = ref.watch(localRepositoryProvider);
 
   final engine = await ref.watch(syncEngineProvider.future);
@@ -37,9 +39,7 @@ final progressDataProvider = FutureProvider.autoDispose<ProgressData>((ref) asyn
   final now = DateTime.now();
   final today = todayLocalDate();
   final dailyReviews = aggregateDailyReviews(events);
-  final activeDates = [
-    for (final p in dailyReviews) p.date,
-  ];
+  final activeDates = [for (final p in dailyReviews) p.date];
   final streak = evaluateStreak(activeDates, today);
   final weeks = buildStreakWeeks(streak.statesByDate, today);
   final schedule = aggregateSchedule(states, now);

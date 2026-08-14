@@ -23,15 +23,15 @@ class Sense {
   final String? programId;
 
   factory Sense.fromJson(Map<String, dynamic> json) => Sense(
-        wordSenseId: json['wordSenseId'] as String,
-        senseKey: json['senseKey'] as String,
-        lemma: json['lemma'] as String,
-        pos: json['pos'] as String? ?? '',
-        semanticType: json['semanticType'] as String? ?? '',
-        localeL1: json['localeL1'] as String? ?? '',
-        programVersion: json['programVersion'] as int?,
-        programId: json['programId'] as String?,
-      );
+    wordSenseId: json['wordSenseId'] as String,
+    senseKey: json['senseKey'] as String,
+    lemma: json['lemma'] as String,
+    pos: json['pos'] as String? ?? '',
+    semanticType: json['semanticType'] as String? ?? '',
+    localeL1: json['localeL1'] as String? ?? '',
+    programVersion: json['programVersion'] as int?,
+    programId: json['programId'] as String?,
+  );
 }
 
 class ExperienceUnit {
@@ -48,11 +48,11 @@ class ExperienceUnit {
   final Map<String, dynamic> content;
 
   factory ExperienceUnit.fromJson(Map<String, dynamic> json) => ExperienceUnit(
-        experienceUnitId: json['experienceUnitId'] as String,
-        stage: json['stage'] as String,
-        unitType: json['unitType'] as String? ?? 'narrative',
-        content: (json['content'] as Map<String, dynamic>?) ?? const {},
-      );
+    experienceUnitId: json['experienceUnitId'] as String,
+    stage: json['stage'] as String,
+    unitType: json['unitType'] as String? ?? 'narrative',
+    content: (json['content'] as Map<String, dynamic>?) ?? const {},
+  );
 
   String get title => content['title']?.toString() ?? '';
   String get synopsis => content['synopsis']?.toString() ?? '';
@@ -124,24 +124,23 @@ class LearningState {
   }
 
   factory LearningState.fromJson(Map<String, dynamic> json) => LearningState(
-        wordSenseId: json['entityId'] as String,
-        learningStateId: json['payload']?['learningStateId'] as String?,
-        dueAt: json['payload']?['dueAt'] == null
-            ? null
-            : DateTime.parse(json['payload']['dueAt'] as String),
-        reps: (json['payload']?['reps'] as int?) ?? 0,
-        lapses: (json['payload']?['lapses'] as int?) ?? 0,
-        fsrsCardState: json['payload']?['fsrsCardState']?.toString() ?? 'new',
-        fsrsStepIndex: json['payload']?['fsrsStepIndex'] as int?,
-        fsrsStability: (json['payload']?['fsrsStability'] as num?)?.toDouble(),
-        fsrsDifficulty: (json['payload']?['fsrsDifficulty'] as num?)?.toDouble(),
-        fsrsScheduledDays: json['payload']?['fsrsScheduledDays'] as int?,
-        fsrsLastReviewedAt:
-            json['payload']?['fsrsLastReviewedAt'] == null
-                ? null
-                : DateTime.parse(json['payload']['fsrsLastReviewedAt'] as String),
-        clientUpdatedAt: json['clientUpdatedAt'] as String?,
-      );
+    wordSenseId: json['entityId'] as String,
+    learningStateId: json['payload']?['learningStateId'] as String?,
+    dueAt: json['payload']?['dueAt'] == null
+        ? null
+        : DateTime.parse(json['payload']['dueAt'] as String),
+    reps: (json['payload']?['reps'] as int?) ?? 0,
+    lapses: (json['payload']?['lapses'] as int?) ?? 0,
+    fsrsCardState: json['payload']?['fsrsCardState']?.toString() ?? 'new',
+    fsrsStepIndex: json['payload']?['fsrsStepIndex'] as int?,
+    fsrsStability: (json['payload']?['fsrsStability'] as num?)?.toDouble(),
+    fsrsDifficulty: (json['payload']?['fsrsDifficulty'] as num?)?.toDouble(),
+    fsrsScheduledDays: json['payload']?['fsrsScheduledDays'] as int?,
+    fsrsLastReviewedAt: json['payload']?['fsrsLastReviewedAt'] == null
+        ? null
+        : DateTime.parse(json['payload']['fsrsLastReviewedAt'] as String),
+    clientUpdatedAt: json['clientUpdatedAt'] as String?,
+  );
 }
 
 class AuthSession {
@@ -160,12 +159,12 @@ class AuthSession {
   final String email;
 
   factory AuthSession.fromJson(Map<String, dynamic> json) => AuthSession(
-        idToken: json['idToken'] as String,
-        refreshToken: json['refreshToken'] as String,
-        expiresIn: (json['expiresIn'] as num).toInt(),
-        userId: json['user']['userId'] as String,
-        email: json['user']['email'] as String,
-      );
+    idToken: json['idToken'] as String,
+    refreshToken: json['refreshToken'] as String,
+    expiresIn: (json['expiresIn'] as num).toInt(),
+    userId: json['user']['userId'] as String,
+    email: json['user']['email'] as String,
+  );
 }
 
 class Workspace {
@@ -180,10 +179,10 @@ class Workspace {
   final bool isSelected;
 
   factory Workspace.fromJson(Map<String, dynamic> json) => Workspace(
-        workspaceId: json['workspaceId'] as String,
-        name: json['name']?.toString() ?? 'Untitled',
-        isSelected: json['isSelected'] as bool? ?? false,
-      );
+    workspaceId: json['workspaceId'] as String,
+    name: json['name']?.toString() ?? 'Untitled',
+    isSelected: json['isSelected'] as bool? ?? false,
+  );
 }
 
 /// Word list: a smart filter (name + tag rule, at least one tag).
@@ -200,7 +199,8 @@ class WordList {
   final List<String> tags;
 
   factory WordList.fromJson(Map<String, dynamic> json) {
-    final filter = (json['filterDefinition'] as Map<String, dynamic>?) ??
+    final filter =
+        (json['filterDefinition'] as Map<String, dynamic>?) ??
         const <String, dynamic>{};
     return WordList(
       listId: json['listId'] as String,
@@ -217,14 +217,13 @@ class WordList {
     required String lastModifiedByReplicaId,
     required String lastOperationId,
     String? deletedAt,
-  }) =>
-      {
-        'listId': listId,
-        'name': name,
-        'filterDefinition': {'version': 2, 'tags': tags},
-        'clientUpdatedAt': clientUpdatedAt,
-        'lastModifiedByReplicaId': lastModifiedByReplicaId,
-        'lastOperationId': lastOperationId,
-        'deletedAt': deletedAt,
-      };
+  }) => {
+    'listId': listId,
+    'name': name,
+    'filterDefinition': {'version': 2, 'tags': tags},
+    'clientUpdatedAt': clientUpdatedAt,
+    'lastModifiedByReplicaId': lastModifiedByReplicaId,
+    'lastOperationId': lastOperationId,
+    'deletedAt': deletedAt,
+  };
 }

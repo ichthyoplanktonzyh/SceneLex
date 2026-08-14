@@ -13,12 +13,12 @@ final databaseProvider = Provider<AppDatabase>((ref) {
   return db;
 });
 
-final localRepositoryProvider =
-    Provider<LocalRepository>((ref) => LocalRepository(ref.watch(databaseProvider)));
+final localRepositoryProvider = Provider<LocalRepository>(
+  (ref) => LocalRepository(ref.watch(databaseProvider)),
+);
 
 /// Sync engine for the selected workspace (created lazily after login).
-final syncEngineProvider =
-    FutureProvider.autoDispose<SyncEngine>((ref) async {
+final syncEngineProvider = FutureProvider.autoDispose<SyncEngine>((ref) async {
   final api = ref.watch(apiClientProvider);
   final local = ref.watch(localRepositoryProvider);
   final ws = await ref.watch(workspaceProvider.future);
@@ -57,18 +57,25 @@ class SyncStateInfo {
 
 class SyncStatusController extends Notifier<SyncStateInfo> {
   @override
-  SyncStateInfo build() =>
-      const SyncStateInfo(status: SyncStateStatus.synced);
+  SyncStateInfo build() => const SyncStateInfo(status: SyncStateStatus.synced);
 
-  void beginSync() =>
-      state = SyncStateInfo(status: SyncStateStatus.syncing, lastSyncAt: state.lastSyncAt);
+  void beginSync() => state = SyncStateInfo(
+    status: SyncStateStatus.syncing,
+    lastSyncAt: state.lastSyncAt,
+  );
 
-  void syncSucceeded() =>
-      state = SyncStateInfo(status: SyncStateStatus.synced, lastSyncAt: DateTime.now());
+  void syncSucceeded() => state = SyncStateInfo(
+    status: SyncStateStatus.synced,
+    lastSyncAt: DateTime.now(),
+  );
 
-  void syncFailed() =>
-      state = SyncStateInfo(status: SyncStateStatus.offline, lastSyncAt: state.lastSyncAt);
+  void syncFailed() => state = SyncStateInfo(
+    status: SyncStateStatus.offline,
+    lastSyncAt: state.lastSyncAt,
+  );
 }
 
 final syncStatusProvider =
-    NotifierProvider<SyncStatusController, SyncStateInfo>(SyncStatusController.new);
+    NotifierProvider<SyncStatusController, SyncStateInfo>(
+      SyncStatusController.new,
+    );

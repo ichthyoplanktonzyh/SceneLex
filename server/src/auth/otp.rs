@@ -99,12 +99,11 @@ pub async fn send_code(
 
     // Deleted accounts cannot re-register (tombstone check first so the
     // rate-limit counters stay untouched by deleted-account probes).
-    let deleted: Option<Uuid> = sqlx::query_scalar(
-        "SELECT subject_key FROM auth.deleted_subjects WHERE email = $1",
-    )
-    .bind(&email)
-    .fetch_optional(pool)
-    .await?;
+    let deleted: Option<Uuid> =
+        sqlx::query_scalar("SELECT subject_key FROM auth.deleted_subjects WHERE email = $1")
+            .bind(&email)
+            .fetch_optional(pool)
+            .await?;
     if deleted.is_some() {
         return Err(OtpError::AccountDeleted);
     }
@@ -113,12 +112,10 @@ pub async fn send_code(
     rate_limit_ip(pool, ip).await?;
 
     // Auto-register: find or create the user.
-    let user_id: Uuid = match sqlx::query_scalar(
-        "SELECT user_id FROM org.users WHERE email = $1",
-    )
-    .bind(&email)
-    .fetch_optional(pool)
-    .await?
+    let user_id: Uuid = match sqlx::query_scalar("SELECT user_id FROM org.users WHERE email = $1")
+        .bind(&email)
+        .fetch_optional(pool)
+        .await?
     {
         Some(id) => id,
         None => {
@@ -163,14 +160,19 @@ pub async fn send_code(
 }
 
 /// Verify an OTP and return the authenticated user.
-pub async fn verify_code(
-    pool: &PgPool,
-    email: &str,
-    code: &str,
-) -> Result<AuthUser, OtpError> {
+pub async fn verify_code(pool: &PgPool, email: &str, code: &str) -> Result<AuthUser, OtpError> {
     let email = email.trim().to_lowercase();
 
-    let challenge = sqlx::query_as::<_, (Uuid, Uuid, String, chrono::DateTime<Utc>, Option<chrono::DateTime<Utc>>)>(
+    let challenge = sqlx::query_as::<
+        _,
+        (
+            Uuid,
+            Uuid,
+            String,
+            chrono::DateTime<Utc>,
+            Option<chrono::DateTime<Utc>>,
+        ),
+    >(
         "SELECT challenge_id, user_id, code_hash, expires_at, consumed_at
          FROM auth.otp_challenges
          WHERE email = $1
@@ -192,12 +194,11 @@ pub async fn verify_code(
         return Err(OtpError::Expired);
     }
 
-    let attempts: i64 = sqlx::query_scalar(
-        "SELECT count(*) FROM auth.otp_verify_attempts WHERE challenge_id = $1",
-    )
-    .bind(challenge_id)
-    .fetch_one(pool)
-    .await?;
+    let attempts: i64 =
+        sqlx::query_scalar("SELECT count(*) FROM auth.otp_verify_attempts WHERE challenge_id = $1")
+            .bind(challenge_id)
+            .fetch_one(pool)
+            .await?;
     if attempts >= MAX_VERIFY_ATTEMPTS {
         return Err(OtpError::TooManyAttempts);
     }

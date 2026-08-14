@@ -41,9 +41,11 @@ class ContentText extends StatelessWidget {
   }
 
   MarkdownStyleSheet _markdownStyleSheet(ThemeData theme) {
-    final base = theme.textTheme.bodyLarge?.copyWith(height: 1.6) ??
+    final base =
+        theme.textTheme.bodyLarge?.copyWith(height: 1.6) ??
         const TextStyle(fontSize: 16, height: 1.6);
-    final codeStyle = theme.textTheme.bodyMedium?.copyWith(
+    final codeStyle =
+        theme.textTheme.bodyMedium?.copyWith(
           fontFamily: 'monospace',
           color: theme.colorScheme.onSurface,
           backgroundColor: theme.colorScheme.surfaceContainerHighest,
