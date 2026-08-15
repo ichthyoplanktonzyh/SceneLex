@@ -3448,6 +3448,438 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Browse the real catalog — every sense below comes from the bundled content.'**
   String get journeyExploreSubtitle;
+
+  /// No description provided for @sessionHomeKicker.
+  ///
+  /// In en, this message translates to:
+  /// **'DAILY LEARNING'**
+  String get sessionHomeKicker;
+
+  /// No description provided for @sessionHomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Study'**
+  String get sessionHomeTitle;
+
+  /// No description provided for @sessionHomeMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String sessionHomeMinutes(int minutes);
+
+  /// No description provided for @sessionSummaryRecall.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 recall} other{{count} recalls}}'**
+  String sessionSummaryRecall(int count);
+
+  /// No description provided for @sessionSummaryDiscover.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 new sense} other{{count} new senses}}'**
+  String sessionSummaryDiscover(int count);
+
+  /// No description provided for @sessionSummaryBoundary.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 boundary} other{{count} boundaries}}'**
+  String sessionSummaryBoundary(int count);
+
+  /// No description provided for @sessionSummaryTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 transfer} other{{count} transfers}}'**
+  String sessionSummaryTransfer(int count);
+
+  /// No description provided for @sessionHomeExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Planned from your current mastery — wake up what is due, build one new sense, and check where it meets what you know.'**
+  String get sessionHomeExplanation;
+
+  /// No description provided for @sessionHomeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Learning'**
+  String get sessionHomeStart;
+
+  /// No description provided for @sessionHomeResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue this session'**
+  String get sessionHomeResume;
+
+  /// No description provided for @sessionHomeRedo.
+  ///
+  /// In en, this message translates to:
+  /// **'Re-experience today\'s session'**
+  String get sessionHomeRedo;
+
+  /// No description provided for @sessionHomeDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s session complete'**
+  String get sessionHomeDone;
+
+  /// No description provided for @sessionHomeAdjust.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust this session'**
+  String get sessionHomeAdjust;
+
+  /// No description provided for @sessionHomeSemanticMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Semantic Map'**
+  String get sessionHomeSemanticMap;
+
+  /// No description provided for @sessionHomeExplore.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore freely'**
+  String get sessionHomeExplore;
+
+  /// No description provided for @sessionHomeEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing planned today — the system keeps watching for what becomes due.'**
+  String get sessionHomeEmptyHint;
+
+  /// No description provided for @sessionHomeFooterHint.
+  ///
+  /// In en, this message translates to:
+  /// **'System-planned learning · free exploration is one tap away'**
+  String get sessionHomeFooterHint;
+
+  /// No description provided for @sessionModeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust this session'**
+  String get sessionModeTitle;
+
+  /// No description provided for @sessionModeStandard.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard'**
+  String get sessionModeStandard;
+
+  /// No description provided for @sessionModeStandardDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Review + one new sense + boundary when needed'**
+  String get sessionModeStandardDesc;
+
+  /// No description provided for @sessionModeReviewOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Review only'**
+  String get sessionModeReviewOnly;
+
+  /// No description provided for @sessionModeReviewOnlyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the senses due today'**
+  String get sessionModeReviewOnlyDesc;
+
+  /// No description provided for @sessionModeLearnOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'New content only'**
+  String get sessionModeLearnOnly;
+
+  /// No description provided for @sessionModeLearnOnlyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover a new sense; no recall'**
+  String get sessionModeLearnOnlyDesc;
+
+  /// No description provided for @sessionModeCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get sessionModeCancel;
+
+  /// No description provided for @sessionModeConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard this session?'**
+  String get sessionModeConfirmTitle;
+
+  /// No description provided for @sessionModeConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Switching mode drops your unfinished session. Continue?'**
+  String get sessionModeConfirmBody;
+
+  /// No description provided for @sessionModeConfirmSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard and switch'**
+  String get sessionModeConfirmSwitch;
+
+  /// No description provided for @sessionModeChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Session adjusted'**
+  String get sessionModeChanged;
+
+  /// No description provided for @sessionBlockWarmup.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick wake-up'**
+  String get sessionBlockWarmup;
+
+  /// No description provided for @sessionBlockCore.
+  ///
+  /// In en, this message translates to:
+  /// **'Core sense'**
+  String get sessionBlockCore;
+
+  /// No description provided for @sessionBlockBoundary.
+  ///
+  /// In en, this message translates to:
+  /// **'Boundary check'**
+  String get sessionBlockBoundary;
+
+  /// No description provided for @sessionBlockTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer drill'**
+  String get sessionBlockTransfer;
+
+  /// No description provided for @sessionBlockCompletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrap-up'**
+  String get sessionBlockCompletion;
+
+  /// No description provided for @sessionTaskRecall.
+  ///
+  /// In en, this message translates to:
+  /// **'Recall'**
+  String get sessionTaskRecall;
+
+  /// No description provided for @sessionTaskDiscover.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover'**
+  String get sessionTaskDiscover;
+
+  /// No description provided for @sessionTaskBoundary.
+  ///
+  /// In en, this message translates to:
+  /// **'Boundary'**
+  String get sessionTaskBoundary;
+
+  /// No description provided for @sessionTaskTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer'**
+  String get sessionTaskTransfer;
+
+  /// No description provided for @sessionProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Task {current} of {total}'**
+  String sessionProgress(int current, int total);
+
+  /// No description provided for @sessionQuitTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit — you can continue later'**
+  String get sessionQuitTooltip;
+
+  /// No description provided for @sessionSafeExitNote.
+  ///
+  /// In en, this message translates to:
+  /// **'You can safely exit — this session resumes from here.'**
+  String get sessionSafeExitNote;
+
+  /// No description provided for @sessionSkipTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip task'**
+  String get sessionSkipTask;
+
+  /// No description provided for @sessionTaskUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This task\'s content is not available yet.'**
+  String get sessionTaskUnavailable;
+
+  /// No description provided for @sessionContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get sessionContinue;
+
+  /// No description provided for @sessionNextTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Next task'**
+  String get sessionNextTask;
+
+  /// No description provided for @sessionFinishSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish session'**
+  String get sessionFinishSession;
+
+  /// No description provided for @sessionEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to do today'**
+  String get sessionEmptyTitle;
+
+  /// No description provided for @sessionEmptyReviewBody.
+  ///
+  /// In en, this message translates to:
+  /// **'No senses are due today. Explore freely, or come back later.'**
+  String get sessionEmptyReviewBody;
+
+  /// No description provided for @sessionEmptyLearnBody.
+  ///
+  /// In en, this message translates to:
+  /// **'No new senses are available right now. Come back when new content is ready.'**
+  String get sessionEmptyLearnBody;
+
+  /// No description provided for @sessionEmptyBackHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Back Home'**
+  String get sessionEmptyBackHome;
+
+  /// No description provided for @sessionCompleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session complete'**
+  String get sessionCompleteTitle;
+
+  /// No description provided for @sessionCompleteNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Prototype summary — no long-term memory score is computed or stored.'**
+  String get sessionCompleteNote;
+
+  /// No description provided for @sessionCompleteSection.
+  ///
+  /// In en, this message translates to:
+  /// **'WHAT THIS SESSION DID'**
+  String get sessionCompleteSection;
+
+  /// No description provided for @sessionLedgerRecalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Woke up {lemma}'**
+  String sessionLedgerRecalled(String lemma);
+
+  /// No description provided for @sessionLedgerEstablished.
+  ///
+  /// In en, this message translates to:
+  /// **'Established {lemma}'**
+  String sessionLedgerEstablished(String lemma);
+
+  /// No description provided for @sessionLedgerBoundary.
+  ///
+  /// In en, this message translates to:
+  /// **'Distinguished {a} / {b}'**
+  String sessionLedgerBoundary(String a, String b);
+
+  /// No description provided for @sessionLedgerTransferred.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer drill on {lemma}'**
+  String sessionLedgerTransferred(String lemma);
+
+  /// No description provided for @sessionCompleteViewMap.
+  ///
+  /// In en, this message translates to:
+  /// **'View Semantic Map'**
+  String get sessionCompleteViewMap;
+
+  /// No description provided for @sessionCompleteBackHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Back Home'**
+  String get sessionCompleteBackHome;
+
+  /// No description provided for @sessionCompleteNewBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'NEW'**
+  String get sessionCompleteNewBadge;
+
+  /// No description provided for @sessionCompleteNewBoundary.
+  ///
+  /// In en, this message translates to:
+  /// **'New boundary'**
+  String get sessionCompleteNewBoundary;
+
+  /// No description provided for @sessionMapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Semantic Map'**
+  String get sessionMapTitle;
+
+  /// No description provided for @sessionMapHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your semantic world — nodes you met today are highlighted.'**
+  String get sessionMapHint;
+
+  /// No description provided for @sessionMapStatusMastered.
+  ///
+  /// In en, this message translates to:
+  /// **'Mastered'**
+  String get sessionMapStatusMastered;
+
+  /// No description provided for @sessionMapStatusLearning.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning'**
+  String get sessionMapStatusLearning;
+
+  /// No description provided for @sessionMapStatusNewlyLearned.
+  ///
+  /// In en, this message translates to:
+  /// **'Newly learned'**
+  String get sessionMapStatusNewlyLearned;
+
+  /// No description provided for @sessionMapStatusUnseen.
+  ///
+  /// In en, this message translates to:
+  /// **'Unseen'**
+  String get sessionMapStatusUnseen;
+
+  /// No description provided for @sessionExploreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore freely'**
+  String get sessionExploreTitle;
+
+  /// No description provided for @sessionExploreSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse the real catalog — every sense below comes from the bundled content.'**
+  String get sessionExploreSubtitle;
+
+  /// No description provided for @sessionStatusDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Due today'**
+  String get sessionStatusDue;
+
+  /// No description provided for @sessionStatusStable.
+  ///
+  /// In en, this message translates to:
+  /// **'Stable'**
+  String get sessionStatusStable;
+
+  /// No description provided for @sessionStatusNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get sessionStatusNew;
 }
 
 class _AppLocalizationsDelegate

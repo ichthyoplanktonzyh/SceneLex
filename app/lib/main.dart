@@ -8,6 +8,7 @@ import 'auth/auth_controller.dart';
 import 'data/content/experience_program_repository.dart';
 import 'data/product_providers.dart';
 import 'data/providers.dart';
+import 'features/daily_session_prototype/daily_session_preview_app.dart';
 import 'features/experience_runtime/experience_runtime_page.dart';
 import 'features/experience_runtime/experience_runtime_view_model.dart';
 import 'features/journey_prototype/journey_preview_app.dart';
@@ -33,11 +34,28 @@ const String kJourneyPreviewFlag = String.fromEnvironment(
   'SCENELEX_JOURNEY_PREVIEW',
 );
 
+/// Development-only entry: `--dart-define=SCENELEX_SESSION_PREVIEW=true`
+/// boots the "Daily Learning Session" product prototype (unified entry +
+/// dynamic task orchestration + modes; bundled catalog, prototype learner
+/// state, memory-only session resume, no login / server / workspace / sync).
+/// The production App and the Journey preview are unchanged; the whole
+/// prototype lives under `features/daily_session_prototype` and can be
+/// deleted as one directory.
+///
+/// Precedence: when both SESSION_PREVIEW and JOURNEY_PREVIEW are set,
+/// SESSION_PREVIEW wins — the two previews are independent prototypes and
+/// must never interfere, but only one can own the entry at a time.
+const String kSessionPreviewFlag = String.fromEnvironment(
+  'SCENELEX_SESSION_PREVIEW',
+);
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final themeMode = await loadThemeMode();
   final Widget app;
-  if (kJourneyPreviewFlag.isNotEmpty) {
+  if (kSessionPreviewFlag.isNotEmpty) {
+    app = const SessionPreviewApp();
+  } else if (kJourneyPreviewFlag.isNotEmpty) {
     app = const JourneyPreviewApp();
   } else if (kExperiencePreviewSense.isNotEmpty) {
     app = ExperiencePreviewApp(senseId: kExperiencePreviewSense);

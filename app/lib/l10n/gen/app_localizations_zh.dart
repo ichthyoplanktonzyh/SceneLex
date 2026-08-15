@@ -1854,4 +1854,265 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get journeyExploreSubtitle => '浏览真实目录——以下每个词义都来自内置内容。';
+
+  @override
+  String get sessionHomeKicker => '每日学习';
+
+  @override
+  String get sessionHomeTitle => '今日学习';
+
+  @override
+  String sessionHomeMinutes(int minutes) {
+    return '约 $minutes 分钟';
+  }
+
+  @override
+  String sessionSummaryRecall(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 个待复习',
+      one: '1 个待复习',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sessionSummaryDiscover(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 个新义项',
+      one: '1 个新义项',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sessionSummaryBoundary(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 个辨析',
+      one: '1 个辨析',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sessionSummaryTransfer(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 个迁移',
+      one: '1 个迁移',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sessionHomeExplanation =>
+      '系统会根据你的掌握状态安排本次学习：唤醒到期内容、建立一个新义项，并检查它与已学内容的边界。';
+
+  @override
+  String get sessionHomeStart => '开始学习';
+
+  @override
+  String get sessionHomeResume => '继续本次学习';
+
+  @override
+  String get sessionHomeRedo => '重新体验今日学习';
+
+  @override
+  String get sessionHomeDone => '今日已完成';
+
+  @override
+  String get sessionHomeAdjust => '调整本次学习';
+
+  @override
+  String get sessionHomeSemanticMap => '语义地图';
+
+  @override
+  String get sessionHomeExplore => '自由探索';
+
+  @override
+  String get sessionHomeEmptyHint => '今天暂无安排——系统会继续留意到期内容。';
+
+  @override
+  String get sessionHomeFooterHint => '系统替你编排学习 · 自由探索随时可进入';
+
+  @override
+  String get sessionModeTitle => '调整本次学习';
+
+  @override
+  String get sessionModeStandard => '标准模式';
+
+  @override
+  String get sessionModeStandardDesc => '复习 + 一个新义项 + 必要的辨析';
+
+  @override
+  String get sessionModeReviewOnly => '只复习';
+
+  @override
+  String get sessionModeReviewOnlyDesc => '只复习今天到期的义项';
+
+  @override
+  String get sessionModeLearnOnly => '只学新内容';
+
+  @override
+  String get sessionModeLearnOnlyDesc => '学习一个新义项，不复习';
+
+  @override
+  String get sessionModeCancel => '取消';
+
+  @override
+  String get sessionModeConfirmTitle => '丢弃本次学习？';
+
+  @override
+  String get sessionModeConfirmBody => '切换模式将丢弃尚未完成的学习。确定继续吗？';
+
+  @override
+  String get sessionModeConfirmSwitch => '丢弃并切换';
+
+  @override
+  String get sessionModeChanged => '已调整学习安排';
+
+  @override
+  String get sessionBlockWarmup => '快速唤醒';
+
+  @override
+  String get sessionBlockCore => '核心义项';
+
+  @override
+  String get sessionBlockBoundary => '边界辨析';
+
+  @override
+  String get sessionBlockTransfer => '迁移加练';
+
+  @override
+  String get sessionBlockCompletion => '完成';
+
+  @override
+  String get sessionTaskRecall => '回想';
+
+  @override
+  String get sessionTaskDiscover => '学习新义项';
+
+  @override
+  String get sessionTaskBoundary => '辨析';
+
+  @override
+  String get sessionTaskTransfer => '迁移';
+
+  @override
+  String sessionProgress(int current, int total) {
+    return '任务 $current / $total';
+  }
+
+  @override
+  String get sessionQuitTooltip => '退出学习（稍后可继续）';
+
+  @override
+  String get sessionSafeExitNote => '可以安全退出，本次学习会从当前任务继续。';
+
+  @override
+  String get sessionSkipTask => '跳过任务';
+
+  @override
+  String get sessionTaskUnavailable => '这个任务的内容暂不可用。';
+
+  @override
+  String get sessionContinue => '继续';
+
+  @override
+  String get sessionNextTask => '下一任务';
+
+  @override
+  String get sessionFinishSession => '完成本次学习';
+
+  @override
+  String get sessionEmptyTitle => '今天暂无任务';
+
+  @override
+  String get sessionEmptyReviewBody => '今天没有到期的义项。去自由探索，或稍后再来。';
+
+  @override
+  String get sessionEmptyLearnBody => '暂时没有可学的新义项，等新内容准备好再来吧。';
+
+  @override
+  String get sessionEmptyBackHome => '返回首页';
+
+  @override
+  String get sessionCompleteTitle => '本次学习完成';
+
+  @override
+  String get sessionCompleteNote => '原型总结——不计算也不保存长期记忆分数。';
+
+  @override
+  String get sessionCompleteSection => '本次学习做了什么';
+
+  @override
+  String sessionLedgerRecalled(String lemma) {
+    return '唤醒 $lemma';
+  }
+
+  @override
+  String sessionLedgerEstablished(String lemma) {
+    return '新建立 $lemma';
+  }
+
+  @override
+  String sessionLedgerBoundary(String a, String b) {
+    return '辨析 $a 与 $b';
+  }
+
+  @override
+  String sessionLedgerTransferred(String lemma) {
+    return '对 $lemma 进行了迁移加练';
+  }
+
+  @override
+  String get sessionCompleteViewMap => '查看语义地图';
+
+  @override
+  String get sessionCompleteBackHome => '返回首页';
+
+  @override
+  String get sessionCompleteNewBadge => '新';
+
+  @override
+  String get sessionCompleteNewBoundary => '新边界';
+
+  @override
+  String get sessionMapTitle => '语义地图';
+
+  @override
+  String get sessionMapHint => '你的语义世界——今天遇到的节点会高亮。';
+
+  @override
+  String get sessionMapStatusMastered => '已掌握';
+
+  @override
+  String get sessionMapStatusLearning => '学习中';
+
+  @override
+  String get sessionMapStatusNewlyLearned => '今日新学';
+
+  @override
+  String get sessionMapStatusUnseen => '未学习';
+
+  @override
+  String get sessionExploreTitle => '自由探索';
+
+  @override
+  String get sessionExploreSubtitle => '浏览真实目录——以下每个义项都来自 bundled content。';
+
+  @override
+  String get sessionStatusDue => '今日到期';
+
+  @override
+  String get sessionStatusStable => '已稳定';
+
+  @override
+  String get sessionStatusNew => '新内容';
 }

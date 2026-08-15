@@ -1913,4 +1913,276 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get journeyExploreSubtitle =>
       'Browse the real catalog — every sense below comes from the bundled content.';
+
+  @override
+  String get sessionHomeKicker => 'DAILY LEARNING';
+
+  @override
+  String get sessionHomeTitle => 'Today\'s Study';
+
+  @override
+  String sessionHomeMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String sessionSummaryRecall(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count recalls',
+      one: '1 recall',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sessionSummaryDiscover(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new senses',
+      one: '1 new sense',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sessionSummaryBoundary(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count boundaries',
+      one: '1 boundary',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sessionSummaryTransfer(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count transfers',
+      one: '1 transfer',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sessionHomeExplanation =>
+      'Planned from your current mastery — wake up what is due, build one new sense, and check where it meets what you know.';
+
+  @override
+  String get sessionHomeStart => 'Start Learning';
+
+  @override
+  String get sessionHomeResume => 'Continue this session';
+
+  @override
+  String get sessionHomeRedo => 'Re-experience today\'s session';
+
+  @override
+  String get sessionHomeDone => 'Today\'s session complete';
+
+  @override
+  String get sessionHomeAdjust => 'Adjust this session';
+
+  @override
+  String get sessionHomeSemanticMap => 'Semantic Map';
+
+  @override
+  String get sessionHomeExplore => 'Explore freely';
+
+  @override
+  String get sessionHomeEmptyHint =>
+      'Nothing planned today — the system keeps watching for what becomes due.';
+
+  @override
+  String get sessionHomeFooterHint =>
+      'System-planned learning · free exploration is one tap away';
+
+  @override
+  String get sessionModeTitle => 'Adjust this session';
+
+  @override
+  String get sessionModeStandard => 'Standard';
+
+  @override
+  String get sessionModeStandardDesc =>
+      'Review + one new sense + boundary when needed';
+
+  @override
+  String get sessionModeReviewOnly => 'Review only';
+
+  @override
+  String get sessionModeReviewOnlyDesc => 'Only the senses due today';
+
+  @override
+  String get sessionModeLearnOnly => 'New content only';
+
+  @override
+  String get sessionModeLearnOnlyDesc => 'Discover a new sense; no recall';
+
+  @override
+  String get sessionModeCancel => 'Cancel';
+
+  @override
+  String get sessionModeConfirmTitle => 'Discard this session?';
+
+  @override
+  String get sessionModeConfirmBody =>
+      'Switching mode drops your unfinished session. Continue?';
+
+  @override
+  String get sessionModeConfirmSwitch => 'Discard and switch';
+
+  @override
+  String get sessionModeChanged => 'Session adjusted';
+
+  @override
+  String get sessionBlockWarmup => 'Quick wake-up';
+
+  @override
+  String get sessionBlockCore => 'Core sense';
+
+  @override
+  String get sessionBlockBoundary => 'Boundary check';
+
+  @override
+  String get sessionBlockTransfer => 'Transfer drill';
+
+  @override
+  String get sessionBlockCompletion => 'Wrap-up';
+
+  @override
+  String get sessionTaskRecall => 'Recall';
+
+  @override
+  String get sessionTaskDiscover => 'Discover';
+
+  @override
+  String get sessionTaskBoundary => 'Boundary';
+
+  @override
+  String get sessionTaskTransfer => 'Transfer';
+
+  @override
+  String sessionProgress(int current, int total) {
+    return 'Task $current of $total';
+  }
+
+  @override
+  String get sessionQuitTooltip => 'Exit — you can continue later';
+
+  @override
+  String get sessionSafeExitNote =>
+      'You can safely exit — this session resumes from here.';
+
+  @override
+  String get sessionSkipTask => 'Skip task';
+
+  @override
+  String get sessionTaskUnavailable =>
+      'This task\'s content is not available yet.';
+
+  @override
+  String get sessionContinue => 'Continue';
+
+  @override
+  String get sessionNextTask => 'Next task';
+
+  @override
+  String get sessionFinishSession => 'Finish session';
+
+  @override
+  String get sessionEmptyTitle => 'Nothing to do today';
+
+  @override
+  String get sessionEmptyReviewBody =>
+      'No senses are due today. Explore freely, or come back later.';
+
+  @override
+  String get sessionEmptyLearnBody =>
+      'No new senses are available right now. Come back when new content is ready.';
+
+  @override
+  String get sessionEmptyBackHome => 'Back Home';
+
+  @override
+  String get sessionCompleteTitle => 'Session complete';
+
+  @override
+  String get sessionCompleteNote =>
+      'Prototype summary — no long-term memory score is computed or stored.';
+
+  @override
+  String get sessionCompleteSection => 'WHAT THIS SESSION DID';
+
+  @override
+  String sessionLedgerRecalled(String lemma) {
+    return 'Woke up $lemma';
+  }
+
+  @override
+  String sessionLedgerEstablished(String lemma) {
+    return 'Established $lemma';
+  }
+
+  @override
+  String sessionLedgerBoundary(String a, String b) {
+    return 'Distinguished $a / $b';
+  }
+
+  @override
+  String sessionLedgerTransferred(String lemma) {
+    return 'Transfer drill on $lemma';
+  }
+
+  @override
+  String get sessionCompleteViewMap => 'View Semantic Map';
+
+  @override
+  String get sessionCompleteBackHome => 'Back Home';
+
+  @override
+  String get sessionCompleteNewBadge => 'NEW';
+
+  @override
+  String get sessionCompleteNewBoundary => 'New boundary';
+
+  @override
+  String get sessionMapTitle => 'Semantic Map';
+
+  @override
+  String get sessionMapHint =>
+      'Your semantic world — nodes you met today are highlighted.';
+
+  @override
+  String get sessionMapStatusMastered => 'Mastered';
+
+  @override
+  String get sessionMapStatusLearning => 'Learning';
+
+  @override
+  String get sessionMapStatusNewlyLearned => 'Newly learned';
+
+  @override
+  String get sessionMapStatusUnseen => 'Unseen';
+
+  @override
+  String get sessionExploreTitle => 'Explore freely';
+
+  @override
+  String get sessionExploreSubtitle =>
+      'Browse the real catalog — every sense below comes from the bundled content.';
+
+  @override
+  String get sessionStatusDue => 'Due today';
+
+  @override
+  String get sessionStatusStable => 'Stable';
+
+  @override
+  String get sessionStatusNew => 'New';
 }

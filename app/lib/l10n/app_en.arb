@@ -1092,5 +1092,153 @@
         "type": "String"
       }
     }
-  }
+  },
+  "sessionHomeKicker": "DAILY LEARNING",
+  "sessionHomeTitle": "Today's Study",
+  "sessionHomeMinutes": "{minutes} min",
+  "@sessionHomeMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSummaryRecall": "{count, plural, =1{1 recall} other{{count} recalls}}",
+  "@sessionSummaryRecall": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSummaryDiscover": "{count, plural, =1{1 new sense} other{{count} new senses}}",
+  "@sessionSummaryDiscover": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSummaryBoundary": "{count, plural, =1{1 boundary} other{{count} boundaries}}",
+  "@sessionSummaryBoundary": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSummaryTransfer": "{count, plural, =1{1 transfer} other{{count} transfers}}",
+  "@sessionSummaryTransfer": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionHomeExplanation": "Planned from your current mastery — wake up what is due, build one new sense, and check where it meets what you know.",
+  "sessionHomeStart": "Start Learning",
+  "sessionHomeResume": "Continue this session",
+  "sessionHomeRedo": "Re-experience today's session",
+  "sessionHomeDone": "Today's session complete",
+  "sessionHomeAdjust": "Adjust this session",
+  "sessionHomeSemanticMap": "Semantic Map",
+  "sessionHomeExplore": "Explore freely",
+  "sessionHomeEmptyHint": "Nothing planned today — the system keeps watching for what becomes due.",
+  "sessionHomeFooterHint": "System-planned learning · free exploration is one tap away",
+  "sessionModeTitle": "Adjust this session",
+  "sessionModeStandard": "Standard",
+  "sessionModeStandardDesc": "Review + one new sense + boundary when needed",
+  "sessionModeReviewOnly": "Review only",
+  "sessionModeReviewOnlyDesc": "Only the senses due today",
+  "sessionModeLearnOnly": "New content only",
+  "sessionModeLearnOnlyDesc": "Discover a new sense; no recall",
+  "sessionModeCancel": "Cancel",
+  "sessionModeConfirmTitle": "Discard this session?",
+  "sessionModeConfirmBody": "Switching mode drops your unfinished session. Continue?",
+  "sessionModeConfirmSwitch": "Discard and switch",
+  "sessionModeChanged": "Session adjusted",
+  "sessionBlockWarmup": "Quick wake-up",
+  "sessionBlockCore": "Core sense",
+  "sessionBlockBoundary": "Boundary check",
+  "sessionBlockTransfer": "Transfer drill",
+  "sessionBlockCompletion": "Wrap-up",
+  "sessionTaskRecall": "Recall",
+  "sessionTaskDiscover": "Discover",
+  "sessionTaskBoundary": "Boundary",
+  "sessionTaskTransfer": "Transfer",
+  "sessionProgress": "Task {current} of {total}",
+  "@sessionProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionQuitTooltip": "Exit — you can continue later",
+  "sessionSafeExitNote": "You can safely exit — this session resumes from here.",
+  "sessionSkipTask": "Skip task",
+  "sessionTaskUnavailable": "This task's content is not available yet.",
+  "sessionContinue": "Continue",
+  "sessionNextTask": "Next task",
+  "sessionFinishSession": "Finish session",
+  "sessionEmptyTitle": "Nothing to do today",
+  "sessionEmptyReviewBody": "No senses are due today. Explore freely, or come back later.",
+  "sessionEmptyLearnBody": "No new senses are available right now. Come back when new content is ready.",
+  "sessionEmptyBackHome": "Back Home",
+  "sessionCompleteTitle": "Session complete",
+  "sessionCompleteNote": "Prototype summary — no long-term memory score is computed or stored.",
+  "sessionCompleteSection": "WHAT THIS SESSION DID",
+  "sessionLedgerRecalled": "Woke up {lemma}",
+  "@sessionLedgerRecalled": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionLedgerEstablished": "Established {lemma}",
+  "@sessionLedgerEstablished": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionLedgerBoundary": "Distinguished {a} / {b}",
+  "@sessionLedgerBoundary": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionLedgerTransferred": "Transfer drill on {lemma}",
+  "@sessionLedgerTransferred": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionCompleteViewMap": "View Semantic Map",
+  "sessionCompleteBackHome": "Back Home",
+  "sessionCompleteNewBadge": "NEW",
+  "sessionCompleteNewBoundary": "New boundary",
+  "sessionMapTitle": "Semantic Map",
+  "sessionMapHint": "Your semantic world — nodes you met today are highlighted.",
+  "sessionMapStatusMastered": "Mastered",
+  "sessionMapStatusLearning": "Learning",
+  "sessionMapStatusNewlyLearned": "Newly learned",
+  "sessionMapStatusUnseen": "Unseen",
+  "sessionExploreTitle": "Explore freely",
+  "sessionExploreSubtitle": "Browse the real catalog — every sense below comes from the bundled content.",
+  "sessionStatusDue": "Due today",
+  "sessionStatusStable": "Stable",
+  "sessionStatusNew": "New"
 }
