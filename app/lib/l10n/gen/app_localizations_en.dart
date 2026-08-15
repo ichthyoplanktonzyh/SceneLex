@@ -1712,4 +1712,205 @@ class AppLocalizationsEn extends AppLocalizations {
   String prefReviewGroupSize(Object groupSize) {
     return '$groupSize senses / group';
   }
+
+  @override
+  String get journeyHomeGreeting => 'Good morning';
+
+  @override
+  String get journeyHomeJourneyTitle => 'Today\'s Journey';
+
+  @override
+  String journeyHomeMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String journeyHomeTaskSummary(
+    int recall,
+    int newConcepts,
+    int boundary,
+    int transfer,
+  ) {
+    return '$recall recall · $newConcepts new concepts · $boundary boundary · $transfer transfer';
+  }
+
+  @override
+  String get journeyHomeExplanation =>
+      'Wake up an old concept, build two new ones, then check where they meet.';
+
+  @override
+  String get journeyHomeContinue => 'Continue Journey';
+
+  @override
+  String get journeyHomeContinueAgain => 'Continue Journey Again';
+
+  @override
+  String get journeyHomeDone => 'Journey complete';
+
+  @override
+  String get journeyHomeSemanticMap => 'Semantic Map';
+
+  @override
+  String get journeyHomeExplore => 'Explore';
+
+  @override
+  String get journeyHomeSecondaryHint =>
+      'System-guided learning · free exploration is one tap away';
+
+  @override
+  String get journeySessionTitle => 'Today\'s Journey';
+
+  @override
+  String get journeySessionQuit => 'Quit journey';
+
+  @override
+  String get journeyTaskRecall => 'Recall';
+
+  @override
+  String get journeyTaskDiscover => 'Discover';
+
+  @override
+  String get journeyTaskBoundary => 'Boundary';
+
+  @override
+  String get journeyTaskTransfer => 'Transfer';
+
+  @override
+  String get journeyRecallPrompt =>
+      'Which word does this scene make you think of? Recall it in your mind.';
+
+  @override
+  String get journeyRecallHint => 'Think of the word before checking.';
+
+  @override
+  String get journeyRecallReveal => 'Reveal';
+
+  @override
+  String get journeyRecallForgot => 'Forgot';
+
+  @override
+  String get journeyRecallHard => 'Hard';
+
+  @override
+  String get journeyRecallGotIt => 'Got it';
+
+  @override
+  String get journeyBoundaryPrompt =>
+      'Which concept does this scene come closer to?';
+
+  @override
+  String get journeyBoundaryCorrect => 'Yes — this scene belongs here.';
+
+  @override
+  String get journeyBoundaryIncorrect =>
+      'Not quite — check the key difference.';
+
+  @override
+  String get journeyBoundaryKey => 'THE KEY DIFFERENCE';
+
+  @override
+  String get journeyTransferHint =>
+      'A brand-new situation — does the concept still hold?';
+
+  @override
+  String get journeyTransferCorrect => 'Transferred';
+
+  @override
+  String get journeyTransferIncorrect => 'Not quite';
+
+  @override
+  String get journeyContinue => 'Continue';
+
+  @override
+  String get journeyNextTask => 'Next task';
+
+  @override
+  String get journeyFinishJourney => 'Finish Journey';
+
+  @override
+  String get journeySkipTask => 'Skip task';
+
+  @override
+  String get journeyTaskUnavailable =>
+      'This task\'s content is not available yet.';
+
+  @override
+  String get journeyCompleteTitle => 'Today\'s Journey Complete';
+
+  @override
+  String get journeyCompleteGrew => 'Your semantic map grew.';
+
+  @override
+  String journeyLedgerRecalled(String lemma) {
+    return 'Woke up $lemma';
+  }
+
+  @override
+  String journeyLedgerEstablished(String lemma) {
+    return 'Established $lemma';
+  }
+
+  @override
+  String journeyLedgerBoundary(String a, String b) {
+    return 'Distinguished $a / $b';
+  }
+
+  @override
+  String journeyLedgerTransfer(String lemma) {
+    return 'Transferred $lemma to a new situation';
+  }
+
+  @override
+  String get journeyCompleteViewMap => 'View Semantic Map';
+
+  @override
+  String get journeyCompleteBackHome => 'Back Home';
+
+  @override
+  String get journeyCompleteNewBadge => 'NEW';
+
+  @override
+  String get journeyCompleteNewBoundary => 'New boundary';
+
+  @override
+  String get journeyMapTitle => 'Semantic Map';
+
+  @override
+  String get journeyMapHint => 'Drag to explore · tap a node for details';
+
+  @override
+  String get journeyMapStatusMastered => 'Mastered';
+
+  @override
+  String get journeyMapStatusLearning => 'Learning';
+
+  @override
+  String get journeyMapStatusNewlyLearned => 'Newly learned';
+
+  @override
+  String get journeyMapStatusUnseen => 'Unseen';
+
+  @override
+  String get journeyMapDetailStatus => 'CURRENT STATUS';
+
+  @override
+  String get journeyMapDetailSymbol => 'SYMBOL RECALL';
+
+  @override
+  String get journeyMapDetailMeaning => 'MEANING';
+
+  @override
+  String get journeyMapDetailBoundary => 'RELATED BOUNDARY';
+
+  @override
+  String journeyMapBoundaryEdge(String a, String b) {
+    return '$a ↔ $b';
+  }
+
+  @override
+  String get journeyExploreTitle => 'Explore';
+
+  @override
+  String get journeyExploreSubtitle =>
+      'Browse the real catalog — every sense below comes from the bundled content.';
 }

@@ -970,5 +970,127 @@
         "type": "Object"
       }
     }
+  },
+  "journeyHomeGreeting": "早上好",
+  "journeyHomeJourneyTitle": "今日旅程",
+  "journeyHomeMinutes": "约 {minutes} 分钟",
+  "journeyHomeTaskSummary": "{recall} 次回想 · {newConcepts} 个新概念 · {boundary} 次辨析 · {transfer} 次迁移",
+  "journeyHomeExplanation": "先唤醒一个旧概念，再建立两个新概念，并检查它们的边界。",
+  "journeyHomeContinue": "继续旅程",
+  "journeyHomeContinueAgain": "再走一遍旅程",
+  "journeyHomeDone": "旅程已完成",
+  "journeyHomeSemanticMap": "语义地图",
+  "journeyHomeExplore": "探索",
+  "journeyHomeSecondaryHint": "主线由系统编排，自由探索随时可进入",
+  "journeySessionTitle": "今日旅程",
+  "journeySessionQuit": "退出旅程",
+  "journeyTaskRecall": "回想",
+  "journeyTaskDiscover": "发现",
+  "journeyTaskBoundary": "辨析",
+  "journeyTaskTransfer": "迁移",
+  "journeyRecallPrompt": "这个场景让你想到哪个词？先在脑中回想它。",
+  "journeyRecallHint": "回想清楚再查看答案。",
+  "journeyRecallReveal": "查看答案",
+  "journeyRecallForgot": "忘了",
+  "journeyRecallHard": "勉强",
+  "journeyRecallGotIt": "记得",
+  "journeyBoundaryPrompt": "这个场景更接近哪一个概念？",
+  "journeyBoundaryCorrect": "对——这个场景属于这里。",
+  "journeyBoundaryIncorrect": "不太对——看看关键区别。",
+  "journeyBoundaryKey": "关键区别",
+  "journeyTransferHint": "一个全新的情境——刚才的概念还成立吗？",
+  "journeyTransferCorrect": "迁移成功",
+  "journeyTransferIncorrect": "不太对",
+  "journeyContinue": "继续",
+  "journeyNextTask": "下一个任务",
+  "journeyFinishJourney": "完成旅程",
+  "journeySkipTask": "跳过此任务",
+  "journeyTaskUnavailable": "这个任务的内容暂时不可用。",
+  "journeyCompleteTitle": "今日旅程完成",
+  "journeyCompleteGrew": "你的语义地图长大了。",
+  "journeyLedgerRecalled": "唤醒了 {lemma}",
+  "journeyLedgerEstablished": "建立了 {lemma}",
+  "journeyLedgerBoundary": "区分了 {a} / {b}",
+  "journeyLedgerTransfer": "把 {lemma} 迁移到了新情境",
+  "journeyCompleteViewMap": "查看语义地图",
+  "journeyCompleteBackHome": "返回首页",
+  "journeyCompleteNewBadge": "NEW",
+  "journeyCompleteNewBoundary": "新的边界",
+  "journeyMapTitle": "语义地图",
+  "journeyMapHint": "拖动查看 · 点按节点查看详情",
+  "journeyMapStatusMastered": "已掌握",
+  "journeyMapStatusLearning": "学习中",
+  "journeyMapStatusNewlyLearned": "新建立",
+  "journeyMapStatusUnseen": "未学习",
+  "journeyMapDetailStatus": "当前状态",
+  "journeyMapDetailSymbol": "符号回想",
+  "journeyMapDetailMeaning": "词义",
+  "journeyMapDetailBoundary": "相关边界",
+  "journeyMapBoundaryEdge": "{a} ↔ {b}",
+  "journeyExploreTitle": "探索",
+  "journeyExploreSubtitle": "浏览真实目录——以下每个词义都来自内置内容。",
+  "@journeyHomeMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@journeyHomeTaskSummary": {
+    "placeholders": {
+      "recall": {
+        "type": "int"
+      },
+      "newConcepts": {
+        "type": "int"
+      },
+      "boundary": {
+        "type": "int"
+      },
+      "transfer": {
+        "type": "int"
+      }
+    }
+  },
+  "@journeyLedgerRecalled": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "@journeyLedgerEstablished": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "@journeyLedgerBoundary": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "@journeyLedgerTransfer": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "@journeyMapBoundaryEdge": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
   }
 }

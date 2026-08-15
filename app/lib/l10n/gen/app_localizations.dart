@@ -3095,6 +3095,359 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{groupSize} senses / group'**
   String prefReviewGroupSize(Object groupSize);
+
+  /// No description provided for @journeyHomeGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning'**
+  String get journeyHomeGreeting;
+
+  /// No description provided for @journeyHomeJourneyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Journey'**
+  String get journeyHomeJourneyTitle;
+
+  /// No description provided for @journeyHomeMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String journeyHomeMinutes(int minutes);
+
+  /// No description provided for @journeyHomeTaskSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{recall} recall · {newConcepts} new concepts · {boundary} boundary · {transfer} transfer'**
+  String journeyHomeTaskSummary(
+    int recall,
+    int newConcepts,
+    int boundary,
+    int transfer,
+  );
+
+  /// No description provided for @journeyHomeExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Wake up an old concept, build two new ones, then check where they meet.'**
+  String get journeyHomeExplanation;
+
+  /// No description provided for @journeyHomeContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Journey'**
+  String get journeyHomeContinue;
+
+  /// No description provided for @journeyHomeContinueAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Journey Again'**
+  String get journeyHomeContinueAgain;
+
+  /// No description provided for @journeyHomeDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Journey complete'**
+  String get journeyHomeDone;
+
+  /// No description provided for @journeyHomeSemanticMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Semantic Map'**
+  String get journeyHomeSemanticMap;
+
+  /// No description provided for @journeyHomeExplore.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore'**
+  String get journeyHomeExplore;
+
+  /// No description provided for @journeyHomeSecondaryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'System-guided learning · free exploration is one tap away'**
+  String get journeyHomeSecondaryHint;
+
+  /// No description provided for @journeySessionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Journey'**
+  String get journeySessionTitle;
+
+  /// No description provided for @journeySessionQuit.
+  ///
+  /// In en, this message translates to:
+  /// **'Quit journey'**
+  String get journeySessionQuit;
+
+  /// No description provided for @journeyTaskRecall.
+  ///
+  /// In en, this message translates to:
+  /// **'Recall'**
+  String get journeyTaskRecall;
+
+  /// No description provided for @journeyTaskDiscover.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover'**
+  String get journeyTaskDiscover;
+
+  /// No description provided for @journeyTaskBoundary.
+  ///
+  /// In en, this message translates to:
+  /// **'Boundary'**
+  String get journeyTaskBoundary;
+
+  /// No description provided for @journeyTaskTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer'**
+  String get journeyTaskTransfer;
+
+  /// No description provided for @journeyRecallPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Which word does this scene make you think of? Recall it in your mind.'**
+  String get journeyRecallPrompt;
+
+  /// No description provided for @journeyRecallHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Think of the word before checking.'**
+  String get journeyRecallHint;
+
+  /// No description provided for @journeyRecallReveal.
+  ///
+  /// In en, this message translates to:
+  /// **'Reveal'**
+  String get journeyRecallReveal;
+
+  /// No description provided for @journeyRecallForgot.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot'**
+  String get journeyRecallForgot;
+
+  /// No description provided for @journeyRecallHard.
+  ///
+  /// In en, this message translates to:
+  /// **'Hard'**
+  String get journeyRecallHard;
+
+  /// No description provided for @journeyRecallGotIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get journeyRecallGotIt;
+
+  /// No description provided for @journeyBoundaryPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Which concept does this scene come closer to?'**
+  String get journeyBoundaryPrompt;
+
+  /// No description provided for @journeyBoundaryCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes — this scene belongs here.'**
+  String get journeyBoundaryCorrect;
+
+  /// No description provided for @journeyBoundaryIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Not quite — check the key difference.'**
+  String get journeyBoundaryIncorrect;
+
+  /// No description provided for @journeyBoundaryKey.
+  ///
+  /// In en, this message translates to:
+  /// **'THE KEY DIFFERENCE'**
+  String get journeyBoundaryKey;
+
+  /// No description provided for @journeyTransferHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A brand-new situation — does the concept still hold?'**
+  String get journeyTransferHint;
+
+  /// No description provided for @journeyTransferCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Transferred'**
+  String get journeyTransferCorrect;
+
+  /// No description provided for @journeyTransferIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Not quite'**
+  String get journeyTransferIncorrect;
+
+  /// No description provided for @journeyContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get journeyContinue;
+
+  /// No description provided for @journeyNextTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Next task'**
+  String get journeyNextTask;
+
+  /// No description provided for @journeyFinishJourney.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish Journey'**
+  String get journeyFinishJourney;
+
+  /// No description provided for @journeySkipTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip task'**
+  String get journeySkipTask;
+
+  /// No description provided for @journeyTaskUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This task\'s content is not available yet.'**
+  String get journeyTaskUnavailable;
+
+  /// No description provided for @journeyCompleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Journey Complete'**
+  String get journeyCompleteTitle;
+
+  /// No description provided for @journeyCompleteGrew.
+  ///
+  /// In en, this message translates to:
+  /// **'Your semantic map grew.'**
+  String get journeyCompleteGrew;
+
+  /// No description provided for @journeyLedgerRecalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Woke up {lemma}'**
+  String journeyLedgerRecalled(String lemma);
+
+  /// No description provided for @journeyLedgerEstablished.
+  ///
+  /// In en, this message translates to:
+  /// **'Established {lemma}'**
+  String journeyLedgerEstablished(String lemma);
+
+  /// No description provided for @journeyLedgerBoundary.
+  ///
+  /// In en, this message translates to:
+  /// **'Distinguished {a} / {b}'**
+  String journeyLedgerBoundary(String a, String b);
+
+  /// No description provided for @journeyLedgerTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Transferred {lemma} to a new situation'**
+  String journeyLedgerTransfer(String lemma);
+
+  /// No description provided for @journeyCompleteViewMap.
+  ///
+  /// In en, this message translates to:
+  /// **'View Semantic Map'**
+  String get journeyCompleteViewMap;
+
+  /// No description provided for @journeyCompleteBackHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Back Home'**
+  String get journeyCompleteBackHome;
+
+  /// No description provided for @journeyCompleteNewBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'NEW'**
+  String get journeyCompleteNewBadge;
+
+  /// No description provided for @journeyCompleteNewBoundary.
+  ///
+  /// In en, this message translates to:
+  /// **'New boundary'**
+  String get journeyCompleteNewBoundary;
+
+  /// No description provided for @journeyMapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Semantic Map'**
+  String get journeyMapTitle;
+
+  /// No description provided for @journeyMapHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to explore · tap a node for details'**
+  String get journeyMapHint;
+
+  /// No description provided for @journeyMapStatusMastered.
+  ///
+  /// In en, this message translates to:
+  /// **'Mastered'**
+  String get journeyMapStatusMastered;
+
+  /// No description provided for @journeyMapStatusLearning.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning'**
+  String get journeyMapStatusLearning;
+
+  /// No description provided for @journeyMapStatusNewlyLearned.
+  ///
+  /// In en, this message translates to:
+  /// **'Newly learned'**
+  String get journeyMapStatusNewlyLearned;
+
+  /// No description provided for @journeyMapStatusUnseen.
+  ///
+  /// In en, this message translates to:
+  /// **'Unseen'**
+  String get journeyMapStatusUnseen;
+
+  /// No description provided for @journeyMapDetailStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'CURRENT STATUS'**
+  String get journeyMapDetailStatus;
+
+  /// No description provided for @journeyMapDetailSymbol.
+  ///
+  /// In en, this message translates to:
+  /// **'SYMBOL RECALL'**
+  String get journeyMapDetailSymbol;
+
+  /// No description provided for @journeyMapDetailMeaning.
+  ///
+  /// In en, this message translates to:
+  /// **'MEANING'**
+  String get journeyMapDetailMeaning;
+
+  /// No description provided for @journeyMapDetailBoundary.
+  ///
+  /// In en, this message translates to:
+  /// **'RELATED BOUNDARY'**
+  String get journeyMapDetailBoundary;
+
+  /// No description provided for @journeyMapBoundaryEdge.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} ↔ {b}'**
+  String journeyMapBoundaryEdge(String a, String b);
+
+  /// No description provided for @journeyExploreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore'**
+  String get journeyExploreTitle;
+
+  /// No description provided for @journeyExploreSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse the real catalog — every sense below comes from the bundled content.'**
+  String get journeyExploreSubtitle;
 }
 
 class _AppLocalizationsDelegate

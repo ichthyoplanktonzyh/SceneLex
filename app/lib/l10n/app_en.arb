@@ -970,5 +970,127 @@
         "type": "Object"
       }
     }
+  },
+  "journeyHomeGreeting": "Good morning",
+  "journeyHomeJourneyTitle": "Today's Journey",
+  "journeyHomeMinutes": "{minutes} min",
+  "journeyHomeTaskSummary": "{recall} recall · {newConcepts} new concepts · {boundary} boundary · {transfer} transfer",
+  "journeyHomeExplanation": "Wake up an old concept, build two new ones, then check where they meet.",
+  "journeyHomeContinue": "Continue Journey",
+  "journeyHomeContinueAgain": "Continue Journey Again",
+  "journeyHomeDone": "Journey complete",
+  "journeyHomeSemanticMap": "Semantic Map",
+  "journeyHomeExplore": "Explore",
+  "journeyHomeSecondaryHint": "System-guided learning · free exploration is one tap away",
+  "journeySessionTitle": "Today's Journey",
+  "journeySessionQuit": "Quit journey",
+  "journeyTaskRecall": "Recall",
+  "journeyTaskDiscover": "Discover",
+  "journeyTaskBoundary": "Boundary",
+  "journeyTaskTransfer": "Transfer",
+  "journeyRecallPrompt": "Which word does this scene make you think of? Recall it in your mind.",
+  "journeyRecallHint": "Think of the word before checking.",
+  "journeyRecallReveal": "Reveal",
+  "journeyRecallForgot": "Forgot",
+  "journeyRecallHard": "Hard",
+  "journeyRecallGotIt": "Got it",
+  "journeyBoundaryPrompt": "Which concept does this scene come closer to?",
+  "journeyBoundaryCorrect": "Yes — this scene belongs here.",
+  "journeyBoundaryIncorrect": "Not quite — check the key difference.",
+  "journeyBoundaryKey": "THE KEY DIFFERENCE",
+  "journeyTransferHint": "A brand-new situation — does the concept still hold?",
+  "journeyTransferCorrect": "Transferred",
+  "journeyTransferIncorrect": "Not quite",
+  "journeyContinue": "Continue",
+  "journeyNextTask": "Next task",
+  "journeyFinishJourney": "Finish Journey",
+  "journeySkipTask": "Skip task",
+  "journeyTaskUnavailable": "This task's content is not available yet.",
+  "journeyCompleteTitle": "Today's Journey Complete",
+  "journeyCompleteGrew": "Your semantic map grew.",
+  "journeyLedgerRecalled": "Woke up {lemma}",
+  "journeyLedgerEstablished": "Established {lemma}",
+  "journeyLedgerBoundary": "Distinguished {a} / {b}",
+  "journeyLedgerTransfer": "Transferred {lemma} to a new situation",
+  "journeyCompleteViewMap": "View Semantic Map",
+  "journeyCompleteBackHome": "Back Home",
+  "journeyCompleteNewBadge": "NEW",
+  "journeyCompleteNewBoundary": "New boundary",
+  "journeyMapTitle": "Semantic Map",
+  "journeyMapHint": "Drag to explore · tap a node for details",
+  "journeyMapStatusMastered": "Mastered",
+  "journeyMapStatusLearning": "Learning",
+  "journeyMapStatusNewlyLearned": "Newly learned",
+  "journeyMapStatusUnseen": "Unseen",
+  "journeyMapDetailStatus": "CURRENT STATUS",
+  "journeyMapDetailSymbol": "SYMBOL RECALL",
+  "journeyMapDetailMeaning": "MEANING",
+  "journeyMapDetailBoundary": "RELATED BOUNDARY",
+  "journeyMapBoundaryEdge": "{a} ↔ {b}",
+  "journeyExploreTitle": "Explore",
+  "journeyExploreSubtitle": "Browse the real catalog — every sense below comes from the bundled content.",
+  "@journeyHomeMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@journeyHomeTaskSummary": {
+    "placeholders": {
+      "recall": {
+        "type": "int"
+      },
+      "newConcepts": {
+        "type": "int"
+      },
+      "boundary": {
+        "type": "int"
+      },
+      "transfer": {
+        "type": "int"
+      }
+    }
+  },
+  "@journeyLedgerRecalled": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "@journeyLedgerEstablished": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "@journeyLedgerBoundary": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "@journeyLedgerTransfer": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "@journeyMapBoundaryEdge": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
   }
 }

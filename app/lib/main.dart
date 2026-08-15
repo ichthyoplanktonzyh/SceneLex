@@ -10,6 +10,7 @@ import 'data/product_providers.dart';
 import 'data/providers.dart';
 import 'features/experience_runtime/experience_runtime_page.dart';
 import 'features/experience_runtime/experience_runtime_view_model.dart';
+import 'features/journey_prototype/journey_preview_app.dart';
 import 'features/login/login_page.dart';
 import 'features/settings/notifications_service.dart';
 import 'l10n/gen/app_localizations.dart';
@@ -23,12 +24,26 @@ const String kExperiencePreviewSense = String.fromEnvironment(
   'SCENELEX_EXPERIENCE_PREVIEW',
 );
 
+/// Development-only entry: `--dart-define=SCENELEX_JOURNEY_PREVIEW=true`
+/// boots the "Today's Journey" product prototype (bundled catalog, prototype
+/// learner state, no login / server / workspace / sync). The production App
+/// behavior is unchanged; the whole prototype lives under
+/// `features/journey_prototype` and can be deleted as one directory.
+const String kJourneyPreviewFlag = String.fromEnvironment(
+  'SCENELEX_JOURNEY_PREVIEW',
+);
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final themeMode = await loadThemeMode();
-  final Widget app = kExperiencePreviewSense.isEmpty
-      ? SceneLexApp(initialThemeMode: themeMode)
-      : ExperiencePreviewApp(senseId: kExperiencePreviewSense);
+  final Widget app;
+  if (kJourneyPreviewFlag.isNotEmpty) {
+    app = const JourneyPreviewApp();
+  } else if (kExperiencePreviewSense.isNotEmpty) {
+    app = ExperiencePreviewApp(senseId: kExperiencePreviewSense);
+  } else {
+    app = SceneLexApp(initialThemeMode: themeMode);
+  }
   runApp(ProviderScope(child: app));
 }
 

@@ -1661,4 +1661,197 @@ class AppLocalizationsZh extends AppLocalizations {
   String prefReviewGroupSize(Object groupSize) {
     return '$groupSize 义项/组';
   }
+
+  @override
+  String get journeyHomeGreeting => '早上好';
+
+  @override
+  String get journeyHomeJourneyTitle => '今日旅程';
+
+  @override
+  String journeyHomeMinutes(int minutes) {
+    return '约 $minutes 分钟';
+  }
+
+  @override
+  String journeyHomeTaskSummary(
+    int recall,
+    int newConcepts,
+    int boundary,
+    int transfer,
+  ) {
+    return '$recall 次回想 · $newConcepts 个新概念 · $boundary 次辨析 · $transfer 次迁移';
+  }
+
+  @override
+  String get journeyHomeExplanation => '先唤醒一个旧概念，再建立两个新概念，并检查它们的边界。';
+
+  @override
+  String get journeyHomeContinue => '继续旅程';
+
+  @override
+  String get journeyHomeContinueAgain => '再走一遍旅程';
+
+  @override
+  String get journeyHomeDone => '旅程已完成';
+
+  @override
+  String get journeyHomeSemanticMap => '语义地图';
+
+  @override
+  String get journeyHomeExplore => '探索';
+
+  @override
+  String get journeyHomeSecondaryHint => '主线由系统编排，自由探索随时可进入';
+
+  @override
+  String get journeySessionTitle => '今日旅程';
+
+  @override
+  String get journeySessionQuit => '退出旅程';
+
+  @override
+  String get journeyTaskRecall => '回想';
+
+  @override
+  String get journeyTaskDiscover => '发现';
+
+  @override
+  String get journeyTaskBoundary => '辨析';
+
+  @override
+  String get journeyTaskTransfer => '迁移';
+
+  @override
+  String get journeyRecallPrompt => '这个场景让你想到哪个词？先在脑中回想它。';
+
+  @override
+  String get journeyRecallHint => '回想清楚再查看答案。';
+
+  @override
+  String get journeyRecallReveal => '查看答案';
+
+  @override
+  String get journeyRecallForgot => '忘了';
+
+  @override
+  String get journeyRecallHard => '勉强';
+
+  @override
+  String get journeyRecallGotIt => '记得';
+
+  @override
+  String get journeyBoundaryPrompt => '这个场景更接近哪一个概念？';
+
+  @override
+  String get journeyBoundaryCorrect => '对——这个场景属于这里。';
+
+  @override
+  String get journeyBoundaryIncorrect => '不太对——看看关键区别。';
+
+  @override
+  String get journeyBoundaryKey => '关键区别';
+
+  @override
+  String get journeyTransferHint => '一个全新的情境——刚才的概念还成立吗？';
+
+  @override
+  String get journeyTransferCorrect => '迁移成功';
+
+  @override
+  String get journeyTransferIncorrect => '不太对';
+
+  @override
+  String get journeyContinue => '继续';
+
+  @override
+  String get journeyNextTask => '下一个任务';
+
+  @override
+  String get journeyFinishJourney => '完成旅程';
+
+  @override
+  String get journeySkipTask => '跳过此任务';
+
+  @override
+  String get journeyTaskUnavailable => '这个任务的内容暂时不可用。';
+
+  @override
+  String get journeyCompleteTitle => '今日旅程完成';
+
+  @override
+  String get journeyCompleteGrew => '你的语义地图长大了。';
+
+  @override
+  String journeyLedgerRecalled(String lemma) {
+    return '唤醒了 $lemma';
+  }
+
+  @override
+  String journeyLedgerEstablished(String lemma) {
+    return '建立了 $lemma';
+  }
+
+  @override
+  String journeyLedgerBoundary(String a, String b) {
+    return '区分了 $a / $b';
+  }
+
+  @override
+  String journeyLedgerTransfer(String lemma) {
+    return '把 $lemma 迁移到了新情境';
+  }
+
+  @override
+  String get journeyCompleteViewMap => '查看语义地图';
+
+  @override
+  String get journeyCompleteBackHome => '返回首页';
+
+  @override
+  String get journeyCompleteNewBadge => 'NEW';
+
+  @override
+  String get journeyCompleteNewBoundary => '新的边界';
+
+  @override
+  String get journeyMapTitle => '语义地图';
+
+  @override
+  String get journeyMapHint => '拖动查看 · 点按节点查看详情';
+
+  @override
+  String get journeyMapStatusMastered => '已掌握';
+
+  @override
+  String get journeyMapStatusLearning => '学习中';
+
+  @override
+  String get journeyMapStatusNewlyLearned => '新建立';
+
+  @override
+  String get journeyMapStatusUnseen => '未学习';
+
+  @override
+  String get journeyMapDetailStatus => '当前状态';
+
+  @override
+  String get journeyMapDetailSymbol => '符号回想';
+
+  @override
+  String get journeyMapDetailMeaning => '词义';
+
+  @override
+  String get journeyMapDetailBoundary => '相关边界';
+
+  @override
+  String journeyMapBoundaryEdge(String a, String b) {
+    return '$a ↔ $b';
+  }
+
+  @override
+  String get journeyExploreTitle => '探索';
+
+  @override
+  String get journeyExploreSubtitle => '浏览真实目录——以下每个词义都来自内置内容。';
 }
