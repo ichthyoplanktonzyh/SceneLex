@@ -1,0 +1,242 @@
+schema_version: '1.0'
+asset_type: review
+sense_id: messy-01
+contract_hash: sha256:302d056f54b8385aef18b9dbabc7e260aa7d3ad1c7f2a7e82ca60d2fd1748680
+items:
+- id: review-1
+  semantic_spec:
+    judgment: 判断该经验是否属于 messy：玩具角地面上积木、玩偶、拼图和彩笔分散在整片地面，方向彼此不一致，混杂堆放；地面干净，没有污渍，玩具也没有破损。
+    scene: 游戏室玩具角地面
+    entities:
+    - 积木
+    - 玩偶
+    - 拼图
+    - 彩笔
+    surface_dimensions:
+    - 玩具分布的覆盖范围
+    - 玩具方向一致性
+    - 清洁与完好状态
+    target_answer: 'yes'
+  experience:
+    episode: 游戏室的玩具角，地面从墙角到门口都铺着积木、玩偶、拼图和彩笔。一块蓝色积木横在踢脚线旁，另一块红色积木竖在两步远的地方；玩偶一只头朝门、一只头朝窗，斜躺在拼图板上。拼图碎片散成好几堆，有的正面朝上，有的背面朝上。彩笔有的滚到地垫下面，有的搁在玩偶腿上。地面没有水渍、食物碎屑或泥印，玩具表面也没有缺角或裂纹。
+    observable_evidence:
+    - 蓝色积木横在踢脚线旁，红色积木竖在两步远的地面上，两者方向不同
+    - 两只玩偶一只头朝门、一只头朝窗，斜躺在拼图板上
+    - 拼图碎片分成几堆，有的正面朝上，有的背面朝上
+    - 彩笔有的滚到地垫下面，有的搁在玩偶腿上
+    - 地面没有水渍、食物碎屑或泥印，玩具没有缺角或裂纹
+    surface_dimensions:
+    - name: 玩具的覆盖范围
+      baseline: 玩具收在收纳盒或固定区域，地面留出活动空间
+      deviation: 从墙角到门口都散布着积木、玩偶、拼图和彩笔，覆盖整片地面
+    - name: 玩具的朝向与位置关系
+      baseline: 同类玩具朝同一方向摆放，彼此不交叠
+      deviation: 积木横竖不一，玩偶一只朝门一只朝窗，拼图正反混杂，彩笔滚到垫下和玩偶腿上，方向与位置彼此不一致
+    - name: 地面与玩具表面状态
+      baseline: 地面无渍痕，玩具无破损
+      deviation: 地面没有水渍、碎屑或泥印，玩具没有缺角或裂纹
+- id: review-2
+  semantic_spec:
+    judgment: 判断该经验是否属于 messy：卫生间洗手台上漱口杯、肥皂盒和叠好的毛巾各自在固定位置，方向一致；台面虽有牙膏印和泛黄水渍，但物品排列没有整体偏离。
+    scene: 卫生间洗手台
+    entities:
+    - 漱口杯
+    - 肥皂盒
+    - 毛巾
+    surface_dimensions:
+    - 物品定位保持度
+    - 表面印痕
+    - 物件数量
+    target_answer: 'no'
+  experience:
+    episode: 卫生间洗手台上，漱口杯立在镜子左侧的杯垫上，把手朝右；肥皂盒放在水龙头右侧，盒盖朝上；叠好的毛巾搭在洗手台右边的毛巾杆上，边缘对齐。台面上靠近排水口的地方有一圈泛黄水渍，镜子下方有几道白色的牙膏印。漱口杯、肥皂盒和毛巾都在各自的位置，没有一只杯子移到台面另一侧，也没有东西横躺或斜插。水龙头关着，龙头表面有细小的水痕。
+    observable_evidence:
+    - 漱口杯立在镜左侧杯垫上，杯把手朝右
+    - 肥皂盒放在水龙头右侧，盒盖朝上
+    - 毛巾叠成方块搭在毛巾杆上，边缘成一条直线
+    - 台面靠近排水口处有一圈泛黄水渍，镜子下方有几道白色牙膏印
+    - 没有物品横躺、斜插或移到台面另一侧
+    surface_dimensions:
+    - name: 物品定位与朝向
+      baseline: 漱口杯、肥皂盒和毛巾各自在固定位置，方向一致
+      deviation: 漱口杯把手朝右、肥皂盒盖朝上、毛巾边缘对齐，位置与方向均与平时一致
+    - name: 表面印痕
+      baseline: 台面无印痕
+      deviation: 台面出现泛黄水渍和白色牙膏印，但未伴随物品位置变化
+    - name: 物品占用区域
+      baseline: 物品只占用各自固定区域
+      deviation: 没有物品占用其他区域，区域边界未变
+- id: review-3
+  semantic_spec:
+    judgment: 判断该经验是否属于 messy：汽车后座上书包、外套、水瓶和购物袋摊在座位上，朝向各异，外套搭在椅背、水瓶滚落座椅缝隙、购物袋压住安全带；座面干净无破损。
+    scene: 汽车后座
+    entities:
+    - 书包
+    - 外套
+    - 水瓶
+    - 购物袋
+    surface_dimensions:
+    - 后座物品的位置朝向
+    - 空间占用与相互交叠
+    - 座面清洁状态
+    target_answer: 'yes'
+  experience:
+    episode: 汽车后座上，书包横放在座椅中间，拉链头朝上；外套搭在靠背上，一只袖子垂到坐垫边缘。水瓶滚进座椅和车门之间的缝隙里，购物袋压在安全带卡扣上，袋口敞着。书包、外套、水瓶和购物袋朝向不同，彼此还有交叠。座面上看不到污渍，座椅皮面没有裂缝或破损。
+    observable_evidence:
+    - 书包横放在座椅中间，拉链头朝上，没有贴靠椅背
+    - 外套搭在靠背上，一只袖子垂到坐垫边缘
+    - 水瓶滚进座椅和车门之间的缝隙里
+    - 购物袋压在安全带卡扣上，袋口敞着
+    - 座面上看不到污渍，皮面没有裂缝或破损
+    surface_dimensions:
+    - name: 物品位置与朝向
+      baseline: 书包、外套、水瓶和购物袋各归其位，朝向一致
+      deviation: 书包横置、外套搭靠背、水瓶滚入缝隙、购物袋压住卡扣，朝向各异且相互交叠
+    - name: 空间占用与相互交叠
+      baseline: 物品不占用无关区域，彼此不叠压
+      deviation: 外套垂落、购物袋压住卡扣，水瓶占据缝隙，多件物品叠压在一起
+    - name: 座面状态
+      baseline: 座面无渍痕、无破损
+      deviation: 座面无污渍，皮面完好
+- id: review-4
+  semantic_spec:
+    judgment: 判断该经验是否属于 messy：仓库货架上纸箱和收纳箱多到几乎放不下，但每一层边缘对齐、箱体方向一致、标签朝外，没有物品横躺或斜插。
+    scene: 仓库货架
+    entities:
+    - 纸箱
+    - 收纳箱
+    surface_dimensions:
+    - 箱体堆叠对齐度
+    - 空间拥挤程度
+    - 标签与通道秩序
+    target_answer: 'no'
+  experience:
+    episode: 仓库的货架上，纸箱和收纳箱一层层码到接近横梁的位置，每一层都放得很满。纸箱的边缘在一条直线上，箱体都竖着，标签朝外；收纳箱也按同一方向排成一列，没有一只横躺或斜插。从侧面看，每层的前沿基本平齐，只有少数箱体贴着横梁。地面没有散落的物品，货架立柱也没有变形。
+    observable_evidence:
+    - 纸箱和收纳箱码满每一层，接近横梁
+    - 每层纸箱前缘成一条直线，箱体竖放，标签朝外
+    - 收纳箱按同一方向排成一列，没有横躺或斜插
+    - 从侧面看各层前沿大体平齐
+    - 地面没有散落物品，货架立柱无变形
+    surface_dimensions:
+    - name: 箱体堆叠对齐度
+      baseline: 箱体边缘对齐，竖放
+      deviation: 纸箱前缘成直线，收纳箱同向排成一列，没有横躺或斜插
+    - name: 空间拥挤程度
+      baseline: 货架留有一定空余
+      deviation: 货架各层几乎放满，接近横梁，箱体仍保持对齐
+    - name: 标签朝向与地面状态
+      baseline: 标签朝外，地面无散落物
+      deviation: 标签朝外，地面没有散落物品
+- id: review-5
+  semantic_spec:
+    judgment: 判断该经验是否属于 messy：会议室长桌旁只有一把椅子被拉开，其余椅子都整齐围着桌边，桌面上文件成叠且边缘对齐，没有第二处物品偏移。
+    scene: 会议室长桌
+    entities:
+    - 椅子
+    - 会议文件
+    surface_dimensions:
+    - 家具摆放整齐度
+    - 偏移数量与范围
+    - 桌面物品秩序
+    target_answer: 'no'
+  experience:
+    episode: 会议室的长桌旁，六把椅子围着桌边，椅背和桌沿的距离大致相同。只有靠门那把椅子退后半步，椅面斜朝过道。桌面上三叠文件摞在一起，纸边对齐，最上面一叠压着一支笔。没有第二把椅子离开桌边，窗帘杆直，窗台没有杂物。椅子腿没有刮痕，桌面也没有水印。
+    observable_evidence:
+    - 六把椅子中五把紧贴桌边，椅背与桌沿距离大致相同
+    - 靠门的一把椅子退后半步，椅面斜朝过道
+    - 桌面三叠文件边缘对齐，一支笔压在最上面一叠
+    - 除靠门那把外，没有第二把椅子离开桌边
+    - 桌面无水印，椅子无刮痕
+    surface_dimensions:
+    - name: 家具摆放
+      baseline: 所有椅子围绕桌边，椅背与桌沿距离一致
+      deviation: 只有靠门椅子退后半步、椅面斜转，其余五把保持原位
+    - name: 偏移数量与范围
+      baseline: 没有或只有零星偏移
+      deviation: 偏移仅发生在靠门一把椅子，未波及其他椅子或桌面物品
+    - name: 桌面物品状态
+      baseline: 文件叠放成叠，边缘对齐
+      deviation: 三叠文件纸边对齐，笔压在上面，桌面无水印
+- id: review-6
+  semantic_spec:
+    judgment: 判断该经验是否属于 messy：一段采访录音里话题反复跳跃、时间线前后矛盾，但整个过程中没有任何可观察的物体排列或形态偏离；没有出现空间、表面或可见产物。
+    scene: 采访录音播放
+    entities: []
+    surface_dimensions:
+    - 可观察物体排列证据
+    - 听觉信息性质
+    - 物理表面有无
+    target_answer: 'no'
+  experience:
+    episode: 一段采访录音被播放出来。说话人声音平稳，但内容里时间前后对不上：前一句说会议是上周开的，后一句又说这周才开始准备；话题从项目进度跳到天气，又跳回早餐。整个播放过程中，房间里只有录音机在转，旁边的小桌上放着一只空杯子和一台台灯，两者位置没有变化。桌面上没有纸张、文件夹或笔，地板没有散落物，窗帘静止。
+    observable_evidence:
+    - 录音内容里时间前后矛盾：先说上周开会，后说这周才开始准备
+    - 话题从项目进度跳到天气，再跳到早餐，没有衔接
+    - 播放时房间里的录音机、空杯和台灯都没有发生移动
+    - 小桌上台灯立在桌边，空杯在灯座右侧，位置保持原样
+    - 桌面没有纸张、文件夹或笔，地板没有散落物
+    surface_dimensions:
+    - name: 可观察的物体排列
+      baseline: 存在可供观察的物品、表面或空间
+      deviation: 没有出现排列变化：台灯、杯子位置不变，桌面和地板无散落物
+    - name: 听觉信息内容
+      baseline: 录音内容本身不提供物体位置信息
+      deviation: 内容时间矛盾、话题跳转，但没有伴随任何可见的物体位置变化
+    - name: 物理表面状态
+      baseline: 桌面和地板无散落物、无移动痕迹
+      deviation: 桌面、地板没有散落物品，窗帘静止，无移动痕迹
+batches:
+- count: 6
+  generated_at: '2026-08-15T16:16:34Z'
+  gate:
+    passed: true
+    dimensions:
+    - name: semantic_correctness
+      verdict: pass
+      note: 正例 review-1/review-3 都呈现多个组成部分整体偏离整齐形态且直接可观察，符合 WordSense 成立条件；反例 review-2（污渍但物品归位）、review-4（多而整齐）、review-5（单点偏移）、review-6（抽象听觉混乱但无可见物理无序）均正确判为否，未把相邻范畴当作
+        messy。
+    - name: sense_purity
+      verdict: pass
+      note: 没有单元滑向 dirty/cluttered/wrecked/chaotic。review-2 的牙膏印和水渍只作 dirty 维度呈现，物品排列仍整齐；review-4
+        的拥挤但对齐对应 cluttered 边界；review-6 的话题跳跃对应抽象 chaotic 边界，均与 WordSense boundaries
+        一致。
+    - name: definition_leakage
+      verdict: pass
+      note: 经验内容（episode/observable_evidence/surface_dimensions）均为行为与可见状态描述，没有旁白式定义、字幕或直接陈述“messy
+        就是杂乱”。semantic_model 属内部语义模型，不计为 learner-visible；若渲染层将其暴露给学习者则需移除。
+    - name: l2_leakage
+      verdict: warn
+      note: episode、observable_evidence、surface_dimensions 中均未出现目标 L2 词或相邻 L2 词。但
+        semantic_spec.judgment 在每一项中都出现“messy”（如 review-1 judgment），若该字段被渲染为作答前题干，会在
+        reveal 前暴露目标词；请确认该字段不直接作为题干，或将题干改为“判断该经验是否属于当前复习的概念”等不含目标词的形式。
+    - name: l1_label_leakage
+      verdict: pass
+      note: learner-visible 经验内容用中文描述具体行为（“积木横竖不一”“肥皂盒盖朝上”），没有用“乱/凌乱/脏”等中文等价标签命名概念，也没有把中文翻译当答案或复制
+        minimal_l1_gloss。
+    - name: surface_language_compliance
+      verdict: pass
+      note: 复习场景的 episode 与 observable_evidence 均为中文经验叙事，不是成段英语；没有英文解释段落。唯一英文词是题干/语义规格中的目标词
+        messy，不是语言合同禁止的成段英语。
+    - name: cognitive_noise
+      verdict: pass
+      note: 各 episode 的细节均服务于判断维度（排列、朝向、覆盖范围、表面状态、可见性）；review-6 的录音内容虽略复杂，但直接用于排除“抽象混乱=chaotic”的
+        L1 干扰，不构成无关认知负担。
+metadata:
+  compiler_version: 2.1.0
+  prompt_versions:
+    program_planner: v2
+    surface_generator: v2
+    quality_gate: v2
+  generated_at: '2026-08-15T16:16:34Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids:
+  - 709cdc77-f6c4-4a8c-af77-d98921a60fb2
+  - d65b297d-78ea-468d-b742-ab19c07346fd
+  - 9bdfe98a-8661-4bf9-ae5b-fba0464fd6a4
+  - caad9108-b6e3-44d4-bf7a-81a333ecd62f
+  language_policy:
+    policy_version: 1
+    learner_l1: zh-CN
+    target_l2: en

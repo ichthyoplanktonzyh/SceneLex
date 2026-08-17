@@ -1,0 +1,20 @@
+schema_version: '1.0'
+version: 1
+word: barely
+pos: [adverb]
+
+pronunciation:
+  ipa:
+    - "/ˈbɛrli/"
+
+frequency:
+  rank: 2953
+  band: mid
+
+senses:
+  - id: barely-01
+    pos: adverb
+    sense_label: "勉强；几乎不"
+    definition: "To a degree that is just above zero; at the very edge of the minimum threshold."
+    status: reviewed
+    scene_count: 5

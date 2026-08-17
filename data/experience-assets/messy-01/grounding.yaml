@@ -1,0 +1,55 @@
+schema_version: '1.0'
+asset_type: grounding
+sense_id: messy-01
+contract_hash: sha256:302d056f54b8385aef18b9dbabc7e260aa7d3ad1c7f2a7e82ca60d2fd1748680
+language_policy:
+  policy_version: 1
+  learner_l1: zh-CN
+  target_l2: en
+grounding:
+  source_experience_id: unit-1
+  l2_realization: Look at this room — it's messy.
+  constructions:
+  - X is messy
+  - a messy [noun]
+  - look/get messy
+  - so messy that [clause]
+  collocations:
+  - messy room
+  - messy desk
+  - messy hair
+  - messy handwriting
+  - messy kitchen
+  - get messy
+gate:
+  passed: true
+  dimensions:
+  - name: semantic_correctness
+    verdict: pass
+    note: semantic_model.invariant 与 necessary_conditions 忠实复现 WordSense 的成立条件：整体可见的无序、相对自身常规/预期整齐状态、当前状态而非过程。non_entailments
+      逐条排除了 dirty（污渍但排列整齐）、wrecked/trashed（表面损坏但秩序未失）、cluttered（量多但整齐）、单点局部偏差和正在弄乱的过程，与
+      WordSense 的 excluded、boundaries、confusables 一致；typical_correlates 全部是可见的排列/形态无序，未滑向相邻范畴；grounding.l2_realization
+      中的 room 也符合 collocation 'messy room'。未发现需修改处。
+  - name: surface_language_compliance
+    verdict: pass
+    note: grounding.l2_realization 为自然 L2 英语句子 “Look at this room — it's messy.”，包含目标词
+      messy，符合 grounding 的 L2 呈现要求；本资产没有绑定前中文命名式标签或成段英语。semantic_model 内的中文属于编译器内部语义描述，不是
+      learner-visible 内容，未违反语言合同。
+metadata:
+  compiler_version: 2.1.0
+  prompt_versions:
+    program_planner: v2
+    surface_generator: v2
+    quality_gate: v2
+  generated_at: '2026-08-15T16:18:01Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids:
+  - 2ba971dd-817e-4a14-a027-dae7b5a5b85a
+  - e5866a66-d6cb-43dd-b24a-901947119ed0
+  - b5b08c6b-ca78-4c11-bb9a-29743ccef98b
+  - 6107db7a-d135-4076-8695-332c4465565a
+  language_policy:
+    policy_version: 1
+    learner_l1: zh-CN
+    target_l2: en

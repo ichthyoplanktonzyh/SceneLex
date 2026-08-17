@@ -1,0 +1,275 @@
+schema_version: '1.0'
+asset_type: transfer
+sense_id: almost-01
+contract_hash: sha256:43159c1e43b8bef047fa196b3c5232dc20b1c1057d3f2559549817a3342038e0
+units:
+- id: transfer-2
+  role: transfer
+  hypothesis_target: null
+  preserved_variables:
+  - measurement_scale
+  - final_status
+  - gap_visibility
+  changed_variables:
+  - domain
+  - modality
+  - outcome_direction
+  semantic_spec:
+    judgment: 把‘极度接近一个明确阈值但未越过’的判断从物理距离迁移到时间事件：一个有时间截止界限的事件，过程进展到终点附近，最终未达成，且结果不是灾难性的负面事件。
+    domain: temporal_event
+    modality: visual_timer
+    measurement_scale: binary_deadline
+    final_status: missed
+    gap_visibility: explicit_one_unit
+    outcome_direction: non_catastrophic
+    eventual_action: 'no'
+    crossed: 'no'
+  sequence: 1
+  experience:
+    episode: At the end of a long hallway, elevator doors began to close. A man carrying
+      a backpack sprinted toward them. When he was a few strides away, the gap between
+      the doors was still wide enough for a hand. He lunged forward and stretched
+      out his arm, but the doors met before his fingers reached the opening. His palm
+      slapped the flat metal surface. The arrow above the doors lit up and the elevator
+      moved down.
+    observable_evidence:
+    - The doors were open when he started running, then the gap shrank as he approached.
+    - His outstretched fingers were a few centimeters from the opening when the doors
+      met.
+    - His palm hit the closed doors with a flat slap.
+    - The arrow above the doors lit up and the elevator began to move down.
+    surface_dimensions:
+    - name: Setting
+      baseline: A task measured by distance to a place
+      deviation: 'A task measured by time: the closing doors set the deadline'
+    - name: Time signal
+      baseline: Distance to the target is judged by eye
+      deviation: Remaining time is visible as the shrinking gap between the doors
+    - name: Gap visibility
+      baseline: The remaining gap is one clear unit
+      deviation: The gap narrows from a hand-width to nothing in a continuous motion
+    - name: Outcome tone
+      baseline: Missing the target causes harm or loss
+      deviation: Missing the target only means waiting for the next elevator; nothing
+        is damaged
+  interaction:
+    question: What did the scene show?
+    answers:
+    - id: a1
+      text: The man stepped into the elevator while the doors were opening.
+      is_correct: false
+      feedback: No — the doors were closing, not opening, and he stayed in the hallway.
+    - id: a2
+      text: The doors shut before the man's hand reached the opening.
+      is_correct: true
+      feedback: Correct — his hand hit the closed doors and the elevator moved down,
+        so he did not get inside.
+    - id: a3
+      text: The man reached the elevator and held the doors open.
+      is_correct: false
+      feedback: No — his palm hit the closed doors, and the doors did not reopen.
+    - id: a4
+      text: The man turned around and walked away before the doors closed.
+      is_correct: false
+      feedback: No — he ran toward the doors and stretched out his arm; the doors
+        closed before he got there.
+- id: transfer-3
+  role: transfer
+  hypothesis_target: null
+  preserved_variables:
+  - quantitative_threshold
+  - final_status
+  - gap_visibility
+  changed_variables:
+  - domain
+  - modality
+  - measurement_scale
+  semantic_spec:
+    judgment: 把‘直接观察逼近’迁移到依赖刻度读数的量化阈值：一个可量化的目标量，实际数值非常接近目标但停在目标之下，观察者凭刻度判断未达成。
+    domain: quantity_fill
+    modality: scale_reading
+    measurement_scale: continuous_quantity
+    quantitative_threshold: target_amount
+    final_status: below_target
+    gap_visibility: tick_mark_proximity
+    eventual_action: 'no'
+    crossed: 'no'
+  sequence: 2
+  experience:
+    episode: A cook needed 500 milliliters of milk for a recipe. She set a clear measuring
+      cup on the counter and drew a red line on the outside at the 500 ml mark. She
+      tilted the bottle and poured. The milk rose past 300, then 400, then crept toward
+      the red line. When the surface was one small tick below the line, she straightened
+      the bottle and stopped. The surface settled and stayed there, one small tick
+      below the red line.
+    observable_evidence:
+    - The milk climbed from 300 to 400 to a point one small tick below the red line.
+    - The liquid surface stopped moving as the cook straightened the bottle.
+    - The gap between the liquid and the red line was one thin tick mark.
+    - The cook lowered the bottle onto the counter without adding more milk.
+    surface_dimensions:
+    - name: Setting
+      baseline: A person tries to reach a place before a deadline
+      deviation: A cook tries to reach a marked amount on a measuring cup
+    - name: Readout
+      baseline: The result is read from a completed action
+      deviation: The result is read from where the liquid line sits against a numbered
+        scale
+    - name: Scale type
+      baseline: The outcome is yes or no
+      deviation: The amount can stop anywhere; the remaining gap is a small part of
+        the scale
+    - name: Gap visibility
+      baseline: The shortfall is one clear unit
+      deviation: The liquid surface stops one thin tick below the target line
+  interaction:
+    question: What was the final amount of milk in the cup?
+    answers:
+    - id: a1
+      text: The milk reached the red line.
+      is_correct: false
+      feedback: No — the surface stopped below the line, not on it.
+    - id: a2
+      text: The milk stopped one tick below the red line.
+      is_correct: true
+      feedback: Correct — the surface settled one thin tick below the line, and the
+        cook did not pour any more.
+    - id: a3
+      text: The milk went above the red line and spilled over.
+      is_correct: false
+      feedback: No — the cook stopped pouring before the liquid touched the line,
+        so nothing spilled.
+    - id: a4
+      text: The milk stayed below 300 milliliters.
+      is_correct: false
+      feedback: No — the surface passed 300 and 400 and then stopped below the 500
+        mark.
+- id: transfer-4
+  role: transfer
+  hypothesis_target: null
+  preserved_variables:
+  - goal_relevance
+  - final_status
+  - crossed
+  changed_variables:
+  - domain
+  - modality
+  - state_kind
+  - affected_entity
+  semantic_spec:
+    judgment: 把‘接近但未达成’从一次性事件结果迁移到状态完成度量：一个事物几乎达到完全状态，但最终留下可见缺口，且受影响的实体不是人的动作而是自然物体。
+    domain: state_completion
+    modality: visual_state_change
+    state_kind: natural_gradual
+    affected_entity: inanimate_object
+    goal_relevance: clear_endpoint
+    final_status: incomplete
+    gap_visibility: visible_remaining_part
+    crossed: 'no'
+  sequence: 3
+  experience:
+    episode: A square ice cube sat on a blue dish in the afternoon sun. Over the next
+      hour, its sharp edges became round, and the water in the dish rose as the cube
+      shrank. The cube got smaller and smaller until only a piece the size of a thumbtip
+      was left. Then a cloud covered the sun, and that last piece stopped changing.
+      It stayed there, floating in a shallow pool of water.
+    observable_evidence:
+    - The ice cube's edges became round and the cube got smaller over time.
+    - The water level in the dish rose as the cube shrank.
+    - A thumbtip-sized piece remained floating in the water when the sun was blocked.
+    - That remaining piece stayed solid and did not shrink any further.
+    surface_dimensions:
+    - name: Setting
+      baseline: A person acts toward a deadline or fills something
+      deviation: A natural object changes state by itself in a dish
+    - name: Change type
+      baseline: Movement or filling stops before a boundary
+      deviation: Melting stops before the solid disappears into water
+    - name: Affected thing
+      baseline: A person controls what happens
+      deviation: No one touches the ice; the sun and air drive the change
+    - name: Endpoint
+      baseline: The boundary is a line or mark to reach
+      deviation: The endpoint is the moment when no solid piece remains; a visible
+        piece is still there
+  interaction:
+    question: What was true at the end of the scene?
+    answers:
+    - id: a1
+      text: The ice had melted away, and the dish held only water.
+      is_correct: false
+      feedback: No — a thumbtip-sized piece of ice was still floating in the water.
+    - id: a2
+      text: A small piece of ice was still floating in the water.
+      is_correct: true
+      feedback: Correct — the cube shrank to a thumbtip-sized piece, and that piece
+        stayed solid when the sun was blocked.
+    - id: a3
+      text: The ice cube had grown larger as the afternoon went on.
+      is_correct: false
+      feedback: No — the cube shrank, and its edges became round as it melted.
+    - id: a4
+      text: The ice cube stayed the same size the whole time.
+      is_correct: false
+      feedback: No — the cube got smaller over the hour; only a small piece remained
+        at the end.
+batches:
+- count: 3
+  generated_at: '2026-08-15T06:23:45Z'
+  gate:
+    passed: true
+    dimensions:
+    - name: semantic_correctness
+      verdict: pass
+      note: 三个单元均满足 WordSense 的 required conditions：有明确目标界限、实际状态极接近、最终未达成。transfer-2
+        中手指距门缝几厘米时门已合上，未进入电梯；transfer-3 中液面停在 500 ml 红线下一小格且不再加奶；transfer-4 中只剩拇指尖大小的冰块且融化停止。没有单元表达
+        already、barely、about 或 not_yet。
+    - name: sense_purity
+      verdict: pass
+      note: 所有 final_status 都在未越界一侧：missed / below_target / incomplete，均不是 barely
+        的越过界限，也不是 about 的约略等值，更不是 approaching 的中途或结果未知。transfer-2 特别选择了非灾难性错过电梯，避开了中文“差点”的负面/庆幸语用。
+    - name: definition_leakage
+      verdict: pass
+      note: learner-visible 内容（episode、observable_evidence、interaction 的 question/answers/feedback）都只描述可观察行为，没有旁白式定义或语义标签；feedback
+        也仅回指可见结果，如 transfer-2 的 his hand hit the closed doors... did not get inside、transfer-3
+        的 surface stopped one thin tick below the line。
+    - name: l2_leakage
+      verdict: pass
+      note: 检查 episode、observable_evidence、answers、feedback、surface_dimensions 后，三个单元均未出现
+        almost 或相邻 L2 词（nearly、barely、about、practically、not yet 等）。semantic_model
+        内部虽含目标词，但不是揭示前 learner-visible 内容。
+    - name: variable_isolation
+      verdict: warn
+      note: 主要场景的几乎关系判断都有效，但变量登记有内部不一致：transfer-3 把 gap_visibility 列为 preserved，但
+        semantic_spec.gap_visibility = tick_mark_proximity，与 transfer-2 的 explicit_one_unit
+        不是同一取值，其 surface_dimensions 也把 one clear unit 到 one thin tick 标为 deviation；transfer-4
+        的 gap_visibility=visible_remaining_part 则未列入 preserved/changed。另外 transfer-2/transfer-3
+        的 crossed=no 未在 preserved_variables 中统一登记。建议统一变量取值粒度并把实际变化的变量列入 changed，避免后续校验误判。
+    - name: transfer_novelty
+      verdict: pass
+      note: 每个 transfer 单元按 surface_dimensions 至少改变两个表面维度并进入不同经验域：transfer-2 到时间截止/错过电梯，transfer-3
+        到刻度读数的连续量填充，transfer-4 到自然物状态完成。三单元都保留了 clear boundary + close gap + not crossed，未改变
+        almost 的成立条件。
+    - name: cognitive_noise
+      verdict: warn
+      note: 总体清晰，但少量词项会增加不必要的解码负担：transfer-2 的 lunged（及非必要的 carrying a backpack）、transfer-4
+        的 a piece the size of a thumbtip 和 blue dish 与目标语义关系不大。建议将 lunged 换成 jumped
+        forward/moved quickly，把 thumbtip 改为 the tip of a thumb 或 thumbnail-sized，并删去无关的颜色/背包细节。
+    scores:
+      semantic_correctness: 9.0
+      sense_purity: 9.0
+      definition_leakage: 10.0
+      l2_leakage: 10.0
+      variable_isolation: 7.0
+      transfer_novelty: 9.0
+      cognitive_noise: 7.0
+metadata:
+  compiler_version: 2.0.0
+  prompt_versions:
+    program_planner: v1
+    surface_generator: v1
+    quality_gate: v1
+  generated_at: '2026-08-15T06:23:45Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids: []

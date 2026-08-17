@@ -1,0 +1,176 @@
+schema_version: '1.1'
+language: en
+version: 1
+status: reviewed
+id: through-01
+word: through
+pos: adjective
+sense_label: 贯穿的；穿过的
+definition: A property of a route, opening, or elongated object that runs continuously
+  from one side of a physical medium or region to the other, creating a spatial connection
+  between the two sides.
+inventory:
+  word: through
+  version: 1
+  evidence_digest: sha256:881d93860c89b704f6f9b337f68dbc47dd5dbf911acdce095e2d6fcda2b7fb86
+  sense_id: through-01
+  identity_digest: sha256:d28ff6bc15d072ab20a0b9d417c2f6003d60e30ea94e6e6a3f7acbdfe90ccfbe
+semantic_identity:
+  semantic_type: property
+  dimension: space
+  change_of_state: false
+  causative: false
+  valency: attributive
+inventory_source_entries:
+- through-dict-001
+semantic_revision: 1
+provenance:
+  sources:
+  - type: dictionary
+    citation: https://kaikki.org/dictionary/English/meaning/t/th/through.jsonl (Wiktionary
+      via kaikki.org)
+    license: CC-BY-SA
+semantic_type: attribute
+semantic_skeleton:
+  participants:
+  - role: medium
+    description: A physical entity or region with two distinguishable sides or boundary
+      zones.
+  - role: through_item
+    description: The route, opening, or elongated object that continuously connects
+      those two sides.
+  propositions:
+  - There is an observable physical entity or region with two distinguishable sides
+    or boundary zones.
+  - A route, opening, or elongated object is present whose spatial extent runs from
+    one of those sides to the opposite side without being interrupted.
+  - The connection exists in the current static configuration; it does not depend
+    on movement, intention, or a change of state.
+  - 'Because of that continuous connection, the two sides are spatially linked: either
+    the referent is a passage/route through the medium, or it is an elongated object
+    whose own ends lie on the two sides.'
+conditions:
+  required:
+  - The word appears as an attributive modifier of a noun whose referent is a route,
+    opening, or elongated object.
+  - The referent has continuous extent between two spatial sides/boundaries of a containing
+    medium or region.
+  - The two-sided connection is verifiable in the current spatial arrangement.
+  - No process, progress degree, transport itinerary, or telecommunication state is
+    part of the meaning.
+  excluded:
+  - condition: The route or opening stops before reaching the opposite side, so there
+      is no continuous connection between two sides.
+  - condition: The noun refers to a transport service such as a train or flight, and
+      "through" means that no change of vehicle is required.
+    alternative: through-02
+  - condition: The word follows a degree expression and locates a task or process
+      at some point of its progress.
+    alternative: through-03
+  - condition: The clause is predicative and asserts that someone or something is
+      finished, done, or no longer willing to continue.
+    alternative: through-04
+  - condition: The context is a telephony connection formula such as "You're through
+      to X".
+    alternative: through-05
+relations:
+  confusables:
+  - through-02
+  - through-03
+  - through-04
+  - through-05
+  boundaries:
+  - target: through-02
+    relation: target_more_specific
+    distinction: through-01 is a static spatial property of an object, opening, or
+      route (dimension=space)；through-02 specializes the path idea to a transport
+      itinerary (dimension=transport), where the decisive criterion is not a visible
+      medium but the absence of a vehicle change.
+    diagnostic: If the sentence is about a train or flight and can be paraphrased
+      as "without changing vehicles", the target is through-02. If a bolt, road, or
+      opening can be seen connecting two sides of a visible object, the target is
+      through-01.
+  - target: through-03
+    relation: different_dimension
+    distinction: through-01 is spatial and static (dimension=space)；through-03 is
+      temporal/process (dimension=temporal/process) and requires a degree expression
+      to locate progress. The shared image of a path is the only overlap.
+    diagnostic: 'Add a degree word such as "halfway": "halfway through" is valid for
+      through-03 and impossible for through-01. A through bolt does not change its
+      through-ness when a task is halfway done.'
+  - target: through-04
+    relation: mutually_exclusive
+    distinction: through-01 is attributive and denotes a spatial property of the modified
+      noun；through-04 is predicative and denotes the state of being finished or done
+      with an activity, relationship, or career.
+    diagnostic: If "be through" can be replaced by "be finished/done for" without
+      changing the meaning, the target is through-04. If "through" cannot be moved
+      from before the noun to a predicate without destroying the spatial reading,
+      the target is through-01.
+  - target: through-05
+    relation: different_dimension
+    distinction: through-01 concerns the spatial geometry of a physical object or
+      region (dimension=space)；through-05 concerns the state of a telephone connection
+      (dimension=communication/telephony).
+    diagnostic: In a telephony scene, "You're through to [person]" is unambiguously
+      through-05. No visible two-sided spatial object needs to be shown for that sense；by
+      contrast through-01 requires such an object.
+  l1_confusables:
+    zh:
+    - l1_term: 穿过
+      covers:
+      - through-01
+      note: 中文“穿过”在句子里常做动词，描述人或者车辆穿越；而 through-01 是 名词前的形容词属性，描述道路、开口或螺栓本身“从一侧延伸到另一侧”。
+        场景中应把注意力放在静态几何关系上，而不是穿越动作。
+    - l1_term: 贯穿
+      covers:
+      - through-01
+      - through-03
+      note: “贯穿”可以概括物理贯穿（贯穿墙体）和过程贯穿（贯穿整个流程）， 与 through-01（空间）和 through-03（进程）的跨度一致。判断时看
+        场景里是否存在可观察的两侧实体；如果没有实体两侧，只有任务进度， 应选 through-03。
+    - l1_term: 直通
+      covers:
+      - through-01
+      - through-02
+      note: “直通”既可以指一条路直直穿过某个区域（through-01），也可以指 车或航班直达不需换乘（through-02）。教学区分点是：through-01
+        需要 一个静态空间整体或开口，through-02 需要运输服务或路线图上的完整行程。
+scene_requirements:
+  must_show:
+  - A physical object or region with two clearly distinguishable sides, such as opposite
+    surfaces, two edges of a mass, or two boundaries of a zone.
+  - A route, opening, or long object that continuously connects those two sides; both
+    endpoints are visible or shown by a cutaway/transparent view.
+  - A static spatial composition; if a person or vehicle is present, the potential
+    to traverse is enough and the actual traversing should not be the focus.
+  must_not:
+  - Do not make the scene a completed activity or a progression along a task, such
+    as progress bars, "halfway" markers, or finished/completed states.
+  - Do not use transport-specific material such as train schedules, transfer icons,
+    or non-stop route displays as the main evidence.
+  - Do not present a telephony connection screen or "through to [person]" call context
+    as the target scene.
+  externalization:
+  - Use a cutaway or transparent side view to make the continuous connection visible
+    when the medium would otherwise hide the interior.
+  - If an arrow is used, place it along the route, opening, or object to indicate
+    the possible direction from one side to the other, not as an action arrow for
+    someone crossing at that moment.
+  timing: Let the viewer first see the two sides and confirm that the route/opening/object
+    runs from one to the other；then present the word "through". If a movement is shown,
+    place the naming either before the movement begins or after it is completed, so
+    the property is perceived as a static spatial description rather than as a process.
+
+# ============================================================
+# G. 教学原型建议 (非权威, 仅供 Holistic Course Author 参考)
+# ============================================================
+teaching_profile:
+  primary_archetype: spatial_path
+  suggested_capabilities:
+  - spatial_stage
+  - scene_observation
+  - single_choice
+  - binary_judgment
+  - transfer_judgment
+  special_risks:
+  - surface_vs_interior
+  - viewpoint_dependence

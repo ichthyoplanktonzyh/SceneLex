@@ -1,0 +1,152 @@
+schema_version: '1.0'
+word: notice
+language: en
+status: approved
+inventory_version: 1
+source:
+  provider: wiktionary
+  entry_count: 8
+  evidence_digest: sha256:1b61d380e5232d86b408e4c4723f95c0854ed100b9cd15ad8f38f6211a2f093d
+senses:
+- id: notice-01
+  lemma: notice
+  pos: verb
+  label_zh: 注意到；察觉
+  definition: To become aware of or observe someone or something; to perceive with
+    attention.
+  semantic_signature:
+    semantic_type: perception_cognition
+    dimension: awareness
+    change_of_state: true
+    causative: false
+    valency: '2'
+  source_entries:
+  - notice-dict-001
+  decision:
+    type: keep
+    reason: Core transitive verb sense; the gloss's 'become aware' and 'observe' describe
+      a single perceptual achievement, so no split is warranted.
+  teaching_priority: core
+  usage:
+    currency: current
+    productivity: productive
+    register: general
+- id: notice-02
+  lemma: notice
+  pos: noun
+  label_zh: 注意；理会
+  definition: The act of observing or paying attention; perception; heed.
+  semantic_signature:
+    semantic_type: perception
+    dimension: attention
+    change_of_state: false
+    causative: false
+    valency: '0'
+  source_entries:
+  - notice-dict-004
+  decision:
+    type: keep
+    reason: Uncountable noun sense distinct from the verb and from the countable announcement
+      senses; it appears in the common construction 'take notice (of)'.
+  teaching_priority: extended
+  usage:
+    currency: current
+    productivity: limited
+    register: general/formal
+- id: notice-03
+  lemma: notice
+  pos: noun
+  label_zh: 公告；正式通知（或警告）
+  definition: A written or printed announcement, or a formal notification or warning
+    intended to inform people.
+  semantic_signature:
+    semantic_type: communication
+    dimension: public/formal
+    change_of_state: false
+    causative: false
+    valency: '0'
+  source_entries:
+  - notice-dict-005
+  - notice-dict-006
+  decision:
+    type: merge
+    reason: The 'written/printed announcement' and 'formal notification/warning' entries
+      lexicalize the same core concept of a public/official message; the formal and
+      register differences do not justify two separate teachable senses.
+  teaching_priority: core
+  usage:
+    currency: current
+    productivity: productive
+    register: general/formal
+- id: notice-04
+  lemma: notice
+  pos: noun
+  label_zh: （离职/解雇的）预先通知
+  definition: Advance notification of termination of employment, given by an employer
+    to an employee or vice versa.
+  semantic_signature:
+    semantic_type: communication
+    dimension: employment/termination
+    change_of_state: false
+    causative: false
+    valency: '0'
+  source_entries:
+  - notice-dict-007
+  decision:
+    type: keep
+    reason: This uncountable employment-specific sense is lexicalized in collocations
+      such as 'two weeks' notice' and 'give notice'; treating it as a distinct sense
+      supports teaching these uses as one unit.
+  teaching_priority: extended
+  usage:
+    currency: current
+    productivity: limited
+    register: formal/workplace
+- id: notice-05
+  lemma: notice
+  pos: noun
+  label_zh: （戏剧等的）评论，短评
+  definition: A published critical review of a play or similar performance.
+  semantic_signature:
+    semantic_type: communication
+    dimension: theatrical criticism
+    change_of_state: false
+    causative: false
+    valency: '0'
+  source_entries:
+  - notice-dict-008
+  decision:
+    type: keep
+    reason: Domain-specific countable noun used in theater/journalism; useful mainly
+      for recognition because of its limited distribution.
+  teaching_priority: recognition
+  usage:
+    currency: current
+    productivity: limited
+    register: journalism/theater
+deferred_entries:
+- source_entry: notice-dict-002
+  decision: defer
+  reason: The intransitive 'be noticeable/show' use is extremely rare and not established
+    in general standard English; one literary example is insufficient evidence for
+    a stable teachable sense.
+  required_evidence:
+  - Additional contemporary corpus attestations of intransitive notice meaning 'be
+    noticeable/show'
+  - Clarification of dialect/register status
+- source_entry: notice-dict-003
+  decision: reject
+  reason: This is a community-specific offensive slur use of the verb, not a neutral
+    general-English sense; it is outside the scope of a teachable SceneLex inventory.
+  required_evidence: []
+relations:
+- source: notice-01
+  target: notice-02
+  relation: nominalization
+  distinction: notice-02 denotes the act/state of paying attention as a noun; notice-01
+    is the transitive verb of becoming aware.
+- source: notice-03
+  target: notice-04
+  relation: specialization
+  distinction: notice-04 restricts the general formal-notification meaning of notice-03
+    to the employment-termination context.

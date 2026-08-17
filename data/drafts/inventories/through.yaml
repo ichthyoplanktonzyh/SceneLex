@@ -1,0 +1,159 @@
+schema_version: '1.0'
+word: through
+language: en
+status: reviewed
+inventory_version: 1
+source:
+  provider: wiktionary
+  entry_count: 8
+  evidence_digest: sha256:881d93860c89b704f6f9b337f68dbc47dd5dbf911acdce095e2d6fcda2b7fb86
+senses:
+- id: through-01
+  lemma: through
+  pos: adjective
+  label_zh: 贯穿的；穿过的
+  definition: Describing a route, opening, or object that extends from one side of
+    something to the other, so that it can be passed through; e.g. a through road
+    or a through bolt.
+  semantic_signature:
+    semantic_type: property
+    dimension: space
+    change_of_state: false
+    causative: false
+    valency: attributive
+  source_entries:
+  - through-dict-001
+  decision:
+    type: keep
+    reason: Single clear attributive sense; represents the literal spatial meaning
+      of an object or route extending across something.
+  teaching_priority: extended
+  usage:
+    currency: current
+    productivity: limited
+    register: standard
+- id: through-02
+  lemma: through
+  pos: adjective
+  label_zh: 直达的
+  definition: Describing transport that travels from its origin to its destination
+    without requiring a change of vehicle; e.g. a through train or through flight.
+  semantic_signature:
+    semantic_type: property
+    dimension: transport
+    change_of_state: false
+    causative: false
+    valency: attributive
+  source_entries:
+  - through-dict-006
+  decision:
+    type: keep
+    reason: Distinct lexical sense used for transport connections; a through train
+      is direct/end-to-end, not merely a train that passes through a place.
+  teaching_priority: extended
+  usage:
+    currency: current
+    productivity: limited
+    register: standard
+- id: through-03
+  lemma: through
+  pos: adjective
+  label_zh: 进行到某阶段的；进展中的
+  definition: Used with a degree expression (e.g. halfway, partway) to indicate how
+    far a task or process has progressed toward its end; e.g. 'We're halfway through.'
+  semantic_signature:
+    semantic_type: state
+    dimension: temporal/process
+    change_of_state: false
+    causative: false
+    valency: predicative with degree modifier
+  source_entries:
+  - through-dict-003
+  decision:
+    type: keep
+    reason: Stands apart from the 'finished' sense because it explicitly marks an
+      intermediate point along the course of a task, not completion.
+  teaching_priority: extended
+  usage:
+    currency: current
+    productivity: limited
+    register: standard
+- id: through-04
+  lemma: through
+  pos: adjective
+  label_zh: 结束的；完了的；受够了的
+  definition: Having reached the end of an activity, relationship, or career; finished,
+    done for, or no longer willing to continue. Used predicatively, often as 'be through
+    (with X)' or 'be through as X'.
+  semantic_signature:
+    semantic_type: state
+    dimension: temporal/process
+    change_of_state: false
+    causative: false
+    valency: predicative; optional with/as complement
+  source_entries:
+  - through-dict-002
+  - through-dict-004
+  - through-dict-005
+  decision:
+    type: merge
+    reason: 'The three entries are applications of one core predicative sense ''be
+      through'' = at an end: finishing a task, being ruined/done for, or ending a
+      relationship. Their differences are due to the complement (with + task/person,
+      as + role) and pragmatic tone, not to a distinct lexical concept.'
+  teaching_priority: core
+  usage:
+    currency: current
+    productivity: productive
+    register: standard; informal when used with a person ('I'm through with you')
+- id: through-05
+  lemma: through
+  pos: adjective
+  label_zh: （电话）接通了的
+  definition: Connected to a person by telephone; used in telephony expressions such
+    as 'You're through to the doctor now.'
+  semantic_signature:
+    semantic_type: state
+    dimension: communication/telephony
+    change_of_state: false
+    causative: false
+    valency: predicative; to [person]
+  source_entries:
+  - through-dict-007
+  decision:
+    type: keep
+    reason: Conventional predicate in telephone contexts; a small but stable sense
+      worth recognizing even though it is not productive.
+  teaching_priority: recognition
+  usage:
+    currency: current
+    productivity: nonproductive
+    register: telephony; formal/institutional
+deferred_entries:
+- source_entry: through-dict-008
+  decision: defer
+  reason: Sports-specific jargon with low general utility and only one piece of evidence;
+    it is not stable enough for a general learner sense inventory without corpus support.
+  required_evidence:
+  - More examples of 'through' in sports commentary, especially 'through on goal',
+    'through ball', 'through one-on-one'
+  - Frequency data showing use in general sports English beyond the single example
+  - Evidence of whether the sense is productive across sports or restricted to association
+    football
+relations:
+- source: through-01
+  target: through-02
+  relation: specialization
+  distinction: through-01 describes a spatial path through an object; through-02 specializes
+    the path idea to transport routes that cover the whole journey without requiring
+    a transfer.
+- source: through-01
+  target: through-03
+  relation: metaphorical_extension
+  distinction: through-01 is spatial (a path through an object); through-03 applies
+    the same path concept to progress through a task or process.
+- source: through-03
+  target: through-04
+  relation: same_path_different_stage
+  distinction: through-03 marks an intermediate stage toward an endpoint; through-04
+    denotes the endpoint itself (finished/done).

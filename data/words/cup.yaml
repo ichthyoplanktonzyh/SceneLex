@@ -1,0 +1,20 @@
+schema_version: '1.0'
+version: 1
+word: cup
+pos: [noun]
+
+pronunciation:
+  ipa:
+    - "/kʌp/"
+
+frequency:
+  rank: 754
+  band: high
+
+senses:
+  - id: cup-01
+    pos: noun
+    sense_label: "杯子；饮具"
+    definition: "A small handheld concave vessel intended for drinking, typically opaque and usually with a handle; the ordinary countable-noun use of cup."
+    status: reviewed
+    scene_count: 0

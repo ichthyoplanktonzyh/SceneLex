@@ -1,0 +1,40 @@
+schema_version: '1.0'
+asset_type: grounding
+sense_id: reluctant-01
+contract_hash: sha256:e893727c42babcf98ab71e3ba19934bd3463efaef871c97b40db78b1bc6d73ec
+grounding:
+  source_experience_id: unit-1
+  l2_realization: At the door of the workshop, Sam was reluctant to reach for the
+    dusty crate — he kept his hand at his side for a moment before finally taking
+    the handle and pulling it open.
+  constructions:
+  - '[noun] is reluctant to [verb]'
+  collocations:
+  - reluctant to [verb]
+gate:
+  passed: true
+  dimensions:
+  - name: semantic_correctness
+    verdict: pass
+    note: 'grounding.l2_realization (unit-1) presents Sam before a specific, physically
+      available action (''reach for the dusty crate'') and makes his inner resistance
+      legible in observable behavior: he ''kept his hand at his side for a moment
+      before finally taking the handle and pulling it open.'' This satisfies the WordSense
+      required conditions: conscious awareness of an available action, negative willingness,
+      observable behavioral support, and compatibility with the action being performed
+      while still showing reluctance. The example does not slip into the adjacent
+      categories of refusal/unwillingness-as-decision, hesitation-as-uncertainty,
+      or sensory disgust: Sam complies, the pause is tied to one identified action,
+      and ''dusty'' is only a surface detail rather than the dominant evidence. The
+      semantic_model.invariant and necessary_conditions also preserve WordSense''s
+      open outcome and ''no single behavior'' constraints.'
+metadata:
+  compiler_version: 2.0.0
+  prompt_versions:
+    program_planner: v1
+    surface_generator: v1
+    quality_gate: v1
+  generated_at: '2026-08-15T06:00:42Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids: []

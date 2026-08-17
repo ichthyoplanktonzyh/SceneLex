@@ -1,0 +1,372 @@
+schema_version: '1.0'
+course_id: hesitant-01-course-v1
+target:
+  sense_id: hesitant-01
+  lemma: hesitant
+  pos: adjective
+  ipa: ˈhɛzɪtənt
+  learner_l1: zh-CN
+  target_l2: en
+author_intent:
+  course_thesis: hesitant 的核心是一个具体动作摆在面前时，因为对结果的疑虑或顾虑而在行动前停顿、试探、收住手脚；只要顾虑得到解答，这个人就会行动，这与不情愿或优柔寡断不同。
+  learner_start: 学习者母语为中文，已经能从“犹豫”一词大致把握迟疑，但容易把动作停顿等同于内心抗拒（reluctant），把选择困难（indecisive），把缓慢谨慎（cautious）混入同一经验。
+  intended_outcome: 学习者能识别“面对具体可做的事 → 有顾虑 → 行动前可察觉停顿”这一核心，能区分结果成败无关，能割开与不情愿、选择困难、谨慎的边界；绑定后能用
+    hesitant 表达这种状态。
+  design_rationale: 先用两个行为场景建立“具体动作 + 顾虑 + 停顿”的经验，再用正反判断逐个剥离“结果决定论（两个方向：做了仍算、没做仍算）”“不情愿”“停顿即犹豫”“优柔寡断”“谨慎即犹豫”等误区；绑定前判断的选项一律使用可观察行为与结果作答，不把“不愿意/有顾虑”等内部状态标签当作答案。绑定后用自然句锚定首个场景，用迁移和一个反向
+    boundary（hesitant vs reluctant）把词放进真实选择，并在 boundary 解释中明确 hesitant 与 reluctant
+    可以共现。复习沿用同一主线，早期反向回忆，后期边界与迁移再提取；复习迁移换到“是否发出消息”的新领域，并再次覆盖“最终没做仍算 hesitant”的方向。
+learning_flow:
+- id: pre-1-core-scene
+  trigger: initial
+  primitive: scene_observation
+  purpose: 建立核心场景：一个明确的可行动作、一个可察觉的顾虑来源、行动前的停顿；顾虑解除后行动完成。
+  estimated_seconds: 60
+  can_pause_after: true
+  learner_content:
+    episode: 周末下午，阿哲第一次来这家游泳馆。他站在泳池边，脚尖在池边来回挪，眼睛盯着水面看了一会儿，又抬头看了看旁边的救生员。他把手伸向水面，手指碰到水又缩了回来。救生员说：“水是恒温的，不冷。”阿哲听完点点头，深吸一口气，跳了下去。
+  evaluation:
+    kind: none
+- id: pre-2-evidence
+  trigger: immediate_followup
+  primitive: evidence_highlight
+  purpose: 展示第二个同类场景，并高亮可观察证据：手悬停、目光来回、得到解答后行动。
+  estimated_seconds: 70
+  can_pause_after: true
+  learner_content:
+    episode: 领养中心里，小凯蹲在笼子前，准备伸手抱一只小狗。他的手伸到一半，停在半空，眼睛在小狗和旁边的阿姨之间来回看。阿姨说：“它打过疫苗，很乖，可以抱。”小凯这才蹲下去，慢慢把小狗抱了起来。
+    evidence:
+    - 手伸向小狗时停在半空。
+    - 目光在小狗和阿姨之间来回移动。
+    - 阿姨说明后，他才蹲下并把小狗抱起来。
+  evaluation:
+    kind: none
+- id: pre-3-outcome-open
+  trigger: immediate_followup
+  primitive: binary_judgment
+  purpose: 处理 misc-4 的第一个方向：最终完成了动作不等于没有犹豫；结果不能取消前面可见的停顿。
+  addresses:
+  - misc-4
+  estimated_seconds: 90
+  learner_content:
+    episode: 回想刚才两个场景：阿哲最后还是跳下了泳池；小凯最后还是抱起了小狗。
+    evidence:
+    - 阿哲在跳之前脚在池边来回挪、手碰到水又缩回。
+    - 小凯在抱之前手停在半空、目光来回看。
+    - 他们最后都完成了动作。
+    question: 他们最后都做了，那么他们刚才在行动前的停顿，还算不算今天要学的那个情况？
+    options:
+    - id: a
+      text: 不算，因为他们最后都做到了，所以不能算今天要学的情况。
+    - id: b
+      text: 算，他们都在行动前停住、手缩回、目光来回看；后来完成动作并不会让前面的停顿消失。
+  evaluation:
+    kind: choice
+    correct_option_id: b
+- id: pre-4-no-action-still
+  trigger: immediate_followup
+  primitive: binary_judgment
+  purpose: 处理 misc-4 的第二个方向：动作清楚、顾虑可见、最终没有行动，仍然算 hesitant；结果成败两个方向都不取消停顿与顾虑。
+  addresses:
+  - misc-4
+  estimated_seconds: 90
+  learner_content:
+    episode: 晚上七点，小安来到羽毛球馆门口。他透过玻璃往里面看了看——里面有很多人正在打球。他伸手推门，门开了一条缝，他又停下来，隔着门缝看了几秒，手还放在门把手上。过了一会儿，他把门轻轻关上，转身走了，没有进去。
+    evidence:
+    - 他伸手推门，门开了一条缝又停下来。
+    - 隔着门缝看了几秒，手一直放在门把手上。
+    - 最后把门轻轻关上，转身走了，没有进去。
+    question: 小安最后没有进去，他刚才在门口的表现还算不算今天要学的那个情况？
+    options:
+    - id: a
+      text: 不算，因为他最后没有进去。
+    - id: b
+      text: 算，他面对“推门进去”这件事时，在门口停住、手放在门把手上又关上门；最终没进去，但前面的停顿仍然能看到。
+  evaluation:
+    kind: choice
+    correct_option_id: b
+- id: pre-5-willing-after-answer
+  trigger: immediate_followup
+  primitive: binary_judgment
+  purpose: 建立“顾虑得到回答后行为改变”的可观察模式：停顿在前、得到回答后愿意配合；为绑定后与 reluctant 的边界铺底。选项只使用行为描述。
+  estimated_seconds: 90
+  learner_content:
+    episode: 小宇明天要打疫苗。他站在队伍最前面，看着护士手里的针，脚往后退了半步，手紧紧抓着妈妈的衣角。他问护士：“会疼吗？”护士说：“就一下子，像被蚊子叮。”小宇松了一口气，笑着走过去坐下，卷起袖子伸出手。
+    evidence:
+    - 看到针后脚往后退了半步。
+    - 手紧紧抓着妈妈的衣角。
+    - 他主动问“会疼吗”。
+    - 护士回答后，他松了一口气，走过去坐下，卷起袖子伸出胳膊。
+    question: 把“护士回答前”和“护士回答后”两段行为连起来看，下面哪种描述准确反映了小宇的实际经过？
+    options:
+    - id: a
+      text: 护士回答前，他往后退、抓紧衣角；护士回答后，他仍然站在原地，手一直抓着衣角。
+    - id: b
+      text: 护士回答前，他往后退、抓紧衣角；护士回答后，他松了一口气，笑着走过去坐下，卷起袖子伸出胳膊。
+  evaluation:
+    kind: choice
+    correct_option_id: b
+- id: pre-6-pause-alone
+  trigger: immediate_followup
+  primitive: binary_judgment
+  purpose: 处理 misc-3：停顿本身不等于目标状态；面前没有清楚可做的动作、或停顿不是因为顾虑某件事的结果时，不能只凭停顿判断。
+  addresses:
+  - misc-3
+  estimated_seconds: 90
+  learner_content:
+    episode: 公交站，小罗站在站牌前，看着手机上的地图，眉头皱着，一直没有上车。车来了，他也没上。其实他刚下错站，正在研究该往哪个方向走。
+    evidence:
+    - 他站在站牌前，看着手机地图。
+    - 眉头皱着。
+    - 车来了也没上。
+    - 他是因为下错站，还没搞清楚方向。
+    question: 小罗的停顿和前面阿哲、小凯的停顿，从行为上看有什么不同？
+    options:
+    - id: a
+      text: 没有不同，他们都没有马上行动，所以是同一种情况。
+    - id: b
+      text: 阿哲和小凯面前各有一件已经清楚要做的动作（下水、抱狗），行动前先停住；小罗面前没有这样一件清楚的动作，他只顾查地图，车来了也没上。
+  evaluation:
+    kind: choice
+    correct_option_id: b
+- id: pre-7-indecisive
+  trigger: immediate_followup
+  primitive: binary_judgment
+  purpose: 处理 misc-2：在两个选项之间拿不定主意不是对一件已明确动作的顾虑；给出明确答案后仍摇摆，区别于目标状态。
+  addresses:
+  - misc-2
+  estimated_seconds: 90
+  can_pause_after: true
+  learner_content:
+    episode: 小桐和朋友在面馆。朋友问他要吃什么。他看看菜单，手指在“牛肉面”和“排骨面”之间来回移动，说：“都行……让我再想想。”五分钟后，朋友帮他点了牛肉面，他又说：“那要不换成排骨面？”
+    evidence:
+    - 手指在“牛肉面”和“排骨面”之间来回移动。
+    - 他说“都行……让我再想想”。
+    - 朋友给出明确选择后，他又想改。
+    question: 小桐的情况和前面阿哲、小凯的情况，从行为上看有什么不同？
+    options:
+    - id: a
+      text: 没有不同，他也是在行动前停住了。
+    - id: b
+      text: 他对着菜单在两个选项之间来回看；朋友替他定了牛肉面后，他又说想换成排骨面。他是在选项之间反复，不是对一件已经清楚要做的动作先停住。
+  evaluation:
+    kind: choice
+    correct_option_id: b
+- id: pre-8-cautious
+  trigger: immediate_followup
+  primitive: binary_judgment
+  purpose: 处理 misc-5：缓慢小心地连续动作没有行动点停顿，不等于目标状态；目标状态要求行动点上的延迟或克制。
+  addresses:
+  - misc-5
+  estimated_seconds: 90
+  can_pause_after: true
+  learner_content:
+    episode: 下雪天，王奶奶拄着拐杖在小区路上走。她每一步都踩得很稳、很慢，眼睛看着地面，但没有在任何一步前停住，一路走到了单元门口。而在泳池边的阿哲，是在要跳下去之前站住了几秒。
+    evidence:
+    - 王奶奶走得很慢很稳，但一直没有停下来。
+    - 阿哲是在跳之前站住、手缩回。
+    question: 下面哪种说法更准确？
+    options:
+    - id: a
+      text: 王奶奶走得很慢很小心，阿哲也在行动前停住，所以他们的情况相同。
+    - id: b
+      text: 王奶奶虽然每一步都慢，但一路上没有在任何一步前停住；阿哲是在“跳下去”这个动作之前站住、手缩回。两种动作不一样。
+  evaluation:
+    kind: choice
+    correct_option_id: b
+- id: bind-1-symbol
+  trigger: immediate_followup
+  primitive: symbol_reveal
+  purpose: 首次揭示 L2 符号，把前面“面对可做的事 → 有顾虑 → 行动前停顿”的经验浓缩为一个词。
+  estimated_seconds: 45
+  learner_content:
+    l2_word: hesitant
+    ipa: ˈhɛzɪtənt
+    presentation: 这个词形容一个人面对一件可以做的事，因为心里有些担心、有顾虑，而在行动前停住、试探、收住手脚。它不是拒绝，也不是一直拿不定主意；当顾虑得到回答后，这个人往往会行动；如果顾虑没有消除，他也可能最终没有行动。做了或没做，都不影响这个状态。
+    minimal_l1_gloss: 犹豫的；有顾虑的
+  evaluation:
+    kind: none
+- id: bind-2-pronunciation
+  trigger: immediate_followup
+  primitive: pronunciation
+  purpose: 建立 hesitant 的语音印象。
+  estimated_seconds: 20
+  learner_content:
+    l2_word: hesitant
+    ipa: ˈhɛzɪtənt
+  evaluation:
+    kind: none
+- id: bind-3-grounding
+  trigger: immediate_followup
+  primitive: l2_grounding
+  purpose: 把刚绑定的词放回首个核心场景，给出自然 L2 句与句型、搭配。
+  estimated_seconds: 75
+  learner_content:
+    source_step_id: pre-1-core-scene
+    l2_realization: Azhe is hesitant to jump into the pool; he pauses at the edge
+      before diving in.
+    constructions:
+    - be hesitant to [verb]
+    - be hesitant about [noun]
+    - seem hesitant
+    collocations:
+    - hesitant to act
+    - hesitant about the decision
+    - visibly hesitant
+  evaluation:
+    kind: none
+- id: bind-4-transfer
+  trigger: immediate_followup
+  primitive: transfer_judgment
+  purpose: 迁移到“当众发言”的新领域，并再次确认“最终做成了”不能取消 hesitant。
+  addresses:
+  - misc-4
+  estimated_seconds: 90
+  learner_content:
+    episode: 会议开始前，新人小雨被问到对方案的看法。她张了张嘴，又合上，低头看着笔记本，过了几秒才说：“我有一点想法……”
+    evidence:
+    - 张了张嘴，又合上。
+    - 低头看着笔记本。
+    - 过了几秒才开口。
+    question: 用 hesitant 来形容小雨刚才的表现合适吗？
+    options:
+    - id: a
+      text: 合适。她在开口前停了一下，看得出对自己要说的话有点顾虑；她最后还是开口了，但这一点不影响。
+    - id: b
+      text: 不合适。她最后开口了，所以不能用 hesitant。
+  evaluation:
+    kind: choice
+    correct_option_id: a
+- id: bind-5-boundary-hesitant-vs-reluctant
+  trigger: immediate_followup
+  primitive: boundary_choice
+  purpose: 用“顾虑得到解答后立刻答应”的场景，把 hesitant 与配对课程中的 reluctant 对置；正确方向为 hesitant。与 reluctant
+    课程的 boundary 方向相反，避免机械重复；并在解释中说明两词可以共现。
+  addresses:
+  - misc-1
+  estimated_seconds: 100
+  learner_content:
+    episode: 周五下午，主管问小程愿不愿意明天去外地参加一场培训。小程在回复前停了一下，手指在手机上方悬着，问：“培训要发言吗？”主管说不用，只需旁听。小程立刻回了一条：“好，我去。”
+    options:
+    - sense_id: hesitant-01
+      text: hesitant
+    - sense_id: reluctant-01
+      text: reluctant
+    correct_sense_id: hesitant-01
+    explanation:
+    - hesitant：小程在回复前停了一下，是因为担心“要不要发言”；主管回答后，他立刻回“好，我去”。这正是“因为有顾虑而在行动前停顿，顾虑得到回答后行动”的核心。
+    - reluctant：这个词的核心是心里不愿意、有抵触，即使顾虑被回答，也仍会带着厌恶或需要被说服。判断时不能只看有没有一点不情愿：一个人可以同时既 hesitant
+      又 reluctant——如果顾虑消除了，仍然一脸厌恶、迟迟不动，那么两个词都可能合适。本场景中小程的顾虑得到回答后马上答应，没有露出厌恶，所以更符合
+      hesitant。
+  evaluation:
+    kind: sense_choice
+    correct_sense_id: hesitant-01
+review_progression:
+- id: review-1-recall
+  timing: 绑定完成后的第二天
+  due_after_days: 1
+  scaffold_level: early_post_binding
+  primitive: recall_reveal
+  learner_content:
+    episode: 面试官问了一个小林没准备过的问题。小林张了张嘴，停了两秒，眼睛快速眨了几下，才开口回答。
+    l2_word: hesitant
+    ipa: ˈhɛzɪtənt
+    minimal_gloss: 犹豫的；有顾虑的
+  evaluation:
+    kind: none
+- id: review-2-self-grade
+  timing: 绑定完成后的第二天，紧接第一次回忆
+  due_after_days: 1
+  scaffold_level: early_post_binding
+  primitive: recall_self_grade
+  learner_content:
+    l2_word: hesitant
+    ipa: ˈhɛzɪtənt
+  evaluation:
+    kind: self_grade
+- id: review-3-boundary
+  timing: 绑定完成后的第三天
+  due_after_days: 3
+  scaffold_level: later_post_binding
+  primitive: boundary_choice
+  learner_content:
+    episode: 阿琳要在网上报名马拉松。报名页面上，她的手指停在“提交”按钮上方，读了好几遍规则，又向下翻了一遍说明，确认不需要体检证明后，才按下提交。
+    options:
+    - sense_id: hesitant-01
+      text: hesitant
+    - sense_id: reluctant-01
+      text: reluctant
+    correct_sense_id: hesitant-01
+    explanation:
+    - hesitant：阿琳对“报名”这件事有具体顾虑（是否需要体检证明），她把规则读了好几遍，确认不需要后才按下提交；这是有顾虑的停顿。
+    - reluctant：如果一个人根本不想报名，就算确认了所有规则，也会继续拖延，或满脸不情愿地提交。注意 hesitant 和 reluctant 可以同时存在：如果顾虑消除了仍然一脸不情愿、要人催才动，那两个词都可能说得通。这里阿琳确认规则后立刻提交，没有露出厌恶，所以更符合
+      hesitant。
+  evaluation:
+    kind: sense_choice
+    correct_sense_id: hesitant-01
+- id: review-4-transfer
+  timing: 绑定完成后的第五天
+  due_after_days: 5
+  scaffold_level: later_post_binding
+  primitive: transfer_judgment
+  learner_content:
+    episode: 晚上九点，小凯写好了一条要给主管的消息，内容是提醒项目进度可能有风险。他读了一遍，又删掉几行重写，手指一直悬在“发送”按钮上方。他盯着屏幕看了几秒，最后放下手机，没有按发送。
+    evidence:
+    - 写完后重新读了一遍，又删掉几行重写。
+    - 手指一直悬在“发送”按钮上方。
+    - 盯着屏幕看了几秒。
+    - 最后放下手机，没有按发送。
+    question: 用 hesitant 形容小凯刚才的表现合适吗？
+    options:
+    - id: a
+      text: 合适。他面对“发出这条消息”这件事有顾虑，发送前反复读、改写、手悬停；最后没有发，也不能取消前面的停顿和顾虑。
+    - id: b
+      text: 不合适。他最后没有发送，所以不能算。
+  evaluation:
+    kind: choice
+    correct_option_id: a
+related_sense_material:
+- sense_id: reluctant-01
+  usage: boundary_contrast
+  decision: 不在本课程完整教学 reluctant；只在本课末尾和复习中用 boundary_choice 做反向对置（正确方向为 hesitant），因为配对课程
+    reluctant-01-course-v2 已完整教学 reluctant。
+  note: 两课的 boundary 方向互补：reluctant 课程以 reluctant 为正确项，本课程以 hesitant 为正确项，避免机械重复。边界解释中明确两词可以共现，判断轴是“顾虑被回答后是否仍带着厌恶行动”。
+- sense_id: indecisive-01
+  usage: pre_binding_contrast
+  decision: 只在绑定前用中文经验场景区分“两个选项之间拿不定主意”与“对具体动作的顾虑”，不作为本课 L2 教学文字目标。
+- sense_id: cautious-01
+  usage: pre_binding_contrast
+  decision: 只在绑定前用中文经验场景区分“缓慢小心地连续移动”与“行动前停顿”，不作为本课 L2 教学文字目标。
+metadata:
+  archetype_used: intention_cues
+  capabilities_used:
+  - scene_observation
+  - evidence_highlight
+  - binary_judgment
+  - symbol_reveal
+  - pronunciation
+  - l2_grounding
+  - transfer_judgment
+  - boundary_choice
+  - recall_reveal
+  - recall_self_grade
+  holistic_compiler_version: 1.0.0
+  generated_at: '2026-08-16T10:56:41Z'
+  repair_note: 根据评审修复：(1) blocker：新增 pre-4-no-action-still，并在复习 review-4 中换成“顾虑可见、最终没做”的正例，
+    覆盖 misc-4 的“最终没有行动仍算 hesitant”方向；pre-3 与 pre-4 合起来使结果成败在两个方向都不取消前面的停顿与顾虑。 (2)
+    warning：bind-5 与 review-3 的 boundary 解释补充“hesitant 与 reluctant 可以共现”，判断轴改为 “顾虑被回答后是否仍带着厌恶行动”，不再把两词讲成非此即彼。(3)
+    warning：绑定前判断步骤的选项改为纯行为描述（pre-5、pre-6 等）， 不再用“不愿意”“有顾虑”等 L1 状态标签充当答案；概念标签只保留在绑定后的
+    boundary 解释/反馈中。 (4) warning：复习迁移（review-4）从“举手/开口前停顿”改为“是否发出消息”的新领域，并再次覆盖最终未做的正例方向。
+  calls:
+  - role: author
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: 0d5cbb72-9873-45a7-8a6f-d354f2bd1a45
+  - role: critic
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: f8ef5da1-060f-4cb7-94bd-092170a10511
+  - role: repair
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: bb6d6563-abcf-4d5e-acff-08ee7ae1cc6c
+  input_digest: sha256:a003f6ec579c36cca9d48c1015b70415b6fe84abc2a75a98b1d09787658ae7f2

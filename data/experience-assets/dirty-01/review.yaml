@@ -1,0 +1,286 @@
+schema_version: '1.0'
+asset_type: review
+sense_id: dirty-01
+contract_hash: sha256:1dac7398d697e332cd4f545fdaa24f90633aea10666a2f78a3dd1d8051761d17
+items:
+- id: review-1
+  semantic_spec:
+    judgment: 复习判断：供人坐的木制长椅，坐垫处有潮湿的深色污渍与散落的碎屑——这是否为 dirty-01 的经验？
+    target_sense: dirty-01
+    surface_object: park_wooden_bench
+    contaminant: spilled_drink_wet_mark_and_food_crumbs
+    contaminant_origin: external
+    perceptual_evidence: visual_stain_and_particles
+    clean_baseline_deviation: present
+    state_evaluation: needs_cleaning
+    coverage: partial_seat_area
+    intensity: moderate
+    spatial_order: not_applicable
+    contrast_check:
+      messy_dimension: bench_position_is_normal
+      polluted_dimension: not_water_or_air_pollution
+      filthy_degree: moderate_not_extreme
+      dirty02_dimension: no_verbal_content
+  experience:
+    episode: 公园树荫下有一条木制长椅。长椅的坐垫处有一片深色湿痕，形状不规则，边缘还粘着几粒浅色的食物碎屑。湿痕周围露出一段段没被浸湿的浅色木纹。长椅本身放在步道旁，四条腿都落在地面，位置端正。
+    observable_evidence:
+    - 坐垫部位有一片深色湿痕，边缘有几粒浅色食物碎屑
+    - 湿痕周围的木条保持原本的浅色木纹
+    - 长椅四条腿都在步道旁的地面上，位置端正，附近没有倒地或歪斜的设施
+    surface_dimensions:
+    - name: 表面对象
+      baseline: 木制长椅表面平整，木纹均匀
+      deviation: 坐垫处出现深色湿痕并粘着碎屑
+    - name: 污物来源
+      baseline: 木椅本身不含液体或食物残渣
+      deviation: 湿痕与碎屑来自外部洒落的饮料和食物
+    - name: 覆盖范围
+      baseline: 整条坐垫面无明显痕迹
+      deviation: 湿痕和碎屑只出现在坐垫一处局部区域
+    - name: 位置秩序
+      baseline: 长椅放在步道旁，位置端正
+      deviation: 长椅位置没有异常，只是表面有附着物
+- id: review-2
+  semantic_spec:
+    judgment: 复习判断：床单上粘着几根宠物毛发和一小块干燥的浅色斑痕，床铺本身铺得平整——这是否为 dirty-01 的经验？
+    target_sense: dirty-01
+    surface_object: bed_sheet
+    contaminant: pet_fur_and_dried_saliva_stain
+    contaminant_origin: external
+    perceptual_evidence: visual_speckles_and_stain
+    clean_baseline_deviation: present
+    state_evaluation: needs_cleaning
+    coverage: small_scattered_local_marks
+    intensity: mild
+    spatial_order: tidy
+    contrast_check:
+      messy_dimension: bed_is_neatly_made
+      polluted_dimension: not_environmental_pollution
+      filthy_degree: mild_not_extreme
+      dirty02_dimension: no_verbal_content
+  experience:
+    episode: 卧室里一张床铺得很平整，床单拉得没有明显褶皱。凑近看，床单中段有一小片浅色干燥斑痕，边缘发硬；斑痕周围散落着几根深色的细短毛发。用手轻拂，毛发会离开床单表面，斑痕处摸上去比周围略硬。
+    observable_evidence:
+    - 床单中段有一小片浅色干燥斑痕，边缘发硬
+    - 斑痕周围散落几根深色细短毛发
+    - 床铺整体平整，被角和枕头都在原位
+    - 轻拂时毛发离开床单表面
+    surface_dimensions:
+    - name: 表面对象
+      baseline: 床单平整洁白、没有斑点和杂物
+      deviation: 中段出现浅色斑痕和几根毛发
+    - name: 污物来源
+      baseline: 床单布料本身不含毛发或分泌物
+      deviation: 毛发和斑痕来自外部宠物接触
+    - name: 覆盖范围
+      baseline: 整张床单无局部痕迹
+      deviation: 斑痕和毛发只集中在床单中段的小范围
+    - name: 位置秩序
+      baseline: 床铺平整、被角和枕头在原位
+      deviation: 床铺依然平整，与表面附着物无关
+- id: review-3
+  semantic_spec:
+    judgment: 复习判断：新买的白色帆布鞋鞋头蹭上一片深灰色油污，肉眼明显但面积不大，鞋带孔附近没有其他问题——这是否为 dirty-01 的经验？
+    target_sense: dirty-01
+    surface_object: canvas_shoes
+    contaminant: dark_grey_oil_grease
+    contaminant_origin: external
+    perceptual_evidence: visible_dark_stain
+    clean_baseline_deviation: present
+    state_evaluation: needs_cleaning
+    coverage: localised_toe_area
+    intensity: mild_to_moderate
+    spatial_order: not_applicable
+    contrast_check:
+      messy_dimension: shoes_are_paired_and_placed_normally
+      polluted_dimension: not_water_or_air_pollution
+      filthy_degree: one_grease_spot_not_extreme
+      dirty02_dimension: no_verbal_content
+  experience:
+    episode: 一双白色帆布鞋整齐地摆在鞋架上，左右两只并排放好。左边那只的鞋头处有一片深灰色油污，形状像被蹭了一下，油污表面有点发亮，边缘没有晕开。鞋带和鞋孔周围没有其他痕迹，鞋底侧面也干净。
+    observable_evidence:
+    - 白色帆布鞋鞋头有一片深灰色油污，油污表面发亮
+    - 油污边缘清晰，没有向周围扩散
+    - 两只鞋左右并排放在鞋架上，鞋带系好，位置正常
+    surface_dimensions:
+    - name: 表面对象
+      baseline: 白色帆布鞋鞋面白色、无斑点
+      deviation: 鞋头出现深灰色油污并带有反光
+    - name: 污物来源
+      baseline: 鞋面布料不含油脂
+      deviation: 油污来自外部蹭到的油脂类物质
+    - name: 覆盖范围
+      baseline: 整只鞋面无痕迹
+      deviation: 油污集中在鞋头局部，面积不大
+    - name: 位置秩序
+      baseline: 鞋子成对摆放在鞋架上，鞋带完好
+      deviation: 鞋子位置正常，没有散落或倒置
+- id: review-4
+  semantic_spec:
+    judgment: 复习判断：浅色木地板被滴上一圈深色果汁渍，果渍边缘已干硬；地板只是局部有痕，没有散落杂物——这是否为 dirty-01 的经验？
+    target_sense: dirty-01
+    surface_object: wooden_floor
+    contaminant: dried_juice_ring
+    contaminant_origin: external
+    perceptual_evidence: visual_ring_and_tactile_stickiness
+    clean_baseline_deviation: present
+    state_evaluation: needs_cleaning
+    coverage: single_circular_local_area
+    intensity: moderate
+    spatial_order: room_orderly
+    contrast_check:
+      messy_dimension: objects_in_room_are_in_place
+      polluted_dimension: not_water_or_air_pollution
+      filthy_degree: moderate_not_extreme
+      dirty02_dimension: no_verbal_content
+  experience:
+    episode: 浅色木地板的客厅里，茶几旁边有一圈深褐色果汁渍，形状接近圆形，边缘已经干硬，中央颜色略浅。果渍周围的地板上没有纸屑或杂物，沙发靠垫和遥控器都在原位。用指甲轻轻刮果渍边缘，能感到硬硬的凸起。
+    observable_evidence:
+    - 木地板上有一圈深褐色果渍，边缘干硬凸起
+    - 果渍中央颜色比边缘略浅
+    - 地板周围没有散落杂物，沙发和遥控器都在原位
+    - 指甲轻刮果渍边缘能感到硬硬的凸起
+    surface_dimensions:
+    - name: 表面对象
+      baseline: 浅色木地板表面平滑、颜色均匀
+      deviation: 地板局部出现一圈深褐色干硬果渍
+    - name: 污物来源
+      baseline: 地板材质本身不含果汁
+      deviation: 果渍来自外部洒落的果汁干涸后留下的环形痕迹
+    - name: 覆盖范围
+      baseline: 整块地板无局部痕迹
+      deviation: 果渍只呈现为单个圆形局部区域
+    - name: 位置秩序
+      baseline: 客厅物品放在各自位置
+      deviation: 房间物品整齐，与地面附着物无关
+- id: review-5
+  semantic_spec:
+    judgment: 复习判断：厨房水槽里的一只玻璃杯内壁挂着一圈干燥的奶白色残留，杯沿下方的水痕在光线下隐约可见，杯子周围没有堆积杂物——这是否为 dirty-01
+      的经验？
+    target_sense: dirty-01
+    surface_object: glass_cup
+    contaminant: dried_milk_residue_ring
+    contaminant_origin: external
+    perceptual_evidence: visual_ring_and_slight_residue_texture
+    clean_baseline_deviation: present
+    state_evaluation: needs_cleaning
+    coverage: inner_ring_around_lower_wall
+    intensity: moderate
+    spatial_order: not_applicable
+    contrast_check:
+      messy_dimension: sink_area_not_cluttered
+      polluted_dimension: not_water_or_air_pollution
+      filthy_degree: moderate_not_extreme
+      dirty02_dimension: no_verbal_content
+  experience:
+    episode: 厨房水槽里放着一只玻璃杯。杯内壁靠近杯底处有一圈干燥的奶白色残留，杯沿下方还挂着一条淡淡的弧形水痕，在光线下隐约可见。水槽里除了这只杯子没有堆叠的碗盘，水龙头关着，周围台面也空旷。
+    observable_evidence:
+    - 杯内壁有一圈干燥的奶白色残留，位置靠近杯底
+    - 杯沿下方有一条淡淡弧形水痕，光线斜照时能看到
+    - 水槽里没有堆叠的其他碗盘，台面上也空旷无杂物
+    surface_dimensions:
+    - name: 表面对象
+      baseline: 玻璃杯透明、内壁无附着物
+      deviation: 内壁出现一圈奶白色残留和弧形水痕
+    - name: 污物来源
+      baseline: 玻璃材质不含奶类成分
+      deviation: 残留来自外部液体干燥后附着在杯壁
+    - name: 覆盖范围
+      baseline: 整只杯内壁透明洁净
+      deviation: 残留集中在杯内壁靠近杯底的一圈
+    - name: 位置秩序
+      baseline: 水槽处没有堆叠杂物
+      deviation: 水槽内只有杯子，无明显杂乱摆放
+- id: review-6
+  semantic_spec:
+    judgment: 复习判断：浴室防滑垫表面散布着深灰色脚印与几根头发，垫子位置端正、浴室物品整齐——这是否为 dirty-01 的经验？
+    target_sense: dirty-01
+    surface_object: bathroom_mat
+    contaminant: grey_footprints_and_hair
+    contaminant_origin: external
+    perceptual_evidence: visual_tread_marks_and_hair_strands
+    clean_baseline_deviation: present
+    state_evaluation: needs_cleaning
+    coverage: scattered_local_marks
+    intensity: mild_to_moderate
+    spatial_order: tidy
+    contrast_check:
+      messy_dimension: mat_aligned_and_bathroom_items_in_place
+      polluted_dimension: not_water_or_air_pollution
+      filthy_degree: mild_to_moderate_not_extreme
+      dirty02_dimension: no_verbal_content
+  experience:
+    episode: 浴室的防滑垫铺在淋浴间门口，边缘与地砖线对齐。垫子表面散布着几处深灰色脚印，形状能看出鞋底花纹，还混着几根黑色头发。垫子四角平整，没有卷边，旁边的毛巾也挂得整齐。
+    observable_evidence:
+    - 防滑垫表面有几处深灰色脚印，能看出鞋底花纹
+    - 垫子上散落着几根黑色头发
+    - 垫子与地砖线对齐，四角平整，旁边毛巾挂放整齐
+    surface_dimensions:
+    - name: 表面对象
+      baseline: 防滑垫表面颜色均匀、无深色痕迹
+      deviation: 表面出现深灰色脚印和头发
+    - name: 污物来源
+      baseline: 垫子本身不含泥土或头发
+      deviation: 脚印和头发来自外部带进屋的污物与脱落毛发
+    - name: 覆盖范围
+      baseline: 整块垫面无局部痕迹
+      deviation: 脚印与头发分布在垫子表面多处局部位置
+    - name: 位置秩序
+      baseline: 垫子铺在淋浴间门口，与地砖线对齐
+      deviation: 垫子位置端正，没有卷边或移位
+batches:
+- count: 6
+  generated_at: '2026-08-15T16:30:17Z'
+  gate:
+    passed: true
+    dimensions:
+    - name: semantic_correctness
+      verdict: pass
+      note: review-1 到 review-6 全部满足 WordSense dirty-01 的必要条件：均有明确表面对象、外部附着污物、偏离洁净基准、可被直接感知、且被评价为需要清洗。review-2
+        的干燥唾液斑与宠物毛、review-5 的奶渍圈仍是表面污物，不构成 polluted 或 dirty-02。
+    - name: sense_purity
+      verdict: pass
+      note: 各项脏污程度均为 mild/moderate，未滑向 filthy/grimy；均无泥污、环境污染、言语粗俗或位置无序。contrast_check
+        与 surface_dimensions 中的“位置秩序”明确排除了 messy，review-4/review-5 的整洁环境进一步强化了该边界。
+    - name: definition_leakage
+      verdict: pass
+      note: learner-visible 的 episode/observable_evidence 均为场景与感知证据，没有旁白定义、字幕式解释或直接陈述语义标签。surface_dimensions
+        是基线/偏差的分析性描述，不出现“dirty 就是……”这类定义式语句。
+    - name: l2_leakage
+      verdict: pass
+      note: episode、observable_evidence、surface_dimensions 中未出现 dirty 或相邻 L2 词（messy/filthy/grimy/muddy/polluted）。semantic_spec
+        中的 dirty-01 是内部 sense ID，不应被渲染为 learner-visible 内容。
+    - name: l1_label_leakage
+      verdict: pass
+      note: learner-visible 内容未用“脏/不干净/脏乱”等中文等价标签命名概念，也未把中文翻译当答案；中文只描述表面状态、污物、触感与位置等可观察行为。
+    - name: surface_language_compliance
+      verdict: pass
+      note: 本 review 资产的全部 learner-visible 内容为自然中文经验叙事，符合绑定前/复习场景语言合同；无成段英语，无 L2 段落；grounding/boundary
+        不适用。
+    - name: cognitive_noise
+      verdict: pass
+      note: 额外细节（床铺平整、长椅位置端正、水槽无堆叠碗盘、指甲轻刮果渍边缘等）均用于排除 messy 或提供触觉证据，未引入无关情节、生词或含混歧义。
+    scores:
+      semantic_correctness: 9.0
+      sense_purity: 9.0
+      definition_leakage: 9.0
+      l2_leakage: 10.0
+      l1_label_leakage: 10.0
+      surface_language_compliance: 10.0
+      cognitive_noise: 8.5
+metadata:
+  compiler_version: 2.1.0
+  prompt_versions:
+    program_planner: v2
+    surface_generator: v2
+    quality_gate: v2
+  generated_at: '2026-08-15T16:30:17Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids:
+  - 4149375b-5d50-4fec-aa31-8f6013e75ddb
+  - ec32472a-5ecc-4df6-838f-bd72a13ba698
+  language_policy:
+    policy_version: 1
+    learner_l1: zh-CN
+    target_l2: en

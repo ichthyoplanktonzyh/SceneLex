@@ -179,3 +179,18 @@ semantic_identity:
   valency: adj
 inventory_source_entries:
 - reluctant-dict-001
+
+# ============================================================
+# G. 教学原型建议 (非权威, 仅供 Holistic Course Author 参考)
+# ============================================================
+teaching_profile:
+  primary_archetype: intention_cues
+  suggested_capabilities:
+  - scene_observation
+  - evidence_highlight
+  - single_choice
+  - binary_judgment
+  - transfer_judgment
+  special_risks:
+  - observable_cue_vs_state
+  - co_occurrence

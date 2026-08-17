@@ -1,0 +1,315 @@
+# ============================================================
+# App Teaching Capabilities v1
+#
+# 本文件只描述当前 App 原型（Experience Runtime / Journey / Daily
+# Session 的现有 renderer/widget）能执行什么，不描述课程应该怎么编排。
+# 课程顺序、次数、阶段分配由 Course Author 决定，本文件不包含任何
+# 顺序建议。
+#
+# 每个 primitive 记录：
+#   - id               唯一标识，Course Package 的 learning_flow /
+#                      review_progression 步骤通过 primitive 引用它
+#   - description      该交互做什么
+#   - data_fields      该 primitive 的 learner_content 允许出现的字段
+#   - interactions     学习者可执行的动作
+#   - allowed_pre_binding
+#                      true  = 允许出现在 symbol binding 之前
+#                      false = 该 primitive 依赖已绑定的 L2 符号
+#                              （或本身会揭示符号），只能在 binding 后出现
+#   - renderer         当前 App 中对应的 renderer / 适配方式
+#
+# 不要为了本实验新增抽象 primitive；这里只记录当前确实能渲染的能力。
+# ============================================================
+schema_version: "1.0"
+capabilities_version: 1
+learner_l1: zh-CN
+target_l2: en
+
+primitives:
+  - id: scene_observation
+    description: 展示一段可观察场景；学习者阅读并观察。绑定前内容使用中文经验叙事。
+    data_fields:
+      - episode
+    interactions:
+      - read
+    allowed_pre_binding: true
+    renderer: >
+      场景卡片（episode 文本卡）。复用 Journey 原型 JourneySceneCard 的
+      视觉与排版。
+
+  - id: evidence_highlight
+    description: 在场景下方以要点列表高亮可观察证据，作为后续判断的依据。
+    data_fields:
+      - episode
+      - evidence
+    interactions:
+      - read
+    allowed_pre_binding: true
+    renderer: >
+      场景卡片 + evidence 要点列表。复用 Experience Runtime ConceptUnitView
+      的证据列表样式（episode 卡 + '·' 要点）。
+
+  - id: single_choice
+    description: 一个场景 + 一个问题 + 若干选项；选择后显示该选项的反馈。
+    data_fields:
+      - episode
+      - evidence
+      - question
+      - options
+    interactions:
+      - select_one
+      - feedback_after_answer
+    allowed_pre_binding: true
+    renderer: >
+      单选答案瓦片 + 反馈卡。复用 Experience Runtime ConceptUnitView /
+      Journey JourneyChoiceTile 的组合。
+
+  - id: binary_judgment
+    description: 二选一判断（恰好两个选项）；选择后显示反馈。是 single_choice
+      的两选项特例，渲染方式相同。
+    data_fields:
+      - episode
+      - evidence
+      - question
+      - options
+    interactions:
+      - select_one
+      - feedback_after_answer
+    allowed_pre_binding: true
+    renderer: 同 single_choice（两选项）。
+
+  - id: symbol_reveal
+    description: 首次揭示目标 L2 符号：拼写 + IPA + 绑定说明 + 最小 L1 确认词。
+    data_fields:
+      - l2_word
+      - ipa
+      - presentation
+      - minimal_l1_gloss
+    interactions:
+      - read
+      - optional_tts
+    allowed_pre_binding: false
+    renderer: >
+      Symbol Binding 卡（大号 L2 词 + IPA + presentation + 最小 L1 确认词）。
+      复用 Experience Runtime SymbolBindingView 的布局；发音按钮可选注入。
+
+  - id: pronunciation
+    description: 独立发音步骤：显示已绑定的 L2 词与 IPA，提供发音按钮。
+    data_fields:
+      - l2_word
+      - ipa
+    interactions:
+      - tts_button
+    allowed_pre_binding: false
+    renderer: 词 + IPA + 发音按钮（TTS 通过回调注入，测试中不触网）。
+
+  - id: l1_confirmation
+    description: 用 L1 文字要求学习者确认理解；只做确认，不展开定义。
+    data_fields:
+      - prompt_text
+    interactions:
+      - confirm
+    allowed_pre_binding: true
+    renderer: L1 确认卡 + 继续按钮（薄适配器）。
+
+  - id: l2_grounding
+    description: 把已绑定符号锚定到学习者刚经历过的场景：自然 L2 句 + 句型 + 搭配。
+    data_fields:
+      - source_step_id
+      - l2_realization
+      - constructions
+      - collocations
+    interactions:
+      - read
+    allowed_pre_binding: false
+    renderer: >
+      Grounding 卡（回看源场景 + 自然 L2 realization + 句型/搭配列表）。
+      复用 Experience Runtime GroundingView 的信息架构。
+
+  - id: boundary_choice
+    description: 一个场景 + 两个已绑定 L2 词选项 + 选择后的对比解释。
+      选项显示已绑定 sense 的 L2 lemma；正文解释使用 L1。
+    data_fields:
+      - episode
+      - options
+      - correct_sense_id
+      - explanation
+    interactions:
+      - select_one
+      - contrast_explanation
+    allowed_pre_binding: false
+    renderer: >
+      Boundary 卡（场景 + 两个 lemma 选项 + 正确/所选高亮 + 逐概念解释卡）。
+      复用 Journey BoundaryTaskView 的信息架构。
+
+  - id: transfer_judgment
+    description: 迁移判断：把已建立的概念应用到全新领域/情境，选择后显示反馈。
+    data_fields:
+      - episode
+      - evidence
+      - question
+      - options
+    interactions:
+      - select_one
+      - feedback_after_answer
+    allowed_pre_binding: true
+    renderer: 同 single_choice（迁移框架；渲染层无区别，教学层由 Author 决定）。
+
+  - id: recall_reveal
+    description: 反向回忆：L1 场景 + 揭示按钮；揭示前不出现目标 L2，揭示后显示
+      词 + IPA + 最小确认。复习专用（reveal 前任何字段不得出现目标 L2）。
+    data_fields:
+      - episode
+      - l2_word
+      - ipa
+      - minimal_gloss
+    interactions:
+      - reveal
+    allowed_pre_binding: false
+    renderer: >
+      Recall 卡（L1 场景 + 揭示按钮 → 词/IPA/最小确认）。复用 Journey
+      RecallTaskView 的揭示结构。
+
+  - id: recall_self_grade
+    description: 自评三档（忘了 / 勉强 / 记住了）；只做主观评分，不判对错。
+    data_fields:
+      - l2_word
+      - ipa
+    interactions:
+      - self_grade
+    allowed_pre_binding: false
+    renderer: 自评三档按钮行（复用 Journey RecallTaskView 的评分行）。
+
+  # ------------------------------------------------------------------ #
+  # Teaching Archetype MVP 新增六组能力（v1 扩展，保留上述 12 个不动）
+  # ------------------------------------------------------------------ #
+
+  - id: multi_label_choice
+    description: >
+      多选判断：一个问题可以同时有多个正确选项（例如 cup/mug 类别重叠场景），
+      提交后统一反馈，提交前可修改选择。both / insufficient evidence 不作为
+      特殊逻辑：它们是普通选项，或者通过正确答案集合表达（由 Course Author
+      决定，App 只按正确集合判分）。
+    data_fields:
+      - episode
+      - evidence
+      - question
+      - options          # {id, text, is_correct, feedback}
+    interactions:
+      - toggle_option
+      - submit_multi
+      - feedback_after_answer
+    allowed_pre_binding: true
+    renderer: >
+      多选答案瓦片（可勾选多个）+ 提交按钮 + 统一反馈卡。提交前可改选，
+      提交后锁定；判分以 evaluation.correct_option_ids 集合为准。
+
+  - id: object_inspection
+    description: >
+      对象检视：观察一个或多个对象的外形、结构、用途与可变特征。绑定前对象
+      名称可隐藏（hide_object_names），只展示可观察特征；支持切换对象变体；
+      之后由独立判断步骤进入分类。MVP 用 Flutter 2D 卡片/简单图形，不做
+      图片生成或 3D。
+    data_fields:
+      - inspect_prompt
+      - objects          # [{id, name, category_label, features: [str], variants: [{id, label, features: [str]}]}]
+      - hide_object_names
+    interactions:
+      - select_object
+      - view_feature
+      - switch_variant
+    allowed_pre_binding: true
+    renderer: >
+      对象卡片（2D 图形占位 + 名称（可按设置隐藏）+ feature 要点列表 +
+      变体切换 chips）；点击 feature 可高亮；后续分类判断由独立步骤完成。
+
+  - id: spatial_stage
+    description: >
+      空间舞台：让学习者直接操作路径而不是阅读解释。2D 区域/容器 + 起点与
+      终点 + 两条或更多候选路径；拖动对象或选择路径，路径播放动画，给出正确
+      路径与反馈。可表达"穿过内部"（through）与"横跨区域/表面"（across）。
+    data_fields:
+      - stage_title
+      - stage_width
+      - stage_height
+      - start           # {x, y}（0..stage_width / 0..stage_height）
+      - end             # {x, y}
+      - regions         # [{id, label, shape}]（可选，through 的内部空间）
+      - paths           # [{id, label, points: [[x, y], ...]}]
+      - correct_path_id
+      - feedback
+    interactions:
+      - select_path
+      - play_animation
+      - feedback_after_answer
+    allowed_pre_binding: true
+    renderer: >
+      CustomPaint 2D 舞台：区域/容器 + 起点终点标记 + 候选路径（选中后播放
+      描线动画）+ 正确路径反馈。不做物理引擎。
+
+  - id: participant_map
+    description: >
+      参与者地图：显示同一事件中的参与者、物品流向（方向箭头）与当前观察
+      视角；支持视角切换，并从不同角色视角选择 L2 表达（绑定后）。
+    data_fields:
+      - episode
+      - participants    # [{id, label, role}]（role: giver | receiver | observer）
+      - transferable    # {id, label}
+      - arrows          # [{id, from, to, label}]
+      - perspective     # {current_role, roles: [participant_id, ...]}
+      - question
+      - options
+    interactions:
+      - switch_perspective
+      - select_one
+      - feedback_after_answer
+    allowed_pre_binding: true
+    renderer: >
+      参与者节点 + 物品 + 方向箭头图（2D 布局）；视角 chips 切换当前角色，
+      问题与选项随视角呈现；选择后反馈。
+
+  - id: scalar_threshold
+    description: >
+      标量阈值：直接经验"是否达到阈值"。min/max 标尺 + 当前值 + 阈值；
+      学习者拖动或观察数值变化，判断是否越过阈值，outcome marker 区分
+      "未达到"（almost）与"刚刚达到"（barely）。
+    data_fields:
+      - episode
+      - scale           # {min, max, label}
+      - initial_value
+      - threshold
+      - direction       # reaches | falls_short
+      - outcome_markers # {reached: str, not_reached: str}
+      - question
+      - options
+    interactions:
+      - drag_value
+      - observe_outcome
+      - select_one
+      - feedback_after_answer
+    allowed_pre_binding: true
+    renderer: >
+      标尺 Slider（min..max）+ 阈值刻度标记 + 当前值/outcome marker 标签；
+      可拖动观察越线前后差异，再做判断选择。
+
+  - id: information_state
+    description: >
+      信息状态：展示人物在不同时间点知道什么、看到什么、理解什么。agents +
+      时间线 beats + 可见证据 + 事实 before/after + 信息揭示（belief/knowledge
+      update）；判断人物是"注意到"（notice）还是"理解到"（realize）。
+    data_fields:
+      - episode
+      - agents          # [{id, label}]
+      - facts           # [{id, text}]
+      - beats           # [{id, label, visible_evidence: [str], reveals: [fact_id], known_by: [agent_id]}]
+      - question
+      - options
+    interactions:
+      - advance_beat
+      - reveal_info
+      - select_one
+      - feedback_after_answer
+    allowed_pre_binding: true
+    renderer: >
+      时间线卡片：逐步推进 beat，展示每步可见证据与已揭示事实（agent 的
+      known 状态点阵），最后做判断选择。不做完整逻辑推理引擎。

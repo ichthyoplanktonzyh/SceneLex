@@ -115,6 +115,28 @@ flutter test test/daily_session_screenshots_test.dart \
 | `07-continue.png` | 中途退出后的首页「继续本次学习」状态 |
 | `08-completion.png` | 完成页(基于真实结果的任务总结 + 语义图) |
 
+### 9.1 Learning Presentation Language Contract v1 验收画面
+
+以下 5 张截图由 `app/test/language_contract_screenshots_test.dart` 生成,
+内容是符合语言合同的 zh-CN → en 程序(绑定前全中文、无目标 L2;绑定才首次
+出现 L2;grounding 为自然 L2),用于验收语言合同在产品路径上的呈现:
+
+| 文件 | 内容 |
+|------|------|
+| `09-language-discover.png` | 中文 Discover 绑定前:场景/证据/问题/选项全中文,画面无目标 L2 |
+| `10-language-binding.png` | Symbol Binding:首次出现 `messy` 与 IPA,附极短中文确认 |
+| `11-language-grounding.png` | Grounding:绑定后显示自然英文实现(对应刚经历的场景) |
+| `12-language-boundary.png` | 中文 Boundary:中文场景与问题 + L2 选项(dirty / messy) |
+| `13-language-recall.png` | 中文 Early Recall:中文新场景,reveal 后出现目标 L2 |
+
+重新生成(与 9 相同机制,opt-in):
+
+```bash
+cd app
+flutter test test/language_contract_screenshots_test.dart \
+  --update-goldens --dart-define=SCENELEX_GEN_SHOTS=true
+```
+
 > 说明:golden 路径为绝对路径(本机 `LocalFileComparator` 对相对路径写入不可靠),
 > 因此该生成脚本仅在本仓库本机使用;文档截图本身已随仓库提交。
 

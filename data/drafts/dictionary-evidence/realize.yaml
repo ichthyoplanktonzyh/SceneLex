@@ -1,0 +1,94 @@
+schema_version: '1.0'
+word: realize
+language: en
+provider: wiktionary
+captured_at: '2026-08-16T06:44:48Z'
+entries:
+- entry_id: realize-dict-001
+  pos: verb
+  gloss: To become aware of, understand, or appreciate (a fact or situation, especially
+    something which has been true for some time).
+  labels:
+  - US
+  - transitive
+  examples:
+  - He realized that he had left his umbrella on the train.
+  - She desperately yelled at her young daughter, frantic to make her realize what
+    she had done.
+- entry_id: realize-dict-002
+  pos: verb
+  gloss: To sense (something) strongly or vividly as if real.
+  labels:
+  - US
+  - transitive
+  examples:
+  - Over the mind of the tourist, visiting the Old World for the first time,—countries
+    where have transpired thrilling events recorded in history, what an immensity
+    of thought and feeling sweeps! It was thus with Natalie; she could not realize
+    that she was treading in the footsteps of royalty, who living in long past days,
+    had held sway over this land, had looked upon this land of "merrie England" as
+    their home.
+  - That any civilized human being in this nineteenth century should not be aware
+    that the earth travelled round the sun appeared to be to me such an extraordinary
+    fact that I could hardly realize it.
+- entry_id: realize-dict-003
+  pos: verb
+  gloss: To cause (something) to seem real; to make realistic; specifically, to present
+    (something) clearly to the mind, a person, (archaic) oneself, etc., so that it
+    seems real.
+  labels:
+  - transitive
+  examples:
+  - Its true that Faith may be ſaid, as you ſpeak, to Realize ſalvation to the Soul;
+    that is, vvhen the Soul doubteth vvhether there be indeed ſuch a Glory and Salvation
+    to be expected and enjoyed by Believers, as Chriſt hath promiſed, here Faith apprehendeth
+    it as Real or Certain, and ſo reſolves the doubt.
+  - '[T]rue Faith is ſuch as realizeth Things abſent, remote and future. That it is
+    not the nearneſs of a thing makes it real; but Faith ſeeth a Thing to be real,
+    though afar off; vvhen vve are apt to judge many times of the reality of things,
+    becauſe they are near.'
+- entry_id: realize-dict-004
+  pos: verb
+  gloss: To convert (something imaginary or planned, as a goal or idea) into reality;
+    to bring into real existence, to make real.
+  labels:
+  - transitive
+  examples:
+  - 'Near-synonyms: implement, execute; actualize, materialize, embody; accomplish'
+  - The objectives of the project were never fully realized.
+- entry_id: realize-dict-005
+  pos: verb
+  gloss: To achieve (one's) potential.
+  labels:
+  - reflexive
+  - transitive
+  examples: []
+- entry_id: realize-dict-006
+  pos: verb
+  gloss: To convert (an asset or property, especially investments such as bonds, shares,
+    etc.) into a more easily usable form such as money, especially by selling the
+    asset or property.
+  labels:
+  - transitive
+  examples:
+  - By realizing the company’s assets, the liquidator was able to return most of the
+    shareholders’ investments.
+  - Profits from the investment can be realized at any time by selling the shares.
+- entry_id: realize-dict-007
+  pos: verb
+  gloss: To acquire (money, a profit, etc.) by selling an asset or property, through
+    trade, etc.; also (followed by on), to make (money or a profit) on an investment,
+    a venture, etc.
+  labels:
+  - transitive
+  examples:
+  - to realize large profits from a speculation
+  - The tvvo Perſons here mentioned vvere of Quality, each of vvhom in the time of
+    the Miſſiſipi deſpis'd to realize above three hundred thouſand pounds.
+- entry_id: realize-dict-008
+  pos: verb
+  gloss: 'Of an asset or property: to generate (a specific amount of money or interest)
+    when invested or sold.'
+  labels:
+  - transitive
+  examples: []

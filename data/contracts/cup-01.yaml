@@ -1,0 +1,64 @@
+schema_version: '1.0'
+contract_id: cup-01-contract
+sense_id: cup-01
+lemma: cup
+pos: noun
+semantic_revision: 1
+content_hash: sha256:8a887e93cfb4bb4888686a40d382fac521c5b0734bce6fe306904b6b0101a38d
+semantic_model:
+  invariant: cup-01 成立当且仅当：语境中有一个具体、可触摸、可单手拿起的小型凹形器物，其典型用途是盛放饮品并可直接就口饮用，且所指是器物本身而非其内容物、容量或动作。
+  necessary_conditions:
+  - 存在一个具体的物理器物，可被看到、摸到或拿起；它不是量、单位、动作或状态。
+  - 该器物由底部和侧壁构成一个向上开口的凹形空间，能够容纳液体或散装物。
+  - 该器物的尺寸适合单手稳定持握。
+  - 该器物被设计或普遍用于盛放饮品，并适合直接端到嘴边饮用；它不是仅作为计量工具、容器内容量或装饰。
+  - 语境中 cup 以普通可数名词指称器物本身，而不是杯内液体、可容纳的量或固定体积单位。
+  - 语境关注的是器物实体，而非杯子装了多少。
+  non_entailments:
+  - 语境中出现 cup 这个词，不蕴涵就是 cup-01：a cup of tea 可指内容物（cup-02），two cups of flour 可指计量单位（cup-03）。
+  - cup-01 成立不蕴涵语境同时指称杯内液体或容量；若把 cup 换成 the content/amount 才合语境，则不是 cup-01。
+  - 一个器物能盛放液体或散装物，不蕴涵它就是 cup-01；若语境突出计量刻度或装饰功能，则仍不是 cup-01。
+  - 词形 cup 能以 cupped/cups 出现并带受事，不蕴涵它是指称饮具；cup one's hands 是 cup-04，cup the kitten
+    是 cup-05。
+  - cup-01 成立不蕴涵杯中一定有液体，也不蕴涵场景中有人正在饮用或持握；空杯、静态放置仍可是 cup-01。
+  - cup-01 成立不蕴涵杯体一定不透明或一定有手柄；定义中的 typically/usually 是统计常态而非成立条件。
+  typical_correlates:
+  - 杯体通常由不透明材料（陶瓷、搪瓷、塑料）制成，且常与透明玻璃杯并置以突出区别；这种不透明性只是常见伴随特征。
+  - 杯体通常有一个手柄，人物常握持手柄端起杯子；但手柄缺失并不自动排除 cup-01。
+  - 常见场景中人物端起杯子直接饮水，或把液体倒入杯中；这些动作外化饮具功能，却不是词义成立的必要条件。
+  - 杯子常作为完整器物被看到、拿起、放下或触碰；即使杯中无液体，该实体仍可被指称。
+  misconceptions:
+  - id: misc-1
+    description: 把中文“杯子”直接等同于英文 cup，认为凡是“杯子”都可叫 cup。
+    correction: 需用材质、器形与使用语境判定：透明无柄玻璃饮具通常被英语使用者称为 glass，较大的有柄圆筒饮具常称为 mug，而小型不透明、适合就口饮用的器物更接近
+      cup 原型。经验证据：英语使用者对某件“杯子”选择 glass/mug 而不是 cup，即可推翻机械对译。
+  - id: misc-2
+    description: 看到 a cup of water 或 two cups of flour 就认为 cup 仍指可触摸的杯体。
+    correction: 替换测试可推翻：若把 cup 换成 the content/amount 后语境不变，则所指是内容物或单位（cup-02/cup-03），不是杯体；若换成
+      the vessel 后语境仍指向同一可触摸对象，才是 cup-01。经验证据：计量语境中没有任何实体杯具，短语依然成立。
+  - id: misc-3
+    description: 把 cup one's hands 理解成“手里拿着一个杯子”或“杯子这个器物在参与动作”。
+    correction: 检查句法：cupped his hands 中 cup 是动词，带受事，表示使手掌成凹杯状，属于 cup-04；它不是名词器物。经验证据：句中没有可端起/放下的杯体，只有手形变化，即可排除
+      cup-01。
+  - id: misc-4
+    description: 把 cup the kitten 这类杯状托住动作也算作 cup-01 的饮具义。
+    correction: cup the kitten 中 cup 是持续接触的持握动作，物体未发生形变，属于 cup-05，不指称器物。经验证据：场景中没有杯体，只有杯状手形托着猫；该词不接受冠词/形容词修饰。
+  - id: misc-5
+    description: 把“通常不透明、常有手柄”当成 cup-01 的必要条件，见到无柄或透明杯就排除。
+    correction: 定义中的 typically/usually 表示常见倾向而非判定条件；必要条件中不包含不透明和手柄。经验证据：一只没有手柄的透明塑料饮用杯在实际英语语境中被称作
+      cup，即可推翻该误解。
+  l1_interference:
+  - 中文“杯子”是比 cup-01 更宽的饮具总称，覆盖 glass、mug 等器形；学习者容易把透明玻璃杯或马克杯也直接称为 cup，或反过来以为 cup 必须对应某一种固定中文器形。
+  - 中文量词“一杯”不区分 cup-02（杯内内容物/容量）和 cup-03（固定计量单位），导致 a cup of water 和 two cups of flour
+    被误当作 cup-01 的实体杯具。
+  - 中文用“捧/拢”一个动词覆盖 cup-04（使手成杯状）和 cup-05（以杯状手托住某物），使学习者在英语按状态变化/持续接触切割两义时，难以保留 cup-01
+    与动词两义的边界。
+metadata:
+  compiler_version: 2.1.0
+  prompt_versions:
+    semantic_planner: v2
+  generated_at: '2026-08-16T08:10:22Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids:
+  - cf3f6c1d-d7f7-41a5-b98e-8a135f56a647

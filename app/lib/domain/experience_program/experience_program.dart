@@ -48,6 +48,37 @@ class ProgramTarget {
   final String localeL1;
 }
 
+/// Learning Presentation Language Contract v1 declaration of a program.
+///
+/// Declares the learner L1, the target L2 and the policy version. The App
+/// only renders content that already complies with this contract; it never
+/// translates content at runtime.
+class LanguagePolicy {
+  const LanguagePolicy({
+    required this.policyVersion,
+    required this.learnerL1,
+    required this.targetL2,
+  });
+
+  factory LanguagePolicy.fromJson(Map<String, dynamic> json) {
+    final policyVersion = json['policy_version'];
+    if (policyVersion is! int || policyVersion < 1) {
+      throw ExperienceProgramFormatException(
+        'language_policy.policy_version 必须是正整数，实际是 $policyVersion',
+      );
+    }
+    return LanguagePolicy(
+      policyVersion: policyVersion,
+      learnerL1: jsonString(json, 'learner_l1'),
+      targetL2: jsonString(json, 'target_l2'),
+    );
+  }
+
+  final int policyVersion;
+  final String learnerL1;
+  final String targetL2;
+}
+
 /// Metadata attached to a program. The Runtime only keeps the raw record;
 /// nothing in here is rendered by the learner-facing UI.
 class ProgramMetadata {
@@ -66,6 +97,7 @@ class ExperienceProgram {
     required this.programId,
     required this.programVersion,
     required this.status,
+    required this.languagePolicy,
     required this.target,
     required this.units,
     required this.symbolBinding,
@@ -106,7 +138,14 @@ class ExperienceProgram {
         'program_version 必须 >= 1，实际是 $programVersion',
       );
     }
+    final languagePolicy = LanguagePolicy.fromJson(jsonMap(json, 'language_policy'));
     final target = ProgramTarget.fromJson(jsonMap(json, 'target'));
+    if (target.localeL1 != languagePolicy.learnerL1.split('-').first) {
+      throw ExperienceProgramFormatException(
+        'target.locale_l1 "${target.localeL1}" 与 '
+        'language_policy.learner_l1 "${languagePolicy.learnerL1}" 不一致',
+      );
+    }
 
     final unitsJson = jsonList(json, 'units');
     if (unitsJson.isEmpty) {
@@ -149,6 +188,7 @@ class ExperienceProgram {
       programId: programId,
       programVersion: programVersion,
       status: status,
+      languagePolicy: languagePolicy,
       target: target,
       units: List<ExperienceUnit>.unmodifiable(units),
       symbolBinding: binding,
@@ -167,6 +207,7 @@ class ExperienceProgram {
   final String programId;
   final int programVersion;
   final ProgramStatus status;
+  final LanguagePolicy languagePolicy;
   final ProgramTarget target;
   final List<ExperienceUnit> units;
   final SymbolBinding symbolBinding;

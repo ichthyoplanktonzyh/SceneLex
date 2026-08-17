@@ -1,0 +1,145 @@
+schema_version: '1.1'
+language: en
+version: 1
+semantic_revision: 1
+status: reviewed
+id: realize-01
+word: realize
+pos: verb
+sense_label: 意识到；明白；领会
+definition: To become aware of a fact or situation clearly; to grasp the truth or
+  significance of something.
+inventory:
+  word: realize
+  version: 1
+  evidence_digest: sha256:10f7f5b27379d26de6ee6d57de24ac1b610bf51b1919a560db8d996ea192aa79
+  sense_id: realize-01
+  identity_digest: sha256:4bc7b29993d2dfa9d5590b88926fd448f660a3990a98ee83cc44aec0b6544ef2
+semantic_identity:
+  semantic_type: cognitive_event
+  dimension: awareness
+  change_of_state: true
+  causative: false
+  valency: transitive
+inventory_source_entries:
+- realize-dict-001
+- realize-dict-002
+pronunciation:
+  ipa: /ˈriːəlaɪz/
+collocations:
+- realize that
+- come to realize
+- suddenly realize
+- realize the importance of
+sentence_patterns:
+- '[noun] realize that [clause]'
+- '[noun] begin to realize what [clause]'
+- '[noun] realize the importance of [noun]'
+difficulty: intermediate
+semantic_type: cognitive_change
+semantic_skeleton:
+  participants:
+  - role: experiencer
+    description: the person whose awareness changes from not knowing to knowing
+  - role: stimulus
+    description: the fact, situation, or piece of information that becomes clear to
+      the experiencer
+  propositions:
+  - At the start, the experiencer lacks clear awareness of a fact or situation.
+  - At the end, the experiencer has gained clear mental awareness of that fact or
+    situation.
+  - The fact or situation exists independently of the experiencer's awareness.
+  - The cognitive change is not deliberately willed by the experiencer; it arises
+    from evidence or experience.
+conditions:
+  required:
+  - The experiencer is a sentient being capable of holding beliefs.
+  - There is a fact, situation, or implication that was previously not acknowledged
+    or not fully grasped.
+  - 'A cognitive change occurs: the experiencer moves from ignorance or uncertainty
+    to clear awareness.'
+  - The object of awareness is a proposition or state of affairs, not a physical object.
+  excluded:
+  - condition: The subject intentionally makes a plan or idea become real through
+      external actions.
+    alternative: realize-02
+  - condition: The sentence describes converting assets or investments into money,
+      or generating financial profit.
+    alternative: realize-03
+relations:
+  boundaries:
+  - target: realize-02
+    relation: different_dimension
+    distinction: realize-01 is a cognitive event in the awareness dimension; realize-02
+      is an action in the actuality dimension. The inventory marks realize-01 as non-causative
+      and realize-02 as causative.
+    diagnostic: If the sentence describes a change in the world caused by the subject
+      (e.g., a plan is made real), it is not realize-01; if it describes a change
+      inside the experiencer's mind triggered by evidence, it is not realize-02.
+  - target: realize-03
+    relation: mutually_exclusive
+    distinction: realize-01 concerns awareness of facts; realize-03 concerns financial
+      conversion of assets into money. They share no participant role or situational
+      frame.
+    diagnostic: If the object is an asset, investment, property, or amount of money
+      and the context is selling or generating profit, the sense is realize-03; if
+      the object is a fact or situation, the sense is realize-01.
+  l1_confusables:
+    zh:
+    - l1_term: 意识到
+      covers:
+      - realize-01
+      note: 中文“意识到”对应 realize-01 的认知变化，但它不能表达 realize-02 的“实现”意义。学生容易把 realize 的宾语当成具体计划，应强调
+        realize-01 的宾语是事实或情况，不是计划本身。
+    - l1_term: 实现
+      covers:
+      - realize-02
+      note: 中文“实现”覆盖 realize-02，但学生看到 realize 时可能先想到“实现”，从而误读认知义。需要提醒 realize-01 是“意识到”而非“实现”。
+    - l1_term: 变现
+      covers:
+      - realize-03
+      note: 中文“变现”是财务术语，对应 realize-03。学生不熟悉时可能忽略该义项，但在金融语境中应识别。
+scene_requirements:
+  must_show:
+  - A character in a state of uncertainty or misunderstanding (e.g., frowning, asking
+    questions, acting on a wrong assumption).
+  - A clue or piece of evidence that contradicts the earlier assumption.
+  - 'A visible moment of insight: pause, widened eyes, raised eyebrows, or an ''aha''
+    expression.'
+  - A change in behavior that follows the new understanding.
+  must_not:
+  - The character externally building, creating, or achieving a plan (that would be
+    realize-02).
+  - Any transaction involving selling assets or receiving money (that would be realize-03).
+  - The character deliberately deciding to know something — the insight should arise
+    from evidence, not from conscious effort to study.
+  externalization:
+  - Show the contrast between pre-state and post-state through body language and facial
+    expression.
+  - Use a visual clue that links to the previously hidden fact, so the audience can
+    infer the moment of insight.
+  - Optionally use internal monologue or subtitled thought to make the cognitive change
+    explicit.
+  timing: Present the full scene of confusion and the triggering clue first; then,
+    after the audience has experienced the insight with the character, name it with
+    'realize' (e.g., in narration or in the character's own speech). The word should
+    appear at the peak of the insight, not before.
+provenance:
+  sources:
+  - type: dictionary
+    citation: https://kaikki.org/dictionary/English/meaning/r/re/realize.jsonl
+    license: CC-BY-SA
+
+# ============================================================
+# G. 教学原型建议 (非权威, 仅供 Holistic Course Author 参考)
+# ============================================================
+teaching_profile:
+  primary_archetype: cognitive_update
+  suggested_capabilities:
+  - information_state
+  - scene_observation
+  - single_choice
+  - binary_judgment
+  special_risks:
+  - temporal_order
+  - inference_vs_perception

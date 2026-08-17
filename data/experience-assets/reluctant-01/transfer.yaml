@@ -1,0 +1,345 @@
+schema_version: '1.0'
+asset_type: transfer
+sense_id: reluctant-01
+contract_hash: sha256:e893727c42babcf98ab71e3ba19934bd3463efaef871c97b40db78b1bc6d73ec
+units:
+- id: transfer-1
+  role: transfer
+  hypothesis_target: null
+  preserved_variables:
+  - opportunity_status
+  - resistance_source
+  - willingness_valence
+  - action_specificity
+  - social_visibility
+  changed_variables:
+  - physical_setting
+  - agent_relation
+  - task_domain
+  - action_motor_profile
+  - eventual_action
+  - behavioral_evidence_profile
+  semantic_spec:
+    judgment: 本单元要求形成同一概念判断：具体行动机会已经呈现，行动者的负向意愿来自自身，并在行为中可读；即使动作最终完成，判断不因完成而改变。
+    opportunity_status: presented
+    resistance_source: internal
+    willingness_valence: negative
+    action_specificity: specific_available_action
+    social_visibility: private
+    physical_setting: office
+    agent_relation: supervisor
+    task_domain: professional_report_review
+    action_motor_profile: document_handling
+    eventual_action: 'yes'
+    behavioral_evidence_profile: slowed_engagement_and_flat_voice
+  sequence: 1
+  experience:
+    episode: A manager sets a thick report on Dana's desk and points at the clock.
+      Dana's hand reaches toward the report, stops, and curls around her coffee mug
+      instead. She opens the report, reads a few lines, and stares at the window.
+      When the manager walks past, Dana answers in a flat, quiet voice without turning
+      around. She picks up her pen and writes in short, slow strokes until the pages
+      are covered with notes.
+    observable_evidence:
+    - Dana's hand reaches toward the report, stops, and curls around her coffee mug
+      instead.
+    - She reads only a few lines, then stares out the window.
+    - Her voice is flat and quiet when the manager walks past.
+    - She writes in short, slow strokes and covers the pages with notes.
+    surface_dimensions:
+    - name: physical_setting
+      baseline: A task is presented in a casual home space.
+      deviation: A manager places the task on an office desk under a clock.
+    - name: agent_relation
+      baseline: The task comes from a friend or neighbor.
+      deviation: The task comes from a supervisor who taps the report and points at
+        the clock.
+    - name: task_domain
+      baseline: A simple household favor such as watering plants.
+      deviation: A professional report that has to be reviewed and annotated.
+    - name: action_motor_profile
+      baseline: The person reaches for the object and starts right away.
+      deviation: Dana's hand stops mid-reach, moves to the coffee mug, and later writes
+        in short, slow strokes.
+    - name: eventual_action
+      baseline: The task may be left unfinished.
+      deviation: The review is completed, and the report pages are covered with notes.
+    - name: behavioral_evidence_profile
+      baseline: A single facial expression would carry the scene.
+      deviation: The visible signs combine a stopped reach, a stare out the window,
+        a flat quiet voice, and slow writing.
+  interaction:
+    question: Which set of actions best matches what Dana did?
+    answers:
+    - id: a1
+      text: She reached for the report, stopped, looked out the window, and wrote
+        slowly before finishing the review.
+      is_correct: true
+      feedback: The stopped reach, the window stare, the flat voice, and the slow
+        writing are the visible signs; the notes show she finished.
+    - id: a2
+      text: She opened the report at once and read it quickly from start to finish.
+      is_correct: false
+      feedback: Her hand stopped before the report, and her writing was slow; the
+        scene does not show a quick read.
+    - id: a3
+      text: She left the office without touching the report.
+      is_correct: false
+      feedback: She did touch it—she opened it, wrote notes, and completed the review.
+- id: transfer-2
+  role: transfer
+  hypothesis_target: null
+  preserved_variables:
+  - opportunity_status
+  - resistance_source
+  - willingness_valence
+  - action_specificity
+  - eventual_action
+  changed_variables:
+  - physical_setting
+  - agent_relation
+  - task_domain
+  - action_motor_profile
+  - social_visibility
+  - behavioral_evidence_profile
+  semantic_spec:
+    judgment: 本单元要求在同一概念下处理未完成结局：动作最终没有发生，但行动机会确实存在、停止前的行为使负向意愿可读，判断应保持为正例。
+    opportunity_status: presented
+    resistance_source: internal
+    willingness_valence: negative
+    action_specificity: specific_available_action
+    eventual_action: 'no'
+    physical_setting: neighbor_yard
+    agent_relation: neighbor
+    task_domain: plant_care_favor
+    action_motor_profile: outdoor_property_entry
+    social_visibility: semi_public
+    behavioral_evidence_profile: threshold_stop_and_turn_away
+  sequence: 2
+  experience:
+    episode: A neighbor opens the gate to her yard, steps aside, and points at the
+      flower bed along the fence. Rosa walks up to the gate and wraps her hand around
+      the latch. She holds the latch, then lets it go and takes a step back. She turns
+      toward her own house, stops after two steps, and looks over her shoulder at
+      the flowers. The gate stays closed; she does not enter the yard.
+    observable_evidence:
+    - Rosa's hand wraps around the gate latch but does not lift it.
+    - She releases the latch and steps back.
+    - She turns toward her own house, stops, and looks back at the flower bed.
+    - The gate stays closed; she never enters the yard.
+    surface_dimensions:
+    - name: physical_setting
+      baseline: The task appears in a quiet office.
+      deviation: The scene is a neighbor's front yard with a gate and a flower bed
+        along the fence.
+    - name: agent_relation
+      baseline: The task comes from a supervisor.
+      deviation: The task comes from a neighbor who opens the gate and points to the
+        flowers.
+    - name: task_domain
+      baseline: A professional report has to be reviewed.
+      deviation: 'A small favor: entering the yard to water the plants.'
+    - name: action_motor_profile
+      baseline: The person handles pages, a pen, and paper.
+      deviation: The person would need to step through a gate; Rosa's hand reaches
+        the latch, then withdraws.
+    - name: social_visibility
+      baseline: Only the manager is nearby.
+      deviation: The gate faces the street; the neighbor is standing there, and the
+        scene is open to view.
+    - name: behavioral_evidence_profile
+      baseline: Slowed writing and a flat voice carry the scene.
+      deviation: 'The sign is a threshold stop: hand on the latch, release, step back,
+        turn away, and a look over the shoulder.'
+  interaction:
+    question: What did Rosa do when the gate was open?
+    answers:
+    - id: a1
+      text: She touched the latch, let go, stepped back, and did not go into the yard.
+      is_correct: true
+      feedback: The latch grip, the release, and the step back are the visible signs;
+        the closed gate shows the action was not done.
+    - id: a2
+      text: She lifted the latch and walked in to water the flowers.
+      is_correct: false
+      feedback: She never lifted the latch; her hand let go and she stepped back.
+    - id: a3
+      text: She walked through the gate and closed it behind her.
+      is_correct: false
+      feedback: The gate stayed closed; she turned back toward her own house instead.
+- id: transfer-3
+  role: transfer
+  hypothesis_target: null
+  preserved_variables:
+  - opportunity_status
+  - resistance_source
+  - willingness_valence
+  - action_specificity
+  changed_variables:
+  - physical_setting
+  - agent_relation
+  - task_domain
+  - action_motor_profile
+  - social_visibility
+  - eventual_action
+  - behavioral_evidence_profile
+  semantic_spec:
+    judgment: 本单元要求把概念迁移到公开社交任务：行动在公开场合被完成，完成过程仍带有可读的负向意愿；公开性、关系变化和动作类型不改变概念归属。
+    opportunity_status: presented
+    resistance_source: internal
+    willingness_valence: negative
+    action_specificity: specific_available_action
+    physical_setting: community_hall
+    agent_relation: old_friend
+    task_domain: public_greeting_duty
+    action_motor_profile: verbal_social_performance
+    social_visibility: public
+    eventual_action: 'yes'
+    behavioral_evidence_profile: flat_voice_and_minimal_contact
+  sequence: 3
+  experience:
+    episode: An old friend across the community hall waves and calls Keo's name. Keo
+      walks over but stops a step away, keeping his hands pressed in his coat pockets.
+      He looks at the friend's shoes, then at the floor. He answers with one flat
+      word and gives a quick nod, then turns his shoulder away. The friend reaches
+      out and pats his arm; Keo's arm stays at his side.
+    observable_evidence:
+    - Keo stops a full step away from the friend.
+    - He keeps both hands pressed in his coat pockets.
+    - He looks at the friend's shoes and then at the floor.
+    - His greeting is one flat word with a quick nod.
+    - When the friend pats his arm, Keo's arm stays at his side.
+    surface_dimensions:
+    - name: physical_setting
+      baseline: The scene is an office or a yard.
+      deviation: The scene is a community hall with people around, and the greeting
+        happens in the open room.
+    - name: agent_relation
+      baseline: The other person is a supervisor or a neighbor.
+      deviation: The other person is an old friend who waves and calls Keo's name.
+    - name: task_domain
+      baseline: The task is reviewing a report or watering plants.
+      deviation: 'The task is a public social greeting: crossing the room to speak
+        to the friend.'
+    - name: action_motor_profile
+      baseline: The person handles documents or steps through a gate.
+      deviation: The person walks across a room, speaks, nods, and manages physical
+        distance.
+    - name: social_visibility
+      baseline: The scene is private or semi-public.
+      deviation: The greeting is public; other people in the hall can see it.
+    - name: eventual_action
+      baseline: The public greeting is left undone.
+      deviation: 'The greeting is completed: Keo speaks one flat word and gives a
+        quick nod.'
+    - name: behavioral_evidence_profile
+      baseline: A threshold stop and a look back carry the scene.
+      deviation: The visible signs are a flat one-word greeting, a quick nod, hands
+        kept in pockets, and no return of the arm pat.
+  interaction:
+    question: What did Keo do during the greeting?
+    answers:
+    - id: a1
+      text: He gave a flat one-word greeting, nodded quickly, and kept his hands in
+        his pockets.
+      is_correct: true
+      feedback: The flat word, the quick nod, and the still hands are the visible
+        signs; the greeting still happened.
+    - id: a2
+      text: He smiled, waved back, and hugged the friend warmly.
+      is_correct: false
+      feedback: There is no smile or hug; he stopped a step away and kept his hands
+        in his pockets.
+    - id: a3
+      text: He walked past the friend without saying anything.
+      is_correct: false
+      feedback: He did say one flat word and gave a quick nod, so the greeting was
+        completed.
+batches:
+- count: 3
+  generated_at: '2026-08-15T05:51:13Z'
+  gate:
+    passed: true
+    dimensions:
+    - name: semantic_correctness
+      verdict: pass
+      note: All three transfer units instantiate reluctant-01. transfer-1/experience.episode
+        presents Dana with an available report-review action and completes it while
+        negative willingness remains visible (stopped reach, window stare, flat voice,
+        slow writing). transfer-2/experience.episode presents Rosa with an available
+        watering favor and the action is not performed, with negative willingness
+        legible before the stop (latch hold/release, step back, look back), matching
+        WordSense's 'no action in the end is never excluded'. transfer-3/experience.episode
+        presents Keo with an available public greeting and performs it with visible
+        resistance (stops a step away, hands in pockets, flat one-word greeting, quick
+        nod). No unit shows eagerness, external prevention, or a bare refusal as the
+        only cue.
+    - name: sense_purity
+      verdict: pass
+      note: 'No unit slides into refuse, unwilling, or hesitant. transfer-2''s no-action
+        outcome is not a bare refusal because the scene supplies observable negative-willingness
+        behavior (latch grip/release, step back, look back) rather than a ''no''.
+        transfer-1 and transfer-3 do not become unwilling because the action is actually
+        performed with visible inner resistance. The pauses are not hesitant wavering:
+        each experiencer faces one identified action, not a choice between options.'
+    - name: definition_leakage
+      verdict: pass
+      note: 'Learner-visible content nowhere defines the word. Episodes carry the
+        meaning through behavior; interaction questions ask only ''Which set of actions...''
+        / ''What did Rosa do...'' / ''What did Keo do...''; answers and feedback list
+        observable actions (e.g., transfer-1 a1/feedback: stopped reach, window stare,
+        flat voice, slow writing; transfer-2 a1: latch, release, step back; transfer-3
+        a1: flat one-word greeting, quick nod, hands in pockets) and never state a
+        semantic label or definitional rule.'
+    - name: l2_leakage
+      verdict: pass
+      note: 'No target L2 form ''reluctant'' or adjacent forms (''unwilling'', ''hesitant'',
+        ''refuse'') appears in learner-visible fields: episodes, observable_evidence,
+        interaction answers/feedback, or surface_dimensions descriptions. The word
+        is not named before reveal.'
+    - name: variable_isolation
+      verdict: pass
+      note: 'In each unit, preserved_variables are the semantic invariants of reluctant-01:
+        opportunity_status=presented, resistance_source=internal, willingness_valence=negative,
+        action_specificity=specific_available_action. changed_variables are surface/non-definitional
+        dimensions (physical_setting, agent_relation, task_domain, action_motor_profile,
+        behavioral_evidence_profile, social_visibility) plus eventual_action, which
+        WordSense explicitly marks as non-definitional. No unit silently changes a
+        semantic condition such as valence, opportunity, or resistance source, so
+        the comparison is not confounded.'
+    - name: transfer_novelty
+      verdict: pass
+      note: 'Each transfer unit changes at least two surface dimensions and enters
+        a distinct experience domain: transfer-1 office/professional report review
+        with document-handling; transfer-2 neighbor yard/plant-care favor with gate-entry;
+        transfer-3 community hall/public social greeting with verbal-performance.
+        Settings, task domains, agent relations, and behavioral evidence profiles
+        all differ, while the WordSense conditions (available action, internal source,
+        negative valence, visible behavior) remain unchanged.'
+    - name: cognitive_noise
+      verdict: warn
+      note: 'Overall the scenes are short and focused, but transfer-2/experience.episode
+        contains a learner-visible inconsistency: the neighbor ''opens the gate'',
+        yet the same episode and its feedback say the gate stays closed / was closed.
+        This may distract from the threshold-stop evidence. Fix by aligning the gate
+        state (e.g., the neighbor unlatches the gate but it remains closed, or the
+        neighbor leaves it open and Rosa stops at the threshold). The reluctant reading
+        is not changed, so this is a warn rather than a fail.'
+    scores:
+      semantic_correctness: 9.0
+      sense_purity: 9.0
+      definition_leakage: 9.0
+      l2_leakage: 9.0
+      variable_isolation: 9.0
+      transfer_novelty: 9.0
+      cognitive_noise: 7.0
+metadata:
+  compiler_version: 2.0.0
+  prompt_versions:
+    program_planner: v1
+    surface_generator: v1
+    quality_gate: v1
+  generated_at: '2026-08-15T05:51:13Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids: []

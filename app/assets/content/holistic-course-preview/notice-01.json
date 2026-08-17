@@ -1,0 +1,501 @@
+{
+  "schema_version": "1.0",
+  "course_id": "notice-01-cn-v1",
+  "target": {
+    "sense_id": "notice-01",
+    "lemma": "notice",
+    "pos": "verb",
+    "ipa": "/ˈnoʊtɪs/",
+    "learner_l1": "zh-CN",
+    "target_l2": "en"
+  },
+  "author_intent": {
+    "course_thesis": "把 notice 教成“刺激从不在意识焦点到成为意识焦点的一次离散变化”：关键不是看到，不是持续留意， 而是那一个从无到有的转变时刻。",
+    "learner_start": "学习者熟悉中文“注意”和“看到”，可能把视觉接收等同于意识到，也可能把 notice 误解为持续留意； 尚未绑定目标 L2 符号。",
+    "intended_outcome": "学习者能识别“从无到有变成意识对象”的转变点，知道无须外显反应也能成立，能在自然英语句子中用 notice 描述一次注意到的变化。",
+    "design_rationale": "先建立经验原型并处理三个关键误解：第一组区分“扫过视野”与“折返停住”，第二组区分“持续注视”与“一次变化”， 第三组处理“无外显反应”。然后才绑定符号；grounding 把词连回最初场景；再用一个 L2 动词选择推进到 see/watch 的边界；最后用命题式 noticing 迁移到思考路径。复习从 L1 场景反向回忆开始，逐步升级为 更完整的 L2 场景判断。"
+  },
+  "steps": [
+    {
+      "id": "pre_intro_key_scene",
+      "stage": "learning_flow",
+      "trigger": "initial",
+      "primitive": "scene_observation",
+      "purpose": "给学习者一个完整的可观察场景：手机始终在茶几上，第一次只被扫过，第二次目光折返并停在手机上，随后有指向手机的言语行为，形成‘从不被意识到被意识’的完整经验。",
+      "addresses": [
+        "misc-1"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 40,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "晚上，小周把手机放在客厅茶几上充电，自己回房间找外套。同事小林进屋，到厨房倒了一杯水。 他端着水杯从厨房走回客厅，路过茶几时目光从手机屏幕上扫过，没有停，直接进了自己的房间。 过了一会儿，小林又回到客厅放水杯。放杯子时他低下头，目光先扫过手机，又折了回来，手上的动作停住了。 他放下杯子，朝小周房间方向喊：“你的手机不是在茶几上充电吗？”"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "identify_key_moment",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "single_choice",
+      "purpose": "让学习者从三个时间点中选出‘成为意识对象’的转折点，区分‘只是经过视野’与‘折返停住并作出指向行为’。",
+      "addresses": [
+        "misc-1"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 60,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "同一个晚上：小周在房间里找手机，小林先在厨房倒水，后来回到客厅放水杯。茶几上放着正在充电的手机。",
+        "evidence": [
+          "第一次路过客厅时，小林的目光从手机屏幕上扫过，没有停。",
+          "第二次放水杯时，他的目光先扫过手机，又折了回来。",
+          "第二次他的动作停住，随后朝小周房间喊出手机的位置。"
+        ],
+        "question": "哪一瞬间最能说明‘手机从不是他关注的对象、变成了他关注的对象’？",
+        "options": [
+          {
+            "id": "opt_scan",
+            "text": "第一次路过客厅时，他的目光从手机屏幕上扫过的那一瞬间。",
+            "feedback": "目光扫过只说明手机进过他的视野；没有证据显示手机成了他意识中的对象。"
+          },
+          {
+            "id": "opt_focus",
+            "text": "第二次放水杯时，他的目光先扫过手机、又折回来、手上的动作停住的那一瞬间。",
+            "feedback": "正确。目光折返并停住，随后又对着手机喊话，显示出手机在这一刻成为他意识中的明确对象。"
+          },
+          {
+            "id": "opt_call",
+            "text": "他朝小周房间喊出那句话的那一瞬间。",
+            "feedback": "喊话已经是结果后的行为；更重要的是刚才目光折返、停住的那个转折点。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_focus"
+      }
+    },
+    {
+      "id": "transition_vs_state",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "single_choice",
+      "purpose": "对比甲乙两个描述：甲是持续注视没有转折点，乙是从关注手机切换到关注蛋糕的离散变化。让学习者意识到 notice 是一次事件而非持续状态。",
+      "addresses": [
+        "misc-2",
+        "misc-5"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 50,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "同一个场景，两种描述： 甲：阿光坐在窗边，一直盯着桌上的蛋糕，看了十分钟，没有移开过目光。 乙：阿光本来在低头回消息；回完消息后抬起头，目光在蛋糕上停了两秒，然后问：“这个蛋糕是谁买的？”",
+        "evidence": [
+          "甲：他的目光从开始到结束一直落在蛋糕上，没有变化。",
+          "乙：开头时他在看手机，蛋糕不是他关注的对象；抬头后，目光在蛋糕上停住，然后开口问。"
+        ],
+        "question": "哪种描述里有‘从不是关注对象到成为关注对象’的一次变化？",
+        "options": [
+          {
+            "id": "opt_state",
+            "text": "甲",
+            "feedback": "甲只是持续的注视，找不到‘原本没关注、后来关注’的转折点。"
+          },
+          {
+            "id": "opt_transition",
+            "text": "乙",
+            "feedback": "正确。乙先在看手机，后来目光被蛋糕吸引并停住，有一个离散的变化点。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_transition"
+      }
+    },
+    {
+      "id": "internal_without_reaction",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "binary_judgment",
+      "purpose": "让学习者判断一个没有外显反应的例子：事后准确报告说明刺激曾经进入意识，消除‘必须看到抬头/动作才算’的误解。",
+      "addresses": [
+        "misc-3"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 60,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "小刘在厨房低头切菜。朋友小马端着一杯水从客厅走进厨房，把杯子放在餐桌上，又走出去。 小刘全程没有抬头。五分钟后，小刘边切菜边问：“你刚才那杯水里是不是加了柠檬片？” 小马很惊讶：“你怎么知道？”小刘说：“我扫到了一眼。”",
+        "evidence": [
+          "那杯水出现时，小刘没有抬头，也没有停下切菜。",
+          "五分钟后，小刘能准确说出杯子里有柠檬片。"
+        ],
+        "question": "这样能说明小刘曾经捕捉到那杯水吗？",
+        "options": [
+          {
+            "id": "opt_can",
+            "text": "能，因为他事后能准确说出杯子里有柠檬片，说明那杯水曾进入他的意识。",
+            "feedback": "正确。即使没有外显反应，只要事后能准确报告或后续行为以该刺激为对象，就说明它曾经成为意识对象。"
+          },
+          {
+            "id": "opt_cannot",
+            "text": "不能，因为他当时没有抬头，也没有任何动作。",
+            "feedback": "外显反应只是可能的伴随表现，不是必要条件；事后准确报告就是登记的证据。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_can"
+      }
+    },
+    {
+      "id": "symbol_binding",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "symbol_reveal",
+      "purpose": "首次揭示目标 L2 符号 notice，把前面所有转折瞬间的经验绑定到一个词上。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 20,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "l2_word": "notice",
+        "ipa": "/ˈnoʊtɪs/",
+        "presentation": "刚才那些‘目光折回、停住、事后能说出’的瞬间，在英语里用一个动词表达：notice。它描述一个东西原本不在你关注的范围内，在某个时刻进入了你的意识。",
+        "minimal_l1_gloss": "注意到；察觉"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "pronunciation",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "pronunciation",
+      "purpose": "让学习者听/读目标词，巩固声音与拼写的关联。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 15,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "l2_word": "notice",
+        "ipa": "/ˈnoʊtɪs/"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "grounding_key_scene",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "l2_grounding",
+      "purpose": "把 notice 放回首个场景，给出自然句型和搭配，让学习者看到词在真实句子中如何出现。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 70,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "source_step_id": "pre_intro_key_scene",
+        "l2_realization": "Lin glanced at the coffee table, and this time he noticed the phone. He stopped and called out, “Your phone is right there.”",
+        "constructions": [
+          "[subject] noticed [noun]. — I noticed the change.",
+          "[subject] noticed that [clause]. — She noticed that her key was missing.",
+          "Did you notice [noun]? — Did you notice the note on the door?",
+          "[subject] noticed [someone] doing [something]. — She noticed him leaving the room."
+        ],
+        "collocations": [
+          "notice a change",
+          "notice that ...",
+          "did you notice ...",
+          "fail to notice",
+          "notice someone doing something"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "choose_verb_for_change",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "single_choice",
+      "purpose": "把刚绑定的词放回一个与‘看到’相对的新场景中，让学习者从 noticed / saw / watched 中选出描述‘进入意识’的词，完成从 L1 判断到 L2 词汇选择的推进。",
+      "addresses": [
+        "misc-1",
+        "misc-2"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 60,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "Tomas walks into the office. The printer beside the door has a blinking red light because it is out of paper. Tomas passes by; he does not turn his head. Ten minutes later, when a colleague asks for paper, Tomas says, “The printer is out of paper.”",
+        "evidence": [
+          "The printer was in Tomas’s field of view, but he gave no visible reaction at that moment.",
+          "Ten minutes later he can report the printer’s state.",
+          "The change is that the red-light problem became an object in his awareness."
+        ],
+        "question": "Which English verb best describes Tomas’s change?",
+        "options": [
+          {
+            "id": "cv_noticed",
+            "text": "Tomas noticed that the printer was out of paper.",
+            "feedback": "正确。notice 强调的是“没纸”这个状况成为他意识中的对象，即使当时没有外显反应。"
+          },
+          {
+            "id": "cv_saw",
+            "text": "Tomas saw the printer next to the door.",
+            "feedback": "“看到”只描述视野里有这台打印机，不承诺它成为意识焦点；而且这句话不能说明他注意到了“没纸”这个状况。"
+          },
+          {
+            "id": "cv_watched",
+            "text": "Tomas watched the printer for several minutes.",
+            "feedback": "不对。Tomas 当时没有持续注视打印机。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "cv_noticed"
+      }
+    },
+    {
+      "id": "thought_notice_transfer",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "transfer_judgment",
+      "purpose": "把概念迁移到‘通过思考注意到的命题’，防止学习者把 notice 锁死在视觉输入上。",
+      "addresses": [
+        "misc-4"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 60,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "episode": "Ada 这几周一直用一个新日历应用。今天早上她打开应用，屏幕顶部有一个很小的提醒图标，她没有细看， 就关掉了。下午她重读一封确认邮件，读到日期时忽然停下来想：这个应用一直用旧时区，所以我的会议时间 都不对。",
+        "evidence": [
+          "提醒图标一直在屏幕上出现过，但当时不是 Ada 关注的对象。",
+          "Ada 停下来时并没有在看那个图标，而是在重读邮件、重新思考日期。",
+          "停下来的瞬间，一个事实成了她意识中的对象：旧时区导致会议时间不对。"
+        ],
+        "question": "下面哪句最能描述 Ada 停下来那一刻发生的事？",
+        "options": [
+          {
+            "id": "think_noticed",
+            "text": "She noticed that the app had been using the wrong time zone.",
+            "feedback": "正确。notice 可以是通过思考觉知到一个事实，不要求当前必须有新的感官输入。"
+          },
+          {
+            "id": "think_watched_icon",
+            "text": "She watched the warning icon on the screen while thinking.",
+            "feedback": "这句话没有抓住转折点；而且当时 Ada 并没有在看图标。"
+          },
+          {
+            "id": "think_paid_all_day",
+            "text": "She was paying attention to the warning icon the whole day.",
+            "feedback": "这描述的是一种持续状态，不是 Ada 停下来那一刻的变化。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "think_noticed"
+      }
+    },
+    {
+      "id": "rev_1_recall",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_reveal",
+      "purpose": "绑定后第 1 天（次日在日常复习中出现）",
+      "addresses": [],
+      "timing": "绑定后第 1 天（次日在日常复习中出现）",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 1,
+      "content": {
+        "episode": "小郑下楼时，目光从门口的信箱上扫过，没有停。他走出几步，忽然站住，转身走回信箱，打开箱门，抽出一封信。 他看着收件人名字，对旁边的人说：“今天来了信。”",
+        "l2_word": "notice",
+        "ipa": "/ˈnoʊtɪs/",
+        "minimal_gloss": "注意到；察觉"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "rev_2_self_grade",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_self_grade",
+      "purpose": "绑定后第 1 天，紧接回忆后自评",
+      "addresses": [],
+      "timing": "绑定后第 1 天，紧接回忆后自评",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 1,
+      "content": {
+        "l2_word": "notice",
+        "ipa": "/ˈnoʊtɪs/"
+      },
+      "evaluation": {
+        "kind": "self_grade"
+      }
+    },
+    {
+      "id": "rev_3_l2_scene",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "single_choice",
+      "purpose": "绑定后第 3 天",
+      "addresses": [],
+      "timing": "绑定后第 3 天",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 3,
+      "content": {
+        "episode": "Tessa is looking at her phone. At the edge of her desk, the coffee machine finishes brewing and its green light goes on. Tessa does not look up. A minute later she says, “The coffee is ready.”",
+        "evidence": [
+          "The green light appeared while Tessa was not looking directly at the machine.",
+          "She stayed focused on her phone.",
+          "A minute later she reported that the coffee was ready."
+        ],
+        "question": "Which sentence best describes what happened?",
+        "options": [
+          {
+            "id": "r3_noticed",
+            "text": "She noticed that the coffee was ready.",
+            "feedback": "正确。她没有外显反应，但事后能报告，说明咖啡机上的灯光已成为她意识中的对象。"
+          },
+          {
+            "id": "r3_paid",
+            "text": "She was paying attention to the coffee machine the whole time.",
+            "feedback": "不对。她一直在看手机，没有持续关注咖啡机。"
+          },
+          {
+            "id": "r3_watched",
+            "text": "She watched the coffee machine for a minute.",
+            "feedback": "不对。她当时没有看咖啡机。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "r3_noticed"
+      }
+    },
+    {
+      "id": "rev_4_thought_transfer",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "transfer_judgment",
+      "purpose": "绑定后第 5 天",
+      "addresses": [],
+      "timing": "绑定后第 5 天",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 5,
+      "content": {
+        "episode": "Max is checking a hotel booking. He sees the date at the top: July 12. He scrolls down, reads the cancellation policy, and closes the page. While putting on his coat, he thinks about the train ticket he bought and stops: “Wait, the train is on July 13. The hotel date is wrong.”",
+        "evidence": [
+          "The hotel date was visible on the page earlier, but it was not the focus at that moment.",
+          "The moment of awareness comes while Max is thinking, not while he is looking at the page.",
+          "His next action is to open his phone and check the date again."
+        ],
+        "question": "Which sentence best describes the change at the moment Max stopped at the door?",
+        "options": [
+          {
+            "id": "r4_noticed",
+            "text": "Max noticed that the hotel date was wrong.",
+            "feedback": "正确。虽然当时他不在看页面，但那个事实通过思考成了他意识中的对象。"
+          },
+          {
+            "id": "r4_watched",
+            "text": "Max watched the date on the screen for ten minutes.",
+            "feedback": "不对。他当时没有在看屏幕，也没有持续注视日期。"
+          },
+          {
+            "id": "r4_ignored",
+            "text": "Max ignored the date completely.",
+            "feedback": "不对。日期后来成了他意识中的对象，否则他不会停下。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "r4_noticed"
+      }
+    },
+    {
+      "id": "rev_5_event_not_durative",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "single_choice",
+      "purpose": "绑定后第 7 天",
+      "addresses": [],
+      "timing": "绑定后第 7 天",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 7,
+      "content": {
+        "episode": "Ben’s teacher walks into the classroom at 8:00. Ben is writing in his notebook. At the sound of the door, he looks up, stops writing for a second, and turns his attention to the teacher. Then he listens to the rest of the lesson without looking away.",
+        "evidence": [
+          "At 8:00, Ben’s attention changes from his notebook to the teacher at the door.",
+          "For the rest of the lesson, his attention stays on the teacher."
+        ],
+        "question": "Which sentence describes only the moment at 8:00?",
+        "options": [
+          {
+            "id": "r5_noticed",
+            "text": "Ben noticed the teacher when she walked in.",
+            "feedback": "正确。这描述的是 8:00 那一刻的转变。"
+          },
+          {
+            "id": "r5_watched",
+            "text": "Ben watched the teacher carefully for the whole lesson.",
+            "feedback": "这描述的是持续状态，不是 8:00 那一刻。"
+          },
+          {
+            "id": "r5_kept_eyes",
+            "text": "Ben kept his eyes on the teacher the whole lesson.",
+            "feedback": "这描述的是持续状态，不是一次转变。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "r5_noticed"
+      }
+    }
+  ]
+}

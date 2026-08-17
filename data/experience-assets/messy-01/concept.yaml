@@ -1,0 +1,538 @@
+schema_version: '1.0'
+asset_type: concept
+sense_id: messy-01
+contract_hash: sha256:302d056f54b8385aef18b9dbabc7e260aa7d3ad1c7f2a7e82ca60d2fd1748680
+language_policy:
+  policy_version: 1
+  learner_l1: zh-CN
+  target_l2: en
+units:
+- id: unit-1
+  role: anchor
+  hypothesis_target: null
+  preserved_variables:
+  - entity_kind
+  - component_kind
+  - contamination
+  - damage_status
+  - item_density
+  changed_variables:
+  - order_status
+  - deviation_scope
+  semantic_spec:
+    judgment: 学习者能否把一个表面干净但衣物散落各处、整体一眼可见无序的房间状态识别为 messy，并与同一空间整理后的整齐状态区分开。
+    entity_kind: bedroom
+    component_kind: clothing_bedding
+    order_status: disordered
+    contamination: clean
+    item_density: sparse
+    damage_status: undamaged
+    deviation_scope: whole
+    arrangement_type: spatial_scatter
+    concept_scope: physical_visible
+    physical_arrangement: true
+    contrast_order_status: ordered
+    contrast_contamination: clean
+    relative_norm: own_tidy_state
+  sequence: 1
+  experience:
+    episode: 推门走进一间卧室。衣柜门半开，里面叠好的衣物按层码放、边缘对齐，和床尾地面散落的外套、毛衣形成对照；被子在床尾堆成一团，枕头斜靠着床头。床头柜上没有水渍或灰印，墙面和地板没有破损。房间里物品不多，但目光扫过整间房时，好几处都不在原本的位置。
+    observable_evidence:
+    - 衣柜门半开，里面叠好的衣物按层码放、边缘对齐
+    - 外套搭在椅背上，一只袖子垂到地面；另一件毛衣在床脚地面
+    - 被子在床尾堆成一团，枕头斜靠、方向与床沿不垂直
+    - 床头柜上没有水渍或灰印，墙面和地板没有破损
+    - 房间物品不多，但从门口到窗边能看见多处位置偏移
+    surface_dimensions:
+    - name: 被褥与衣物的位置
+      baseline: 被褥铺平、衣物收在柜内或挂好
+      deviation: 被褥在床尾成团，外套、毛衣都离开原本位置
+    - name: 表面印痕
+      baseline: 没有水渍、灰印和污痕
+      deviation: 未偏离：床头柜表面干净，墙面地板完好
+    - name: 覆盖范围
+      baseline: 只有零星小件偏离时不能反映整体
+      deviation: 从床尾到门边多处可见偏移，覆盖整间卧室
+  interaction:
+    question: 眼前这间卧室的可见状态，更适合用哪组证据来描述？
+    answers:
+    - id: a1
+      text: 被褥、外套、毛衣、枕头都离开各自原本的位置，且这些偏移在整间房里都能看到
+      is_correct: true
+      feedback: 正确：你抓住的是多处物品整体偏离原位；这种可见的整片偏移才是判断依据。
+    - id: a2
+      text: 床头柜上没有污渍、墙面没有破损，所以一切看起来都待在原位
+      is_correct: false
+      feedback: 不对：你只看到没有污渍和破损，却没有提到被褥、外套、毛衣、枕头的位置；决定判断的是这些可见偏移，不是有没有印痕。
+- id: unit-2
+  role: variation
+  hypothesis_target: null
+  preserved_variables:
+  - order_status
+  - damage_status
+  - deviation_scope
+  changed_variables:
+  - entity_kind
+  - component_kind
+  - contamination
+  - item_density
+  - arrangement_type
+  semantic_spec:
+    judgment: 学习者能否把桌面上纸张、文具散乱交叠且有咖啡渍的可见状态仍归为 messy，从而看到乱序判断并不依赖表面是否干净。
+    entity_kind: desk
+    component_kind: stationery_paper
+    order_status: disordered
+    contamination: stained
+    item_density: medium
+    damage_status: undamaged
+    deviation_scope: whole
+    arrangement_type: layer_pile
+    concept_scope: physical_visible
+    physical_arrangement: true
+    relative_norm: own_tidy_state
+  sequence: 2
+  experience:
+    episode: 办公桌上堆着中等数量的纸张和文具。几页文件横七竖八叠在一起，边角互相压住；一支笔夹在纸缝里，另一支滚到键盘旁边，第三支搁在显示器底座上。桌角和纸面上有几处棕褐色的咖啡渍，杯底还留着一圈印子。文件筐里另有一叠纸，竖放对齐；桌腿没有损坏，抽屉也能正常开关。
+    observable_evidence:
+    - 文件边缘没有对齐，有的横放、有的竖放，相互交叠
+    - 三支笔分别出现在纸缝、键盘边、显示器底座
+    - 纸面和桌角有棕褐色渍痕，杯底有圆形水印
+    - 文件筐里的纸竖放对齐，形成对照
+    - 桌腿无损坏，抽屉开关正常
+    surface_dimensions:
+    - name: 纸张与文具的排列
+      baseline: 文件成叠、边缘对齐，笔在笔筒内
+      deviation: 文件方向不一、相互交叠，笔分散三处
+    - name: 表面印痕
+      baseline: 纸面和桌面没有渍痕
+      deviation: 出现棕褐色咖啡渍和杯底水印
+    - name: 覆盖范围
+      baseline: 单个物品偏离不足以说明整体
+      deviation: 从桌面左前到右后多处偏移，属于整张桌面
+  interaction:
+    question: 如果要用眼前桌面的可见状态做判定，下列哪项说法成立？
+    answers:
+    - id: a1
+      text: 纸张和笔的位置没有变化，只是纸面上有咖啡渍，问题在印痕
+      is_correct: false
+      feedback: 不对：纸页方向不一、笔分散各处本身就是可见偏移；咖啡渍只是同时存在，不是关键。
+    - id: a2
+      text: 纸张和笔的位置本身已经多处偏离，咖啡渍只是同时存在，不影响这个判断
+      is_correct: true
+      feedback: 正确：即使没有那些渍痕，纸页方向不一、笔分散各处本身也是可见偏移；表面印痕不是必要条件。
+- id: unit-3
+  role: perturbation
+  hypothesis_target: null
+  preserved_variables:
+  - order_status
+  - contamination
+  - damage_status
+  - deviation_scope
+  changed_variables:
+  - entity_kind
+  - component_kind
+  - item_density
+  - arrangement_type
+  semantic_spec:
+    judgment: 学习者能否把一绺绺头发向不同方向翘起、整体轮廓不整且干净的状态归为 messy，说明该词义不局限于空间表面，也适用于可见形态的排列无序。
+    entity_kind: hair
+    component_kind: hair_strands
+    order_status: disordered
+    contamination: clean
+    item_density: high
+    damage_status: undamaged
+    deviation_scope: whole
+    arrangement_type: orientation_mix
+    concept_scope: physical_visible
+    physical_arrangement: true
+    relative_norm: neat_hair_style
+  sequence: 3
+  experience:
+    episode: 她摘下帽子，整头浓密的头发露出来。额前一撮发丝向上翘，鬓角两缕紧贴着脸颊，脑后一绺偏向右侧，还有几根从发顶支棱出来。发丝表面没有油光，也没有沾上碎屑；头皮上没有伤。整头轮廓线高高低低，从正面看左右不对称，像是刚被一阵风扫过又没梳理。
+    observable_evidence:
+    - 额前发丝朝上翘起，鬓角发丝贴脸，方向与垂落不同
+    - 脑后一绺偏向右侧，发顶几根发丝支棱出来
+    - 整头轮廓线高低不齐，左右不对称
+    - 发丝表面没有油光、碎屑或污痕
+    - 头皮上没有伤，发尾没有断痕
+    surface_dimensions:
+    - name: 发丝走向
+      baseline: 梳顺后发丝垂落方向一致、贴服
+      deviation: 多绺发丝分别朝上、贴脸、偏右、支棱，方向不一致
+    - name: 表面清洁状态
+      baseline: 发丝干净，无油光污痕
+      deviation: 未偏离：表面干净
+    - name: 整体轮廓
+      baseline: 轮廓线平滑、左右对称
+      deviation: 整头轮廓线高低不齐，左右不对称
+  interaction:
+    question: 判断这头发的可见状态时，应该主要依据哪个现象？
+    answers:
+    - id: a1
+      text: 头发表面有脏东西需要马上洗
+      is_correct: false
+      feedback: 不对：发丝上没有油光或碎屑；重点是方向和轮廓，不是清洁。
+    - id: a2
+      text: 多绺发丝各自朝向不同，整头轮廓线不齐
+      is_correct: true
+      feedback: 正确：发丝方向和整体轮廓的可见不一致，才是这组证据的核心。
+- id: unit-4
+  role: discrimination
+  hypothesis_target: misc-1
+  preserved_variables:
+  - item_density
+  - damage_status
+  changed_variables:
+  - entity_kind
+  - component_kind
+  - contamination
+  - order_status
+  - deviation_scope
+  semantic_spec:
+    judgment: 学习者能否在同一台面的两个分区中，把干净但物品散乱的一侧判为 messy，把有污渍但物品归位的一侧判为 dirty，从而区分“排列无序”与“表面不洁”两个独立维度。
+    entity_kind: kitchen_counter
+    component_kind: tableware_utensils
+    contamination: clean
+    order_status: disordered
+    deviation_scope: whole
+    item_density: medium
+    damage_status: undamaged
+    arrangement_type: spatial_scatter
+    concept_scope: physical_visible
+    physical_arrangement: true
+    foil_contamination: stained
+    foil_order_status: ordered
+    foil_deviation_scope: none
+  sequence: 4
+  experience:
+    episode: 厨房台面分成左右两段。左侧台面上，碗和盘子分散放着：一只碗在角落，两只盘子叠在另一头，筷子横在台面中间，方向不一；台面上没有酱油渍或水痕。右侧台面上，砧板、调料瓶和锅盖按一条直线排好，每样东西都在固定的垫位上；但砧板一角有深色酱印，锅盖边沿也有一圈油渍。两侧台面都没有裂缝或缺口。
+    observable_evidence:
+    - 左侧碗盘分散在角落和另一头，筷子横在中间，方向不一
+    - 左侧台面没有酱油渍或水痕
+    - 右侧砧板、调料瓶、锅盖排成直线，都在固定垫位
+    - 右侧砧板一角有深色酱印，锅盖边沿有油渍
+    - 两侧台面都没有裂缝或缺口
+    surface_dimensions:
+    - name: 餐具位置
+      baseline: 碗盘在沥水架或柜内，筷子在筷笼
+      deviation: 左侧碗盘分散各处、方向不一
+    - name: 表面印痕
+      baseline: 台面与物品无明显渍痕
+      deviation: 左侧干净；右侧砧板有深色酱印、锅盖有油渍
+    - name: 分区对照
+      baseline: 不同分区要用各自的可见证据
+      deviation: 左侧呈现位置偏移，右侧呈现表面印痕，两类现象分开出现
+  interaction:
+    question: 左右两侧台面的可见证据，应该分别得出什么判断？
+    answers:
+    - id: a1
+      text: 左侧主要问题是碗盘离开原位；右侧主要问题是表面有印痕，但物品仍排成直线
+      is_correct: true
+      feedback: 正确：左侧台面有位置偏移但表面干净；右侧物品排成直线但有酱印和油渍。两种现象属于不同方面，不能混在一起。
+    - id: a2
+      text: 两侧的问题相同：都需要先清理印痕，位置不用看
+      is_correct: false
+      feedback: 不对：左侧碗盘偏离原位，并没有印痕；右侧有印痕，但物品仍排成直线。只看印痕会漏掉位置方面的证据。
+- id: unit-5
+  role: discrimination
+  hypothesis_target: misc-3
+  preserved_variables:
+  - item_density
+  - contamination
+  - damage_status
+  changed_variables:
+  - entity_kind
+  - component_kind
+  - order_status
+  - arrangement_type
+  - deviation_scope
+  semantic_spec:
+    judgment: 学习者能否把书很多但按类别整齐排好、只是显得拥挤的空间判断为 cluttered 而不是 messy；同样的书一旦混放斜倚、失去方向一致性，才判为
+      messy。
+    entity_kind: bookshelf
+    component_kind: books
+    order_status: disordered
+    arrangement_type: mixed_orientation
+    deviation_scope: whole
+    item_density: high
+    contamination: clean
+    damage_status: undamaged
+    concept_scope: physical_visible
+    physical_arrangement: true
+    foil_order_status: ordered
+    foil_arrangement_type: organized_rows
+    foil_deviation_scope: none
+  sequence: 5
+  experience:
+    episode: 书架上每一层都塞满了书，数量很多。第一排从侧面看，书脊基本对齐，书按高矮和类别分成几列，只是空间很挤，抽出一本书要稍微用力。后来有人重新整理了一下：把几列书混插在一起，有的书斜靠在旁边的书上，书脊前后不齐，有的书横躺在一排书的上面。书仍然塞得很满，书页上没有水渍或霉斑，架子也没有损坏。
+    observable_evidence:
+    - 起初各排书脊基本对齐，按高矮和类别分成列
+    - 起初空间很挤，但位置保持成列、方向一致
+    - 后来不同列的书混插，书脊前后不齐，有的斜靠、有的横躺
+    - 书的总量没有明显增加，仍然塞满整架
+    - 书页无渍痕，架子无破损
+    surface_dimensions:
+    - name: 书的排列方向
+      baseline: 书脊对齐、按列竖放、边缘成直线
+      deviation: 书脊前后不齐，斜靠与横躺打乱方向
+    - name: 空间密度
+      baseline: 书可以很多，但每列方向一致
+      deviation: 书依然塞满，密度未明显变化，方向却不再一致
+    - name: 表面状态
+      baseline: 书页无渍痕、无霉斑
+      deviation: 未偏离：表面干净
+  interaction:
+    question: 两段时间里书架的状态差异，主要体现在哪里？
+    answers:
+    - id: a1
+      text: 后一种状态只是因为书变得更多了
+      is_correct: false
+      feedback: 不对：前后都塞得很满，数量没有明显增加；会让人改变判断的是书脊方向不齐和斜靠横躺。
+    - id: a2
+      text: 后一种状态里，书脊方向不齐、书籍斜靠横躺，先前的分类直线被打散
+      is_correct: true
+      feedback: 正确：数量一直是多的，后一段的关键是方向与边缘不再一致；这种可见的方向不一致才是判断依据。
+- id: unit-6
+  role: discrimination
+  hypothesis_target: misc-4
+  preserved_variables:
+  - item_density
+  - contamination
+  - damage_status
+  changed_variables:
+  - entity_kind
+  - component_kind
+  - order_status
+  - arrangement_type
+  - deviation_scope
+  semantic_spec:
+    judgment: 学习者能否拒绝把只有一个杯子不在原位、其余全部整齐的桌面判为 messy；只有偏差覆盖整体可见范围、多个组成部分失去排列秩序时才成立。
+    entity_kind: tabletop
+    component_kind: household_items
+    order_status: disordered
+    arrangement_type: spatial_scatter
+    deviation_scope: whole
+    item_density: low
+    contamination: clean
+    damage_status: undamaged
+    concept_scope: physical_visible
+    physical_arrangement: true
+    foil_order_status: ordered
+    foil_arrangement_type: mostly_uniform
+    foil_deviation_scope: single_item
+  sequence: 6
+  experience:
+    episode: 一张茶几上放着遥控器、纸巾盒、眼镜和一只陶瓷杯，东西不多。起初，只有陶瓷杯滑出杯垫，斜着搁在桌角；遥控器在杯垫旁，纸巾盒在正中，眼镜在另一侧，都还在原来的位置。随后有人从茶几边走过，衣袖带了一下：遥控器横到茶几另一边，眼镜翻了个面，纸巾盒被推到边缘，陶瓷杯也滑到桌角。桌面上始终没有水渍，也没有磕碰的痕迹。
+    observable_evidence:
+    - 起初只有陶瓷杯离开杯垫，其余物品仍在原位
+    - 随后遥控器横移、眼镜翻面、纸巾盒到边缘、陶瓷杯在桌角
+    - 物品数量一直不多，但后来多件物品分散在整个台面
+    - 桌面没有水渍
+    - 茶几没有磕碰痕迹
+    surface_dimensions:
+    - name: 物品位置
+      baseline: 每个物品保持在各自固定的位置
+      deviation: 起初一处偏移；后来多件物品同时离开原位
+    - name: 偏移范围
+      baseline: 单件物品移位不足以表现整体
+      deviation: 多件物品分散在茶几四边，覆盖整体台面
+    - name: 表面状态
+      baseline: 无渍痕、无破损
+      deviation: 未偏离：台面干净完好
+  interaction:
+    question: 两种状态中，哪一种的可见证据达到了“整体多处偏移”？
+    answers:
+    - id: a1
+      text: 后来遥控器、眼镜、纸巾盒、陶瓷杯都离开原位，分布在整个台面
+      is_correct: true
+      feedback: 正确：多件物品分散在茶几各处，且方向不一，才构成整体可见的偏移。
+    - id: a2
+      text: 只有陶瓷杯滑出杯垫的那次已经足够
+      is_correct: false
+      feedback: 不对：那次只有一件物品偏离，其余位置照旧，属于局部现象；要看到整体需要多件物品同时离开原位。
+- id: unit-7
+  role: discrimination
+  hypothesis_target: misc-5
+  preserved_variables:
+  - item_density
+  - contamination
+  changed_variables:
+  - entity_kind
+  - component_kind
+  - order_status
+  - damage_status
+  - deviation_scope
+  semantic_spec:
+    judgment: 学习者能否把物品仍保持整齐但墙面开裂、表面破损的空间判断为 wrecked/trashed 而非 messy；messy 描述排列与形态的无序，而不是表面损坏。
+    entity_kind: living_room
+    component_kind: furniture
+    order_status: disordered
+    damage_status: undamaged
+    deviation_scope: whole
+    item_density: medium
+    contamination: clean
+    arrangement_type: spatial_scatter
+    concept_scope: physical_visible
+    physical_arrangement: true
+    foil_order_status: ordered
+    foil_damage_status: surface_damaged
+    foil_deviation_scope: none
+  sequence: 7
+  experience:
+    episode: 客厅里家具不多，但左右两侧的状态不一样。靠窗一侧，几把椅子离开原来的位置：一把横在茶几旁，另一把背对电视；茶几上的杂志和遥控器分布在不同角落，坐垫也歪着。这一侧的墙面和地板没有裂缝、没有破洞。靠门一侧，椅子排成一条直线，茶几上的物品都在原位；但那面墙从踢脚线到腰线有几道裂缝，墙皮翘起，地砖也缺了一角。
+    observable_evidence:
+    - 靠窗侧椅子横斜、一把背对电视
+    - 靠窗侧坐垫歪着，杂志和遥控器分散在茶几不同角落
+    - 靠窗侧墙面和地板完好
+    - 靠门侧椅子排成直线、茶几物品原位
+    - 靠门侧墙面有裂缝、墙皮翘起、地砖缺角
+    surface_dimensions:
+    - name: 家具与物品排列
+      baseline: 椅子成排、茶几物品就位
+      deviation: 靠窗侧椅子和物品多处离开原位；靠门侧保持直线
+    - name: 表面结构状态
+      baseline: 墙面平整、地砖完好
+      deviation: 靠窗侧完好；靠门侧墙面裂缝、地砖缺角
+    - name: 现象分类
+      baseline: 位置偏移与表面破损需要用不同证据区分
+      deviation: 两个侧面分别呈现一种证据，便于对照
+  interaction:
+    question: 左右两侧分别可以用什么现象来说明问题？
+    answers:
+    - id: a1
+      text: 靠窗侧是椅子、坐垫、杂志离开原位；靠门侧是墙面和地砖表面破损
+      is_correct: true
+      feedback: 正确：一个证据是物品位置和形态的偏移，另一个是表面结构的破损；不能把表面破损当作位置偏移来判定。
+    - id: a2
+      text: 两侧都属于同一种表面破损，只是靠窗侧更严重
+      is_correct: false
+      feedback: 不对：靠窗侧的墙面和地砖是完好的，坏的是物品安排；靠门侧物品安排整齐，但墙面和地砖有破损。
+- id: unit-8
+  role: discrimination
+  hypothesis_target: misc-2
+  preserved_variables:
+  - concept_scope
+  changed_variables:
+  - physical_arrangement
+  - entity_kind
+  - component_kind
+  - order_status
+  - contamination
+  - item_density
+  - damage_status
+  - deviation_scope
+  - arrangement_type
+  semantic_spec:
+    judgment: 学习者能否识别：抽象层面的“乱”（如对话混乱、事情混乱）如果没有可观察的物体排列或形态偏离，就不能归为 messy；messy 要求可见的物理无序。
+    concept_scope: physical_visible
+    physical_arrangement: false
+    entity_kind: conversation
+    component_kind: speech_events
+    order_status: not_applicable
+    contamination: not_applicable
+    item_density: not_applicable
+    damage_status: not_applicable
+    deviation_scope: none
+    arrangement_type: none
+    positive_contrast_entity_kind: desk
+    positive_contrast_order_status: disordered
+    positive_contrast_deviation_scope: whole
+  sequence: 8
+  experience:
+    episode: 一间屋子中间，几个人的谈话声叠在一起：一个人连着说了三句没有停，另外两人同时开口，话题从预算跳到午饭，没有人接住上一句。屋子靠窗的桌面上，文件夹、笔、回形针和水杯分散着：一个文件夹斜压着另一本，笔滚到键盘边，回形针洒出一小把，水杯离开杯垫。桌面没有水渍，窗户玻璃也没有裂纹。
+    observable_evidence:
+    - 谈话声重叠，两个人同时开口，话题从预算跳到午饭
+    - 谈话过程中没有出现任何物体位置变化
+    - 桌面文件夹斜压、笔在键盘边、回形针散落、水杯离开杯垫
+    - 桌面无渍痕，窗户玻璃无裂纹
+    - 多件物品分散在整张台面
+    surface_dimensions:
+    - name: 可见物体的位置
+      baseline: 桌面物品各就各位、方向统一
+      deviation: 文件夹斜压另一本、笔在键盘边、回形针散落、水杯离开杯垫
+    - name: 听觉场面
+      baseline: 作为物体排列判断，声音不提供位置信息
+      deviation: 话语重叠、话题跳转；没有物体位置变化可观察
+    - name: 表面完好度
+      baseline: 桌面与玻璃无印痕、无裂纹
+      deviation: 未偏离：表面完好
+  interaction:
+    question: 两个场面中，哪一个提供了“物体整体偏离原位”的可见证据？
+    answers:
+    - id: a1
+      text: 屋子中间的谈话：声音叠在一起、话题跳得很快，这些现象已经足够作为判定依据
+      is_correct: false
+      feedback: 不对：这些是听觉上的交叠，没有物体的位置偏离可供观察；判定需要看得到、摸得着的排列状态。
+    - id: a2
+      text: 靠窗桌面：文件夹、笔、回形针、水杯都离开各自位置，分散在整张台面
+      is_correct: true
+      feedback: 正确：桌面上的可见物品多处偏离原位，且分布在整个台面；谈话声不具备这种可见排列证据。
+symbol_binding:
+  reveal:
+    l2_word: messy
+    ipa: /ˈmɛsi/
+    presentation: 刚才的卧室、桌面、头发、厨房台面、书架、茶几和客厅里，凡是多个组成部分整体偏离各自原本位置或形态的可见状态，都可以用 messy
+      来称呼。请看拼写 m-e-s-s-y，听音 /ˈmɛsi/，并跟读两遍：messy，messy。
+  minimal_l1_gloss: 凌乱的
+gate:
+  passed: true
+  dimensions:
+  - name: semantic_correctness
+    verdict: pass
+    note: 正例均属于目标词义：unit-1 卧室、unit-3 头发、unit-4 左侧台面、unit-5 后段书架、unit-6 后段茶几、unit-7
+      靠窗客厅都是可见的排列/形态无序；unit-8 将无可见物理排列证据的谈话场面排除，符合 WordSense 对 visible 的要求及 misc-2。未发现单元在表达
+      dirty、chaotic、cluttered、wrecked 等相邻范畴。
+  - name: sense_purity
+    verdict: pass
+    note: unit-4 用有污渍但整齐的右侧作 dirty 对照，unit-5 用高密度但成列整齐的前段作 cluttered 对照，unit-7 用墙面破损但物品整齐的靠门侧作
+      wrecked/trashed 对照；unit-2 虽有咖啡渍，但回答明确区分印痕与位置偏移。没有滑向相邻/包含/更具体范畴。
+  - name: prototype_quality
+    verdict: pass
+    note: unit-1 作为 anchor 建立了清晰的基线原型：卧室、衣物/被褥散落、表面干净、未破损、物品不多但整房可见多处偏移，并给出衣柜内叠放整齐的局部对照，符合
+      scene_requirements.must_show 中对空间全貌与整齐对照的要求。
+  - name: definition_leakage
+    verdict: pass
+    note: 绑定前 unit-1~unit-8 的 episode、observable_evidence、surface_dimensions、interaction
+      均以行为证据和中文叙事呈现，没有出现'凌乱就是……'之类的定义式旁白；reveal 中'可以用 messy 来称呼'属于绑定命名动作，不判为定义泄漏。
+  - name: l2_leakage
+    verdict: pass
+    note: 逐一检查了绑定前的 episode、observable_evidence、answers、feedback、surface_dimensions，均未出现
+      messy，也未出现 dirty、untidy、cluttered、wrecked 等相邻 L2 词；目标词只在 symbol_binding.reveal
+      中出现。
+  - name: l1_label_leakage
+    verdict: pass
+    note: 绑定前 learner-visible 文本没有用'凌乱''乱''脏'给概念命名，也没有把 minimal_l1_gloss 复制进题目或反馈；中文表述是'离开原位''方向不一''有印痕'等行为/证据描述，符合允许描述行为、禁止命名概念的要求。
+  - name: surface_language_compliance
+    verdict: pass
+    note: 绑定前全部为中文经验叙事，无成段英语；reveal 中以目标 L2 呈现 messy、拼写与读音，符合默认 zh-CN → en 合同。本资产无
+      grounding/boundary 单元，不需额外检查 boundary 选项。
+  - name: variable_isolation
+    verdict: pass
+    note: unit-4 左右分区保持 item_density/damage_status 不变，只让 order 与 contamination 正交变化；unit-5
+      保持 high density/clean/undamaged，比较成列整齐与方向混杂；unit-6 保持 low density/clean/undamaged，比较单件局部偏移与多件整体偏移；unit-7
+      保持 density/clean，比较排列偏移与表面破损。未发现多余变量悄悄变化。
+  - name: accidental_invariant
+    verdict: pass
+    note: 正例覆盖卧室、办公桌、头发、厨房台面、书架、茶几、客厅等多个表面场景，且包含干净与有咖啡渍、稀疏/中等/高密度，未形成同场景/同结局/同表面状态的假不变式。8
+      个交互题正确答案位置为 a1/a2/a2/a1/a2/a1/a1/a2，无固定位置不变式。
+  - name: cognitive_noise
+    verdict: warn
+    note: unit-5 episode 写'后来有人重新整理了一下'，但后续行为是把书混插、斜靠横躺、书脊不齐，属于打乱而非整理；'整理'与结果矛盾，会造成轻微认知噪音。建议将字段改为'后来有人把书重新混插了一下'或'重新摆放了一下'。其余单元未发现明显无关情节或含混歧义。
+  scores:
+    semantic_correctness: 9.5
+metadata:
+  compiler_version: 2.1.0
+  prompt_versions:
+    program_planner: v2
+    surface_generator: v2
+    quality_gate: v2
+  generated_at: '2026-08-15T15:58:52Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids:
+  - c2f83712-b751-4407-a149-a63a17b35460
+  - b1a50f29-f021-4ccc-81fa-c358e022dafc
+  language_policy:
+    policy_version: 1
+    learner_l1: zh-CN
+    target_l2: en

@@ -1,0 +1,33 @@
+schema_version: '1.0'
+word: hesitant
+language: en
+status: reviewed
+inventory_version: 1
+source:
+  provider: wiktionary
+  entry_count: 1
+  evidence_digest: sha256:249a141ca336c50a0ac17ef71e1f035e564d2e06bec9f35826d60eaa827f7e77
+senses:
+- id: hesitant-01
+  lemma: hesitant
+  pos: adjective
+  label_zh: 犹豫的；有顾虑的
+  definition: 倾向于犹豫、等待或谨慎行事；因顾虑而不愿行动。
+  semantic_signature:
+    semantic_type: disposition
+    dimension: caution/hesitation
+    change_of_state: false
+    causative: false
+    valency: predicative (be + hesitant + to-infinitive / about NP)
+  source_entries:
+  - hesitant-dict-001
+  decision:
+    type: keep
+    reason: 唯一一条词典证据，词义清晰、常见且可独立教学，直接保留为单一核心 sense。
+  teaching_priority: core
+  usage:
+    currency: current
+    productivity: productive
+    register: 通用/中性
+deferred_entries: []
+relations: []

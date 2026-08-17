@@ -1,0 +1,20 @@
+schema_version: '1.0'
+version: 1
+word: notice
+pos: [verb]
+
+pronunciation:
+  ipa:
+    - "/ˈnoʊtɪs/"
+
+frequency:
+  rank: 1283
+  band: high
+
+senses:
+  - id: notice-01
+    pos: verb
+    sense_label: "注意到；察觉"
+    definition: "To have a person, object, or fact enter one's awareness through perception or thought."
+    status: reviewed
+    scene_count: 0

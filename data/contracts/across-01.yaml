@@ -1,0 +1,55 @@
+schema_version: '1.0'
+contract_id: across-01-contract
+sense_id: across-01
+lemma: across
+pos: preposition
+semantic_revision: 1
+content_hash: sha256:2d1f762b82121722fee3a160905c17aef1140377ee50e3a034bf5be0d6dee581
+semantic_model:
+  invariant: 一个中间物（landmark）将空间划分为两侧，figure 以连续的路径运动或延伸形态从该中间物的一侧到达或覆盖到另一侧。
+  necessary_conditions:
+  - 必须存在一个可识别的 landmark（中间物或空间），它把空间划分为两侧，并位于 figure 路径或延伸的中间。
+  - 被观察的主体（figure）必须被理解为沿一条路径运动，或以延伸形态覆盖从 landmark 一侧到另一侧的空间。
+  - 必须能确定 landmark 的两侧各有一个与 figure 相关的空间端点（起点侧与终点侧）。
+  - figure 的路径或延伸必须连续经过 landmark 所在区域，横穿 landmark 占据的区域，而不是只到达 landmark 近侧或只停留在远侧。
+  - 场景或语境必须指向“跨越”这一整体关系（连续的跨度），而非仅指向终点位置。
+  non_entailments:
+  - 画面只显示 figure 位于 landmark 的另一侧（静态终点位置），并不蕴涵本义项成立；这更可能对应 across-02。
+  - 本义项成立并不蕴涵 figure 一定是正在运动的活物或存在可见运动轨迹；它可以是一个静态延伸物（如桥、道路）跨越 landmark。
+  - 本义项成立并不蕴涵路径方向必须是水平横向；“横”的“横向/水平方向”义对应 across-04，而非本义项。
+  - 如果 across 后面没有名词短语作宾语（如 He walked across），即使保留路径义，也不属于本义项，而属于 across-03（副词）。
+  - 出现“进入 landmark 内部后再离开”的空间关系，并不蕴涵本义项；这种视觉对应其他空间关系，而非 across-01 的跨越。
+  typical_correlates:
+  - 通常，画面中会同时出现起点侧、中间物和终点侧三个空间要素，使跨越关系可验证。
+  - 在移动用法中，通常能看到 figure 的运动轨迹，如人走过马路、游过河、跑过操场。
+  - 在延伸用法中，通常能看到延伸物的两端分别位于 landmark 的两侧，如桥横跨河面、道路伸过山谷。
+  - across 的宾语常是一个可把空间分成两侧的中间物，如河、路、桥、操场等。
+  misconceptions:
+  - id: misc-1
+    description: 把 across 理解成静态的“在对面/另一边”，忽略路径或延伸。
+    correction: 若画面中只有 figure 位于 landmark 另一侧的静态位置，没有跨越轨迹或延伸，该证据不支持本义项；要支持本义项，需要看到从一侧到另一侧的路径或延伸联系。
+  - id: misc-2
+    description: 把 across 的核心窄化为“水平横向移动”，忽略“从一侧到另一侧穿过中间物”。
+    correction: 需要检验路径是否穿越中间物，而不只看运动方向；如果运动是水平方向但没有跨过中间物，则不是本义项；如果路径跨越中间物但方向非水平，仍可成立。
+  - id: misc-3
+    description: 认为 across 必须不带宾语（如 He walked across），混淆介词与副词用法。
+    correction: 需要检查 across 后是否接名词短语；若没有宾语，则证据指向 across-03 副词用法；若接宾语且符合跨越关系，则支持本义项。
+  - id: misc-4
+    description: 认为 across 只适用于移动的主体，不适用于静态延伸物。
+    correction: 需要观察 figure 是否以两端跨侧的形式（如桥）存在；即使没有运动，延伸物两端分别位于 landmark 两侧也满足本义项。
+  - id: misc-5
+    description: 把“进入中间物内部再离开”的路径也当作 across。
+    correction: 需要对比路径是否连续横穿 landmark 区域；若路径显示进入 landmark 内部再离开，则属于其他空间关系，证据不支持本义项。
+  l1_interference:
+  - 中文“横”同时覆盖“横过/横跨”（对应本义项）和“横向/水平方向”（对应 across-04）。学习者容易用“横”的“水平方向”义覆盖 across 的路径义，把“从一侧到另一侧穿过中间物”窄化为水平方向。
+  - 中文“对面”是静态的“另一边”（对应 across-02），常被用来翻译 across 的终点位置。学习者可能用“对面”的静态位置概念覆盖 across 的路径/延伸义，把
+    across 误解为单纯位于另一边。
+metadata:
+  compiler_version: 2.1.0
+  prompt_versions:
+    semantic_planner: v2
+  generated_at: '2026-08-16T08:15:03Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids:
+  - 68772dfd-818f-472c-ba9b-0b9a3ae5b65e

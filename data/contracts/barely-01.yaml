@@ -1,0 +1,63 @@
+schema_version: '1.0'
+contract_id: barely-01-contract
+sense_id: barely-01
+lemma: barely
+pos: adverb
+semantic_revision: 1
+content_hash: sha256:59fb9b1e4fd7fabdc82aad8e4ecda623cfdae2acdfe3b4031c93782584d0d021
+semantic_model:
+  invariant: barely 的经验范畴成立，当且仅当：在某个可从情境评估的标量属性、事件或结果上，实际程度极其接近该标量范围的下限，但仍大于零，因而该属性或结果以最低可感知水平成立，并且评价者把这个微小余量作为显著信息呈现。
+  necessary_conditions:
+  - 存在一个可被评估的标量属性、事件或结果作为 target；barely 修饰的是该 target 的程度，而不是时间、意愿或因果。
+  - 该 target 的实际程度极其接近标量范围的下端点。
+  - 该程度仍为正：属性成立或事件发生，至少达到最低、可感知的水平。
+  - 实际程度与下限之间的距离可忽略，因此被评价者感知为“刚好达到阈值”而非显著超过。
+  - 评价者把“只超出下限一点点”这一微小余量作为当前表达中的显著信息来呈现。
+  non_entailments:
+  - barely 表示程度，不蕴涵事件在时间上是“刚刚发生”（just now）；一个刚发生的事件，不能仅凭时间近就成为 barely。
+  - barely 不蕴涵完全缺失或零程度；彻底看不见、完全无声、零量等状态不是 barely，也不能由 barely 推出。
+  - barely 不蕴涵“仅仅/只是”（only/merely）这种对对象集合或数量的限制；它只说明程度极小。
+  - 在结果句中，barely 不蕴涵结果未达成；X barely passed 蕴涵 X 通过了，而不是像 almost 那样指向“差一点没通过”。
+  - barely 不蕴涵主体的不情愿或消极态度；“勉强”中的 reluctant 义不是 barely 的组成部分。
+  - barely 与 hardly 在感知/数量语境中可能重叠，但 barely 本身不蕴涵“几乎不存在”或否定结果；不能说 barely finished 因此等于
+    hardly finished 的否定义。
+  typical_correlates:
+  - 常伴随表现：目标物在远处或雾中只显现模糊轮廓（barely visible）；这相关于极低程度，但不是必要——低对比度或近距离弱显现也可成立。
+  - 常伴随表现：在“刚好达到”义中，对象越过参照线的量很小，例如红笔标记刚高出及格线一两毫米，或冲线时只领先一个身位；这是常见外显，不是词义条件。
+  - 常伴随表现：评价 barely audible 时，音量计指针停在接近下限的位置或声音细弱；这是相关证据，不是必要——只要听感量极小即可。
+  - 常伴随表现：说话人常在目标事件的结果明确后才说出 barely，例如先看到参赛者冲线，再评价 barely made it；这种时间次序是常见伴随，不是词义本身。
+  misconceptions:
+  - id: misc-1
+    description: 把 barely 当成 almost/nearly，以为 barely passed 也意味着“没有通过”。
+    correction: 用同一结果句检验：X almost passed 蕴涵 X 没有通过，X barely passed 蕴涵 X 通过了。只要观察到目标确实越过了合格阈值，almost
+      的误读就被推翻，barely 成立。
+  - id: misc-2
+    description: 把 barely 理解为“完全不存在/零程度”，以为 barely visible 就是看不见、barely audible 就是听不见，也把
+      barely 与 hardly 的否定倾向混同。
+    correction: barely 蕴涵最小正量：如果还能观察到任何可察觉的轮廓或声音，零程度解读就不成立；只有在完全没有痕迹时，“零程度”才可能是对情形的正确描述，但那不是
+      barely。hardly 在数量语境中可与之重叠，但更强调趋近于不存在。
+  - id: misc-3
+    description: 把 barely 当成时间副词“刚刚”（just now），以为 I barely ate 是“我刚吃过饭”。
+    correction: barely 表示程度而非时间。I barely ate 指吃得极少；若一个情境只提供时间近的信息而没有程度判断，barely 不适用。
+  - id: misc-4
+    description: 把 barely 当成“仅仅/只是”（only/merely），以为 barely enough 表示“只是够、没有更多”的集合限制。
+    correction: barely enough 是“刚好够”：量恰好达到足够的阈值。若换读为 only/merely 后变成“排他性限制”而不是“程度极小”，就不是
+      barely 的语义。
+  - id: misc-5
+    description: 由中文“勉强”推出 barely 包含不情愿的态度，以为 He barely spoke 含有 reluctant 的含义。
+    correction: barely 只修饰程度，不表达意愿。将句子放在意愿中立的情境中（例如 He barely spoke 只描述话量极少），barely
+      仍然成立，可见 reluctant 义不是其组成部分。
+  l1_interference:
+  - 中文“几乎”是一个更宽的概念，覆盖 barely 与 almost/nearly，而且“几乎及格”在中文里通常默认没有及格；学习者在面对“刚好及格”时，会被
+    L1 切割带向“未达到”一侧，把 barely 误判为 almost。
+  - 中文“勉强”与 barely 的“only just”面重合，但“勉强”还能表示不情愿地做某事；L1 会把 reluctant 这一层意愿义带入 barely，从而把程度判断和态度判断混在一起。
+  - 中文“刚刚”同时有“时间上刚发生”和“程度上的刚好”两种经验切割；学习者容易先激活时间义，把 barely 当成 just now，忽略 barely 只能表达程度。
+metadata:
+  compiler_version: 2.1.0
+  prompt_versions:
+    semantic_planner: v2
+  generated_at: '2026-08-16T08:24:31Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids:
+  - 7560cad0-cf63-4564-ac1c-9407ae61b7a0

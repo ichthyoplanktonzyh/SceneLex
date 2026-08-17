@@ -1,0 +1,60 @@
+schema_version: "1.0"
+version: 1
+status: reviewed
+id: barely-01-transfer-01
+sense_ref: barely-01
+scene_type: transfer
+transfer_dimensions:
+  - participant_type
+  - scale
+  - context
+surface:
+  domain: mixed
+  participant_type: mixed
+  setting: mixed
+title: 触壁与达标
+synopsis: >
+  两个完全不同的场景——游泳运动员指尖刚触壁，以及篮球队伍人数刚够开赛——
+  都共享“量值刚好达到临界点”的结构。多画面并置逼迫抽象。
+storyboard:
+  - beat: 1
+    visual: >
+      游泳池，比赛冲刺时刻。运动员手指伸向前，指尖触壁瞬间——触壁传感器亮灯，
+      但画面特写指尖与池壁之间几乎只有毫米空隙，好像差一点就没碰到。
+    audio: "(触壁信号声——短促的哔声)"
+    purpose: 展示第一个迁移：物理距离的临界（barely touched）。观众感知紧张感。
+  - beat: 2
+    visual: >
+      运动员从水里抬起头，看到计时屏幕显示成绩。虽然慢但有效。教练微笑点头。
+    audio: "He barely touched the wall — but he made it."
+    purpose: 命名目标词在第一个场景，强调“刚好达到”。
+  - beat: 3
+    visual: >
+      切换至室内篮球场。五个人站在一起准备开赛，另一个人气喘吁吁从门口跑进来，
+      刚好凑够五对五。教练点数：1,2,3,4…5！刚好。
+    audio: "(脚步声、球声、哨声)"
+    purpose: 第二个迁移点：从距离变为数量（barely enough players）。
+  - beat: 4
+    visual: >
+      教练对跑进来的人拍拍肩膀：“刚好够。”那人擦汗。
+    audio: "We barely have enough for a full team — one more and we'd be good."
+    purpose: 用角色话语直接说“barely have enough”，覆盖 collocations 中 “barely enough”。
+  - beat: 5
+    visual: >
+      回放两个场景的关键瞬间：指尖触壁的慢动作、最后一人走进球门的瞬间。
+      两个画面并列，各自配上标注小字：“barely touched the wall”、“barely enough players”。
+    audio: "(同一声音重复) barely — barely — barely"
+    purpose: 三画面并置（加上静态图片更佳）逼迫抽象：barely 的核心是“量值在临界点上，差一点就达不到”。
+  - beat: 6
+    visual: >
+      画面对半切：左侧水花飞溅，右侧篮球落地。中央浮现文字“barely”。
+    audio: "（空灵单音）"
+    purpose: 视觉和听觉双重抽象标记，结束场景。
+learning_tasks:
+  - type: transfer_judgment
+    prompt: 观看三段新短片（一只猫刚好跳过一道窄缝/一杯水刚好倒满不溢出/一个人刚好赶上公交车），判断是否可以用 barely 描述。
+    choices:
+      - 全部可以
+      - 只有部分可以
+    expected_answer: 全部可以
+    scoring_note: 学习需要能识别“刚好达到临界”这一抽象特征，而非仅依赖表面相似。

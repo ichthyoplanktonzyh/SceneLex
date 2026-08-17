@@ -1,0 +1,63 @@
+schema_version: '1.0'
+word: cup
+language: en
+provider: wiktionary
+captured_at: '2026-08-16T06:17:20Z'
+entries:
+- entry_id: cup-dict-001
+  pos: verb
+  gloss: To form into the shape of a cup, particularly of the hands.
+  labels:
+  - transitive
+  examples:
+  - Cup your hands and I'll pour some rice into them.
+- entry_id: cup-dict-002
+  pos: verb
+  gloss: To hold something in cupped hands.
+  labels:
+  - transitive
+  examples:
+  - He cupped the ball carefully in his hands.
+- entry_id: cup-dict-003
+  pos: verb
+  gloss: To pour (a liquid, drink, etc.) into a cup.
+  labels:
+  - transitive
+  examples:
+  - We are cupping some new brands of coffee today.
+- entry_id: cup-dict-004
+  pos: verb
+  gloss: To make concave or in the form of a cup.
+  labels:
+  - transitive
+  examples:
+  - to cup the end of a screw
+- entry_id: cup-dict-005
+  pos: noun
+  gloss: A concave vessel for drinking, usually made of opaque material (as opposed
+    to a glass) and with a handle.
+  labels: []
+  examples:
+  - Pour the tea into the cup.
+- entry_id: cup-dict-006
+  pos: noun
+  gloss: The contents of said vessel.
+  labels: []
+  examples:
+  - I drank two cups of water but still felt thirsty.
+  - In Starbucks’s case, the firm has in effect turned the process of making an expensive
+    cup of coffee into intellectual property.
+- entry_id: cup-dict-007
+  pos: noun
+  gloss: A customary unit of measure; A US unit of liquid measure equal to 8 fluid
+    ounces (¹⁄₁₆ of a US gallon; 236.5882365 mL) or 240 mL.
+  labels:
+  - US
+  examples: []
+- entry_id: cup-dict-008
+  pos: noun
+  gloss: A customary unit of measure; A Canadian unit of measure equal to 8 imperial
+    ounces (¹⁄₂₀ imperial gallon; 227.3 mL) or 250 mL.
+  labels:
+  - Canada
+  examples: []

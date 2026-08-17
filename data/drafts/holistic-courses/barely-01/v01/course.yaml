@@ -1,0 +1,357 @@
+schema_version: '1.0'
+course_id: barely-01-course-v1
+target:
+  sense_id: barely-01
+  lemma: barely
+  pos: adverb
+  ipa: /ˈbɛrli/
+  learner_l1: zh-CN
+  target_l2: en
+author_intent:
+  course_thesis: barely 的核心不是'没有'，而是'只高出下限一点点且结果仍然成立'；它与 almost 的差别就在阈值是否被越过。
+  learner_start: 学习者来自 zh-CN，熟悉'几乎'、'勉强'、'刚刚'等中文表达；容易把'几乎及格'理解成没及格，也容易把'刚刚'当成时间词。此时尚未掌握
+    barely 的形式，但已认识 almost 作为常见前置词汇；本课只在边界对照中激活 almost，不完整教学 almost。
+  intended_outcome: 学习者在看到'刚过线但只超一点点'的场景时能识别和产出 barely，能区分 barely passed 与 almost
+    passed，不会把 barely visible 理解为完全不可见，也不会把 barely 当作 just now 或 reluctantly。
+  design_rationale: 先用无需语言的阈值经验建立'最低正量'和'刚过及格线'，再绑定 barely；随后用一条 l1_confirmation 激活卡把学习者已掌握的对照词
+    almost 带出，再用边界题强化结果是否成立；随后做两个 L1 干扰点迁移；复习按核心场景 recall → 听感/赶车/盐量等迁移递进。
+learning_flow:
+- id: step-01-fog
+  trigger: initial
+  primitive: scene_observation
+  purpose: 先用视觉场景让学习者体验'极低正量'：对象存在但程度接近零。
+  addresses:
+  - misc-2
+  estimated_seconds: 35
+  can_pause_after: false
+  learner_content:
+    episode: 清晨有雾。你站在海边望向远处，灯塔只剩一个很淡的轮廓。它不是完全看不见，只是需要眯起眼睛，才能从灰白的雾里辨出那个形状。
+  evaluation:
+    kind: none
+- id: step-02-fog-check
+  trigger: immediate_followup
+  primitive: binary_judgment
+  purpose: 把'最低正量'变成一次明确判断：能看到，而不是零。
+  addresses:
+  - misc-2
+  estimated_seconds: 30
+  can_pause_after: false
+  learner_content:
+    episode: 还是同一片雾中的灯塔。视力正常的人停下脚步，眯眼看了两秒，确认那里有一座灯塔。
+    evidence:
+    - 灯塔在画面里只有一个淡轮廓。
+    - 那个轮廓需要仔细看，但确实可以被认出来。
+    question: 灯塔到底能不能被看到？
+    options:
+    - id: visible
+      text: 能看到，虽然只是淡淡的轮廓
+      feedback: 对。它离'看不见'非常近，但仍然看得见。
+    - id: invisible
+      text: 不能看到，完全隐没在雾里
+      feedback: 如果完全看不见，那是零程度，不是这里的情况。
+  evaluation:
+    kind: choice
+    correct_option_id: visible
+- id: step-03-score-scale
+  trigger: immediate_followup
+  primitive: scalar_threshold
+  purpose: 用可拖动的分数标尺建立'越过合格线但只超出一点点'的阈值经验。
+  addresses:
+  - misc-1
+  estimated_seconds: 60
+  can_pause_after: true
+  learner_content:
+    episode: 一门考试满分100，及格线是60。小华的成绩单上是61分；小李的成绩单上是59分。拖动标尺分别停在61和59，看看结果标签的变化。
+    scale:
+      min: 0
+      max: 100
+      label: 分数
+    initial_value: 61
+    threshold: 60
+    direction: reaches
+    outcome_markers:
+      reached: 已经达到（只高出一点）
+      not_reached: 未达到（还差一点）
+    question: 哪一个更贴合'刚刚达到及格线'？
+    options:
+    - id: hua_61
+      text: 小华：61分，只高出及格线1分
+      feedback: 对。61分已经越过及格线，而且只高出一点点。
+    - id: li_59
+      text: 小李：59分，还差1分没到线
+      feedback: 59分还没越过及格线。它离线很近，但不是'刚刚达到'。
+  evaluation:
+    kind: choice
+    correct_option_id: hua_61
+- id: step-04-symbol
+  trigger: immediate_followup
+  primitive: symbol_reveal
+  purpose: 首次揭示目标词 barely 的拼写、发音与最小 L1 确认。
+  estimated_seconds: 50
+  can_pause_after: true
+  learner_content:
+    l2_word: barely
+    ipa: /ˈbɛrli/
+    presentation: 刚才的灯塔和61分都在描述同一种程度：它比'零'或'及格线'只高一点点，但事情仍然成立。英语里用这个词来表达这种'勉强、刚刚够到'的程度。
+    minimal_l1_gloss: 勉强、几乎不
+  evaluation:
+    kind: none
+- id: step-05-pronunciation
+  trigger: immediate_followup
+  primitive: pronunciation
+  purpose: 独立发音练习。
+  estimated_seconds: 20
+  can_pause_after: false
+  learner_content:
+    l2_word: barely
+    ipa: /ˈbɛrli/
+  evaluation:
+    kind: none
+- id: step-06-grounding-visible
+  trigger: immediate_followup
+  primitive: l2_grounding
+  purpose: 把 barely+adj 结构锚定到可见场景，锁定'最小正量'。
+  addresses:
+  - misc-2
+  estimated_seconds: 40
+  can_pause_after: false
+  learner_content:
+    source_step_id: step-01-fog
+    l2_realization: The lighthouse was barely visible in the morning fog.
+    constructions:
+    - barely + adjective
+    - barely + past participle
+    collocations:
+    - barely visible
+    - barely audible
+  evaluation:
+    kind: none
+- id: step-07-grounding-passed
+  trigger: immediate_followup
+  primitive: l2_grounding
+  purpose: 把 barely+verb 结构锚定到刚过线场景，锁定结果成立。
+  addresses:
+  - misc-1
+  estimated_seconds: 40
+  can_pause_after: false
+  learner_content:
+    source_step_id: step-03-score-scale
+    l2_realization: She barely passed the exam — her score was only one point above
+      the passing line.
+    constructions:
+    - barely + verb
+    collocations:
+    - barely passed
+    - barely made it
+  evaluation:
+    kind: none
+- id: step-08-activate-almost
+  trigger: immediate_followup
+  primitive: l1_confirmation
+  purpose: 在边界对照前，用 L1 确认学习者已掌握 almost（几乎、差一点）这一前置对照词；不把 almost 作为新词绑定，只确认旧知识可用。
+  addresses:
+  - misc-1
+  estimated_seconds: 30
+  can_pause_after: true
+  learner_content:
+    prompt_text: 下一题会请你比较 barely 和 almost 两个词。almost 是你已经认识的英语词，表示“几乎、差一点”：59 分就是
+      almost passed（差一点及格，但没及格）。barely 是刚学的词，表示“刚刚达到，结果成立”：61 分就是 barely passed。请确认你已准备好区分“差一点没达到”和“刚刚达到”。
+  evaluation:
+    kind: none
+- id: step-09-boundary-almost
+  trigger: immediate_followup
+  primitive: boundary_choice
+  purpose: 用 almost 对照，把'结果是否成立'变为两种符号的选择。
+  addresses:
+  - misc-1
+  estimated_seconds: 60
+  can_pause_after: true
+  learner_content:
+    episode: 同一场考试，及格线60。小华61分，多出1分；小李59分，还差1分。下面哪个词适合小华？
+    options:
+    - id: barely_opt
+      text: barely
+      sense_id: barely-01
+    - id: almost_opt
+      text: almost
+      sense_id: almost-01
+    correct_sense_id: barely-01
+    explanation:
+    - 小华已经越过及格线，只是超出量极少，所以 barely 成立；结果确实通过了。
+    - 小李还差1分没到线，属于 almost：差一点但没达到。两个词都表示离下限很近，差别在于结果是否成立。
+  evaluation:
+    kind: sense_choice
+    correct_sense_id: barely-01
+- id: step-10-transfer-time
+  trigger: immediate_followup
+  primitive: transfer_judgment
+  purpose: 纠正中文'刚刚'的时间义干扰：barely 是程度词，不是时间词。
+  addresses:
+  - misc-3
+  estimated_seconds: 45
+  can_pause_after: false
+  learner_content:
+    episode: 中午，小美只吃了几口饭就放下筷子。下午2点，朋友问她吃过饭没有。小美心里想的是：我'刚'吃过，时间才过去不久。
+    evidence:
+    - 朋友的问题关心的是时间。
+    - 小美想强调的也是'时间刚刚过去'。
+    - 中文里的'刚'既可以是时间义，也可以是程度义。
+    question: 如果小美想强调的是时间'刚刚发生'，能用 barely 来表达吗？
+    options:
+    - id: 'no'
+      text: 不能。barely 表示的是程度极小，不是时间刚刚发生。
+      feedback: 对。时间上的'刚刚'是 just now，barely 不表达这个意思。
+    - id: 'yes'
+      text: 能。'刚刚'和'勉强、几乎不'在这里是同一个意思。
+      feedback: 如果把它读成时间义，就不属于 barely 的语义。
+  evaluation:
+    kind: choice
+    correct_option_id: 'no'
+- id: step-11-transfer-reluctant
+  trigger: immediate_followup
+  primitive: transfer_judgment
+  purpose: 排除中文'勉强'带来的不情愿义：barely 只修饰程度。
+  addresses:
+  - misc-5
+  estimated_seconds: 45
+  can_pause_after: true
+  learner_content:
+    episode: 小组讨论会上，一个同学从头到尾只说了一句话。他不是不愿意参与，只是本来就话少。
+    evidence:
+    - 可以观察到的是他说的话量极少。
+    - 他没有表现出不情愿。
+    question: 如果说 'He barely spoke'，这样用对吗？
+    options:
+    - id: 'yes'
+      text: 可以。barely spoke 只说明说话的量极少，不含不情愿。
+      feedback: 对。barely 只描述程度，不描述意愿。
+    - id: 'no'
+      text: 不可以。只有在他很不情愿说话时才能用。
+      feedback: 不情愿是中文'勉强'的另一个含义，不是 barely 的含义。
+  evaluation:
+    kind: choice
+    correct_option_id: 'yes'
+review_progression:
+- id: review-1-recall
+  timing: 绑定完成后第1天：反向回忆核心场景。
+  due_after_days: 1
+  scaffold_level: early_post_binding
+  primitive: recall_reveal
+  learner_content:
+    episode: 雾里的灯塔：只有一个淡淡的轮廓，但确实能看见。成绩条上：61分，及格线60，只高出1分。这两个场景共同的意思是'程度极低但仍成立'。这个英语词是什么？
+    l2_word: barely
+    ipa: /ˈbɛrli/
+    minimal_gloss: 勉强、几乎不
+  evaluation:
+    kind: none
+- id: review-2-self
+  timing: 绑定完成后第1天：主观自评。
+  due_after_days: 1
+  scaffold_level: early_post_binding
+  primitive: recall_self_grade
+  learner_content:
+    l2_word: barely
+    ipa: /ˈbɛrli/
+  evaluation:
+    kind: self_grade
+- id: review-3-audible
+  timing: 绑定完成后第3天：迁移到听感场景，并用自然 L2 句作判断。
+  due_after_days: 3
+  scaffold_level: later_post_binding
+  primitive: transfer_judgment
+  learner_content:
+    episode: 隔壁房间有人吹口哨。声音很轻，你竖起耳朵才勉强听到一点。
+    evidence:
+    - 你确实听到了口哨声。
+    - 那声音非常接近“听不见”的边缘。
+    question: 朋友说：“I could barely hear the whistle.” 这句话用对了吗？
+    options:
+    - id: correct
+      text: 对。意思是声音只比“听不到”高一点点，但确实听到了。
+      feedback: 好。barely 保留最小的正量：结果确实成立，只是离下限很近。
+    - id: wrong
+      text: 错。既然已经听到了，就不能用 barely 来描述这种声音。
+      feedback: 再想一下：关键证据是你确实听到了口哨声。barely 正是表达“只比听不见的边缘高一点点，但仍然听到”的程度；不是“完全没听到”。
+  evaluation:
+    kind: choice
+    correct_option_id: correct
+- id: review-4-made-it
+  timing: 绑定完成后第5天：用边界对照复习结果成立性的核心。
+  due_after_days: 5
+  scaffold_level: later_post_binding
+  primitive: boundary_choice
+  learner_content:
+    episode: 公交车门在眼前关上前半秒，小李冲进了车厢。另一个乘客慢了一点，车门关上，没赶上。下面哪个词更适合小李？
+    options:
+    - id: barely_made_opt
+      text: barely
+      sense_id: barely-01
+    - id: almost_made_opt
+      text: almost
+      sense_id: almost-01
+    correct_sense_id: barely-01
+    explanation:
+    - 小李确实上了车，只是差一点点就没赶上，所以 barely made it 成立：结果已经发生。
+    - 没赶上的那位才是 almost made it：差一点赶上但没赶上。两个词都表示离下限很近，差别在于结果是否成立。
+  evaluation:
+    kind: sense_choice
+    correct_sense_id: barely-01
+- id: review-5-enough
+  timing: 绑定完成后第7天：复习 barely enough 的'刚好够'，排除 only/merely 读法。
+  due_after_days: 7
+  scaffold_level: later_post_binding
+  primitive: single_choice
+  learner_content:
+    episode: 朋友做菜时只放了一点点盐。他尝了一口说：'There is barely enough salt.'
+    evidence:
+    - 他手上的盐只够最后加这一次。
+    - 尝起来刚好够味，几乎没有富余。
+    question: 朋友想表达的意思最接近下面哪一种？
+    options:
+    - id: just_enough
+      text: 盐的量刚好够，只比不够高一点点。
+      feedback: 对。barely enough 表示'刚好够'，是最低正量。
+    - id: restriction
+      text: 盐只是一种限制条件，不涉及量多量少。
+      feedback: 那是 only/merely 的读法；barely 表达的是程度极小，不是排除其他。
+  evaluation:
+    kind: choice
+    correct_option_id: just_enough
+related_sense_material:
+  almost-01:
+    usage: 作为 barely 的边界对照出现，不完整教学 almost；almost 声明为学习者已有前置词汇，在 step-08-activate-almost
+      中用 l1_confirmation 做 L1 确认激活，不执行新词绑定，再进入 step-09-boundary-almost。
+    note: 本课用 59分、没赶上公车 的场景让学习者看到 almost 一侧；barely 的核心分界是结果已经成立。almost 在本课只通过 L1 确认卡激活旧知识，不建立新的符号绑定；若后续单独教
+      almost-01，建议借用这组分数和赶车场景，先确认学习者能区分'差一点没到'和'刚好到'，再展开 almost 的完整搭配。
+metadata:
+  archetype_hint: threshold_scale
+  designed_for: barely-01, zh-CN -> en
+  repair_note: 针对 Critic fail 与硬约束校验做的修订：(1) review-3-audible 删除了 almost didn't hear
+    作为错误例释，因为它表示'差一点没听到但实际听到'，与 barely 的结果成立面并不对立；现改为只锚定'确实听到但接近听不见'的反馈。(2) step-08-activate-almost
+    原先用 symbol_reveal 绑定 almost，违反 symbol_reveal 只能揭示目标词 barely 的硬约束；已改为 l1_confirmation
+    激活卡，almost 不作为新词绑定，而是在 author_intent 与 related_sense_material 中声明为学习者已有前置词汇，并用
+    L1 确认旧知识后再进入 boundary_choice。(3) 统一了分数场景中小李的分数为 59 分，避免与 almost passed 的示例不一致。
+  holistic_compiler_version: 1.0.0
+  generated_at: '2026-08-16T11:14:13Z'
+  calls:
+  - role: author
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: 1ff02ac4-d897-40bf-af26-7dc0e34ef2ae
+  - role: author_format_retry
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: 47fde6fb-6d83-4e3b-ba76-7254a9152c8c
+  - role: critic
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: d4f4cacb-a99e-4646-9422-bf4fbdbc76dc
+  - role: repair
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: 52dd7a28-623f-4afb-a254-041052f354de
+  - role: repair_format_retry
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: b197d800-747a-4870-b16a-69b8deff8cdd
+  input_digest: sha256:e3982f7ed311a29f60e8c225e61bc746cec6daf2d968ce53179c695712bc5896

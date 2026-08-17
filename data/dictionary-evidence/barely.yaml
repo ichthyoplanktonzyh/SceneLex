@@ -1,0 +1,30 @@
+schema_version: '1.0'
+word: barely
+language: en
+provider: wiktionary
+captured_at: '2026-08-16T06:25:54Z'
+entries:
+- entry_id: barely-dict-001
+  pos: adv
+  gloss: By a small margin.
+  labels:
+  - not-comparable
+  examples:
+  - I barely completed my homework. However, I got a score of 5 for it.
+  - It becomes, therefore, no inconsiderable part of science barely to know the different
+    operations of mind,
+- entry_id: barely-dict-002
+  pos: adv
+  gloss: Almost not at all.
+  labels:
+  - not-comparable
+  examples:
+  - The plane is so far away now I can barely see it.
+  - Yes, it is barely visible.
+- entry_id: barely-dict-003
+  pos: adv
+  gloss: Recently, just now.
+  labels:
+  - not-comparable
+  examples:
+  - I barely got to the store.

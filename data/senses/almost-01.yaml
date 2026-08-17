@@ -139,3 +139,17 @@ scene_requirements:
   timing: >
     在事件接近临界点、观众产生"要发生了"的预期时，
     用目标词命名这个"极度接近但未达成"的状态。
+
+# ============================================================
+# G. 教学原型建议 (非权威, 仅供 Holistic Course Author 参考)
+# ============================================================
+teaching_profile:
+  primary_archetype: threshold_scale
+  suggested_capabilities:
+  - scalar_threshold
+  - binary_judgment
+  - single_choice
+  - transfer_judgment
+  special_risks:
+  - threshold_side_confusion
+  - l1_overlap_几乎

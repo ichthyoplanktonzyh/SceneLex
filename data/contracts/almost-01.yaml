@@ -1,0 +1,58 @@
+schema_version: '1.0'
+contract_id: almost-01-contract
+sense_id: almost-01
+lemma: almost
+pos: adverb
+semantic_revision: 1
+content_hash: sha256:43159c1e43b8bef047fa196b3c5232dc20b1c1057d3f2559549817a3342038e0
+semantic_model:
+  invariant: 某个目标状态或事件具有明确界限，实际状态极度接近该界限，但最终没有越过或达成目标状态。
+  necessary_conditions:
+  - 存在一个目标状态/事件，且该目标具有明确可辨识的达成界限。
+  - 实际状态沿相关维度（如距离、数量、时间、程度）极度接近该界限。
+  - 实际状态与该界限之间的间隙极小，小到能被感知为“差一点”。
+  - 目标最终未完全达成；实际状态停在未越过界限的一侧。
+  non_entailments:
+  - almost 不蕴涵目标已达成；若观察到结果已经越过界限，almost 即被排除。
+  - almost 不蕴涵“勉强达成”（barely）；barely 是越过了界限但余量极小，almost 是未越过界限。
+  - almost 不蕴涵“大约等于”（about）；about 只表达约略对应或接近一个量，并不要求未达成，almost 则要求未达到该量。
+  - almost 不蕴涵过程仍在中途或结果未知；almost 在说话时已经把结果确定为“未达成”。
+  - almost 不蕴涵事件具有负面色彩或说话人庆幸/遗憾；“差点摔倒”可能令人庆幸，但这是语境附带，不是 almost 的语义。
+  typical_correlates:
+  - 常共同出现但非必要：参与者向目标伸手或前进，并在离目标几厘米处停住或转向。
+  - 常共同出现但非必要：容器或仪表读数显示在阈值下方一小格处，例如液面差一截没到满刻度。
+  - 常共同出现但非必要：计时接近截止时动作被打断，门在到达前一刻关闭。
+  - 常共同出现但非必要：旁观者发出“差一点”的感叹、耸肩或松气，表示对未达成的识别。
+  misconceptions:
+  - id: misc-1
+    description: 误把 almost 当作 about，认为 almost 100 只是约等于 100，不一定强调没到 100。
+    correction: 看实际值是否跨过既定数值：若实际值已经达到或超过 100，almost 100 不成立；只有实际值停在 100 之下且极近时 almost
+      才成立。
+  - id: misc-2
+    description: 把 almost 等同于 barely，认为 almost passed 和 barely passed 都表示“勉强通过”。
+    correction: 看最终状态是否跨过及格线：almost passed 的结果是没通过，barely passed 的结果是通过了；只要观察到“通过”，就是
+      barely 而不是 almost。
+  - id: misc-3
+    description: 把 almost 等同于 not yet 或 approaching，认为“还没完成”就可以说 almost finished。
+    correction: 比较剩余距离与确定性：not yet 不说明距离；almost 要求过程已进展到距离终点极近处，且结果已经确定为未达成。若过程还在中途或结果未知，almost
+      不成立。
+  - id: misc-4
+    description: 把 almost 看成专门描述“差点发生负面事件”并带庆幸语气的词。
+    correction: 用正面或中性语境检验：almost perfect、almost everyone、almost finished 都成立且无需负面事件或庆幸；只要句子没有负面事件仍可理解，就说明“负面+庆幸”不是
+      almost 的意义。
+  - id: misc-5
+    description: 把中文“几乎不”直接翻译成 almost not，认为 almost not 等于 hardly/barely。
+    correction: 检查句子是否表达频率或程度趋近于零：若是，英文应使用 hardly、barely、almost never 等；almost not
+      不是“几乎不”的对应形式，自然英语用法会拒绝这种直译。
+  l1_interference:
+  - 中文“几乎”的否定式“几乎不”覆盖 hardly/barely 的语义区域；学习者会把 almost 也套进否定结构，产出 almost not 来表达“几乎不”，而
+    almost 本身不承担这种否定频率/程度的意义。
+  - 中文“差点”更窄且语用错位：它通常指向未发生的负面事件并带“庆幸没发生”的言外义；学习者会把 almost 限制为负面事件，或在正面/中性事件中额外读出庆幸或遗憾。
+metadata:
+  compiler_version: 2.0.0
+  prompt_versions:
+    semantic_planner: v1
+  generated_at: '2026-08-15T06:03:16Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids: []

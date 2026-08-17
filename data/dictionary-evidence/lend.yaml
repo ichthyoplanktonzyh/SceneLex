@@ -1,0 +1,43 @@
+schema_version: '1.0'
+word: lend
+language: en
+provider: wiktionary
+captured_at: '2026-08-16T06:39:52Z'
+entries:
+- entry_id: lend-dict-001
+  pos: verb
+  gloss: To allow to be used by someone temporarily, on condition that it or its equivalent
+    will be returned.
+  labels:
+  - transitive
+  examples:
+  - I will only lend you my car if you fill up the tank.
+  - Where is that hundred euros I lent you months ago?
+- entry_id: lend-dict-002
+  pos: verb
+  gloss: To make a loan.
+  labels:
+  - intransitive
+  examples: []
+- entry_id: lend-dict-003
+  pos: verb
+  gloss: To be suitable or applicable, to fit.
+  labels:
+  - reflexive
+  examples:
+  - Poems do not lend themselves to translation easily.
+  - The long history of the past does not lend itself to a simple black and white
+    interpretation.
+- entry_id: lend-dict-004
+  pos: verb
+  gloss: To afford; to grant or furnish in general.
+  labels: []
+  examples:
+  - Can you lend me some assistance?
+  - The famous director lent his name to the new film.
+- entry_id: lend-dict-005
+  pos: verb
+  gloss: To borrow.
+  labels:
+  - proscribed
+  examples: []

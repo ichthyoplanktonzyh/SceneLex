@@ -1,0 +1,78 @@
+schema_version: '1.0'
+word: notice
+language: en
+provider: wiktionary
+captured_at: '2026-08-16T06:43:25Z'
+entries:
+- entry_id: notice-dict-001
+  pos: verb
+  gloss: To become aware of; to observe.
+  labels:
+  - transitive
+  examples:
+  - Did you notice the flowers in her yard?
+  - So you punched out a window for ventilation. Was that before or after you noticed
+    you were standing in a lake of gasoline?
+- entry_id: notice-dict-002
+  pos: verb
+  gloss: To be noticeable; to show.
+  labels:
+  - intransitive
+  examples:
+  - The blackness didn't notice so much when she was born; but it's unmistakeable
+    now.
+- entry_id: notice-dict-003
+  pos: verb
+  gloss: To perceive Jewish influence or responsibility.
+  labels:
+  - Internet
+  - intransitive
+  - slur
+  examples:
+  - 'Coordinate term: pattern noticer'
+  - Noticing is antiseptic.
+- entry_id: notice-dict-004
+  pos: noun
+  gloss: The act of observing; perception.
+  labels:
+  - uncountable
+  examples:
+  - He took no notice of the changes, and went on as though nothing had happened.
+  - Athelstan Arundel walked home[…], foaming and raging. […] He walked the whole
+    way, walking through crowds, and under the noses of dray-horses, carriage-horses,
+    and cart-horses, without taking the least notice of them.
+- entry_id: notice-dict-005
+  pos: noun
+  gloss: A written or printed announcement.
+  labels:
+  - countable
+  examples:
+  - A series of notices signpost patients to the X-ray department.
+  - A notice was attached to the building reminding the residents about the five hour
+    water shortage that was happening today.
+- entry_id: notice-dict-006
+  pos: noun
+  gloss: A formal notification or warning.
+  labels:
+  - countable
+  examples:
+  - The sidewalk adjacent to the damaged bridge stonework shall be closed until further
+    notice.
+- entry_id: notice-dict-007
+  pos: noun
+  gloss: Advance notification of termination of employment, given by an employer to
+    an employee or vice versa.
+  labels:
+  - uncountable
+  examples:
+  - I gave her her mandatory two weeks' notice and sacked her.
+  - I can't work here any longer. I'm giving notice.
+- entry_id: notice-dict-008
+  pos: noun
+  gloss: A published critical review of a play or the like.
+  labels:
+  - countable
+  examples:
+  - The first-night audience, yes. The first-night reviewers, not exactly. The notices
+    have so far been mixed, only The Financial Times having delivered itself of an
+    unequivocal rave.

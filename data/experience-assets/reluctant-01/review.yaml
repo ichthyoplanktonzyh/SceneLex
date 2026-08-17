@@ -1,0 +1,274 @@
+schema_version: '1.0'
+asset_type: review
+sense_id: reluctant-01
+contract_hash: sha256:e893727c42babcf98ab71e3ba19934bd3463efaef871c97b40db78b1bc6d73ec
+items:
+- id: review-1
+  semantic_spec:
+    judgment: 复习判断：一个已呈现的课堂陈述机会被行动者完成，但她在走向讲台与开口说话时持续表现出可读的负向意愿；学习者应判断这类动作虽完成但抵抗可读的场景是目标词义的正例。
+    is_target_meaning: 'yes'
+    addresses_misconception:
+    - misc-1
+    setting: university_classroom
+    experiencer_type: university_student
+    task_domain: class_presentation
+    behavioral_evidence_profile: slow_walk_to_lectern_flat_voice_eyes_down
+    eventual_action: 'yes'
+    opportunity_status: presented
+    willingness_valence: negative
+    cause_source: internal_resistance
+    action_specificity: specific_available_action
+    social_visibility: public
+  experience:
+    episode: In a university lecture hall, Priya is called on to present her group's
+      findings. She walks down the aisle toward the lectern with short, dragging steps,
+      pausing twice to look at her shoes. When she reaches the lectern, her hand hovers
+      above the notes for a second before taking them. She speaks in a flat, low voice
+      and keeps her eyes on the paper the whole time, then quickly returns to her
+      seat.
+    observable_evidence:
+    - Priya walks to the lectern with short, dragging steps and pauses twice.
+    - Her hand hovers above the notes for a second before picking them up.
+    - She speaks in a flat, low voice.
+    - She keeps her eyes on the paper while presenting.
+    - She finishes the presentation and quickly returns to her seat.
+    surface_dimensions:
+    - name: Approach speed
+      baseline: Walking directly to the lectern at a normal pace.
+      deviation: Priya drags her steps, pauses twice, and hovers her hand over the
+        notes.
+    - name: Vocal tone
+      baseline: A clear, lively classroom voice.
+      deviation: Her voice is flat and low for the whole talk.
+    - name: Eye contact
+      baseline: Looking at the audience while presenting.
+      deviation: She keeps her eyes on the paper and only looks up at the end.
+- id: review-2
+  semantic_spec:
+    judgment: 复习判断：一个人在看悲伤电影时落泪，情绪指向影片内容而非任何可做的动作；学习者应判断不指向动作的悲伤不是目标词义的正例。
+    is_target_meaning: 'no'
+    addresses_misconception:
+    - misc-5
+    setting: living_room
+    experiencer_type: adult
+    task_domain: none
+    behavioral_evidence_profile: tearful_eyes_absorbed_in_movie
+    eventual_action: not_applicable
+    opportunity_status: not_presented
+    willingness_valence: not_applicable
+    cause_source: unattached_distress
+    action_specificity: none
+    social_visibility: private
+  experience:
+    episode: In a quiet living room at night, Lena sits on the sofa watching a sad
+      film. She wipes tears from her cheeks, her mouth is pressed tight, and she stares
+      at the screen without moving while the music swells. When the scene ends, she
+      reaches for a tissue, blows her nose, and continues watching.
+    observable_evidence:
+    - Lena wipes tears from her cheeks while the sad scene plays.
+    - She stares at the screen without moving.
+    - She reaches for a tissue and blows her nose after the scene.
+    - No request or task appears in the room at any point.
+    surface_dimensions:
+    - name: Presence of an available action
+      baseline: A specific task is presented that the person could do.
+      deviation: No task or opportunity appears; Lena only watches the film.
+    - name: Direction of the emotion
+      baseline: The person's signs point toward a task they could take on.
+      deviation: Her tears and tight mouth point at the film, not at any action.
+    - name: Body movement
+      baseline: Movement slows or stops in front of a pending task.
+      deviation: Lena stays still and absorbed; her only movements are wiping tears
+        and taking a tissue.
+- id: review-3
+  semantic_spec:
+    judgment: 复习判断：一个登山者因体力透支而步履缓慢、频繁停下喘气，但他仍渴望并继续登顶；学习者应判断疲劳导致的缓慢不是目标词义的正例。
+    is_target_meaning: 'no'
+    addresses_misconception:
+    - misc-2
+    setting: mountain_trail
+    experiencer_type: adult_hiker
+    task_domain: hiking_to_summit
+    behavioral_evidence_profile: heavy_breathing_frequent_stops_smiling_encouraging
+    eventual_action: 'yes'
+    opportunity_status: presented
+    willingness_valence: positive
+    cause_source: fatigue
+    action_specificity: specific_available_action
+    social_visibility: semi_public
+  experience:
+    episode: On a steep mountain trail, Marco climbs toward the summit with a heavy
+      pack. He stops often to breathe, his chest heaving and his legs shaking, and
+      he drinks water at every stop. Each time he catches his breath, he grins at
+      his friend and waves upward. He keeps climbing slowly and reaches the top smiling.
+    observable_evidence:
+    - Marco stops often to breathe and drink water.
+    - His chest heaves and his legs shake.
+    - He grins at his friend and waves upward after each rest.
+    - He keeps climbing and reaches the top smiling.
+    surface_dimensions:
+    - name: Pace
+      baseline: Steady, regular climbing.
+      deviation: He stops often, breathes heavily, and shakes, then pushes on slowly.
+    - name: Signs of enjoyment
+      baseline: No signal of how the person feels during the effort.
+      deviation: He grins, waves upward, and smiles at the summit instead of showing
+        resistance.
+    - name: Source of the slow pace
+      baseline: Slow movement appears while an available action is approached.
+      deviation: The slow pace comes with labored breathing and shaking legs, not
+        with behavior aimed away from the climb.
+- id: review-4
+  semantic_spec:
+    judgment: 复习判断：一个顾客在两个口味之间反复比较、犹豫不决，最终未作选择；学习者应判断选项间的不确定不是目标词义的正例（目标词义是对单一已知动作的抵抗）。
+    is_target_meaning: 'no'
+    addresses_misconception:
+    - misc-3
+    setting: ice_cream_shop
+    experiencer_type: adult_customer
+    task_domain: choosing_between_two_flavors
+    behavioral_evidence_profile: looks_back_and_forth_tastes_samples_pauses
+    eventual_action: 'no'
+    opportunity_status: presented
+    willingness_valence: not_applicable
+    cause_source: uncertainty_between_options
+    action_specificity: multiple_available_options
+    social_visibility: public
+  experience:
+    episode: At an ice cream counter, a customer named Sam studies two flavors in
+      front of him. He asks for two spoons, tastes one, then the other, then the first
+      again. He looks from one tub to the other, scratches his head, and holds the
+      scoop over the first tub, then moves it over the second. He finally says he
+      cannot choose today and steps away from the counter.
+    observable_evidence:
+    - Sam tastes one flavor, then the other, then the first again.
+    - He looks back and forth between the two tubs.
+    - He holds the scoop over one tub, then moves it over the other.
+    - He says he cannot choose today and steps away.
+    surface_dimensions:
+    - name: Decision structure
+      baseline: One known action is available and the person resists starting it.
+      deviation: Two options are open, and Sam keeps comparing them.
+    - name: Direction of attention
+      baseline: Attention stays on a single task the person could begin.
+      deviation: His attention swings between the two flavors.
+    - name: Ending state
+      baseline: The action may be finished or left undone while the person's resistance
+        stays clear.
+      deviation: The counter has a clear endpoint, but Sam just cannot settle between
+        the choices.
+- id: review-5
+  semantic_spec:
+    judgment: 复习判断：一个学生收到帮忙搬家的请求后立即平静地拒绝，没有叹气、停顿或情绪挣扎；学习者应判断仅凭决定不做不足以确立目标词义。
+    is_target_meaning: 'no'
+    addresses_misconception:
+    - misc-4
+    setting: university_dormitory
+    experiencer_type: university_student
+    task_domain: helping_classmate_move
+    behavioral_evidence_profile: immediate_calm_decline_no_pause_no_emotional_display
+    eventual_action: 'no'
+    opportunity_status: presented
+    willingness_valence: negative
+    cause_source: decision_not_to_act
+    action_specificity: specific_available_action
+    social_visibility: private
+  experience:
+    episode: In a dorm hallway, a student named Jordan is asked by a neighbor to help
+      carry boxes to the moving truck. Jordan looks up from the phone and says, "Sorry,
+      no," in a relaxed voice, then puts the phone away and walks back into the room.
+      There is no pause, no sigh, and no change in expression during the answer.
+    observable_evidence:
+    - Jordan says "Sorry, no" right after the request.
+    - His voice is relaxed and his expression does not change.
+    - He does not pause or sigh before answering.
+    - He walks back into the room after the reply.
+    surface_dimensions:
+    - name: Emotional display
+      baseline: Some visible sign of internal struggle appears while facing the task.
+      deviation: No pause, sigh, or facial change appears at all.
+    - name: Decision type
+      baseline: A choice not to act can still be part of the scene.
+      deviation: Jordan makes a quick, calm decision and leaves.
+    - name: Response timing
+      baseline: A moment of inner conflict may slow the answer.
+      deviation: His answer comes immediately, in a relaxed tone.
+- id: review-6
+  semantic_spec:
+    judgment: 复习判断：一个少年走向可用的道歉机会，在门口停下、叹气并转身离开，最终没有道歉；学习者应判断动作未发生并不排除目标词义，停止前的行为使抵抗可读。
+    is_target_meaning: 'yes'
+    addresses_misconception:
+    - misc-1
+    setting: home_hallway
+    experiencer_type: teenager
+    task_domain: apologizing_to_sibling
+    behavioral_evidence_profile: stops_at_doorway_sighs_turns_back
+    eventual_action: 'no'
+    opportunity_status: presented
+    willingness_valence: negative
+    cause_source: internal_resistance
+    action_specificity: specific_available_action
+    social_visibility: private
+  experience:
+    episode: At home, a teenager named Casey stands outside the door of a sibling's
+      room to apologize after a fight. He raises his hand to knock, then lowers it.
+      He turns away, walks two steps down the hall, and stops. He lets out a long
+      sigh, looks back at the closed door, and finally goes to his own room without
+      knocking.
+    observable_evidence:
+    - Casey raises his hand to knock, then lowers it.
+    - He turns away and walks two steps down the hall.
+    - He stops and lets out a long sigh.
+    - He looks back at the closed door, then goes to his own room.
+    - He never knocks on the door.
+    surface_dimensions:
+    - name: Movement toward the opportunity
+      baseline: The person moves toward the available action and completes it.
+      deviation: Casey moves toward the door, then away, then stops, then leaves.
+    - name: Audible signs
+      baseline: No notable sound before or during the action.
+      deviation: A long sigh comes before he gives up and walks away.
+    - name: Final outcome
+      baseline: The action is finished, or the resistance stays visible even if it
+        is not.
+      deviation: The apology never happens, but his approach, stop, and retreat make
+        the inner resistance visible.
+batches:
+- count: 6
+  generated_at: '2026-08-15T05:59:16Z'
+  gate:
+    passed: true
+    dimensions:
+    - name: semantic_correctness
+      verdict: pass
+      note: 六条 review 均忠实于 WordSense 成立条件。review-1 先呈现「被点名做课堂展示」这一可用动作，Priya 的拖步、暂停、手悬停、flat
+        voice 让负向意愿在行动过程中可读；review-6 先呈现「向兄弟道歉」的可用动作，Casey 的抬手又放下、转身、叹气、折返让未发生动作时的抵抗可读，且未将“最终未做”当作排除条件。review-2/3/4/5
+        的 no 例分别落在未被行动锚定的悲伤、疲劳导致的缓慢、选项间犹豫、无情绪显示的平静拒绝，均符合 WordSense 的 excluded/boundary。
+    - name: sense_purity
+      verdict: pass
+      note: 正例未滑向相邻范畴：review-1 和 review-6 都针对单一已知动作，抵抗来源是内在不愿，没有变成 refuse/unwilling/hesitant。负例是刻意使用相邻范畴作反例而非无意滑移：review-4
+        明确定位为 hesitant 的选项间不确定，review-5 为 unwilling/refuse 式的平静拒绝，review-3 为疲劳，review-2
+        为未附着于动作的悲伤。
+    - name: definition_leakage
+      verdict: pass
+      note: 六个 episode 的 learner-visible 文本本身没有旁白式说明、字幕、释义或语义标签；目标词和定义式陈述都没有作为场景内容出现。semantic_spec.judgment
+        / observable_evidence / surface_dimensions 中的语义总结应保持为内部答案与生成参数，不应被渲染进揭示前内容或反馈文本。
+    - name: cognitive_noise
+      verdict: warn
+      note: review-1 的 episode 使用低频名词 'lectern'，与目标词义无关，可能分散学习者对关键行为证据（拖步、暂停、手悬停、flat
+        voice）的注意；建议改为 'front of the room' 或 'teacher's desk'。其余单元未发现无关情节或明显含混歧义。
+    scores:
+      semantic_correctness: 9.0
+      sense_purity: 9.0
+      definition_leakage: 9.0
+      cognitive_noise: 7.0
+metadata:
+  compiler_version: 2.0.0
+  prompt_versions:
+    program_planner: v1
+    surface_generator: v1
+    quality_gate: v1
+  generated_at: '2026-08-15T05:59:16Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids: []

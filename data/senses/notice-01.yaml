@@ -1,0 +1,139 @@
+schema_version: '1.1'
+language: en
+version: 1
+status: reviewed
+id: notice-01
+word: notice
+pos: verb
+sense_label: 注意到；察觉
+definition: To have a person, object, or fact enter one's awareness through perception
+  or thought.
+pronunciation:
+  ipa: /ˈnoʊtɪs/
+collocations:
+- notice that
+- notice a change
+- did you notice
+- fail to notice
+- notice someone doing something
+sentence_patterns:
+- I noticed [noun].
+- I noticed that [clause].
+- Did you notice [noun]?
+- She noticed [someone] doing something.
+semantic_revision: 1
+inventory:
+  word: notice
+  version: 1
+  evidence_digest: sha256:1b61d380e5232d86b408e4c4723f95c0854ed100b9cd15ad8f38f6211a2f093d
+  sense_id: notice-01
+  identity_digest: sha256:0064fc59f0d08a63a5aa88e31a542ea94faa11f1bd0d023ad3997825490bf39b
+inventory_source_entries:
+- notice-dict-001
+semantic_identity:
+  semantic_type: perception_cognition
+  dimension: awareness
+  change_of_state: true
+  causative: false
+  valency: '2'
+semantic_type: cognitive_change
+semantic_skeleton:
+  participants:
+  - role: experiencer
+    description: A sentient being whose awareness changes with respect to a stimulus.
+  - role: stimulus
+    description: An entity, event, or proposition that becomes a distinct object of
+      the experiencer's awareness.
+  propositions:
+  - There is an experiencer, and there is a stimulus that the experiencer can access
+    through the senses or the mind.
+  - Before the event, the stimulus is not a distinct object of the experiencer's awareness,
+    even if it is already present.
+  - The event is a transition in which the stimulus becomes a distinct object of the
+    experiencer's awareness.
+  - The final state is one of registration, in which the stimulus is held in awareness
+    rather than merely present in the environment.
+  - The situation is presented as a discrete transition into awareness, not as ongoing
+    monitoring.
+conditions:
+  required:
+  - There is an experiencer and a stimulus that is perceptible or thinkable.
+  - Before the event, the stimulus is not a distinct object of the experiencer's awareness.
+  - The experiencer's awareness changes so that the stimulus becomes a distinct object.
+  - The situation is presented as a discrete occurrence, not as a durative state or
+    habit.
+  excluded:
+  - condition: The word is used as a noun for the ongoing act or state of heeding,
+      rather than for a change into awareness.
+    alternative: notice-02
+  - condition: The word refers to a written or public announcement rather than to
+      an experiencer's change of awareness.
+    alternative: notice-03
+relations:
+  boundaries:
+  - target: notice-02
+    relation: different_dimension
+    distinction: Nominalization of the same perception domain; notice-01 is the change-of-state
+      event and notice-02 is the corresponding act/state treated as a thing. The locked
+      dimensions differ in change_of_state and valency.
+    diagnostic: If the sentence can be paraphrased as 'became aware of NP', it is
+      notice-01; if the word appears with pay, take, draw, or escape and does not
+      create a new awareness, it is notice-02.
+  - target: notice-03
+    relation: different_sense
+    distinction: Semantic domains differ; notice-01 is a perception/cognition event
+      while notice-03 is a communication-related object rather than an event. The
+      signatures differ in semantic_type, change_of_state, and valency.
+    diagnostic: If the referent can be posted, sent, or read as a text, notice-03
+      is in play; if the clause reports an experiencer's awareness changing, notice-01
+      is in play.
+  l1_confusables:
+    zh:
+    - l1_term: 注意
+      covers:
+      - notice-01
+      - notice-02
+      note: 中文'注意'横跨瞬时'注意到'和持续'留意'；英文 notice-01 强调从无到有的意识变化，持续关注通常用 pay attention
+        to。可用'我注意到他进来了'与'请注意听'对照。
+    - l1_term: 看到
+      covers:
+      - notice-01
+      note: 中文'看到'可以只表示视觉接收，也可以表示'注意到'；英文 see 不承诺刺激成为意识焦点，notice 强调该刺激被登记到意识中。可用'看到了但没有注意到'显示差别。
+scene_requirements:
+  must_show:
+  - A perceiver and a stimulus present or available in the same scene.
+  - An observable orientation change such as gaze shifting, head turning, or an ongoing
+    action stopping.
+  - A visible marker of registration, such as a startle, raised eyebrows, or a subsequent
+    action directed at the stimulus.
+  must_not:
+  - Show the perceiver already staring at the stimulus without a transition; that
+    would suggest the stative attention sense.
+  - Keep the stimulus and the perceiver in unrelated shots with no clear line of regard.
+  externalization:
+  - Have the gaze first pass over the stimulus, then return and lock onto it.
+  - For propositional noticing, show a sudden pause and re-reading/re-checking of
+    the situation, or a change in facial expression while looking at the evidence.
+  timing: First let the audience see the stimulus and the perceiver's ordinary behavior;
+    then show the moment of registration. Utter the target word during or just after
+    that visible reaction, so it names the completed shift rather than the ongoing
+    looking.
+provenance:
+  sources:
+  - type: dictionary
+    citation: https://kaikki.org/dictionary/English/meaning/n/no/notice.jsonl
+    license: CC-BY-SA
+
+# ============================================================
+# G. 教学原型建议 (非权威, 仅供 Holistic Course Author 参考)
+# ============================================================
+teaching_profile:
+  primary_archetype: cognitive_update
+  suggested_capabilities:
+  - information_state
+  - scene_observation
+  - single_choice
+  - binary_judgment
+  special_risks:
+  - temporal_order
+  - inference_vs_perception

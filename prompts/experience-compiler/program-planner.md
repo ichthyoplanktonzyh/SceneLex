@@ -1,6 +1,6 @@
 # Experience Compiler — Experience Program Planner
 
-prompt_version: v1
+prompt_version: v2
 
 你是 SceneLex 语义编译器的第二阶段：Experience Program Planner。
 
@@ -11,6 +11,14 @@ prompt_version: v1
 
 你只产出语义层面的计划（单元角色、变量设计、判断任务），**不写任何学习者可见的
 叙事文本**（那是 Surface Experience Generator 的职责）。
+
+## Learning Presentation Language Contract v1
+
+输入中的 `# Presentation Language Policy` 是硬性语言合同（默认 zh-CN → en）。
+计划本身（semantic_spec、变量、judgment）是教学者层面语言，不受 learner-visible
+限制；但你必须为语言合同做准备：concept/transfer 单元的经验由 Surface 阶段以
+中文实现，review 是反向回忆（场景中文、reveal 前无 L2），grounding 用自然 L2
+落地。规划时按"中文可描述的行为证据"设计变量，不要依赖英文对话承担语义。
 
 ## 输入
 
@@ -70,11 +78,17 @@ prompt_version: v1
 - `semantic_spec.judgment` 是**教学者层面的语义规格**（不直接显示给学习者），
   允许使用语义标签（例如"本单元的目标是 reluctant"）；但本阶段**不得输出任何
   learner-visible 表面文本**（episode、对白、选项、反馈），那些由 Surface
-  Experience Generator 负责，且禁止出现目标词与相邻词。
+  Experience Generator 按语言合同实现（绑定前一律中文、禁目标/相邻 L2、禁中文
+  标签定义）。
 - `semantic_spec` 必须为**每个** `preserved_variables` / `changed_variables`
   携带同名的状态键（例如 `changed_variables: ["eventual_action", "setting"]`
   时 spec 里要有 `eventual_action: "no"`、`setting: "kitchen"`），变量状态是
   编译器的确定性校验依据，缺失会导致编译失败。
+- **正例之间变量取值必须多样化**：跨正例单元（anchor / variation /
+  perturbation 等），每个 changed_variables 的取值必须在不同单元里出现真实
+  变化（如 eventual_action 有 yes 也有 no、表面有 clean 也有 stained），
+  禁止所有正例在同一声明变量上取同一值；正例单元数量与取值组合由词义决定，
+  但同值重复会被质量门按假不变式拦截。
 - 心理状态/事件类词义允许在 semantic_spec 中携带结构化结果变量（例如
   `eventual_action: "yes"|"no"`）；**正例经验必须显式变化结果变量**，不能所有
   正例都是同一种结局。

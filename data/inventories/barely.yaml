@@ -1,0 +1,43 @@
+schema_version: '1.0'
+word: barely
+language: en
+status: approved
+inventory_version: 1
+source:
+  provider: wiktionary
+  entry_count: 3
+  evidence_digest: sha256:7082b61d7bcf4ec63c0212e43feb9a00e6007145016917f573d54468a6403784
+senses:
+- id: barely-01
+  lemma: barely
+  pos: adverb
+  label_zh: 勉强；几乎不
+  definition: To a very small extent; only just; almost not.
+  semantic_signature:
+    semantic_type: degree
+    dimension: extent
+    change_of_state: false
+    causative: false
+    valency: modifier
+  source_entries:
+  - barely-dict-001
+  - barely-dict-002
+  decision:
+    type: merge
+    reason: 两条证据表达同一核心意义：程度极低。barely-dict-001 强调恰好达到某一界限（by a small margin），barely-dict-002
+      强调趋近于零（almost not at all），二者在语义上是连续统，教学中不应拆成两个独立义项。
+  teaching_priority: core
+  usage:
+    currency: current
+    productivity: productive
+    register: neutral
+deferred_entries:
+- source_entry: barely-dict-003
+  decision: defer
+  reason: 义项 'Recently, just now' 在当代英语中缺乏独立稳定性，且例句 'I barely got to the store.' 也可自然读作核心义项（勉强到达）。该意义多见于
+    'had barely ... when ...' 构式，宜作为构式而非独立词义处理。
+  required_evidence:
+  - 更多独立于 'barely had V-en when...' 构式的当代用例，明确表示 'recently, just now'
+  - 或来自主流学习者词典的独立义项确认
+  - 需要说明与核心义项 'only just' 的判别标准
+relations: []

@@ -1,0 +1,516 @@
+{
+  "schema_version": "1.0",
+  "course_id": "lend-01-role-perspective-v1",
+  "target": {
+    "sense_id": "lend-01",
+    "lemma": "lend",
+    "pos": "verb",
+    "ipa": "/lɛnd/",
+    "learner_l1": "zh-CN",
+    "target_l2": "en"
+  },
+  "author_intent": {
+    "course_thesis": "lend-01 的经验核心是“当前持有者把具体实物或等值金额的使用临时让给接收者，并预期归还”， 因此句子的主语必须是提供方，而不是拿东西的一方。",
+    "learner_start": "学习者以中文为母语，日常“借”字不区分借出与借入，可能默认 lend 也能表达借入； 尚未掌握 lend 的拼写、发音与基本句型。",
+    "intended_outcome": "学习者看到具体物品或金额从一方转移到另一方并伴随归还约定的场景时，能识别为 lend-01； 能判断句子的主语应为提供方；能使用 lend someone something / lend something to someone 表达； 不被“没有实际归还”或“还的不是同一张钞票”误导；能将赠与等永久转移排除在外。",
+    "design_rationale": "主线采用角色视角：先在绑定前用中文经验叙事建立“提供方→接收方→归还预期”的三角关系， 让方向感先于符号；绑定后用同一场景做 grounding；随后用“延迟归还”“金额等值归还”“赠与” 三个边界判断强化临时转移的成立条件；复习逐步通过反向回忆和英文句子判断撤除中文脚手架。"
+  },
+  "steps": [
+    {
+      "id": "observe_book",
+      "stage": "learning_flow",
+      "trigger": "initial",
+      "primitive": "scene_observation",
+      "purpose": "用中文经验叙事建立“提供方—接收方—归还约定”的场景。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "episode": "小明手里拿着自己的《宇宙探索》画册。同桌小红凑过来说：“我想带回家看几天，可以吗？” 小明把画册递给小红，指着桌上的日历说：“下周一还我。”小红点点头，把画册装进书包。"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "map_roles",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "participant_map",
+      "purpose": "用参与者地图让学习者明确辨认提供方，给方向判断打下基础。",
+      "addresses": [
+        "misc-1"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 45,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "小明把画册交给小红，小红会带回家看，下周一再把画册还回来。",
+        "participants": [
+          {
+            "id": "xiaoming",
+            "label": "小明（画册现在的持有者）",
+            "role": "giver"
+          },
+          {
+            "id": "xiaohong",
+            "label": "小红（拿到画册的人）",
+            "role": "receiver"
+          }
+        ],
+        "transferable": {
+          "id": "album",
+          "label": "《宇宙探索》画册"
+        },
+        "arrows": [
+          {
+            "id": "to_reader",
+            "from": "xiaoming",
+            "to": "xiaohong",
+            "label": "画册先交给小红"
+          },
+          {
+            "id": "return_arrow",
+            "from": "xiaohong",
+            "to": "xiaoming",
+            "label": "下周一应回到小明那里"
+          }
+        ],
+        "perspective": {
+          "current_role": "xiaoming",
+          "roles": [
+            "xiaoming",
+            "xiaohong"
+          ]
+        },
+        "question": "这件事里，谁是“把自己手中的东西交出去、之后还要收回来”的一方？",
+        "options": [
+          {
+            "id": "xiaoming",
+            "text": "小明"
+          },
+          {
+            "id": "xiaohong",
+            "text": "小红"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "xiaoming"
+      }
+    },
+    {
+      "id": "no_return_required",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "binary_judgment",
+      "purpose": "防止把“实际归还”误当作 lend-01 的必要条件。",
+      "addresses": [
+        "misc-2"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 35,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "小明把画册交给小红时，两人已经说好下周一还。后来小红有时忘了带，两周后才把画册还给小明。",
+        "evidence": [
+          "小明交画册时，两人已经说好要还。",
+          "归还虽然迟了，但约定在转移时就已经存在。"
+        ],
+        "question": "如果小红拖了两周才还，这件事还算不算“小明把画册暂时给她用、约定以后归还”的安排？",
+        "options": [
+          {
+            "id": "still_arrangement",
+            "text": "算，因为转移时就有归还约定"
+          },
+          {
+            "id": "not_arrangement",
+            "text": "不算，因为画册没有按时归还"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "still_arrangement"
+      }
+    },
+    {
+      "id": "confirm_experience",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "l1_confirmation",
+      "purpose": "绑定前让学习者确认核心经验，并形成安全断点。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 10,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "prompt_text": "请确认你已经看清楚了这样的画面：一方把自己手里的东西交给另一方使用， 双方都知道过一段时间要还回来，所以这不是永久送给对方。"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "reveal_lend",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "symbol_reveal",
+      "purpose": "首次把目标符号 lend 绑定到已建立的经验。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 20,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "l2_word": "lend",
+        "ipa": "/lɛnd/",
+        "presentation": "你刚才看到的画面，在英语里用一个词来表示。这个词专指“把东西交给别人暂时使用、 之后要还”的这一方动作。",
+        "minimal_l1_gloss": "借出"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "pronounce_lend",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "pronunciation",
+      "purpose": "让学习者听读目标词形。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 10,
+      "can_pause_after": null,
+      "due_after_days": null,
+      "content": {
+        "l2_word": "lend",
+        "ipa": "/lɛnd/"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "ground_lend",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "l2_grounding",
+      "purpose": "把 lend 锚定到已观察场景，展示基本构式。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "source_step_id": "map_roles",
+        "l2_realization": "Xiaoming lent his picture book to Xiaohong. She would return it on Monday.",
+        "constructions": [
+          "lend someone something",
+          "lend something to someone",
+          "lend out something"
+        ],
+        "collocations": [
+          "lend a book",
+          "lend money",
+          "lend out books"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "direction_choice",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "binary_judgment",
+      "purpose": "把提供方角色推进到 L2 句子主语选择，矫正中文“借”的方向中性。",
+      "addresses": [
+        "misc-1"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 35,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "你有一支蓝色圆珠笔。同桌说想用几天，你递给他，并说“明天还我”。",
+        "evidence": [
+          "你是把笔递出去的人。",
+          "同桌是拿到笔、之后要还的人。"
+        ],
+        "question": "用你刚学的词，下面哪句话正确描述“你”在这个事件里的动作？",
+        "options": [
+          {
+            "id": "correct_subject",
+            "text": "I lend my pen to my deskmate."
+          },
+          {
+            "id": "reversed_subject",
+            "text": "My deskmate lends me his pen."
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "correct_subject"
+      }
+    },
+    {
+      "id": "transfer_money",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "transfer_judgment",
+      "purpose": "扩展至金额借贷，说明“等值归还”仍满足 lend-01。",
+      "addresses": [
+        "misc-3"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 35,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "陈阿姨把500元现金交给同事小李。小李在手机上记了一笔：“从陈阿姨这里拿500元， 下个月还。”陈阿姨说：“到时候还我500元就行，不用把同一张钞票还我。”",
+        "evidence": [
+          "陈阿姨把钱交给小李。",
+          "双方约定下月还相同金额。",
+          "没有要求还同一张钞票。"
+        ],
+        "question": "这个场景也属于“一方把东西交给另一方暂时使用、之后要还”的安排吗？",
+        "options": [
+          {
+            "id": "belongs",
+            "text": "属于，钱可以按等值金额归还"
+          },
+          {
+            "id": "not_belongs",
+            "text": "不属于，因为还的不是同一张钞票"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "belongs"
+      }
+    },
+    {
+      "id": "not_gift",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "transfer_judgment",
+      "purpose": "排除永久转移，强化临时安排的必要条件。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "episode": "小刚整理房间时，把一本旧词典放到桌上，对同学说：“送给你了，不用还。”同学把词典拿走。",
+        "evidence": [
+          "词典从一个人到了另一个人。",
+          "没有归还约定，而且明确说“不用还”。"
+        ],
+        "question": "这个场景能用你刚学的词来描述吗？",
+        "options": [
+          {
+            "id": "cannot",
+            "text": "不能用，因为没有归还约定，是永久送给对方"
+          },
+          {
+            "id": "can",
+            "text": "能用，因为物品也从一个人到了另一个人"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "cannot"
+      }
+    },
+    {
+      "id": "review_recall_day1",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_reveal",
+      "purpose": "绑定完成次日",
+      "addresses": [],
+      "timing": "绑定完成次日",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 1,
+      "content": {
+        "episode": "你把一本漫画书交给朋友，说：“周四还我。”朋友点点头，把书带走了。 这个动作中，“你”这一方的动作，用你学过的英语词怎么说？",
+        "l2_word": "lend",
+        "ipa": "/lɛnd/",
+        "minimal_gloss": "借出"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "review_grade_day1",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_self_grade",
+      "purpose": "绑定完成次日，揭晓后立刻",
+      "addresses": [],
+      "timing": "绑定完成次日，揭晓后立刻",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 1,
+      "content": {
+        "l2_word": "lend",
+        "ipa": "/lɛnd/"
+      },
+      "evaluation": {
+        "kind": "self_grade"
+      }
+    },
+    {
+      "id": "review_recall_day3",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_reveal",
+      "purpose": "3 天后",
+      "addresses": [],
+      "timing": "3 天后",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 3,
+      "content": {
+        "episode": "你爸爸把一把雨伞递给邻居，说：“后天还我。”邻居接过雨伞。 描述“你爸爸”这一方的动作，用你学过的英语词怎么说？",
+        "l2_word": "lend",
+        "ipa": "/lɛnd/",
+        "minimal_gloss": "借出"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "review_direction_day7",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "binary_judgment",
+      "purpose": "7 天后",
+      "addresses": [],
+      "timing": "7 天后",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 7,
+      "content": {
+        "episode": "你爸爸把一把雨伞递给邻居，说：“后天还我。”邻居接过雨伞。",
+        "evidence": [
+          "你爸爸是提供雨伞的人。",
+          "邻居是拿到雨伞、之后要还的人。"
+        ],
+        "question": "下面哪句话正确描述了“你爸爸”的动作？",
+        "options": [
+          {
+            "id": "dad_correct",
+            "text": "My dad lent his umbrella to the neighbor."
+          },
+          {
+            "id": "neighbor_wrong",
+            "text": "The neighbor lent my dad his umbrella."
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "dad_correct"
+      }
+    },
+    {
+      "id": "review_money_day14",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "single_choice",
+      "purpose": "14 天后",
+      "addresses": [],
+      "timing": "14 天后",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 14,
+      "content": {
+        "episode": "一家小店需要资金周转。银行同意把十万元交给这家店使用，并约定一年内还清。",
+        "evidence": [
+          "银行是提供资金的一方。",
+          "小店是拿到资金的一方，约定一年内还清。"
+        ],
+        "question": "下面哪句话最自然地表达了“银行”这一方的动作？",
+        "options": [
+          {
+            "id": "bank_lend",
+            "text": "The bank lent 100,000 yuan to the shop."
+          },
+          {
+            "id": "shop_lend",
+            "text": "The shop lent 100,000 yuan to the bank."
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "bank_lend"
+      }
+    },
+    {
+      "id": "review_gift_day21",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "binary_judgment",
+      "purpose": "21 天后",
+      "addresses": [],
+      "timing": "21 天后",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 21,
+      "content": {
+        "episode": "妈妈把一条旧围巾送给邻居，说：“不用还了。”邻居把围巾拿走。",
+        "evidence": [
+          "围巾从一个人到了另一个人。",
+          "没有归还约定。"
+        ],
+        "question": "这句话能用 lend 来描述“妈妈”的动作吗？",
+        "options": [
+          {
+            "id": "no_lend",
+            "text": "不能用，因为没有归还约定"
+          },
+          {
+            "id": "yes_lend",
+            "text": "能用，因为围巾到了别人手里"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "no_lend"
+      }
+    }
+  ]
+}

@@ -1,0 +1,358 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scenelex.dev/schema/boundary-package.schema.json",
+  "title": "Boundary Package Contract v1",
+  "description": "一对 sense 的义项辨析资产：诊断维度、最小对立对场景与双向判定项。key 是 sense 对（字典序排列），不属于任何单个 program。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "boundary_id",
+    "sense_a",
+    "sense_b",
+    "language_policy",
+    "status",
+    "diagnostic_dimension",
+    "minimal_pairs",
+    "gate",
+    "metadata"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "description": "本契约版本。"
+    },
+    "boundary_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]+__[a-z0-9_-]+$",
+      "description": "稳定身份：sense id 字典序排列，形如 'dirty-01__messy-01'。"
+    },
+    "sense_a": {
+      "type": "string",
+      "description": "字典序较小的 sense id。"
+    },
+    "sense_b": {
+      "type": "string",
+      "description": "字典序较大的 sense id。"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "reviewed",
+        "published"
+      ],
+      "description": "人工审核状态。编译器产出 draft；reviewed/published 由人工 promotion 设置。"
+    },
+    "language_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_version",
+        "learner_l1",
+        "target_l2"
+      ],
+      "properties": {
+        "policy_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "learner_l1": {
+          "type": "string",
+          "const": "zh-CN"
+        },
+        "target_l2": {
+          "type": "string",
+          "const": "en"
+        }
+      },
+      "description": "Learning Presentation Language Contract v1（与 ExperienceProgram 相同合同）：场景、问题、解释、反馈使用 L1；选项为两个已绑定 L2 lemma。"
+    },
+    "diagnostic_dimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dimension",
+        "sense_a_value",
+        "sense_b_value"
+      ],
+      "properties": {
+        "dimension": {
+          "type": "string",
+          "description": "沿同一维度对比两个义项的名称（例：'状态偏离的来源与结果'）。不是把两个 invariant 并排。"
+        },
+        "sense_a_value": {
+          "type": "string",
+          "description": "sense_a 在该维度上的取值。"
+        },
+        "sense_b_value": {
+          "type": "string",
+          "description": "sense_b 在该维度上的取值。"
+        },
+        "description": {
+          "type": "string",
+          "description": "该诊断维度的教学说明：为什么沿这条维度能切分两义项。"
+        }
+      }
+    },
+    "minimal_pairs": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "correct_sense",
+          "experience",
+          "interaction",
+          "explanation"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^pair-[a-z0-9_-]+$",
+            "description": "稳定场景 id，供双向判定项与解释引用。"
+          },
+          "correct_sense": {
+            "type": "string",
+            "description": "本场景唯一成立的义项（sense_a 或 sense_b）。正确答案必须两个方向都有，不能恒等于某一侧。"
+          },
+          "experience": {
+            "$ref": "#/$defs/experience"
+          },
+          "interaction": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "question",
+              "answers"
+            ],
+            "properties": {
+              "question": {
+                "type": "string"
+              },
+              "answers": {
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "text",
+                    "is_correct",
+                    "feedback"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "is_correct": {
+                      "type": "boolean"
+                    },
+                    "feedback": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "explanation": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "correct",
+              "other"
+            ],
+            "properties": {
+              "correct": {
+                "type": "string",
+                "description": "为什么该义项成立：从可观察证据沿诊断维度推演。"
+              },
+              "other": {
+                "type": "string",
+                "description": "为什么另一个义项不成立：差异点在哪个维度上。"
+              }
+            }
+          }
+        }
+      },
+      "description": "最小对立对场景：两个义项都'像'、但只有一个成立的场景。不是从任一义项的 review_pool 里挑一条干净正例。"
+    },
+    "gate": {
+      "$ref": "#/$defs/gate_record"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "compiler_version",
+        "prompt_versions",
+        "generated_at",
+        "contract_a_hash",
+        "contract_b_hash",
+        "model_provider",
+        "model_name"
+      ],
+      "properties": {
+        "compiler_version": {
+          "type": "string"
+        },
+        "prompt_versions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "boundary_producer",
+            "quality_gate"
+          ],
+          "properties": {
+            "boundary_producer": {
+              "type": "string"
+            },
+            "quality_gate": {
+              "type": "string"
+            }
+          }
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO-8601 UTC 生成时间。"
+        },
+        "contract_a_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "description": "sense_a 的 semantic contract content hash；不匹配即 stale。"
+        },
+        "contract_b_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "description": "sense_b 的 semantic contract content hash；不匹配即 stale。"
+        },
+        "model_provider": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "model_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "request_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "可选的各阶段非敏感 request ID。"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "gate_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "passed",
+        "dimensions"
+      ],
+      "properties": {
+        "passed": {
+          "type": "boolean"
+        },
+        "dimensions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "verdict",
+              "note"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "verdict": {
+                "enum": [
+                  "pass",
+                  "fail",
+                  "warn"
+                ]
+              },
+              "note": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "scores": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "description": "可选维度分数 (0-10)，不是通过门的依据。"
+        }
+      }
+    },
+    "experience": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "episode",
+        "observable_evidence",
+        "surface_dimensions"
+      ],
+      "properties": {
+        "episode": {
+          "type": "string",
+          "description": "learner-visible 的经验叙事。不得出现内部 ref、Compiler 元数据或 sense ID。"
+        },
+        "observable_evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          },
+          "description": "观众/学习者可观察到的证据条目；每条都必须能被直接看到或听到。"
+        },
+        "surface_dimensions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "baseline",
+              "deviation"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "baseline": {
+                "type": "string"
+              },
+              "deviation": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "可检查的表面维度及其相对基线（预期状态）的偏离。"
+        }
+      }
+    }
+  }
+}

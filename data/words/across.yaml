@@ -1,0 +1,20 @@
+schema_version: '1.0'
+version: 1
+word: across
+pos: [preposition]
+
+pronunciation:
+  ipa:
+    - "/əˈkɹɔs/"
+
+frequency:
+  rank: 517
+  band: high
+
+senses:
+  - id: across-01
+    pos: preposition
+    sense_label: "横过；跨越"
+    definition: "Movement or extension from one side of an intervening object or space to the other side."
+    status: reviewed
+    scene_count: 0
