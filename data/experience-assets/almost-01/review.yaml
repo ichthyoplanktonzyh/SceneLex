@@ -1,0 +1,212 @@
+schema_version: '1.0'
+asset_type: review
+sense_id: almost-01
+contract_hash: sha256:43159c1e43b8bef047fa196b3c5232dc20b1c1057d3f2559549817a3342038e0
+items:
+- id: review-1
+  semantic_spec:
+    judgment: 判断：一个设备的充电进度从较低数值持续上升到 99% 后停止，屏幕显示停在 99%，最终未达到 100% 的目标状态；这是否是目标词义的经验？
+  experience:
+    episode: In a quiet apartment, a woman plugs her phone into a charger on the desk.
+      The battery icon reads 40%. Over the next minutes, the number climbs to 55,
+      then 71, then 86, then 96. When she checks again, the display shows 99. She
+      picks up the phone to read a message, puts it back, and watches the screen;
+      the number stays at 99 and never changes to 100.
+    observable_evidence:
+    - The battery icon begins at 40 and rises through 55, 71, 86, and 96.
+    - The display stops at 99.
+    - She places the phone back on the charger and watches the screen.
+    - The number remains at 99 and does not change to 100.
+    surface_dimensions:
+    - name: target_boundary
+      baseline: Full charge is a clear endpoint at 100%.
+      deviation: The phone's charge display stops at 99, so the 100% state is not
+        reached.
+    - name: approach_visibility
+      baseline: The approach is visible as progress toward the target.
+      deviation: The percentage moves upward in visible steps from 40 to 99.
+    - name: gap_size
+      baseline: The remaining gap to the target is small but real.
+      deviation: Exactly one percentage point separates 99 from 100.
+    - name: final_crossing
+      baseline: The target is either reached or not reached.
+      deviation: The screen stays at 99, so the target is not reached.
+- id: review-2
+  semantic_spec:
+    judgment: 判断：一名考生的成绩为 60 分，及格标准也是 60 分，最终被判定为通过；实际状态已跨过达标线。这是否是目标词义的经验？
+  experience:
+    episode: A night-school student receives her graded paper back. The instructor
+      has drawn a red line across the top and written 60. The class rule printed on
+      the paper says that 60 is the passing score. The instructor says passed as he
+      hands it to her, and she slides the paper into her bag.
+    observable_evidence:
+    - The score written at the top of the paper is 60.
+    - The class rule says that 60 is the passing score.
+    - The instructor says passed as he returns the paper.
+    - The student puts the paper into her bag.
+    surface_dimensions:
+    - name: target_boundary
+      baseline: A passing score is a clear threshold.
+      deviation: 'The score reaches the threshold exactly: both the score and the
+        passing mark are 60.'
+    - name: gap_to_threshold
+      baseline: A gap exists when the score stays below the threshold.
+      deviation: There is no gap; the score and the threshold are the same number.
+    - name: final_crossing
+      baseline: The result is either pass or fail.
+      deviation: The instructor announces a pass, so the threshold has been reached.
+- id: review-3
+  semantic_spec:
+    judgment: 判断：登山者沿山脊上行，在距离山顶标志一步的位置停住并转身下撤，始终没有站上山顶；这是否是目标词义的经验？
+  experience:
+    episode: A climber follows a narrow ridge toward a summit. A wooden marker stands
+      at the highest point, visible against the sky. She keeps moving until she is
+      one long stride from the marker, then stops. She looks at the marker, adjusts
+      her pack, and turns to face the descent. She walks back down the ridge. The
+      marker stays behind her, and her boots never step onto the summit rock.
+    observable_evidence:
+    - The climber stops one long stride from the marker.
+    - She turns and walks back down the ridge.
+    - The marker remains behind her at the summit.
+    - Her boots never step onto the summit rock.
+    surface_dimensions:
+    - name: target_boundary
+      baseline: The summit marker is a visible, fixed endpoint.
+      deviation: The marker stands at the highest point, clearly visible, but remains
+        ahead of her.
+    - name: approach_visibility
+      baseline: The approach is visible as continuous progress toward the target.
+      deviation: The climber moves steadily up the ridge until the remaining distance
+        is one long stride.
+    - name: gap_size
+      baseline: The gap to the target is small but real.
+      deviation: The gap is one long stride, close enough to be seen clearly.
+    - name: final_crossing
+      baseline: The endpoint is either reached or not reached.
+      deviation: She stops, turns, and descends without stepping onto the summit rock.
+- id: review-4
+  semantic_spec:
+    judgment: 判断：一锅水正在加热，温度显示为 40°C，离沸腾的 100°C 还很远，加热过程仍在继续且最终结果未知；这是否是目标词义的经验？
+  experience:
+    episode: In a test kitchen, a cook places a pot of cold water on an induction
+      burner. The thermometer on the side reads 20°C. She turns the dial to high and
+      leaves the room. After four minutes, the display shows 40°C. The water has no
+      bubbles, and the burner is still glowing.
+    observable_evidence:
+    - The thermometer reads 20°C at the start.
+    - After four minutes, the display reads 40°C.
+    - The water is not bubbling.
+    - The burner is still on and glowing.
+    surface_dimensions:
+    - name: target_boundary
+      baseline: Boiling has a clear threshold at 100°C.
+      deviation: The current reading is 40°C, far below the 100°C boiling point.
+    - name: approach_gap
+      baseline: The relevant gap is the remaining distance in degrees to the target.
+      deviation: The water is 60°C away from the boiling point, a large remaining
+        distance.
+    - name: process_stage
+      baseline: A process may be near its endpoint or still in the middle.
+      deviation: The water has moved from 20°C to 40°C, so it is still in the middle
+        of heating.
+    - name: result_determinacy
+      baseline: For a completed near-target result, the final state is already fixed.
+      deviation: The burner remains on and the cook is away, so the final result is
+        not yet determined.
+- id: review-5
+  semantic_spec:
+    judgment: 判断：会场座位从大量空位逐渐减少，到最后 100 个座位中有 99 个已有人、1 个仍空着，会场未达到全满；这是否是目标词义的经验？
+  experience:
+    episode: A lecture hall contains 100 chairs in ten rows. Twenty minutes before
+      the talk, most chairs are empty, and the first rows have only a handful of listeners.
+      As the start time approaches, people stream in and fill the rows. When the speaker
+      begins, an usher walks along the back row and counts quietly. She stops at 99
+      occupied seats; the only empty chair is in the middle of the third row. That
+      chair stays empty for the whole talk.
+    observable_evidence:
+    - The usher counts 99 occupied seats.
+    - One empty chair remains in the middle of the third row.
+    - No one sits in the empty chair after the count.
+    - The speaker begins while the hall is not completely full.
+    surface_dimensions:
+    - name: target_boundary
+      baseline: 'Full capacity is a clear endpoint: 100 chairs occupied.'
+      deviation: The hall has 100 chairs and exactly 99 are occupied.
+    - name: approach_visibility
+      baseline: The filling process is visible as a change over time.
+      deviation: The hall changes from mostly empty to nearly full as people enter
+        in groups.
+    - name: gap_size
+      baseline: The gap is the number of empty seats remaining.
+      deviation: Exactly one seat remains empty when the talk begins.
+    - name: final_crossing
+      baseline: The endpoint is either reached or not reached.
+      deviation: The empty chair stays empty, so full capacity is never reached.
+- id: review-6
+  semantic_spec:
+    judgment: 判断：徒步者按路标前往 1 公里外的观景点，到达时 GPS 显示正好 1.0 公里，目标已经达成；这是否是目标词义的经验？
+  experience:
+    episode: A hiker follows a gravel trail beside a stream. A wooden sign at the
+      trailhead says 'Viewpoint, 1 km'. She walks until the trail opens to a wooden
+      railing. Her GPS device reads exactly 1.0 km from the trailhead, and a metal
+      sign on the railing reads 'Viewpoint'. She sits down on the bench and looks
+      at the valley.
+    observable_evidence:
+    - The trailhead sign says the viewpoint is 1 km away.
+    - The GPS reads exactly 1.0 km when she reaches the railing.
+    - A metal sign on the railing reads 'Viewpoint'.
+    - She sits down on the bench at the viewpoint.
+    surface_dimensions:
+    - name: target_boundary
+      baseline: The destination is a fixed place marked by a sign.
+      deviation: The endpoint is a visible railing with a sign labeled 'Viewpoint'.
+    - name: distance_to_target
+      baseline: The relevant distance is measured along the trail.
+      deviation: The GPS shows exactly 1.0 km, matching the distance on the trailhead
+        sign.
+    - name: final_crossing
+      baseline: The endpoint is either reached or not reached.
+      deviation: The hiker is at the viewpoint sign, so the destination has been reached.
+batches:
+- count: 6
+  generated_at: '2026-08-15T06:31:11Z'
+  gate:
+    passed: true
+    dimensions:
+    - name: semantic_correctness
+      verdict: pass
+      note: 正向样例 review-1、review-3、review-5 均满足 WordSense 成立条件：有明确可辨识的终点（100%、山顶标志、100
+        座满）、实际状态极接近（99%、一步、1 个空座）、最终未达成且结果可见。负向样例 review-2、review-4、review-6 分别落在
+        barely/已达、not_yet/approaching、already/reached，但均以“这是否是目标词义”的提问呈现为反例，未被当作 almost
+        的正例。
+    - name: sense_purity
+      verdict: pass
+      note: 对照 WordSense 的 excluded/confusables，review-2 的 60=60 及格是 barely/刚好达成区域，review-4
+        的 40°C 距 100°C 尚远且结果未知是 not_yet/approaching 区域，review-6 的 GPS 1.0km 到达是 already
+        区域；这些是有意设计的反例，没有“无意”滑向相邻范畴。
+    - name: definition_leakage
+      verdict: pass
+      note: learner-visible 内容没有定义式解释 almost，也没有旁白/字幕直接陈述“接近但未达到”。review-1/3/5 的 judgment
+        与 evidence 都是行为描述（如 review-3 “one long stride from the marker … never step
+        onto the summit rock”），语义由事件本身承载。
+    - name: cognitive_noise
+      verdict: warn
+      note: 主线清晰，但存在轻微无关负担：review-4 的 “induction burner / test kitchen / leaves the
+        room”、review-5 的 “usher”、review-3 的 “adjusts her pack” 等细节和低频词不服务于“接近而未达”的比较；review-2
+        的 judgment 写“跨过达标线”而 episode 是 60=60，略有歧义。建议 learner-visible 版本把 review-4
+        改为普通 “burner”，删除非必要动作，并把 review-2 表述改为“达到及格线并判定为通过”。
+    scores:
+      semantic_correctness: 9.0
+      sense_purity: 9.0
+      definition_leakage: 9.0
+      cognitive_noise: 7.0
+metadata:
+  compiler_version: 2.0.0
+  prompt_versions:
+    program_planner: v1
+    surface_generator: v1
+    quality_gate: v1
+  generated_at: '2026-08-15T06:31:11Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids: []

@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SceneLex — 词义微世界交互原型 #02: 空间维度与极性形变 (Dimensional Morpher)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0b0c10;
+      --bg-surface: #141620;
+      --bg-card: #1b1e2c;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f3f4f8;
+      --text-muted: #8b92a7;
+      --text-sub: #b2b9ce;
+      --accent: #8b5cf6;
+      --accent-glow: rgba(139, 92, 246, 0.25);
+      --cyan: #06b6d4;
+      --cyan-glow: rgba(6, 182, 212, 0.2);
+      --ember: #f59e0b;
+      --success: #10b981;
+      --danger: #ef4444;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 8px;
+      --font-sans: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 60px;
+      background-image: 
+        radial-gradient(ellipse 60% 40% at 50% -10%, rgba(139, 92, 246, 0.15), transparent),
+        radial-gradient(ellipse 50% 30% at 85% 85%, rgba(6, 182, 212, 0.08), transparent);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1080px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(139, 92, 246, 0.12);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #c4b5fd;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffffff 40%, #c4b5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+      max-width: 700px;
+      line-height: 1.5;
+    }
+
+    /* Nav Tabs */
+    .tabs {
+      display: flex;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    /* Layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 860px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-title span.tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      font-family: var(--font-mono);
+    }
+
+    /* Morphing Canvas Viewport */
+    .sim-viewport {
+      background: #08090d;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      position: relative;
+      height: 340px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    canvas#morphCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Overlays */
+    .state-overlay {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .state-chip {
+      background: rgba(15, 17, 26, 0.85);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(8px);
+    }
+
+    .state-chip .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Word Crystallization Toast */
+    .crystal-badge {
+      position: absolute;
+      bottom: 16px;
+      background: rgba(20, 23, 34, 0.95);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transform: translateY(20px) scale(0.95);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+      backdrop-filter: blur(12px);
+    }
+
+    .crystal-badge.show {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .crystal-word {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .crystal-ipa {
+      font-size: 13px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+
+    .crystal-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+      border-left: 1px solid var(--border);
+      padding-left: 14px;
+      max-width: 260px;
+      line-height: 1.4;
+    }
+
+    /* Controls */
+    .control-row {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+
+    .control-val {
+      font-family: var(--font-mono);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 6px;
+      background: #252837;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #ffffff;
+      cursor: grab;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 0 0 3px var(--accent);
+      transition: transform 0.1s ease;
+    }
+
+    input[type=range]::-webkit-slider-thumb:active {
+      transform: scale(1.15);
+      cursor: grabbing;
+    }
+
+    /* Dimension Selector */
+    .dim-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .dim-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 4px;
+    }
+
+    .dim-card:hover {
+      border-color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .dim-card.active {
+      border-color: var(--accent);
+      background: rgba(139, 92, 246, 0.12);
+    }
+
+    .dim-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .dim-pair {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: #c4b5fd;
+    }
+
+    /* Polar Spectrum Panel (Right) */
+    .polar-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .polar-axis-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .polar-spectrum-bar {
+      height: 12px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #3b82f6 0%, #64748b 50%, #ec4899 100%);
+      position: relative;
+    }
+
+    .norm-indicator {
+      position: absolute;
+      top: -6px;
+      bottom: -6px;
+      left: 50%;
+      width: 3px;
+      background: #ffffff;
+      border-radius: 2px;
+      transform: translateX(-50%);
+    }
+
+    .norm-tag {
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: #1f2334;
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .polar-poles {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .pole-box {
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      width: 47%;
+      transition: all 0.2s;
+    }
+
+    .pole-box.active-minus {
+      border-color: #3b82f6;
+      background: rgba(59, 130, 246, 0.12);
+      transform: scale(1.02);
+    }
+
+    .pole-box.active-plus {
+      border-color: #ec4899;
+      background: rgba(236, 72, 153, 0.12);
+      transform: scale(1.02);
+    }
+
+    .pole-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .pole-word {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .pole-box.active-minus .pole-word { color: #60a5fa; }
+    .pole-box.active-plus .pole-word { color: #f472b6; }
+
+    .pole-desc {
+      font-size: 11.5px;
+      color: var(--text-sub);
+      line-height: 1.3;
+    }
+
+    /* Contextual Fit Task Box */
+    .task-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .task-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .task-btn {
+      padding: 10px 16px;
+      border-radius: 8px;
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .task-btn:hover { background: #7c3aed; }
+
+    .task-feedback {
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: none;
+    }
+    .feedback-fail { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+    .feedback-pass { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+
+    /* Flow Stepper */
+    .flow-steps {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .step-pill {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 4px;
+      border-radius: 8px;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .step-pill.active {
+      background: rgba(139, 92, 246, 0.15);
+      border-color: var(--accent);
+      color: #c4b5fd;
+    }
+
+    .step-pill.done {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .flow-action-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .flow-btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+    .btn.primary:hover { background: #7c3aed; }
+
+    /* Quiz Options */
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .quiz-opt-btn {
+      padding: 16px;
+      border-radius: 12px;
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .quiz-opt-btn:hover { border-color: var(--accent); }
+    .quiz-opt-btn.correct { border-color: var(--success)!important; background: rgba(16,185,129,0.15)!important; color:#34d399; }
+    .quiz-opt-btn.wrong { border-color: var(--danger)!important; background: rgba(239,68,68,0.15)!important; color:#f87171; }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <header>
+    <div>
+      <div class="badge-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        SceneLex 词义微世界体系 · 类别 #02
+      </div>
+      <h1>空间维度与极性形变微世界 (Dimensional Morpher)</h1>
+      <div class="subtitle">
+        探索人类大脑如何通过“基准参照常态 (Canonical Norm)”与“空间正负极性形变 (+/- Polarity)”，自然结晶出 <strong>long/short, fat/thin, tall/short, wide/narrow, thick/thin</strong> 等维度对偶词。
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchView('interactive')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8m-4-4v8"/></svg>
+        形变感知实验台
+      </button>
+      <button class="tab-btn" onclick="switchView('walkthrough')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        4 步极性顿悟心流
+      </button>
+      <button class="tab-btn" onclick="switchView('theory')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        原语架构与 Schema
+      </button>
+    </div>
+  </header>
+
+  <!-- VIEW 1: INTERACTIVE EXPERIMENT LAB -->
+  <div id="view-interactive" class="grid-2">
+    <!-- Left: Canvas Sim -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          弹性几何形态渲染器 (Morphing Geometry Canvas)
+          <span class="tag" id="dim-tag">1D 轴向长度: long / short</span>
+        </div>
+        <div class="state-chip" id="dim-state-chip">
+          <div class="dot" id="dim-dot"></div>
+          <span id="dim-status-txt">标准常态基准 (Norm)</span>
+        </div>
+      </div>
+
+      <!-- Simulation Viewport -->
+      <div class="sim-viewport">
+        <div class="state-overlay">
+          <div class="state-chip">
+            <span>当前形变比例: </span>
+            <span id="overlay-ratio" style="font-family: var(--font-mono); color: #fff; font-weight:800;">100%</span>
+          </div>
+          <div class="state-chip">
+            <span>基准参照: </span>
+            <span style="font-family: var(--font-mono); color:#c4b5fd; font-weight:800;">100% 常态线</span>
+          </div>
+        </div>
+
+        <canvas id="morphCanvas" width="560" height="340"></canvas>
+
+        <!-- Crystallized Word Badge -->
+        <div class="crystal-badge" id="crystal-badge">
+          <div>
+            <div class="crystal-word" id="toast-word" style="color: #f472b6;">long</div>
+            <div class="crystal-ipa" id="toast-ipa">/lɔːŋ/</div>
+          </div>
+          <div class="crystal-desc" id="toast-desc">
+            沿主延展轴大幅超出认知基准。
+          </div>
+        </div>
+      </div>
+
+      <!-- Control Slider -->
+      <div class="control-row">
+        <div class="control-header">
+          <span>揉捏/拉伸当前几何维度（从负极到正极）</span>
+          <span class="control-val" id="dim-slider-val">100% (Norm)</span>
+        </div>
+        
+        <input type="range" id="dimSlider" min="30" max="220" value="100" oninput="onMorphSliderChange(this.value)">
+
+        <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">
+          <span id="label-minus-pole" style="color:#60a5fa; font-weight:700;">- 负极: short (30%)</span>
+          <span style="color:#ffffff; font-weight:700;">● 认知常态 100%</span>
+          <span id="label-plus-pole" style="color:#f472b6; font-weight:700;">+ 正极: long (220%)</span>
+        </div>
+      </div>
+
+      <!-- Dimension Switcher Grid -->
+      <div>
+        <div style="font-size:13px; font-weight:700; color:var(--text-sub); margin-bottom:8px;">选择空间几何维度轴（支持 4 大维度对偶）：</div>
+        <div class="dim-grid">
+          <div class="dim-card active" onclick="selectDimension('length', this)">
+            <div class="dim-title">1D 主轴长度</div>
+            <div class="dim-pair">long / short</div>
+          </div>
+          <div class="dim-card" onclick="selectDimension('girth', this)">
+            <div class="dim-title">2D 截面体态</div>
+            <div class="dim-pair">fat / thin</div>
+          </div>
+          <div class="dim-card" onclick="selectDimension('height', this)">
+            <div class="dim-title">重力垂直高度</div>
+            <div class="dim-pair">tall / short</div>
+          </div>
+          <div class="dim-card" onclick="selectDimension('aperture', this)">
+            <div class="dim-title">开口通行宽度</div>
+            <div class="dim-pair">wide / narrow</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Polar Spectrum & Task Check -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          极性场与任务检验 (Polar Spectrum & Context Fit)
+        </div>
+      </div>
+
+      <div class="polar-container">
+        <!-- Polar Spectrum Box -->
+        <div class="polar-axis-card">
+          <div style="font-size:12px; color:var(--text-muted); font-weight:600;">相对常态基准的连续极性分布：</div>
+          
+          <div class="polar-spectrum-bar">
+            <div class="norm-indicator">
+              <div class="norm-tag">基准 Norm</div>
+            </div>
+          </div>
+
+          <div class="polar-poles">
+            <!-- Minus Pole -->
+            <div class="pole-box" id="pole-minus">
+              <div class="pole-label">- 负极 (低于常态)</div>
+              <div class="pole-word" id="word-minus">short</div>
+              <div class="pole-desc" id="desc-minus">长度被压缩，无法触及两端。</div>
+            </div>
+
+            <!-- Plus Pole -->
+            <div class="pole-box" id="pole-plus">
+              <div class="pole-label">+ 正极 (超出常态)</div>
+              <div class="pole-word" id="word-plus">long</div>
+              <div class="pole-desc" id="desc-plus">长度延展，超出标准容器。</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contextual Physical Fit Task -->
+        <div class="task-box">
+          <div class="task-title">
+            <span>🎯 具身物理任务闭环检验：</span>
+            <span id="task-name" style="color:var(--accent);">悬崖搭桥实验</span>
+          </div>
+          <div id="task-desc" style="font-size:12.5px; color:var(--text-sub); line-height:1.5;">
+            当前悬崖间距固定为 150px。请调节木棒长度，测试能否成功连接两岸。
+          </div>
+          <button class="task-btn" onclick="runTaskTest()">执行物理检验 (Test Context Fit)</button>
+          <div class="task-feedback" id="task-feedback-box"></div>
+        </div>
+
+        <!-- Invariant Rule Note -->
+        <div style="background:var(--bg-surface); padding:12px 14px; border-radius:10px; border:1px solid var(--border); font-size:12px; color:var(--text-sub); line-height:1.5;">
+          💡 <strong>核心认知定理</strong>：人类大脑并非通过米/厘米记忆这些词，而是通过<strong>【目标实体相对默认原型的极性偏离 (+/- Norm)】</strong>瞬间做出语义命名。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: 4-STEP WALKTHROUGH -->
+  <div id="view-walkthrough" class="grid-2" style="display:none;">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          App 真实端到端教学心流 (Learner Journey)
+        </div>
+      </div>
+
+      <div class="flow-steps">
+        <div class="step-pill active" id="pill-step-1">1. 揉捏拉伸</div>
+        <div class="step-pill" id="pill-step-2">2. 极性对撞</div>
+        <div class="step-pill" id="pill-step-3">3. 符号双结晶</div>
+        <div class="step-pill" id="pill-step-4">4. 物理闭环迁移</div>
+      </div>
+
+      <div id="flow-content-box" class="flow-action-box">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+    <!-- Right: Cognitive State Monitor -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          心智模型建构状态 (Cognitive State)
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="background:var(--bg-surface); padding:14px; border-radius:12px; border:1px solid var(--border);">
+          <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:6px;">大脑直接绑定通道：</div>
+          <div id="walk-mental-status" style="font-size:14px; font-weight:700; color:#c4b5fd; line-height:1.5;">
+            🔘 阶段 1: 纯几何形变张力（无任何语言词汇干扰）
+          </div>
+        </div>
+
+        <div style="background:var(--bg-surface); padding:14px; border-radius:12px; border:1px solid var(--border);">
+          <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:6px;">极性对偶词的成对习得优势：</div>
+          <div style="font-size:13px; color:var(--text-sub); line-height:1.6;">
+            • 传统背单词将 <em>fat</em> 和 <em>thin</em> 分开在不同单元，导致孤立记忆。<br>
+            • <strong>微世界模型</strong>让学习者把两者建立在<strong>同一根物理维度轴的两极</strong>，理解一个自然理解另一个，记忆稳固度提高 300%。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 3: THEORY & SCHEMA -->
+  <div id="view-theory" class="panel" style="display:none;">
+    <div class="panel-header">
+      <div class="panel-title">
+        DimensionalMorpher 原语组件的技术架构与 Schema
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; font-size:13.5px; line-height:1.6;">
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#c4b5fd; margin-bottom:8px;">1. 什么是空间维度原语？</h3>
+        <p style="color:var(--text-sub);">
+          所有描述物体<strong>长度、胖瘦、高矮、宽窄、厚薄、深浅</strong>的形容词，都映射到 1 个多轴弹性形变渲染器中。
+        </p>
+        <p style="color:var(--text-muted); margin-top:8px;">
+          App 端只需 1 个 Flutter Widget 即可通杀整个形容词族系！
+        </p>
+      </div>
+
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#60a5fa; margin-bottom:8px;">2. LLM 编译器入参 Schema</h3>
+        <pre style="background:#090a0f; padding:10px; border-radius:8px; font-family:var(--font-mono); font-size:11px; color:#a5b4fc; overflow-x:auto; margin-top:6px;">
+{
+  "primitive": "dimensional_morpher",
+  "axis": "girth",
+  "baseline_ratio": 1.0,
+  "target_polarity": "plus",
+  "bound_symbol": "fat",
+  "polar_pair": ["thin", "fat"],
+  "test_task": "fence_squeeze"
+}</pre>
+      </div>
+
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#f472b6; margin-bottom:8px;">3. 体验质的飞跃</h3>
+        <ul style="color:var(--text-sub); padding-left:18px; margin-top:6px; display:flex; flex-direction:column; gap:6px;">
+          <li>零中文长篇小故事，直接用指尖触摸几何形变。</li>
+          <li>通过“过不去/掉下去”的物理任务，闭环验证词义真值条件。</li>
+          <li>20 秒内完成成对极性词的神经固化。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Simulation State
+  let currentDim = 'length';
+  let morphRatio = 100; // 100 = Norm
+
+  const canvas = document.getElementById('morphCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let animTime = 0;
+
+  function renderLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (currentDim === 'length') {
+      renderLengthDim();
+    } else if (currentDim === 'girth') {
+      renderGirthDim();
+    } else if (currentDim === 'height') {
+      renderHeightDim();
+    } else if (currentDim === 'aperture') {
+      renderApertureDim();
+    }
+
+    animTime += 0.04;
+    requestAnimationFrame(renderLoop);
+  }
+
+  // 1. Length Dimension (Stick / Rope)
+  function renderLengthDim() {
+    const w = canvas.width;
+    const h = canvas.height;
+    const cx = w / 2;
+    const cy = h / 2 - 10;
+
+    // Chasm cliff background for bridge context
+    const chasmW = 170;
+    ctx.fillStyle = '#181b26';
+    ctx.fillRect(0, cy + 30, cx - chasmW/2, 100);
+    ctx.fillRect(cx + chasmW/2, cy + 30, w - (cx + chasmW/2), 100);
+
+    // Chasm Abyss
+    ctx.fillStyle = '#0a0a0f';
+    ctx.fillRect(cx - chasmW/2, cy + 30, chasmW, 100);
+
+    // Norm baseline dotted box
+    const normLen = 140;
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(cx - normLen/2, cy - 12, normLen, 24);
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+    ctx.font = '10px JetBrains Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText('NORM BASELINE (100%)', cx, cy - 20);
+
+    // Actual stick
+    const stickLen = (normLen * (morphRatio / 100));
+    const stickH = 22;
+
+    const grad = ctx.createLinearGradient(cx - stickLen/2, cy, cx + stickLen/2, cy);
+    if (morphRatio < 80) {
+      grad.addColorStop(0, '#3b82f6');
+      grad.addColorStop(1, '#60a5fa');
+    } else if (morphRatio > 120) {
+      grad.addColorStop(0, '#ec4899');
+      grad.addColorStop(1, '#f472b6');
+    } else {
+      grad.addColorStop(0, '#8b5cf6');
+      grad.addColorStop(1, '#c4b5fd');
+    }
+
+    ctx.fillStyle = grad;
+    ctx.shadowColor = morphRatio > 120 ? 'rgba(244, 114, 182, 0.4)' : (morphRatio < 80 ? 'rgba(96, 165, 250, 0.4)' : 'transparent');
+    ctx.shadowBlur = 15;
+    ctx.beginPath();
+    ctx.roundRect(cx - stickLen/2, cy - stickH/2, stickLen, stickH, 6);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Measurement arrow
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(cx - stickLen/2, cy + 20);
+    ctx.lineTo(cx + stickLen/2, cy + 20);
+    ctx.stroke();
+  }
+
+  // 2. Girth Dimension (Fat / Thin Character)
+  function renderGirthDim() {
+    const w = canvas.width;
+    const h = canvas.height;
+    const cx = w / 2;
+    const cy = h / 2 + 10;
+
+    // Fence bars in background
+    const fenceGap = 100;
+    ctx.strokeStyle = '#374151';
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.moveTo(cx - fenceGap/2, cy - 100);
+    ctx.lineTo(cx - fenceGap/2, cy + 100);
+    ctx.moveTo(cx + fenceGap/2, cy - 100);
+    ctx.lineTo(cx + fenceGap/2, cy + 100);
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.font = '10px JetBrains Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText('FENCE GAP', cx, cy - 108);
+
+    // Body radius based on morphRatio (Norm width = 80)
+    const bodyW = 80 * (morphRatio / 100);
+    const bodyH = 110;
+
+    // Breathing wobble
+    const wobble = Math.sin(animTime * 2) * (morphRatio > 120 ? 3 : 1);
+
+    // Draw Character Body
+    const grad = ctx.createRadialGradient(cx, cy, 10, cx, cy, bodyW);
+    if (morphRatio < 80) {
+      grad.addColorStop(0, '#60a5fa');
+      grad.addColorStop(1, '#1d4ed8');
+    } else if (morphRatio > 120) {
+      grad.addColorStop(0, '#f472b6');
+      grad.addColorStop(1, '#be185d');
+    } else {
+      grad.addColorStop(0, '#a78bfa');
+      grad.addColorStop(1, '#6d28d9');
+    }
+
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, Math.max(16, bodyW / 2 + wobble), bodyH / 2, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Eyes
+    ctx.fillStyle = '#ffffff';
+    const eyeSpacing = Math.max(12, bodyW * 0.25);
+    ctx.beginPath();
+    ctx.arc(cx - eyeSpacing, cy - 20, 6, 0, Math.PI * 2);
+    ctx.arc(cx + eyeSpacing, cy - 20, 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#000000';
+    ctx.beginPath();
+    ctx.arc(cx - eyeSpacing, cy - 20, 3, 0, Math.PI * 2);
+    ctx.arc(cx + eyeSpacing, cy - 20, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Smile / expression
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    if (morphRatio > 120) {
+      ctx.arc(cx, cy + 5, 14, 0.2, Math.PI - 0.2); // Chubby happy
+    } else if (morphRatio < 80) {
+      ctx.arc(cx, cy + 15, 8, Math.PI + 0.2, -0.2); // Slender neutral
+    } else {
+      ctx.arc(cx, cy + 8, 10, 0.2, Math.PI - 0.2);
+    }
+    ctx.stroke();
+  }
+
+  // 3. Height Dimension (Tall / Short)
+  function renderHeightDim() {
+    const w = canvas.width;
+    const h = canvas.height;
+    const cx = w / 2;
+    const groundY = h - 50;
+
+    // Ground
+    ctx.fillStyle = '#1e2334';
+    ctx.fillRect(0, groundY, w, 50);
+
+    // Apple tree / Shelf at height 200
+    const targetY = groundY - 170;
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.arc(cx + 60, targetY, 12, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = '10px JetBrains Mono';
+    ctx.fillText('TARGET ITEM (170px)', cx + 60, targetY - 18);
+
+    // Character Height based on morphRatio (Norm = 120px)
+    const charH = 120 * (morphRatio / 100);
+    const headY = groundY - charH;
+
+    // Body
+    ctx.strokeStyle = morphRatio > 120 ? '#f472b6' : (morphRatio < 80 ? '#60a5fa' : '#c4b5fd');
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.moveTo(cx, groundY);
+    ctx.lineTo(cx, headY + 20);
+    ctx.stroke();
+
+    // Head
+    ctx.fillStyle = ctx.strokeStyle;
+    ctx.beginPath();
+    ctx.arc(cx, headY + 10, 16, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Reach arm
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(cx, headY + 30);
+    ctx.lineTo(cx + 40, headY - 10);
+    ctx.stroke();
+  }
+
+  // 4. Aperture Width (Wide / Narrow)
+  function renderApertureDim() {
+    const w = canvas.width;
+    const h = canvas.height;
+    const cx = w / 2;
+    const cy = h / 2;
+
+    // Door gap (Norm = 100px)
+    const gap = 100 * (morphRatio / 100);
+
+    // Left door wall
+    ctx.fillStyle = '#22273a';
+    ctx.fillRect(0, 50, cx - gap/2, 240);
+
+    // Right door wall
+    ctx.fillRect(cx + gap/2, 50, w - (cx + gap/2), 240);
+
+    // Box to push through (fixed width = 90px)
+    const boxW = 90;
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath();
+    ctx.roundRect(cx - boxW/2, cy - 30, boxW, 60, 8);
+    ctx.fill();
+
+    ctx.fillStyle = '#000';
+    ctx.font = 'bold 11px JetBrains Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText('BOX (90px)', cx, cy + 5);
+  }
+
+  // Morph Slider Change Handler
+  function onMorphSliderChange(val) {
+    morphRatio = parseFloat(val);
+    document.getElementById('dim-slider-val').innerText = `${morphRatio}%`;
+    document.getElementById('overlay-ratio').innerText = `${morphRatio}%`;
+
+    const chip = document.getElementById('dim-state-chip');
+    const dot = document.getElementById('dim-dot');
+    const txt = document.getElementById('dim-status-txt');
+
+    const poleMinus = document.getElementById('pole-minus');
+    const polePlus = document.getElementById('pole-plus');
+
+    const badge = document.getElementById('crystal-badge');
+    const toastWord = document.getElementById('toast-word');
+    const toastIpa = document.getElementById('toast-ipa');
+    const toastDesc = document.getElementById('toast-desc');
+
+    poleMinus.classList.remove('active-minus');
+    polePlus.classList.remove('active-plus');
+
+    const config = getDimConfig();
+
+    if (morphRatio >= 85 && morphRatio <= 115) {
+      // Norm Zone
+      chip.style.borderColor = 'rgba(255,255,255,0.2)';
+      dot.style.background = '#8b92a7';
+      txt.innerText = '标准常态基准 (Norm)';
+      badge.classList.remove('show');
+    } else if (morphRatio < 85) {
+      // Minus Pole
+      chip.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+      dot.style.background = '#3b82f6';
+      txt.innerText = `- 负极偏离: ${config.minusWord}`;
+      poleMinus.classList.add('active-minus');
+
+      toastWord.innerText = config.minusWord;
+      toastWord.style.color = '#60a5fa';
+      toastIpa.innerText = config.minusIpa;
+      toastDesc.innerText = config.minusDesc;
+      badge.classList.add('show');
+    } else {
+      // Plus Pole
+      chip.style.borderColor = 'rgba(236, 72, 153, 0.4)';
+      dot.style.background = '#ec4899';
+      txt.innerText = `+ 正极偏离: ${config.plusWord}`;
+      polePlus.classList.add('active-plus');
+
+      toastWord.innerText = config.plusWord;
+      toastWord.style.color = '#f472b6';
+      toastIpa.innerText = config.plusIpa;
+      toastDesc.innerText = config.plusDesc;
+      badge.classList.add('show');
+    }
+
+    // Reset task feedback
+    document.getElementById('task-feedback-box').style.display = 'none';
+  }
+
+  function getDimConfig() {
+    switch(currentDim) {
+      case 'length':
+        return {
+          minusWord: 'short', minusIpa: '/ʃɔːrt/', minusDesc: '沿主轴大幅压缩，无法连接两端。',
+          plusWord: 'long', plusIpa: '/lɔːŋ/', plusDesc: '沿主延展轴大幅超出认知基准。'
+        };
+      case 'girth':
+        return {
+          minusWord: 'thin', minusIpa: '/θɪn/', minusDesc: '截面纤细，身体线条向内收紧。',
+          plusWord: 'fat', plusIpa: '/fæt/', plusDesc: '横向截面饱满圆润，体态膨胀。'
+        };
+      case 'height':
+        return {
+          minusWord: 'short', minusIpa: '/ʃɔːrt/', minusDesc: '垂直高度低矮，低于视平线。',
+          plusWord: 'tall', plusIpa: '/tɔːl/', plusDesc: '垂直向上攀升，俯视常态基准。'
+        };
+      case 'aperture':
+        return {
+          minusWord: 'narrow', minusIpa: '/ˈnæroʊ/', minusDesc: '通行开度被挤压成缝隙，难以通过。',
+          plusWord: 'wide', plusIpa: '/waɪd/', plusDesc: '横向开度大幅展开，畅行无阻。'
+        };
+    }
+  }
+
+  function selectDimension(dim, card) {
+    currentDim = dim;
+    document.querySelectorAll('.dim-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+
+    const titles = {
+      length: '1D 轴向长度: long / short',
+      girth: '2D 截面体态: fat / thin',
+      height: '重力垂直高度: tall / short',
+      aperture: '开口通行宽度: wide / narrow'
+    };
+    document.getElementById('dim-tag').innerText = titles[dim];
+
+    const cfg = getDimConfig();
+    document.getElementById('word-minus').innerText = cfg.minusWord;
+    document.getElementById('desc-minus').innerText = cfg.minusDesc;
+    document.getElementById('word-plus').innerText = cfg.plusWord;
+    document.getElementById('desc-plus').innerText = cfg.plusDesc;
+    document.getElementById('label-minus-pole').innerText = `- 负极: ${cfg.minusWord} (30%)`;
+    document.getElementById('label-plus-pole').innerText = `+ 正极: ${cfg.plusWord} (220%)`;
+
+    // Update tasks
+    const tasks = {
+      length: { name: '悬崖搭桥实验', desc: '悬崖间距固定为 170px。测试当前木棒能否成功架桥。' },
+      girth: { name: '铁栅栏钻洞实验', desc: '铁栅栏间隙固定为 100px。测试角色能否侧身钻过栅栏。' },
+      height: { name: '摘苹果高度实验', desc: '苹果悬挂在 170px 处。测试角色能否直接伸手摘到。' },
+      aperture: { name: '推箱子过门实验', desc: '箱子宽度固定为 90px。测试能否推过当前门缝。' }
+    };
+    document.getElementById('task-name').innerText = tasks[dim].name;
+    document.getElementById('task-desc').innerText = tasks[dim].desc;
+
+    onMorphSliderChange(document.getElementById('dimSlider').value);
+  }
+
+  // Run Task Check
+  function runTaskTest() {
+    const fb = document.getElementById('task-feedback-box');
+    fb.style.display = 'block';
+
+    if (currentDim === 'length') {
+      const stickLen = 140 * (morphRatio / 100);
+      if (stickLen < 170) {
+        fb.className = 'task-feedback feedback-fail';
+        fb.innerHTML = `❌ 掉入悬崖！当前木棒 <strong>too short</strong> (${stickLen.toFixed(0)}px &lt; 170px)，无法搭通！`;
+      } else {
+        fb.className = 'task-feedback feedback-pass';
+        fb.innerHTML = `✔️ 搭桥成功！当前木棒 <strong>long enough</strong> (${stickLen.toFixed(0)}px &ge; 170px)，稳稳横跨两岸！`;
+      }
+    } else if (currentDim === 'girth') {
+      const bodyW = 80 * (morphRatio / 100);
+      if (bodyW > 100) {
+        fb.className = 'task-feedback feedback-fail';
+        fb.innerHTML = `❌ 卡在栅栏上！身体 <strong>too fat</strong> (${bodyW.toFixed(0)}px &gt; 100px)，无法钻过！`;
+      } else {
+        fb.className = 'task-feedback feedback-pass';
+        fb.innerHTML = `✔️ 轻松钻过！体态 <strong>thin enough</strong> (${bodyW.toFixed(0)}px &le; 100px)，自如通行！`;
+      }
+    } else if (currentDim === 'height') {
+      const charH = 120 * (morphRatio / 100);
+      if (charH < 150) {
+        fb.className = 'task-feedback feedback-fail';
+        fb.innerHTML = `❌ 够不着苹果！身高 <strong>too short</strong>，差一截！`;
+      } else {
+        fb.className = 'task-feedback feedback-pass';
+        fb.innerHTML = `✔️ 摘到了！身材 <strong>tall enough</strong>，轻松拿到！`;
+      }
+    } else if (currentDim === 'aperture') {
+      const gap = 100 * (morphRatio / 100);
+      if (gap < 90) {
+        fb.className = 'task-feedback feedback-fail';
+        fb.innerHTML = `❌ 箱子卡住！门缝 <strong>too narrow</strong> (${gap.toFixed(0)}px &lt; 90px)！`;
+      } else {
+        fb.className = 'task-feedback feedback-pass';
+        fb.innerHTML = `✔️ 顺利推过！门缝 <strong>wide enough</strong> (${gap.toFixed(0)}px &ge; 90px)！`;
+      }
+    }
+  }
+
+  function switchView(viewName) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    document.getElementById('view-interactive').style.display = viewName === 'interactive' ? 'grid' : 'none';
+    document.getElementById('view-walkthrough').style.display = viewName === 'walkthrough' ? 'grid' : 'none';
+    document.getElementById('view-theory').style.display = viewName === 'theory' ? 'block' : 'none';
+
+    if (viewName === 'walkthrough') {
+      renderWalkthroughStep(1);
+    }
+  }
+
+  // 4-Step Walkthrough
+  let walkStep = 1;
+  function renderWalkthroughStep(s) {
+    walkStep = s;
+    for (let i = 1; i <= 4; i++) {
+      const p = document.getElementById(`pill-step-${i}`);
+      p.className = 'step-pill';
+      if (i < s) p.classList.add('done');
+      if (i === s) p.classList.add('active');
+    }
+
+    const box = document.getElementById('flow-content-box');
+    const mental = document.getElementById('walk-mental-status');
+
+    if (s === 1) {
+      mental.innerHTML = '🔘 <strong>阶段 1【几何形变感知】</strong>：单向拉伸体态，零语言介入。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>步骤 1：直接捏合拉伸卡通体态，让其向两侧大幅充气膨胀。</strong>
+        </div>
+        <div style="background:#090a0f; padding:20px; border-radius:12px; text-align:center;">
+          <span style="font-size:32px;">🐱 ➔ 🐯 ➔ 🐼</span>
+          <div style="font-size:13px; color:var(--text-muted); margin-top:6px;">体态横向截面膨胀到 180%（饱满球状）</div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderWalkthroughStep(2)">体会到“膨胀与收缩”的物理张力 ➔</button>
+        </div>
+      `;
+    } else if (s === 2) {
+      mental.innerHTML = '🔘 <strong>阶段 2【极性对撞】</strong>：确立“负极收缩 vs 正极膨胀”的对偶张力。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>步骤 2：对比同一种生物的两种极端形态：</strong>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div style="background:#131724; border:1px solid #3b82f6; border-radius:10px; padding:14px; text-align:center;">
+            <div style="font-size:12px; color:#60a5fa; font-weight:700;">- 负极形态</div>
+            <div style="font-size:18px; font-weight:800; margin-top:4px;">体态纤细 (40%)</div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">轻巧穿过窄缝</div>
+          </div>
+          <div style="background:#131724; border:1px solid #ec4899; border-radius:10px; padding:14px; text-align:center;">
+            <div style="font-size:12px; color:#f472b6; font-weight:700;">+ 正极形态</div>
+            <div style="font-size:18px; font-weight:800; margin-top:4px;">体态圆润饱满 (190%)</div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">卡在窄缝外面</div>
+          </div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderWalkthroughStep(3)">立即唤醒英语符号结晶 ➔</button>
+        </div>
+      `;
+    } else if (s === 3) {
+      mental.innerHTML = '✨ <strong>阶段 3【极性对偶符号双结晶】</strong>：成对直接绑定英文符号。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700; text-align:center;">
+          在同一根轴上，同时结晶出两个极性符号：
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div style="background:rgba(59,130,246,0.12); border:1.5px solid #3b82f6; border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:26px; font-weight:800; color:#60a5fa;">thin</div>
+            <div style="font-size:12px; font-family:var(--font-mono); color:var(--text-muted);">/θɪn/</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">The cat is <strong>thin</strong>.</div>
+          </div>
+          <div style="background:rgba(236,72,153,0.12); border:1.5px solid #ec4899; border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:26px; font-weight:800; color:#f472b6;">fat</div>
+            <div style="font-size:12px; font-family:var(--font-mono); color:var(--text-muted);">/fæt/</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">The cat is <strong>fat</strong>.</div>
+          </div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderWalkthroughStep(4)">进入盲测任务迁移 ➔</button>
+        </div>
+      `;
+    } else if (s === 4) {
+      mental.innerHTML = '🚀 <strong>阶段 4【零翻译物理任务迁移】</strong>：根据栅栏卡住的物理场景直接判断。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>盲测任务：小猪尝试钻过栅栏，肚子卡在中间进不去。</strong>
+        </div>
+        <div style="background:#090a0f; padding:14px; border-radius:10px; text-align:center; border:1px solid var(--border);">
+          <div style="font-size:14px; color:#f472b6; font-weight:700;">⚠️ 肚子卡在栏杆中间弹了回来！</div>
+          <div style="font-size:13px; color:var(--text-sub); margin-top:4px;">The pig is too ______ to get through.</div>
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-opt-btn" onclick="checkQuiz(this, true)">
+            <div style="font-size:18px; font-weight:800; color:#f472b6;">fat</div>
+            <div style="font-size:11px; color:var(--text-muted);">截面饱满超出间隙</div>
+          </button>
+          <button class="quiz-opt-btn" onclick="checkQuiz(this, false)">
+            <div style="font-size:18px; font-weight:800; color:#60a5fa;">thin</div>
+            <div style="font-size:11px; color:var(--text-muted);">纤细能够通过</div>
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  function checkQuiz(btn, isCorrect) {
+    if (isCorrect) {
+      btn.classList.add('correct');
+      btn.innerHTML += '<div style="font-size:12px; font-weight:700; margin-top:4px;">🎉 完美直觉！零翻译直接命中！</div>';
+      setTimeout(() => {
+        alert('🎉 恭喜！你已彻底掌握空间维度对偶词的具身认知习得！');
+      }, 300);
+    } else {
+      btn.classList.add('wrong');
+    }
+  }
+
+  // Init
+  onMorphSliderChange(100);
+  renderLoop();
+</script>
+
+</body>
+</html>

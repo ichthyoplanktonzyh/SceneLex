@@ -1,0 +1,407 @@
+schema_version: '1.0'
+course_id: reluctant-01-course-v2
+target:
+  sense_id: reluctant-01
+  lemma: reluctant
+  pos: adjective
+  ipa: rɪˈlʌktənt
+  learner_l1: zh-CN
+  target_l2: en
+author_intent:
+  course_thesis: reluctant 的内核不是“拒绝”或“没做”，而是面对一件明确可做的事时，内心的抵触通过可观察行为流露出来；结果做或没做，都不改变这个状态。
+  learner_start: 学习者母语为中文，能把中文“不情愿 / 不愿意 / 犹豫”当作一个大致的消极态度，但容易把拒绝、不做、动作慢、犹豫与 reluctant
+    混在一起。
+  intended_outcome: 学习者看到具体动作场景时，能识别“对一件具体可做的事存在内心抵触”这一核心，并能在做、没做、拒绝、犹豫等情境中做出正确判断；绑定后能用
+    reluctant 表达这种状态，并区分 hesitant 与 unwilling。
+  design_rationale: 先提供多段行为场景建立可观察经验，再用正反判断题剥离“结果决定论”和“单一线索决定论”，绑定前顺带处理恐惧/厌恶不等于内心抵触的误区；绑定后通过
+    grounding、transfer 和两组 boundary（reluctant vs unwilling、reluctant vs hesitant）把词放到真实使用中；复习沿用同一套“行为—状态—结果”主线，并在后期复习中加入双边界对比。
+learning_flow:
+- id: pre-1-anchor
+  trigger: initial
+  primitive: scene_observation
+  purpose: 建立第一个核心场景：有明确可做的事、可观察的抵触行为、最终仍执行。
+  estimated_seconds: 60
+  can_pause_after: true
+  learner_content:
+    episode: 周五下午六点，阿杰已经收拾好背包，正准备下班。主管走到他桌前说：“今晚临时要上线一个新版本，你留下来加个班。”阿杰的手停在背包拉链上，顿了两三秒，才慢慢把拉链拉上，把包放回柜子。他坐回椅子时呼出一口长气，低声说：“行，我留下。”
+  evaluation:
+    kind: none
+- id: pre-2-no-action-scene
+  trigger: immediate_followup
+  primitive: evidence_highlight
+  purpose: 展示另一种同样合法的结局：动作最终没有发生，但抵触仍然通过行为可读。
+  estimated_seconds: 60
+  learner_content:
+    episode: 周六早上，妈妈叫小凯把碗洗了。小凯坐在沙发上应了一声，继续低头看手机。过了十分钟，他慢慢站起来，走到水池边，打开水龙头看着碗，发了一会儿呆，最后关上水，走回房间，碗没有洗。
+    evidence:
+    - 应了一声后没有马上起身。
+    - 拖了十分钟才慢慢走向水池。
+    - 打开水龙头后看着碗发呆。
+    - 最后关水走回房间，碗没有洗。
+  evaluation:
+    kind: none
+- id: pre-3-outcome-open
+  trigger: immediate_followup
+  primitive: binary_judgment
+  purpose: 处理 misc-1：做或没做都不能单独判定；结果不决定是否内心有抵触。
+  addresses:
+  - misc-1
+  estimated_seconds: 90
+  learner_content:
+    episode: 回想之前两个场景：阿杰最后留下加班；小凯最后没有洗碗。
+    evidence:
+    - 阿杰：手停在拉链上、叹气、放慢动作，但最后还是说“行，我留下”。
+    - 小凯：拖延、看着碗发呆，最后关水走回房间。
+    question: 下面哪种说法更准确？
+    options:
+    - id: a
+      text: 阿杰最后做了，所以他对加班是愿意的；小凯没做，所以他才是心里不想做。
+    - id: b
+      text: 做或没做都不能单独说明；两人都在动作里露出了不想做，只是结果不同。
+  evaluation:
+    kind: choice
+    correct_option_id: b
+- id: pre-4-no-sign
+  trigger: immediate_followup
+  primitive: binary_judgment
+  purpose: 处理 misc-2 的“没有证据”方向：动作顺利且无负面迹象时，不能强行判断有抵触。
+  addresses:
+  - misc-2
+  estimated_seconds: 75
+  learner_content:
+    episode: 体育课上，老师让小林先跑两圈热身。小林立刻站起来，跑得很快、很轻松，边跑边和同学聊天。
+    evidence:
+    - 老师说完后他马上起身。
+    - 跑步速度快、表情轻松。
+    - 没有停顿、叹气或回避动作。
+    question: 下面哪种判断更准确？
+    options:
+    - id: a
+      text: 他跑得很快，也许心里不想跑，只是忍住了。
+    - id: b
+      text: 他没有露出任何抵触的迹象，所以不能判断他心里不想跑。
+  evaluation:
+    kind: choice
+    correct_option_id: b
+- id: pre-5-sign-causes
+  trigger: immediate_followup
+  primitive: binary_judgment
+  purpose: 处理 misc-2 的“有线索但另有原因”方向：叹气、放慢不一定是心里抵触。
+  addresses:
+  - misc-2
+  estimated_seconds: 75
+  learner_content:
+    episode: 外卖员小王爬到六楼，累得直喘气。顾客请他顺手把垃圾带下楼，他慢慢弯腰提起垃圾袋，边喘边说“好”。
+    evidence:
+    - 爬楼后开始喘气。
+    - 弯腰动作很慢。
+    - 还是答应了并把垃圾提下去。
+    question: 下面哪种判断更准确？
+    options:
+    - id: a
+      text: 他的喘和慢一定说明他心里不想帮忙。
+    - id: b
+      text: 他的喘和慢更可能是因为爬楼太累；仅凭这些不能断定他不想帮忙。
+  evaluation:
+    kind: choice
+    correct_option_id: b
+- id: pre-6-refusal-alone
+  trigger: immediate_followup
+  primitive: binary_judgment
+  purpose: 处理“直接拒绝”与“内心抵触”的区别：拒绝本身不是充分证据，也为绑定后区分 unwilling 做铺垫。
+  addresses:
+  - misc-1
+  estimated_seconds: 75
+  learner_content:
+    episode: 小杨收到年会演出邀请。他直接说：“我不去。”语气很平，说完就转身走了，没有停顿、叹气或表情变化。
+    evidence:
+    - 他直接说了“我不去”。
+    - 语气很平。
+    - 转身就走，没有其他表情或动作。
+    question: 下面哪种判断更准确？
+    options:
+    - id: a
+      text: 他拒绝了，所以一定能看出他心里有抵触。
+    - id: b
+      text: 拒绝本身不等于心里有抵触；场景里没有看到其他内心挣扎的迹象。
+  evaluation:
+    kind: choice
+    correct_option_id: b
+- id: pre-7-hesitation-boundary
+  trigger: immediate_followup
+  primitive: binary_judgment
+  purpose: 铺垫 hesitant 的边界：在选项之间拿不定主意，不等于对一件已明确的事有抵触。
+  addresses:
+  - misc-3
+  estimated_seconds: 90
+  can_pause_after: true
+  learner_content:
+    episode: 小周在甜品店门口看菜单，手指在“巧克力蛋糕”和“抹茶蛋糕”之间来回移动，迟迟没有告诉店员。朋友问他要哪个，他说：“我还没想好。”最后他要了巧克力蛋糕。
+    evidence:
+    - 手指在两个选项之间来回移动。
+    - 迟迟没有告诉店员。
+    - 他说“我还没想好”。
+    question: 小周的状态更接近哪一种？
+    options:
+    - id: a
+      text: 他已经决定要点蛋糕，只是不想点，所以在拖。
+    - id: b
+      text: 他还没决定点哪一种，在选项之间拿不定主意。
+  evaluation:
+    kind: choice
+    correct_option_id: b
+- id: pre-8-fear-not-action
+  trigger: immediate_followup
+  primitive: binary_judgment
+  purpose: 处理 misc-5：恐惧或厌恶表情本身不等于对一件可做的事有内心抵触。
+  addresses:
+  - misc-5
+  estimated_seconds: 75
+  learner_content:
+    episode: 地铁站里，小美看见一只大狗从身边经过，她往后退了两步，皱起眉头，抓紧了妈妈的手。她当时只是在等地铁，面前没有一件需要决定做不做的具体事情。
+    evidence:
+    - 看到狗后后退两步、皱眉、抓妈妈的手。
+    - 她当时只是在等地铁，没有面对一件需要执行的具体动作。
+    question: 下面哪种判断更准确？
+    options:
+    - id: a
+      text: 她后退、皱眉，说明她面对某件可做的事心里有抵触，所以能判断她有消极态度。
+    - id: b
+      text: 她后退、皱眉可能是因为害怕；而且面前没有一件具体可做的事，不能据此判断她心里抵触。
+  evaluation:
+    kind: choice
+    correct_option_id: b
+- id: bind-1-symbol
+  trigger: immediate_followup
+  primitive: symbol_reveal
+  purpose: 首次绑定 L2 符号，把前面所有场景浓缩为 reluctant。
+  estimated_seconds: 45
+  learner_content:
+    l2_word: reluctant
+    ipa: rɪˈlʌktənt
+    presentation: 这个词形容一个人面对一件可以做、但心里并不想做的事，内心有抵触；这种抵触能从动作里看出来，比如停顿、叹气、放慢、回避。做或没做都可以。
+    minimal_l1_gloss: 不情愿的
+  evaluation:
+    kind: none
+- id: bind-2-pronunciation
+  trigger: immediate_followup
+  primitive: pronunciation
+  purpose: 建立 reluctant 的语音印象。
+  estimated_seconds: 20
+  learner_content:
+    l2_word: reluctant
+    ipa: rɪˈlʌktənt
+  evaluation:
+    kind: none
+- id: bind-3-grounding
+  trigger: immediate_followup
+  primitive: l2_grounding
+  purpose: 把刚绑定的 L2 词放回 anchor 场景，给出自然 L2 表达。
+  estimated_seconds: 75
+  learner_content:
+    source_step_id: pre-1-anchor
+    l2_realization: Ajie is reluctant to work late, but he says “Okay, I'll stay.”
+    constructions:
+    - be reluctant to [verb]
+    - feel reluctant about [noun]
+    - give a reluctant nod
+    collocations:
+    - reluctant to work late
+    - reluctant participant
+    - reluctant agreement
+  evaluation:
+    kind: none
+- id: bind-4-transfer
+  trigger: immediate_followup
+  primitive: transfer_judgment
+  purpose: 把概念迁移到明显不同的领域——勉强参与社交并完成动作，再次确认“做了但全程露出内心挣扎”也是 reluctant。
+  addresses:
+  - misc-1
+  estimated_seconds: 90
+  learner_content:
+    episode: 家庭聚会上，大家起哄让平时不爱说话的叔叔唱一首老歌。叔叔一直摆着手说“别别别”，但拗不过大家，还是接过话筒。他唱的时候声音很轻，眼睛一直看着地板，唱完立刻把话筒递回去，坐下来松了口气。
+    evidence:
+    - 一直摆手说“别别别”，但还是接过话筒。
+    - 唱的时候声音很轻、眼睛看着地板。
+    - 唱完立刻放下话筒，坐下来松了口气。
+    question: 用 reluctant 形容叔叔刚才的状态合适吗？
+    options:
+    - id: a
+      text: 合适。他虽然没有真的拒绝，但从动作里看得出他对“当众唱歌”这件事有抵触。
+    - id: b
+      text: 不合适。因为他最后还是唱了，所以不该说他心里抵触。
+  evaluation:
+    kind: choice
+    correct_option_id: a
+- id: bind-5-boundary-unwilling
+  trigger: immediate_followup
+  primitive: boundary_choice
+  purpose: 处理 misc-4 与中文“不愿意”干扰：reluctant 与 unwilling 都涉及不想做，但 reluctant 强调内心的情绪抵抗且行动仍可能发生。
+  addresses:
+  - misc-4
+  estimated_seconds: 90
+  learner_content:
+    episode: 公司的同事请阿杰帮忙把几箱旧文件搬到楼下仓库。阿杰没有拒绝，但他搬起第一箱时动作很慢，走到楼梯口还停了一下，呼了口气，才继续往下走；后面几箱也都是一副不情愿的样子搬完了。
+    options:
+    - sense_id: reluctant-01
+      text: reluctant
+    - sense_id: unwilling-01
+      text: unwilling
+    correct_sense_id: reluctant-01
+    explanation:
+    - reluctant：阿杰虽然把文件搬完了，但整个过程中明显露出内心抵触；这正是 reluctant 的核心——内心抵抗仍然可见，并且动作还是发生了。
+    - unwilling：unwilling 更偏向一种“决定不做”的意志状态。如果阿杰直接说“我不搬”并且坚持不做，那才更接近 unwilling。
+  evaluation:
+    kind: sense_choice
+    correct_sense_id: reluctant-01
+- id: bind-6-boundary-hesitant
+  trigger: immediate_followup
+  primitive: boundary_choice
+  purpose: 用一个有明确抵触的 target 场景区分 reluctant 与 hesitant。
+  addresses:
+  - misc-3
+  estimated_seconds: 90
+  learner_content:
+    episode: Max 答应帮室友打扫卫生间。他拿起刷子前停了一下，只用两根手指捏着刷子，慢慢刷了几下，中间还叹了口气，但最后还是把卫生间刷完了。
+    options:
+    - sense_id: reluctant-01
+      text: reluctant
+    - sense_id: hesitant-01
+      text: hesitant
+    correct_sense_id: reluctant-01
+    explanation:
+    - reluctant：Max 面对的是“打扫卫生间”这个已经明确要做的动作。他不是在两个选项之间拿不定主意，而是对这件事本身有抵触；所以应选 reluctant。
+    - hesitant：如果一个人在有顾虑时暂停、还没决定，才是 hesitant。Max 没有犹豫选哪条路，他只是不想做。
+  evaluation:
+    kind: sense_choice
+    correct_sense_id: reluctant-01
+review_progression:
+- id: review-1-recall
+  timing: 绑定完成后的第二天
+  due_after_days: 1
+  scaffold_level: early_post_binding
+  primitive: recall_reveal
+  learner_content:
+    episode: 妈妈让妹妹把碗里的青菜吃完。妹妹用筷子拨了拨青菜，看了妈妈一眼，慢慢夹起一小根，放进嘴里时还皱了一下眉，但最后还是咽了下去。
+    l2_word: reluctant
+    ipa: rɪˈlʌktənt
+    minimal_gloss: 不情愿的
+  evaluation:
+    kind: none
+- id: review-2-self-grade
+  timing: 绑定完成后的第二天，紧接第一次回忆
+  due_after_days: 1
+  scaffold_level: early_post_binding
+  primitive: recall_self_grade
+  learner_content:
+    l2_word: reluctant
+    ipa: rɪˈlʌktənt
+  evaluation:
+    kind: self_grade
+- id: review-3-boundary-unwilling
+  timing: 绑定完成后的第三天
+  due_after_days: 3
+  scaffold_level: later_post_binding
+  primitive: boundary_choice
+  learner_content:
+    episode: 妹妹要参加学校的合唱比赛。上台前，她走在队伍最后，肩膀耷拉着，嘴巴抿着，唱歌时声音很小，但还是把整首歌唱完了。
+    options:
+    - sense_id: reluctant-01
+      text: reluctant
+    - sense_id: unwilling-01
+      text: unwilling
+    correct_sense_id: reluctant-01
+    explanation:
+    - reluctant：妹妹尽管有抵触情绪，最后还是完成了唱歌，并且动作里露出不情愿；这是 reluctant。
+    - unwilling：unwilling 更像一种决定不做。如果妹妹直接说“我不唱”并且真的不上台，那才更接近 unwilling。
+  evaluation:
+    kind: sense_choice
+    correct_sense_id: reluctant-01
+- id: review-4-boundary-hesitant
+  timing: 绑定完成后的第五天
+  due_after_days: 5
+  scaffold_level: later_post_binding
+  primitive: boundary_choice
+  learner_content:
+    episode: Nina 在电话里答应了去参加好友的婚礼，但放下电话后她盯着日历，手撑着下巴，心里想着：“婚礼上要见到那几个人，真不想去。”到了婚礼当天，她到了门口，停了几秒，深吸一口气，还是走了进去。
+    options:
+    - sense_id: reluctant-01
+      text: reluctant
+    - sense_id: hesitant-01
+      text: hesitant
+    correct_sense_id: reluctant-01
+    explanation:
+    - reluctant：Nina 已经知道要去，心里不乐意，带着抵触走进会场；这是 reluctant 的核心。
+    - hesitant：hesitant 强调在有顾虑时暂停、还没拿定主意；Nina 不是在选去或不去。
+  evaluation:
+    kind: sense_choice
+    correct_sense_id: reluctant-01
+- id: review-5-transfer
+  timing: 绑定完成后的第七天
+  due_after_days: 7
+  scaffold_level: later_post_binding
+  primitive: transfer_judgment
+  learner_content:
+    episode: 一位工程师被指派在公开听证会上代表公司发言。她并不想做这件事，但因为是上级安排，她答应了。会前她在休息区来回走了两圈，上台前停了一下，低声叹了口气，接过话筒开始发言。
+    evidence:
+    - 她答应了发言。
+    - 会前来回走动、上台前停顿。
+    - 低声叹了口气，还是开始发言。
+    question: 这个场景里用哪个词概括她的状态最准确？
+    options:
+    - id: a
+      text: reluctant
+    - id: b
+      text: hesitant
+    - id: c
+      text: unwilling
+  evaluation:
+    kind: choice
+    correct_option_id: a
+related_sense_material:
+- sense_id: hesitant-01
+  usage: boundary_contrast
+  decision: 首学用中文场景先建立边界（拿不定主意 vs 对已知动作有抵触），绑定后用 boundary_choice 将 reluctant 与 hesitant
+    对置；不单独完整教学 hesitant。
+  note: 后续若要完整学习 hesitant，应以“有顾虑地暂停”为独立义项展开。
+- sense_id: unwilling-01
+  usage: boundary_contrast
+  decision: 绑定后用 boundary_choice 将 reluctant 与 unwilling 对置，重点强调 reluctant 可能仍会执行、且内心挣扎可见。
+  note: unwilling 只在边界对比中被说明，不展开完整教学。
+metadata:
+  archetype_used: intention_cues
+  capabilities_used:
+  - scene_observation
+  - evidence_highlight
+  - binary_judgment
+  - symbol_reveal
+  - pronunciation
+  - l2_grounding
+  - transfer_judgment
+  - boundary_choice
+  - recall_reveal
+  - recall_self_grade
+  repair_note: 根据评审修复：(1) 新增绑定后 reluctant vs unwilling 的 boundary_choice，处理 misc-4
+    与中文“不愿意”干扰；(2) 新增绑定前判断步骤处理 misc-5，明确恐惧/厌恶不等于 reluctant； (3) 将 bind-4 迁移场景改为“勉强参加家庭聚会唱歌并完成”，避免与“讨厌任务→没做”套路重复；
+    (4) 复习中移除未绑定的 eager，改用课程内已建立或已对比过的 reluctant / hesitant / unwilling； (5) 复习中加入
+    unwilling 与 hesitant 双边界对比。
+  holistic_compiler_version: 1.0.0
+  generated_at: '2026-08-16T09:00:05Z'
+  calls:
+  - role: author
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: a428faac-66d5-48d1-84c6-0feff85d64de
+  - role: author_format_retry
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: 494c9abf-1ebe-49b7-a894-34ee71c4173d
+  - role: critic
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: 1ba0f9fd-6443-4329-a6f3-3f94e3157e3c
+  - role: repair
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: e25d2602-716e-4ad3-8ddc-dfe5f597235c
+  input_digest: sha256:5c3db36462cf34bb9357d490095b812ffe97961cb6267b9d29ae991daebc2bb5

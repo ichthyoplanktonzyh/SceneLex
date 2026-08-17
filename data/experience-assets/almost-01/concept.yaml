@@ -1,0 +1,436 @@
+schema_version: '1.0'
+asset_type: concept
+sense_id: almost-01
+contract_hash: sha256:43159c1e43b8bef047fa196b3c5232dc20b1c1057d3f2559549817a3342038e0
+language_policy:
+  policy_version: 1
+  learner_l1: zh-CN
+  target_l2: en
+units:
+- id: unit-1
+  role: anchor
+  hypothesis_target: null
+  preserved_variables:
+  - boundary_clarity
+  - nearness
+  - target_crossed
+  changed_variables:
+  - setting
+  - dimension
+  - target_entity
+  - event_valence
+  - visible_stop
+  semantic_spec:
+    judgment: 在够苹果的基线事件中，学习者要判断：手已移到离苹果只剩 1 厘米的空隙处但未接触；目标状态（够到）没有达成。这个“极度接近但未越过界限”的状态是目标概念。
+    boundary_clarity: clear
+    nearness: extreme
+    target_crossed: 'no'
+    setting: indoor_shelf
+    dimension: distance
+    target_entity: apple_on_shelf
+    event_valence: neutral
+    visible_stop: hand_stops_1cm_before_apple
+    threshold: hand_contact_with_apple
+  sequence: 1
+  experience:
+    episode: 一个人站在架子前，伸手去够架子上的苹果。他的手向苹果伸过去，指尖慢慢移向苹果，在离苹果一厘米的空隙处停住。手指悬在那里，没有碰到苹果皮。片刻后他收回手，苹果仍然留在架子上。
+    observable_evidence:
+    - 指尖停在离苹果一厘米的空隙处，没有碰到苹果
+    - 手在空中停住片刻，然后收回
+    - 苹果一直留在架子上，位置没有变化
+    surface_dimensions:
+    - name: 手与苹果的距离
+      baseline: 手指碰到苹果才算够到
+      deviation: 指尖停在离苹果一厘米处，没有接触
+    - name: 够到的结果
+      baseline: 够到的结果是苹果被碰到或取下
+      deviation: 苹果始终在架上，未被碰到
+  interaction:
+    question: 刚才的场景里，直接看到的结果是什么？
+    answers:
+    - id: a1
+      text: 指尖停在离苹果一厘米处，没有碰到苹果
+      is_correct: true
+      feedback: 对：指尖在离苹果一厘米的空隙处停住，始终没有碰到苹果，苹果也没被取下。这个停在终点前一小段距离的动作就是证据。
+    - id: a2
+      text: 指尖碰到苹果并把苹果取了下来
+      is_correct: false
+      feedback: 不对：苹果一直留在架子上，指尖没有接触到苹果，也没有取下苹果。
+- id: unit-2
+  role: variation
+  hypothesis_target: misc-4
+  preserved_variables:
+  - boundary_clarity
+  - nearness
+  - target_crossed
+  changed_variables:
+  - setting
+  - dimension
+  - target_entity
+  - visible_stop
+  semantic_spec:
+    judgment: 换到数量维度：学习者要判断，水桶液面停在满刻度线下方一小截，没有到达满刻度；这是目标概念。情境是中性/正面的，不含负面事件，也不需要庆幸语气，因此目标概念不依赖负面语境。
+    boundary_clarity: clear
+    nearness: extreme
+    target_crossed: 'no'
+    event_valence: neutral
+    setting: workshop_counter
+    dimension: quantity
+    target_entity: water_bottle
+    visible_stop: liquid_below_fill_line_small_gap
+    threshold: full_mark
+  sequence: 2
+  experience:
+    episode: 工作台上放着一个透明水瓶，瓶身画着一条满刻度线。有人往瓶里倒水，水面不断上升，升到满刻度线附近时慢下来，最后停在满刻度线下方一厘米处。他放下水瓶，水面不再上升。满刻度线清晰可见，水面与刻度线之间留着一小截空隙。
+    observable_evidence:
+    - 水面停在满刻度线下方一厘米处
+    - 水面与满刻度线之间有一小截空隙
+    - 倒水停止后水面不再上升，没有越过满刻度线
+    surface_dimensions:
+    - name: 水面高度
+      baseline: 满刻度线是水装满的界限
+      deviation: 水面停在刻度线下方一厘米，未到线
+    - name: 装满的结果
+      baseline: 装满时水面到达满刻度线
+      deviation: 水面停在线下方，没有到达满刻度线
+  interaction:
+    question: 根据看到的画面，水面最后停在什么位置？
+    answers:
+    - id: a1
+      text: 水面越过满刻度线，从瓶口溢出
+      is_correct: false
+      feedback: 不对：水面没有越过刻度线，也没有溢出。可以看到水面停在刻度线下方，两者之间有一小截空隙。
+    - id: a2
+      text: 水面停在满刻度线下方，与刻度线之间有空隙
+      is_correct: true
+      feedback: 对：水面停在刻度线下方一厘米，没有到达满刻度线，倒水停止后水面也不再上升。
+- id: unit-3
+  role: perturbation
+  hypothesis_target: null
+  preserved_variables:
+  - boundary_clarity
+  - nearness
+  - target_crossed
+  changed_variables:
+  - setting
+  - dimension
+  - target_entity
+  - event_valence
+  - visible_stop
+  semantic_spec:
+    judgment: 学习者要判断：杯子已滑到桌子边缘、停在即将翻落的临界点，但没有翻落；目标事件（掉落）没有发生，所以目标概念成立。
+    boundary_clarity: clear
+    nearness: extreme
+    target_crossed: 'no'
+    setting: cafe_table
+    dimension: event_occurrence
+    target_entity: cup_at_table_edge
+    event_valence: negative_averted
+    visible_stop: cup_stops_at_table_edge
+    threshold: falling_over_edge
+  sequence: 3
+  experience:
+    episode: 咖啡馆里，一个人起身时袖子带动了桌边的杯子。杯子向桌子边缘滑去，杯底一半滑出桌沿，杯身晃了一下，随即停住。杯子没有继续向外滑，也没有翻落。桌下的地面一直干燥，没有水渍，也没有碎片。
+    observable_evidence:
+    - 杯底一半滑出桌沿
+    - 杯身晃动后停住，没有继续向外滑
+    - 杯子没有掉到地上，地面没有水渍和碎片
+    surface_dimensions:
+    - name: 杯子的位置
+      baseline: 杯子安稳地放在桌面上
+      deviation: 杯底一半悬出桌沿，停在临界处
+    - name: 掉落事件的结果
+      baseline: 杯子离开桌面落地才算掉落
+      deviation: 杯子没有落地，仍然停在桌沿
+  interaction:
+    question: 关于杯子的经过，哪个说法是看到的？
+    answers:
+    - id: a1
+      text: 杯子滑到桌沿、一半悬空后停住，没有掉到地上
+      is_correct: true
+      feedback: 对：杯底一半滑出桌沿后停住，杯身没有继续向外滑，也没有翻落，地面没有水渍和碎片。
+    - id: a2
+      text: 杯子翻落桌面，摔到地上
+      is_correct: false
+      feedback: 不对：杯子没有翻落。它滑到桌沿后停住，地面干燥，没有碎片。
+- id: unit-4
+  role: discrimination
+  hypothesis_target: misc-1
+  preserved_variables:
+  - boundary_clarity
+  - nearness
+  - target_crossed
+  changed_variables:
+  - setting
+  - dimension
+  - target_entity
+  - event_valence
+  - visible_stop
+  - contrast_category
+  - contrast_side
+  semantic_spec:
+    judgment: 学习者要判断两个读数：指针停在 100 刻度下方一小格是目标概念；指针越过 100 到 102 只能说“约等于 100”，不能说目标概念，因为目标概念要求未越过数值边界。
+    boundary_clarity: clear
+    nearness: extreme
+    target_crossed: 'no'
+    setting: measurement_display
+    dimension: count
+    target_entity: gauge_reading
+    event_valence: neutral_measurement
+    visible_stop: pointer_just_below_100
+    contrast_category: about
+    contrast_side: above_threshold
+    threshold: 100_count_mark
+    contrast_value: '102'
+  sequence: 4
+  experience:
+    episode: 测量室的墙上并排挂着两个表盘，两个表盘都静止不动。左边表盘的指针停在100刻度线下方一小格，指针与刻度线之间隔着一条细缝。右边表盘的指针越过了100刻度线，停在102的位置。
+    observable_evidence:
+    - 左表盘指针停在100刻度线下方一小格
+    - 左表盘指针与100刻度线之间隔着一条细缝
+    - 右表盘指针越过100刻度线，停在102
+    surface_dimensions:
+    - name: 指针与100刻度线的相对位置
+      baseline: 指针到达100刻度线才算达到100
+      deviation: 左表盘指针在线下方一小格；右表盘指针越过线到102
+    - name: 越过界限与否
+      baseline: 越过界限是指针达到或超过100刻度线
+      deviation: 左表盘未越线，右表盘已越线
+  interaction:
+    question: 两个表盘都已停住，哪个读数显示指针没有越过100刻度线？
+    answers:
+    - id: a1
+      text: 指针停在102刻度处的表盘
+      is_correct: false
+      feedback: 不对：102已经超过100，指针越过了100刻度线。没有越过100刻度线的是另一个表盘。
+    - id: a2
+      text: 指针停在100刻度线下方一小格处的表盘
+      is_correct: true
+      feedback: 对：这个表盘的指针停在100刻度线下方，与刻度线之间隔着一条细缝，没有越过100刻度线。
+- id: unit-5
+  role: discrimination
+  hypothesis_target: misc-2
+  preserved_variables:
+  - boundary_clarity
+  - nearness
+  - target_crossed
+  changed_variables:
+  - setting
+  - dimension
+  - target_entity
+  - event_valence
+  - visible_stop
+  - contrast_category
+  - contrast_crossed
+  semantic_spec:
+    judgment: 学习者要判断两个考试结果：59 分停在及格线下 1 分，未通过，是目标概念；61 分刚过及格线，是通过，属于“勉强通过”，不是目标概念。
+    boundary_clarity: clear
+    nearness: extreme
+    target_crossed: 'no'
+    setting: exam_room
+    dimension: score
+    target_entity: test_score
+    event_valence: outcome_evaluation
+    visible_stop: score_59_below_pass_line
+    contrast_category: barely
+    contrast_crossed: 'yes'
+    threshold: passing_line_60
+  sequence: 5
+  experience:
+    episode: 教室前面贴着两张成绩单，并排钉在一起。第一张成绩单上写着59分，分数写在及格线的下侧，及格线标着60分，59分与60分之间隔着1分。第二张成绩单上写着61分，分数写在及格线的上侧，越过了及格线。
+    observable_evidence:
+    - 第一张成绩单写着59分，位于及格线下侧
+    - 第一张成绩单的59分与及格线之间隔着1分
+    - 第二张成绩单写着61分，位于及格线上侧，越过了及格线
+    surface_dimensions:
+    - name: 分数与及格线的相对位置
+      baseline: 分数达到60分才算越过及格线
+      deviation: 59分在线下侧，61分在线上侧
+    - name: 是否越过及格线
+      baseline: 越过及格线是分数达到或超过60分
+      deviation: 59分未越线，61分已越线
+  interaction:
+    question: 哪张成绩单显示分数没有越过及格线？
+    answers:
+    - id: a1
+      text: 写着59分、位于及格线下侧的成绩单
+      is_correct: true
+      feedback: 对：这张成绩单的59分写在及格线下方，与60分之间还隔着1分，没有越过及格线。
+    - id: a2
+      text: 写着61分、位于及格线上侧的成绩单
+      is_correct: false
+      feedback: 不对：61分已经越过了及格线，写在及格线的上侧。没有越过及格线的是另一张。
+- id: unit-6
+  role: discrimination
+  hypothesis_target: misc-3
+  preserved_variables:
+  - boundary_clarity
+  - nearness
+  - target_crossed
+  changed_variables:
+  - setting
+  - dimension
+  - target_entity
+  - visible_stop
+  - contrast_category
+  - contrast_distance
+  - contrast_certainty
+  semantic_spec:
+    judgment: 学习者要判断两个任务进度：一个已完成 98/100 后断电停住，结果确定为未完成，是目标概念；另一个只进行到 40/100 且仍在运行、结果未知，是“尚未/正在接近”，不是目标概念。
+    boundary_clarity: clear
+    nearness: extreme
+    target_crossed: 'no'
+    setting: workshop_floor
+    dimension: degree_completion
+    target_entity: assembly_task
+    visible_stop: 98_of_100_units_done_then_power_cut
+    contrast_category: not_yet_approaching
+    contrast_distance: midway
+    contrast_certainty: outcome_unknown
+    threshold: task_completion_100_units
+  sequence: 6
+  experience:
+    episode: 车间里两个组装台同时在加工零件，每个台子都要装完100个零件。左边的台子计数器跳到98时，传送带停住，计数器不再跳动，第99个零件还没有装上。右边的台子计数器显示40，机器仍在运转，零件还在传送带上移动。
+    observable_evidence:
+    - 左边计数器停在98，传送带停住，计数器不再跳动
+    - 左边第99个零件还没有装上
+    - 右边计数器显示40，机器仍在运转，零件继续移动
+    surface_dimensions:
+    - name: 已完成的零件数量
+      baseline: 装完100个零件才算完成
+      deviation: 左边停在98个，右边处于40个
+    - name: 机器是否停住
+      baseline: 机器停住时计数不再变化
+      deviation: 左边已停住，右边仍在运行
+  interaction:
+    question: 两个组装台中，哪个已经停住、完成数量固定在98个？
+    answers:
+    - id: a1
+      text: 右边显示40、仍在运行的组装台
+      is_correct: false
+      feedback: 不对：右边那台还在运转，零件继续在传送带上移动，完成数量没有固定在98个。
+    - id: a2
+      text: 左边完成98个后停住的组装台
+      is_correct: true
+      feedback: 对：左边那台计数器跳到98后传送带停住，计数器不再跳动，第99个零件没有装上，结果固定在98个。
+- id: unit-7
+  role: discrimination
+  hypothesis_target: misc-5
+  preserved_variables:
+  - boundary_clarity
+  - nearness
+  - target_crossed
+  changed_variables:
+  - setting
+  - dimension
+  - target_entity
+  - visible_stop
+  - contrast_category
+  - contrast_applicability
+  semantic_spec:
+    judgment: 学习者要判断两种语义区域：到场人数达到 99/100，接近“全部到场”但未达到，是目标概念；某人吃肉的频率趋近于零（中文“几乎不”）不是目标概念的否定形式，而属于
+      hardly/near-zero 范畴，不能用目标词直接加否定来表达。
+    boundary_clarity: clear
+    nearness: extreme
+    target_crossed: 'no'
+    setting: attendance_list
+    dimension: proportion
+    target_entity: attendee_count
+    visible_stop: 99_of_100_seats_filled
+    contrast_category: near_zero_frequency
+    contrast_applicability: not_almost
+    threshold: everyone_present_100_seats
+  sequence: 7
+  experience:
+    episode: 会议室门口贴着一张出席表，表上印着100个方格。表的下方写着实到99人，最末一个方格空着，没有人名。同一张表的背面贴着另一个人的饮食记录，30个空格里只有1天打了勾，其余29天都是空白。
+    observable_evidence:
+    - 出席表写着实到99人，第100个方格空着
+    - 饮食记录的30个空格里只有1天打了勾，29天空白
+    surface_dimensions:
+    - name: 出席人数与总格数
+      baseline: 100个方格全部填满才算全员到场
+      deviation: 实到99人，最后一个方格空着
+    - name: 饮食记录的勾选数量
+      baseline: 记录可以勾选多天或少量天
+      deviation: 30天里只有1天有勾，其余空白
+  interaction:
+    question: 哪条记录显示：100个方格还没有全部填满？
+    answers:
+    - id: a1
+      text: 出席表：实到99人，第100个方格空着
+      is_correct: true
+      feedback: 对：出席表显示实到99人，100个方格中最后一个空着，说明100个方格还没有全部填满。
+    - id: a2
+      text: 饮食记录：30天里只有1天打了勾
+      is_correct: false
+      feedback: 不对：饮食记录显示的是30天里只吃过1次，是次数极少的情况，它没有显示出总格数还空着一格这样的数量证据。
+symbol_binding:
+  reveal:
+    l2_word: almost
+    ipa: /ˈɔːlmoʊst/
+    presentation: 在屏幕上显示 almost，播放发音 /ˈɔːlmoʊst/，让学习者跟读。说明：刚才手指停在离苹果一厘米处、没有碰到苹果的那个瞬间，就可以用
+      almost 来说——离目标只剩很小一段距离，但最终没有到达。让学习者把 almost 的声音和字形，与前面七个画面中停在终点前一小段的共同经验连在一起。随后给出最小中文确认。
+  minimal_l1_gloss: 几乎；差一点
+gate:
+  passed: true
+  dimensions:
+  - name: semantic_correctness
+    verdict: pass
+    note: 所有目标单元均守住 target_crossed=no、nearness=extreme、boundary_clarity=clear：unit-1
+      指尖离苹果 1cm 未触碰，unit-2 水面未达满刻度，unit-3 杯未翻落，unit-4/5/6/7 分别与 about、barely、not_yet/approaching、near-zero
+      对照，未发现把相邻范畴当作目标词义。
+  - name: sense_purity
+    verdict: pass
+    note: 对照 WordSense 的 boundaries/excluded/confusables：unit-4 的 102 是 about 一侧，unit-5
+      的 61 是 barely 一侧，unit-6 的 40 且仍在运行是 approaching 一侧，unit-7 的目标是 99/100 未满；正例均未滑向完全达成、中途或勉强达成。
+  - name: prototype_quality
+    verdict: pass
+    note: unit-1 anchor 建立了清晰的基线原型：手伸向架子上的苹果，边界是指尖接触苹果，实际停在 1cm 空隙处未触碰，苹果始终在架上；场景中性、边界可见、未达成结果明确。
+  - name: definition_leakage
+    verdict: pass
+    note: 诱导期 episode、observable_evidence、questions、answers、feedback 均以可观察行为承载语义，没有旁白式定义或字幕直接陈述词义。reveal
+      中的说明发生在绑定后并回指 unit-1 证据，未替代经验本身承载语义。
+  - name: l2_leakage
+    verdict: pass
+    note: 绑定前的 episode、observable_evidence、answers、feedback、surface_dimensions 全部为中文，没有出现目标词
+      almost 或相邻 L2 词；semantic_model 内的英文属内部规范，不呈现给学习者。
+  - name: l1_label_leakage
+    verdict: pass
+    note: 绑定前 learner-visible 内容没有用“几乎”“差一点”命名概念，也没有原样复制 minimal_l1_gloss；中文只用于描述具体行为与结果，如“没有碰到苹果”“停在满刻度线下方”。minimal_l1_gloss
+      在 reveal 之后才出现，合规。
+  - name: surface_language_compliance
+    verdict: pass
+    note: 绑定前为中文经验叙事，交互与反馈均为中文；reveal 使用目标 L2 词与 IPA，绑定后才给出 minimal_l1_gloss；没有在绑定前出现成段英语或英文解释。
+  - name: variable_isolation
+    verdict: warn
+    note: unit-4/5 的 target/contrast 在同一刻度和阈值下只改变是否越线，隔离良好；unit-6 的 running/stopped
+      同时体现距离与确定性，属于 not_yet 对比所需。unit-7 的对比不在同一比较维度上：出席 99/100 接近上限，而饮食 1/30 是频率趋零，且问题只问哪个记录未填满
+      100 格，未让学习者比较两个语义区域。建议改为同一计数框架下的对比，并让问题要求判断“接近明确界限但未达到”。
+  - name: accidental_invariant
+    verdict: pass
+    note: 正例的表面场景与维度已变化：距离、数量、事件发生、分数、完成度、比例均有不同；“未达成”是目标词义的必要条件而非偶然不变式。交互题正确选项位置为
+      a1,a2,a1,a2,a1,a2,a1，未固定在同一选项位置。
+  - name: cognitive_noise
+    verdict: warn
+    note: unit-7 在出席表背面引入与出席人数无关的饮食记录（30 天只勾 1 天），场景关联牵强；问题只要求识别 100 格未满，饮食记录作为错误项容易被感知为无关情节。建议移除该记录，或改成与“未满”同场景、同计数框架的清晰对照，避免多余认知负担。
+  scores:
+    semantic_correctness: 8.5
+    variable_isolation: 6.5
+    cognitive_noise: 6.0
+metadata:
+  compiler_version: 2.1.0
+  prompt_versions:
+    program_planner: v2
+    surface_generator: v2
+    quality_gate: v2
+  generated_at: '2026-08-15T16:40:55Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids:
+  - f3e101d8-426a-4525-8ffa-3fdb0ae7ef68
+  - c98e05c7-8808-416d-af19-5075d37562b0
+  - 206bcb25-eb39-4a08-86a7-f95e010dc189
+  language_policy:
+    policy_version: 1
+    learner_l1: zh-CN
+    target_l2: en

@@ -1,0 +1,876 @@
+{
+  "schema_version": "1.0",
+  "course_id": "cup-01-noun-vessel-zh-v1",
+  "target": {
+    "sense_id": "cup-01",
+    "lemma": "cup",
+    "pos": "noun",
+    "ipa": "/kʌp/",
+    "learner_l1": "zh-CN",
+    "target_l2": "en"
+  },
+  "author_intent": {
+    "course_thesis": "以‘可单手拿起的小型饮具、直接就口饮用、所指是器物本身’为核心判据建立 cup-01 的实体范畴，绑定英语符号 cup；并把‘一杯水’的内容义、‘两杯面粉’的计量义、同词形动词用法全部过滤掉，同时破除中文‘杯子’的机械对译。课程明确‘不透明’和‘带柄’只是典型倾向，不是成立条件：透明塑料小杯、无柄小杯在真实英语中也可以叫 cup。",
+    "learner_start": "学习者母语为中文，日常用‘杯子’这类宽泛词；可能已认识 cup，但尚未把‘器物本身’与‘杯内液体/容量/计量单位’分开，也容易把透明玻璃饮具或厚壁马克杯都直接叫 cup，还可能把 cupped/cups 的动词句误读成拿着一个杯子。",
+    "intended_outcome": "学习者能在场景中指认 cup-01 所指的小型饮具；能区分‘器物本身’与 a cup of water / two cups of flour 中的内容或计量义；知道透明塑料杯、无柄杯也可以是 cup，不会把‘不透明/有柄’当成必要条件；能拒绝把 cupped his hands / cupped the kitten 中的动词义当成饮具；并能在自然英语中使用 the cup、an empty cup、a clear plastic cup 等表达。",
+    "design_rationale": "课程遵循 L1 经验首学：先用餐桌场景建立可观察原型（小巧、开口凹陷、可单手端起、就口饮用），并用变体呈现‘不透明/有柄’只是典型倾向；随后用两个精简场景分别建立‘内容/容量义’和‘计量单位义’的对比。符号绑定后，用一个 L2 grounding 并列锚定器物义、内容义、计量义；再用最小 L2 铺垫引入 glass/mug 作为对比词，并用多选边界判断避免强制二选一。透明塑料杯正例直接破除‘透明就不是 cup’的误解。最后用 cupped his hands 过滤动词义，复习中覆盖 cupped the kitten。相比评审版，全课由 18 步精简为 16 步，并把部分边界辨析留到更晚的复习提取。"
+  },
+  "steps": [
+    {
+      "id": "flow_01_observe_main",
+      "stage": "learning_flow",
+      "trigger": "initial",
+      "primitive": "scene_observation",
+      "purpose": "在符号出现前，用 L1 经验叙事建立 cup-01 的原型指称：小巧、可单手端起、直接就口饮用；同时把不透明、带柄处理为典型倾向而非硬条件。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "清晨的餐桌上放着一只小巧的容器。它顶部开口，内腔向下凹陷，能盛液体；大小刚好适合一只手握住。这类小饮具的器壁通常做成实心不透明，从外面往往看不到里面；侧边也常常有一个把手，不过这些都是常见特点，不是硬条件。一个人用一只手握住把手，把它端起来，送到嘴边喝了一口，然后放回桌面上。桌子的另一边放着一只外形不同的容器：器壁透明、很薄、没有把手，也能盛液体。"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "flow_02_evidence",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "evidence_highlight",
+      "purpose": "把后续判断需要的可观察证据显性化：小巧、开口凹陷、就口饮用；不透明和带柄只是典型特征。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 20,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "仍然是餐桌那一幕。",
+        "evidence": [
+          "小巧，一只手就能握住并端起来。",
+          "顶部开口、内部凹陷，能盛液体。",
+          "被端到嘴边直接喝，喝完放回桌面。",
+          "器壁大多实心不透明，但这不是必要条件；有些轻薄透明的饮用容器在相关语境中也属于这一类。",
+          "侧边常常有把手，但没有把手不自动排除。"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "flow_03_object_inspection",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "object_inspection",
+      "purpose": "让学习者观察目标器物及其变体，看出哪些特征是稳定范畴证据、哪些只是临时状态；用透明塑料变体破除‘透明就不是 cup’的误解，并用大而厚实的容器与透明薄壁容器建立对比支点。",
+      "addresses": [
+        "misc-1",
+        "misc-5"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 70,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "inspect_prompt": "请逐个观察三件器物，并切换第一件器物的几种状态。注意哪些特征是稳定的，哪些只是临时状态。",
+        "objects": [
+          {
+            "id": "target_cup",
+            "name": "器物一",
+            "category_label": "器物一",
+            "features": [
+              "顶部开口，内腔凹陷，能盛液体。",
+              "尺寸小，一只手就能握住并端起来。",
+              "典型情况下器壁实心不透明，但透明并不自动排除。",
+              "侧边常有把手，但把手是可选的。",
+              "被设计成端到嘴边直接饮用。"
+            ],
+            "variants": [
+              {
+                "id": "v_full_hot",
+                "label": "装满热饮",
+                "features": [
+                  "里面装的是深色热饮，正冒着热气。",
+                  "握住把手，端到嘴边喝了一口。"
+                ]
+              },
+              {
+                "id": "v_empty",
+                "label": "喝空以后",
+                "features": [
+                  "里面的热饮被喝完了。",
+                  "桌面上剩下同一个器物，只是里面空了。",
+                  "空着的时候，它仍然是那件可以拿起来的小饮具。"
+                ]
+              },
+              {
+                "id": "v_no_handle",
+                "label": "同款但没有把手",
+                "features": [
+                  "尺寸、器壁和饮用方式与原来一样。",
+                  "没有侧边把手。",
+                  "仍能单手捧起来，端到嘴边喝。"
+                ]
+              },
+              {
+                "id": "v_transparent_plastic",
+                "label": "换成透明塑料材质",
+                "features": [
+                  "器壁变得透明、很轻，没有把手。",
+                  "仍能单手端起、端到嘴边喝。",
+                  "大小和饮用方式没有变，透明本身并不自动排除它属于小饮具。"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "contrast_mug",
+            "name": "器物二",
+            "category_label": "器物二",
+            "features": [
+              "顶部开口，内腔也很深，能装一大份液体。",
+              "尺寸明显更大、器壁更厚实，一只手能端起但容量更大。",
+              "通常有一个把手。",
+              "直接手持饮用，不需要配套浅碟。"
+            ],
+            "variants": []
+          },
+          {
+            "id": "contrast_thin_transparent",
+            "name": "器物三",
+            "category_label": "器物三",
+            "features": [
+              "顶部开口，也能盛液体。",
+              "器壁透明、很薄，没有把手。",
+              "常盛冷水或果汁。",
+              "透明本身并不自动决定它是不是小饮具；要看大小和饮用方式。"
+            ],
+            "variants": []
+          }
+        ],
+        "hide_object_names": true
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "flow_04_handle_not_required",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "binary_judgment",
+      "purpose": "破除‘必须带柄’的误判：把手是典型特征，但不是成立条件。",
+      "addresses": [
+        "misc-5"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 20,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "你把器物一切换到了一个变体：它没有侧边把手，但尺寸、器壁和饮用方式与原来一样。一个人单手捧着它，端到嘴边喝了一口。",
+        "evidence": [
+          "没有把手。",
+          "仍然小巧，能单手端起就口喝。"
+        ],
+        "question": "没有把手的小型饮具，还算不算今天学的这一类器物？",
+        "options": [
+          {
+            "id": "yes",
+            "text": "算，把手是有时有的特征，不是必须的"
+          },
+          {
+            "id": "no",
+            "text": "不算，没有把手就一定不是"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "yes"
+      }
+    },
+    {
+      "id": "flow_05_empty_still_object",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "binary_judgment",
+      "purpose": "锚定‘器物身份独立于内容物’：喝完以后，器物本身仍在。",
+      "addresses": [
+        "misc-2"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 20,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "器物一里面原本装满了深色热饮。一个人把它端起来喝完，然后把空容器放回桌面。",
+        "evidence": [
+          "喝完以后，里面没有液体了。",
+          "桌面上仍然放着那件可拿起来的器物。"
+        ],
+        "question": "喝完以后，桌面上剩下的这个空容器，还是不是刚才那个人端着喝的那件器物？",
+        "options": [
+          {
+            "id": "same_object",
+            "text": "是，器物本身还在，只是里面空了"
+          },
+          {
+            "id": "not_object",
+            "text": "不是，喝完就只剩空气了"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "same_object"
+      }
+    },
+    {
+      "id": "flow_06_vessel_vs_content",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "single_choice",
+      "purpose": "引入‘所指是器物还是量’的对比：摔碎的是器物，喝掉的是水。",
+      "addresses": [
+        "misc-2"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "有两种说法。说法一：一个人指着桌上的器物说‘这件器物摔碎了’。说法二：医生对一个人说‘你每天要喝三杯水’。",
+        "evidence": [
+          "说法一里，‘摔碎’这件事发生在器物上。",
+          "说法二里，被‘喝’的是水，不是器物。"
+        ],
+        "question": "下面哪种情况更像在说‘可以拿起来的器物’本身？",
+        "options": [
+          {
+            "id": "vessel_broken",
+            "text": "‘这件器物摔碎了’——关心的是那件器物本身"
+          },
+          {
+            "id": "amount_drink",
+            "text": "‘你每天要喝三杯水’——关心的是喝进去的水的量"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "vessel_broken"
+      }
+    },
+    {
+      "id": "flow_07_unit_no_vessel",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "single_choice",
+      "purpose": "预排除计量单位义：即使没有实体饮具，‘两杯面粉’也成立。",
+      "addresses": [
+        "misc-2"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "一份食谱上写着：‘取两杯面粉，加入面糊中。’厨房里的人按照配方往碗里倒面粉，并没有专门去数饮具的只数。",
+        "evidence": [
+          "食谱写的是面粉的量。",
+          "人直接把面粉倒进碗里，没有真的用两只饮具来量。",
+          "即使手边没有任何饮具，‘两杯面粉’的说法也成立。"
+        ],
+        "question": "这里‘两杯面粉’里的‘两杯’，最接近下面哪种意思？",
+        "options": [
+          {
+            "id": "unit",
+            "text": "一种固定的量法，大约等于两份标准量"
+          },
+          {
+            "id": "vessels",
+            "text": "必须真的有两只饮具，并且把面粉满满装进这两只饮具里"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "unit"
+      }
+    },
+    {
+      "id": "flow_08_symbol_reveal",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "symbol_reveal",
+      "purpose": "首次把英语符号 cup 绑定到已建立的‘小型、可单手端起、就口饮用的小饮具’范畴上。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 25,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "l2_word": "cup",
+        "ipa": "/kʌp/",
+        "presentation": "你刚才反复观察的那种小巧、能单手端起、直接端到嘴边饮用的小饮具，英语里叫：",
+        "minimal_l1_gloss": "小饮具"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "flow_09_pronunciation",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "pronunciation",
+      "purpose": "提供独立发音机会，让学习者听并练习 cup 的读音。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 15,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "l2_word": "cup",
+        "ipa": "/kʌp/"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "flow_10_grounding_vessel",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "l2_grounding",
+      "purpose": "用自然 L2 句把符号锚定回原场景，巩固器物义，并明确透明/无柄不是排除条件。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "source_step_id": "flow_01_observe_main",
+        "l2_realization": "The small vessel on the table is a cup. She held the cup by its handle, drank from it, and set it down. Most cups are opaque and many have handles, but neither is required: even a clear plastic cup can be a cup.",
+        "constructions": [
+          "a cup",
+          "a small cup",
+          "the cup on the table",
+          "hold a cup"
+        ],
+        "collocations": [
+          "a small cup",
+          "hold a cup",
+          "an empty cup",
+          "a clear plastic cup"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "flow_11_grounding_content_unit",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "l2_grounding",
+      "purpose": "把‘器物义’与‘内容/容量义’‘计量单位义’在 L2 形式上并列，明确所指不同。",
+      "addresses": [
+        "misc-2"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "source_step_id": "flow_07_unit_no_vessel",
+        "l2_realization": "In drink a cup of water, cup points to the amount of water, not the vessel. In add two cups of flour, cups is a fixed unit, and no real cup is needed. But when you point to the small vessel in your hand, that vessel is a cup.",
+        "constructions": [
+          "the cup (the physical vessel)",
+          "a cup of water (the amount you drink)",
+          "two cups of flour (a fixed unit)",
+          "an empty cup"
+        ],
+        "collocations": [
+          "a cup of water",
+          "two cups of flour",
+          "an empty cup",
+          "the cup on the table"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "flow_12_grounding_comparison",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "l2_grounding",
+      "purpose": "最小 L2 铺垫引入 glass 与 mug 作为对比词；明确透明/无柄不自动排除 cup。",
+      "addresses": [
+        "misc-1"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "source_step_id": "flow_03_object_inspection",
+        "l2_realization": "A large thick handled vessel is more likely called a mug; a thin transparent vessel is often called a glass. But cup is about a small drink-from vessel: most cups are opaque and many have handles, yet a clear plastic cup can still be a cup. Transparency or the absence of a handle does not automatically exclude cup.",
+        "constructions": [
+          "cup vs. glass",
+          "cup vs. mug",
+          "a clear plastic cup",
+          "a cup with no handle"
+        ],
+        "collocations": [
+          "a small cup",
+          "a clear plastic cup",
+          "a cup without a handle",
+          "a coffee cup"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "flow_13_transfer_transparent_plastic",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "transfer_judgment",
+      "purpose": "迁移到透明塑料小杯场景，破除‘透明/无柄/非陶瓷就不是 cup’的误区。",
+      "addresses": [
+        "misc-5"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 25,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "野餐桌上有一个轻薄的一次性小容器：器壁透明、没有把手，里面装着果汁。一个人单手拿起它喝了一口，喝完后扔进垃圾袋。",
+        "evidence": [
+          "器壁透明、没有把手，不是厚实陶瓷。",
+          "仍然小巧、顶部开口、能盛液体，并被端到嘴边喝。",
+          "用完后被当作一次性器物处理。"
+        ],
+        "question": "这个透明、无柄、轻薄的一次性小容器，在英语里也会用今天学的这个词（cup）来说吗？",
+        "options": [
+          {
+            "id": "yes_transparent",
+            "text": "会，透明和无柄都不是排除条件"
+          },
+          {
+            "id": "no_transparent",
+            "text": "不会，只有不透明带柄才算"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "yes_transparent"
+      }
+    },
+    {
+      "id": "flow_14_multi_label_boundary",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "multi_label_choice",
+      "purpose": "用多选边界判断区分 cup 与 glass/mug，避免把 cup 教成 mug/glass 的互斥反义词，并巩固‘器物身份不随内容物变化’。",
+      "addresses": [
+        "misc-1",
+        "misc-5"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 40,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "episode": "桌上有三件饮具。一件小、不透明、带把手，里面是热饮，一个人正握住把手喝。另一件大、厚实、带把手，放在旁边。远处放着一只透明、无柄的小容器。",
+        "evidence": [
+          "小饮具：小巧、不透明、带把、直接就口饮用。",
+          "大饮具：厚实、容量大、直接手持。",
+          "透明容器：器壁透明、无柄。"
+        ],
+        "question": "关于那件小的、不透明的饮具，下面哪些说法在英语里成立？",
+        "options": [
+          {
+            "id": "cup_yes",
+            "text": "它最直接叫 cup",
+            "is_correct": true,
+            "feedback": "对，小巧、可单手端起、就口饮用，最典型就是 cup。"
+          },
+          {
+            "id": "mug_yes",
+            "text": "它也是一个 mug，因为 mug 就是带柄饮具",
+            "is_correct": false,
+            "feedback": "带柄不足以让它成为 mug；mug 通常更大、更厚实。"
+          },
+          {
+            "id": "glass_yes",
+            "text": "它也可以叫 glass，因为都是盛液体的",
+            "is_correct": false,
+            "feedback": "glass 通常指透明、薄壁的容器；透明本身并不自动排除 cup，但这件不透明小杯最直接叫 cup。"
+          },
+          {
+            "id": "empty_still",
+            "text": "即使它里面空了，它还是同一个 cup",
+            "is_correct": true,
+            "feedback": "对，cup 指器物本身；里面有没有液体，不改变它是 cup。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "multi_choice",
+        "correct_option_ids": [
+          "cup_yes",
+          "empty_still"
+        ]
+      }
+    },
+    {
+      "id": "flow_15_verb_filter_hands",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "transfer_judgment",
+      "purpose": "处理同词形动词义：cupped his hands 中没有任何可拿起的器物，因此不是 cup-01。",
+      "addresses": [
+        "misc-3"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "视频里，一个人把手掌张开再向内弯，两手合在一起形成一个凹窝，从凹窝里喝了一口水。旁白说：‘He cupped his hands to drink.’ 画面里没有任何小型饮具。",
+        "evidence": [
+          "画面里没有任何饮具器物。",
+          "动作是手形变成凹窝，用来盛水喝。",
+          "cupped 出现在动词位置，后面跟着 hands。"
+        ],
+        "question": "这句里的 cupped，是在指今天学的那个器物（cup）吗？",
+        "options": [
+          {
+            "id": "not_vessel",
+            "text": "不是，cupped 在这里是动词，意思是‘把……拢成凹窝’"
+          },
+          {
+            "id": "vessel",
+            "text": "是，他手里拿着一个 cup"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "not_vessel"
+      }
+    },
+    {
+      "id": "flow_16_grounding_usage",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "l2_grounding",
+      "purpose": "用自然祈使句/陈述句给出产出性搭配，以积极的符号使用收尾。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 25,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "source_step_id": "flow_13_transfer_transparent_plastic",
+        "l2_realization": "Could you pass me that cup? This clear plastic cup has no handle, but it is still a cup. The cup is empty now, but it’s still a cup.",
+        "constructions": [
+          "pass me the cup",
+          "a clear plastic cup",
+          "the cup is empty",
+          "still a cup"
+        ],
+        "collocations": [
+          "a clear plastic cup",
+          "an empty cup",
+          "this cup"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "review_01_recall_vessel",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_reveal",
+      "purpose": "绑定后第 1 天",
+      "addresses": [],
+      "timing": "绑定后第 1 天",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 1,
+      "content": {
+        "episode": "清晨餐桌上有一只小型、实心不透明的饮具，器壁看不穿，侧边有把手，里面是深色热饮。一个人握住把手端起来喝了一口，又放回桌上。另一边放着一只透明、薄壁、没有把手的容器。",
+        "l2_word": "cup",
+        "ipa": "/kʌp/",
+        "minimal_gloss": "小饮具"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "review_02_self_grade",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_self_grade",
+      "purpose": "绑定后第 1 天，回忆之后立即自评",
+      "addresses": [],
+      "timing": "绑定后第 1 天，回忆之后立即自评",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 1,
+      "content": {
+        "l2_word": "cup",
+        "ipa": "/kʌp/"
+      },
+      "evaluation": {
+        "kind": "self_grade"
+      }
+    },
+    {
+      "id": "review_03_recall_plastic",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_reveal",
+      "purpose": "绑定后第 3 天",
+      "addresses": [],
+      "timing": "绑定后第 3 天",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 3,
+      "content": {
+        "episode": "野餐桌上有一个轻薄的一次性小容器：器壁透明、没有把手，里面装果汁。一个人单手拿起它喝了一口，喝完扔进垃圾袋。",
+        "l2_word": "cup",
+        "ipa": "/kʌp/",
+        "minimal_gloss": "小饮具（透明、无柄不排除）"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "review_04_sense_choice",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "single_choice",
+      "purpose": "绑定后第 7 天",
+      "addresses": [],
+      "timing": "绑定后第 7 天",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 7,
+      "content": {
+        "episode": "朋友说：‘The cup broke yesterday.’ 画面里是一只摔碎在地板上的小型不透明饮具。朋友又说：‘I drink a cup of water every morning.’ 画面里是水杯和正在喝水的人。",
+        "evidence": [
+          "第一句里，‘摔碎’发生在器物上。",
+          "第二句里，被‘喝’的是水，不是器物。"
+        ],
+        "question": "哪一句里，cup 更清楚地指可以拿起来的器物本身？",
+        "options": [
+          {
+            "id": "broke_vessel",
+            "text": "The cup broke——指器物本身，摔碎的是杯体"
+          },
+          {
+            "id": "water_amount",
+            "text": "a cup of water——指喝进去的水的量"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "broke_vessel"
+      }
+    },
+    {
+      "id": "review_05_unit_filter",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "transfer_judgment",
+      "purpose": "绑定后第 10 天",
+      "addresses": [],
+      "timing": "绑定后第 10 天",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 10,
+      "content": {
+        "episode": "一份英文食谱上写着：‘Add two cups of flour to the bowl.’ 厨房里的人直接往碗里倒面粉，手边没有任何饮具。",
+        "evidence": [
+          "提到的是面粉的量。",
+          "即使没有任何实体杯具，说法也成立。",
+          "不存在可被拿起来喝水的器物。"
+        ],
+        "question": "这句里的 cups 是在指可以拿起来喝水的器物吗？",
+        "options": [
+          {
+            "id": "unit",
+            "text": "不是，它是固定计量单位的复数形式"
+          },
+          {
+            "id": "vessel",
+            "text": "是，它一定指两件可触摸的小饮具"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "unit"
+      }
+    },
+    {
+      "id": "review_06_verb_filter",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "transfer_judgment",
+      "purpose": "绑定后第 14 天",
+      "addresses": [],
+      "timing": "绑定后第 14 天",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 14,
+      "content": {
+        "episode": "视频里，一个人两手合拢成一个凹窝，像捧住一只看不见的小动物。旁白说：‘She cupped the kitten gently in her hands.’ 画面里没有饮具，猫也没有变形。",
+        "evidence": [
+          "没有可拿起来的饮具。",
+          "cup 出现在动词位置，表示用杯状手形托住某物。",
+          "物体未改变形状。"
+        ],
+        "question": "这句里的 cupped 是指今天学的那个饮具吗？",
+        "options": [
+          {
+            "id": "not_vessel",
+            "text": "不是，它是动词，表示‘用杯状手形托住’"
+          },
+          {
+            "id": "vessel",
+            "text": "是，她手里拿着一只 cup"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "not_vessel"
+      }
+    },
+    {
+      "id": "review_07_boundary_multi",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "multi_label_choice",
+      "purpose": "绑定后第 21 天",
+      "addresses": [],
+      "timing": "绑定后第 21 天",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 21,
+      "content": {
+        "episode": "桌上有三件饮具。一件小、不透明、带把手，里面是热饮，人正握住把手喝。另一件大、厚实、带把手，放在旁边。远处放着一只透明、无柄的小容器。",
+        "evidence": [
+          "小饮具：小巧、不透明、带把、直接就口饮用。",
+          "大饮具：厚实、容量大、直接手持。",
+          "透明容器：器壁透明、无柄。"
+        ],
+        "question": "关于那件小的、不透明的饮具，哪些说法成立？",
+        "options": [
+          {
+            "id": "cup_yes",
+            "text": "它最直接叫 cup",
+            "is_correct": true,
+            "feedback": "对，小巧、可单手端起、就口饮用，最典型就是 cup。"
+          },
+          {
+            "id": "mug_yes",
+            "text": "它也是一个 mug，因为 mug 就是带柄饮具",
+            "is_correct": false,
+            "feedback": "带柄不足以让它成为 mug；mug 通常更大、更厚实。"
+          },
+          {
+            "id": "glass_yes",
+            "text": "它也可以叫 glass，因为都是盛液体的",
+            "is_correct": false,
+            "feedback": "glass 通常指透明、薄壁的容器；透明本身并不自动排除 cup，但这件不透明小杯最直接叫 cup。"
+          },
+          {
+            "id": "empty_still",
+            "text": "即使它里面空了，它还是同一个 cup",
+            "is_correct": true,
+            "feedback": "对，cup 指器物本身；里面有没有液体，不改变它是 cup。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "multi_choice",
+        "correct_option_ids": [
+          "cup_yes",
+          "empty_still"
+        ]
+      }
+    },
+    {
+      "id": "review_08_l2_grounding",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "l2_grounding",
+      "purpose": "绑定后第 30 天",
+      "addresses": [],
+      "timing": "绑定后第 30 天",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 30,
+      "content": {
+        "source_step_id": "review_01_recall_vessel",
+        "l2_realization": "Could I have a cup of tea? Bring me the purple cup, not the glass. And don’t worry — a clear plastic cup with no handle is still a cup.",
+        "constructions": [
+          "a cup of tea",
+          "the purple cup",
+          "not the glass",
+          "a clear plastic cup with no handle"
+        ],
+        "collocations": [
+          "a cup of tea",
+          "an empty paper cup",
+          "this cup"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    }
+  ]
+}

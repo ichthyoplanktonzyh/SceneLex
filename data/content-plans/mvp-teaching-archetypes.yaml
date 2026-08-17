@@ -1,0 +1,221 @@
+# MVP Teaching Archetype Coverage Manifest v1.0
+#
+# semantic_types 回答"词义是什么"；teaching_archetype 回答"App 如何让学习者
+# 经验到这个意义"；suggested_capabilities 是 Course Author 的建议输入（引用
+# config/app-teaching-capabilities.v1.yaml 已注册的 primitive，不强制使用）。
+# 状态不是本文件的内容——tools/teaching_coverage.py report/queue 从仓库真实
+# 文件（dictionary-evidence / inventories / senses / contracts /
+# holistic-courses / bundle）计算每个 lemma 的身份链、Holistic Course、
+# related course、bundle 状态与 capability 缺口。
+#
+# curriculum 是确定性 prototype 顺序：只决定"哪门新课程先进入候选范围"，
+# 不决定课程内部结构；Today Planner 可因复习压力/自然章节延后新课程。
+
+schema_version: "1.0"
+plan_id: mvp-teaching-archetypes
+policy_version: 1
+learner_l1: zh-CN
+target_l2: en
+capability_version: 1
+
+curriculum:
+  - { day: 1,  course: messy-01 }
+  - { day: 2,  course: dirty-01 }
+  - { day: 3,  course: reluctant-01 }
+  - { day: 4,  course: hesitant-01 }
+  - { day: 5,  course: almost-01 }
+  - { day: 6,  course: barely-01 }
+  - { day: 7,  course: across-01 }
+  - { day: 8,  course: through-01 }
+  - { day: 9,  course: borrow-01 }
+  - { day: 10, course: lend-01 }
+  - { day: 11, course: cup-01 }
+  - { day: 12, course: mug-01 }
+  - { day: 13, course: notice-01 }
+  - { day: 14, course: realize-01 }
+
+archetypes:
+  - id: entity_category
+    semantic_types: [entity_type]
+    teaching_archetype: entity_category
+    experience_mechanism: >-
+      用功能与形态（有柄无柄、材质、容量用途）区分实体范畴；cup 与 mug 的
+      边界在真实世界重叠，Renderer/Boundary 不得强制错误的二选一。
+    suggested_capabilities:
+      - object_inspection
+      - multi_label_choice
+      - scene_observation
+      - single_choice
+      - binary_judgment
+    special_risks:
+      - boundary_overlap
+      - category_metonymy
+    clusters:
+      - id: cup_mug
+        priority: 3
+        boundary:
+          between: [cup-01, mug-01]
+          allowed: both
+          insufficient_evidence_allowed: true
+        lemmas:
+          - { lemma: cup, pos: noun, sense_id: cup-01,
+              note: "cup-01 = 饮用容器实体义项（与 mug 重叠，非二选一）" }
+          - { lemma: mug, pos: noun, sense_id: mug-01,
+              note: "mug-01 = 带柄大杯实体义项（厚壁、大容量、常盛热饮）" }
+
+  - id: visible_attribute
+    semantic_types: [attribute]
+    teaching_archetype: visible_attribute
+    experience_mechanism: >-
+      让学习者直接观察对象表面/空间的可见状态偏离（污物附着、位置错位），
+      用中文描述可观察证据后完成判断，再绑定 L2。
+    suggested_capabilities:
+      - scene_observation
+      - evidence_highlight
+      - binary_judgment
+      - boundary_choice
+      - transfer_judgment
+    special_risks:
+      - conflated_pair
+      - l1_compound_脏乱
+    clusters:
+      - id: messy_dirty
+        priority: 1
+        boundary:
+          between: [messy-01, dirty-01]
+          allowed: both
+        lemmas:
+          - { lemma: messy, pos: adjective, sense_id: messy-01 }
+          - { lemma: dirty, pos: adjective, sense_id: dirty-01 }
+
+  - id: spatial_path
+    semantic_types: [trajectory]
+    teaching_archetype: spatial_path
+    experience_mechanism: >-
+      在空间轨迹上区分路径与边界的几何关系：跨过一个面（across）与穿透一个
+      封闭体（through）用不同的位移可视化。
+    suggested_capabilities:
+      - spatial_stage
+      - scene_observation
+      - single_choice
+      - binary_judgment
+      - transfer_judgment
+    special_risks:
+      - surface_vs_interior
+      - viewpoint_dependence
+    clusters:
+      - id: across_through
+        priority: 2
+        boundary:
+          between: [across-01, through-01]
+          allowed: one
+        lemmas:
+          - { lemma: across, pos: preposition, sense_id: across-01,
+              note: "across-01 = 横过/跨越：路径相对区域或表面" }
+          - { lemma: through, pos: adjective, sense_id: through-01,
+              note: "证据缺口：仓库只读词典提取（dictionary.py MAX_TEACHABLE_SENSES=8 截断）对 through 只返回形容词条目；介词义项（through the tunnel）未进入可教学证据。锁定最近似义项 through-01（贯穿的/穿过的：从一侧延伸到另一侧、可被穿透的路径/开口），语义上即'路径与内部空间关系'。" }
+
+  - id: role_perspective
+    semantic_types: [transfer_action]
+    teaching_archetype: role_perspective
+    experience_mechanism: >-
+      同一物理动作（物从 A 到 B）从不同参与者视角命名：借入（borrow）与借出
+      （lend）是同一事件的角色切换。
+    suggested_capabilities:
+      - participant_map
+      - scene_observation
+      - single_choice
+      - binary_judgment
+      - boundary_choice
+    special_risks:
+      - viewpoint_dependence
+      - event_perspective_shift
+    clusters:
+      - id: borrow_lend
+        priority: 2
+        boundary:
+          between: [borrow-01, lend-01]
+          allowed: both
+        lemmas:
+          - { lemma: borrow, pos: verb, sense_id: borrow-01,
+              note: "borrow-01 = 临时物品转移的接收者视角" }
+          - { lemma: lend, pos: verb, sense_id: lend-01,
+              note: "lend-01 = 临时物品转移的提供者视角" }
+
+  - id: threshold_scale
+    semantic_types: [scalar_degree]
+    teaching_archetype: threshold_scale
+    experience_mechanism: >-
+      在一条可感知的达成维度上逼近阈值：未达（almost）与勉强达（barely）是
+      同一维度上跨线前后的两种判断。
+    suggested_capabilities:
+      - scalar_threshold
+      - binary_judgment
+      - single_choice
+      - transfer_judgment
+    special_risks:
+      - threshold_side_confusion
+      - l1_overlap_几乎
+    clusters:
+      - id: almost_barely
+        priority: 1
+        boundary:
+          between: [almost-01, barely-01]
+          allowed: one
+        lemmas:
+          - { lemma: almost, pos: adverb, sense_id: almost-01 }
+          - { lemma: barely, pos: adverb, sense_id: barely-01,
+              note: "barely-01 = 勉强/几乎不：刚刚达到或仅够达到阈值" }
+
+  - id: intention_cues
+    semantic_types: [disposition]
+    teaching_archetype: intention_cues
+    experience_mechanism: >-
+      从可观察的意愿线索（犹豫、停顿、慢动作、回避目光）推断行动意向，
+      经验机制是"把外部线索读成内部意向"。
+    suggested_capabilities:
+      - scene_observation
+      - evidence_highlight
+      - single_choice
+      - binary_judgment
+      - transfer_judgment
+    special_risks:
+      - observable_cue_vs_state
+      - co_occurrence
+    clusters:
+      - id: reluctant_hesitant
+        priority: 1
+        boundary:
+          between: [reluctant-01, hesitant-01]
+          allowed: both
+        lemmas:
+          - { lemma: reluctant, pos: adjective, sense_id: reluctant-01,
+              note: "reluctant-01 = 负面意愿：不情愿做某事" }
+          - { lemma: hesitant, pos: adjective, sense_id: hesitant-01,
+              note: "hesitant-01 = 不确定/迟疑：犹豫的心理状态" }
+
+  - id: cognitive_update
+    semantic_types: [cognitive_state]
+    teaching_archetype: cognitive_update
+    experience_mechanism: >-
+      经验机制是"新信息到达后的状态更新"：偶然进入意识（notice）与经过推理
+      到达的理解（realize）用信息呈现顺序区分。
+    suggested_capabilities:
+      - information_state
+      - scene_observation
+      - single_choice
+      - binary_judgment
+    special_risks:
+      - temporal_order
+      - inference_vs_perception
+    clusters:
+      - id: notice_realize
+        priority: 2
+        boundary:
+          between: [notice-01, realize-01]
+          allowed: one
+        lemmas:
+          - { lemma: notice, pos: verb, sense_id: notice-01,
+              note: "notice-01 = 通过感知意识到（偶然进入意识）" }
+          - { lemma: realize, pos: verb, sense_id: realize-01,
+              note: "realize-01 = 经过信息更新理解到事实（推理到达）" }

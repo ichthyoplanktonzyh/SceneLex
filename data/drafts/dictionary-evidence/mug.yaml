@@ -1,0 +1,43 @@
+schema_version: '1.0'
+word: mug
+language: en
+provider: wiktionary
+captured_at: '2026-08-16T06:34:17Z'
+entries:
+- entry_id: mug-dict-001
+  pos: verb
+  gloss: To assault for the purpose of robbery.
+  labels:
+  - transitive
+  examples: []
+- entry_id: mug-dict-002
+  pos: verb
+  gloss: To exaggerate a facial expression for communicative emphasis; to make a face,
+    to pose, as for photographs or in a performance, in an exaggerated or affected
+    manner.
+  labels:
+  - intransitive
+  examples:
+  - The children weren't interested in sitting still for a serious photo; they mugged
+    for the camera.
+  - Her dress is too obviously "costume," and Ford-Smith mugs too broadly for us to
+    forget, as we should, that Katie is a theatrical invention.
+- entry_id: mug-dict-003
+  pos: verb
+  gloss: To photograph for identification; to take a mug shot of.
+  labels:
+  - transitive
+  examples:
+  - Perhaps if I told you that there were forty arrests made in one day here, you
+    will realize that with this small equipment available in the Sheriff's Office,
+    it is very difficult to get mugs. These people are being mugged as they are being
+    arrested but with an entirely inadequate force at work prints have not as yet
+    been made.
+  - The Bat—they called him the Bat.[…]. He'd never been in stir, the bulls had never
+    mugged him, he didn't run with a mob, he played a lone hand, and fenced his stuff
+    so that even the fence couldn't swear he knew his face.
+- entry_id: mug-dict-004
+  pos: noun
+  gloss: A large cup for beverages, usually having a handle and used without a saucer.
+  labels: []
+  examples: []

@@ -1,0 +1,607 @@
+{
+  "schema_version": "1.0",
+  "course_id": "borrow-01-recipient-perspective-v1",
+  "target": {
+    "sense_id": "borrow-01",
+    "lemma": "borrow",
+    "pos": "verb",
+    "ipa": "/ˈbɑːroʊ/",
+    "learner_l1": "zh-CN",
+    "target_l2": "en"
+  },
+  "author_intent": {
+    "course_thesis": "borrow-01 的经验核心是：接受方从来源方那里取得可归还/可偿还的资源，并约定或期待日后归还/偿还；事件以接受方为变化主体来陈述，所以 borrow 句子的主语必须是拿到东西并负有归还/偿还义务的一方。",
+    "learner_start": "学习者以中文为母语，日常‘借’字方向中性，既覆盖借入也覆盖借出；‘借用’还兼指抽象采纳，数学中又有‘借位’。学习者可能默认 borrow 也能表达借出，可能把抽象采纳和借位也归入本义；尚未掌握 borrow 的拼写、发音与基本句型。",
+    "intended_outcome": "学习者见到‘一人从另一人或机构处临时取得物品/资金且有归还/偿还预期’的场景时，能识别为 borrow-01；能判断 borrow 句子的主语应为接受方；能使用 borrow something from someone 与 borrow from a bank 等表达；能把赠送、购买、抽象采纳、数学借位排除在 borrow-01 之外；不会因‘尚未实际归还’而否定 borrow-01。",
+    "design_rationale": "主线以‘接受方视角’和‘归还约定’两个支点展开：pre-binding 用中文经验叙事先建立‘拿到→暂时持有→之后要还→原主人仍有要求归还的权利’的事件结构，并用 gift 反例让‘归还约定’成为必要条件；绑定后先在同一场景做 grounding，再依次处理主语方向（矫正中文‘借’的方向中性）、来源方扩展到机构与金钱、延迟归还（misc-5）与抽象采纳排除（misc-2）。边界上刻意不把 lend 绑进本课，避免在一门课里同时引入方向相反的两个词；方向问题通过‘主语必须是拿到东西的人’的正面判断解决。复习沿用同一主线：从 L1 反向回忆（接受方场景）逐步升级到 L2 句子方向判断，并把数学‘借位’（misc-3）与‘有借约但尚未归还仍可用 borrow’（misc-5）放到更晚的复习点。"
+  },
+  "steps": [
+    {
+      "id": "observe_pen_scene",
+      "stage": "learning_flow",
+      "trigger": "initial",
+      "primitive": "scene_observation",
+      "purpose": "用中文经验叙事建立‘接受方从小东处拿到笔并约定归还’的完整场景，归还预期外化为便条。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "episode": "小东的钢笔没水了。他对同桌阿雅说：‘阿雅，你的蓝色笔能让我用一下午吗？一放学就还给你。’阿雅点点头，把蓝色笔递给小东。小东接过来，在便条上写下‘下午还’，贴在自己的笔袋上。"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "map_roles",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "participant_map",
+      "purpose": "让学习者辨认接受方（拿到东西的人），以及‘原主人仍要收回’的双向关系。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 45,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "阿雅把蓝色笔递给小东，小东接过笔，便条上写着‘下午还’。",
+        "participants": [
+          {
+            "id": "xiaodong",
+            "label": "小东（拿到笔的人）",
+            "role": "receiver"
+          },
+          {
+            "id": "aya",
+            "label": "阿雅（原来拿着笔的人）",
+            "role": "giver"
+          }
+        ],
+        "transferable": {
+          "id": "pen",
+          "label": "蓝色圆珠笔"
+        },
+        "arrows": [
+          {
+            "id": "to_xiaodong",
+            "from": "aya",
+            "to": "xiaodong",
+            "label": "蓝色笔先到小东手里"
+          },
+          {
+            "id": "return_to_aya",
+            "from": "xiaodong",
+            "to": "aya",
+            "label": "下午要还回阿雅那里"
+          }
+        ],
+        "perspective": {
+          "current_role": "xiaodong",
+          "roles": [
+            "xiaodong",
+            "aya"
+          ]
+        },
+        "question": "这件事里，哪一方是‘拿到了别人的东西、之后需要归还’的人？",
+        "options": [
+          {
+            "id": "xiaodong",
+            "text": "小东"
+          },
+          {
+            "id": "aya",
+            "text": "阿雅"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "xiaodong"
+      }
+    },
+    {
+      "id": "gift_no_return",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "binary_judgment",
+      "purpose": "用‘送耳机，不用还’的反例突显‘归还约定’是必要条件。",
+      "addresses": [
+        "misc-4"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 35,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "同学小豪把一副耳机递给小东，说：‘我家还有一副，这副送你了，不用还。’小东把耳机放进书包。",
+        "evidence": [
+          "耳机从小豪手里到了小东手里。",
+          "小豪明确说“不用还”，耳机永久归小东。"
+        ],
+        "question": "这个场景里，有没有‘只是暂时拿到别人的东西、之后要归还’的安排？",
+        "options": [
+          {
+            "id": "no_return_arrangement",
+            "text": "没有，因为说好不用还"
+          },
+          {
+            "id": "has_return_arrangement",
+            "text": "有，因为耳机到了小东手里"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "no_return_arrangement"
+      }
+    },
+    {
+      "id": "confirm_experience",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "l1_confirmation",
+      "purpose": "绑定前确认核心经验，并形成安全断点。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 10,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "prompt_text": "请确认你已经看清楚了这样的画面：一个人从另一个人那里拿到一样东西，说好之后要还；东西暂时由他保管，但原主人没有把它送给他。"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "reveal_borrow",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "symbol_reveal",
+      "purpose": "首次把目标符号 borrow 绑定到已建立的经验。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 20,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "l2_word": "borrow",
+        "ipa": "/ˈbɑːroʊ/",
+        "presentation": "你刚才看到的画面——小东从阿雅那里拿到蓝色笔，说好下午还——在英语里用一个词来表示。这个词描述的是‘拿到别人东西的人’那一方的动作。",
+        "minimal_l1_gloss": "借入"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "pronounce_borrow",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "pronunciation",
+      "purpose": "让学习者听读目标词形。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 10,
+      "can_pause_after": null,
+      "due_after_days": null,
+      "content": {
+        "l2_word": "borrow",
+        "ipa": "/ˈbɑːroʊ/"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "ground_borrow",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "l2_grounding",
+      "purpose": "把 borrow 锚定到已观察场景，展示基本句型与搭配。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "source_step_id": "map_roles",
+        "l2_realization": "Xiaodong borrowed a blue pen from Aya. He would return it in the afternoon.",
+        "constructions": [
+          "[Someone] borrows [something] from [someone].",
+          "[Someone] borrows [money] from [a bank or lender].",
+          "Can I borrow [something]?",
+          "[Someone] borrows [something] for [a period of time]."
+        ],
+        "collocations": [
+          "borrow a book",
+          "borrow money",
+          "borrow something from someone",
+          "borrow from a bank"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "direction_check",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "binary_judgment",
+      "purpose": "矫正中文‘借’的方向中性：borrow 的主语必须是拿到东西的一方。",
+      "addresses": [
+        "misc-1"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 35,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "阿雅把蓝色笔递给小东，小东把笔放进笔袋，笔袋上贴着‘下午还’的便条。",
+        "evidence": [
+          "小东是拿到笔的人。",
+          "阿雅是把笔递出去的人。"
+        ],
+        "question": "用你刚学的词，下面哪句话正确描述了‘小东’在这件事里的动作？",
+        "options": [
+          {
+            "id": "xiaodong_borrowed",
+            "text": "Xiaodong borrowed the blue pen from Aya."
+          },
+          {
+            "id": "aya_borrowed",
+            "text": "Aya borrowed the blue pen from Xiaodong."
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "xiaodong_borrowed"
+      }
+    },
+    {
+      "id": "money_from_bank",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "transfer_judgment",
+      "purpose": "把来源方扩展到机构与金钱，引出 borrow from a bank。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 35,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "李阿姨想开一家小面馆。她向银行申请了一笔钱，银行把钱转进她的账户。她签了一张表，约定分 12 个月把钱还清。",
+        "evidence": [
+          "李阿姨从银行拿到钱。",
+          "她签了还款安排，表示之后要还。"
+        ],
+        "question": "这个场景能用你刚学的词来描述吗？",
+        "options": [
+          {
+            "id": "can_describe",
+            "text": "能，李阿姨从银行拿到钱并约定之后还"
+          },
+          {
+            "id": "cannot_bank",
+            "text": "不能，因为对方是银行，不是个人"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "can_describe"
+      }
+    },
+    {
+      "id": "delayed_return",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "transfer_judgment",
+      "purpose": "明确 borrow-01 不要求实际归还已经发生，只要求存在归还约定。",
+      "addresses": [
+        "misc-5"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 35,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "小东答应下午把笔还给阿雅。可是下午他忘了，第二天早上才把笔还给阿雅。",
+        "evidence": [
+          "小东拿笔的时候已经约定了下午还。",
+          "归还虽然迟了，但约定当时就已经存在。"
+        ],
+        "question": "小东从阿雅那里拿到笔这件事，还算不算‘暂时拿到别人的东西、之后要归还’？",
+        "options": [
+          {
+            "id": "still_arrangement",
+            "text": "算，因为拿的时候就有归还约定"
+          },
+          {
+            "id": "not_arrangement",
+            "text": "不算，因为他没有按时还"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "still_arrangement"
+      }
+    },
+    {
+      "id": "abstract_phrase",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "transfer_judgment",
+      "purpose": "用‘借用说法’排除抽象采纳，强调 borrow-01 的实体必须可归还/可偿还。",
+      "addresses": [
+        "misc-2"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 35,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "episode": "老师写作文时对小林说：‘我借用一下鲁迅的那句话。’然后老师把这句话写进了自己的文章里。",
+        "evidence": [
+          "老师用到的是别人的一句话，是想法/文字。",
+          "这句话不会“还”给鲁迅，不存在归还安排。"
+        ],
+        "question": "这个场景里，有‘从别人那里拿到一样东西、之后要归还’的安排吗？",
+        "options": [
+          {
+            "id": "no_abstract",
+            "text": "没有，因为想法和说法不能还回去"
+          },
+          {
+            "id": "yes_abstract",
+            "text": "有，因为用到的是别人的东西"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "no_abstract"
+      }
+    },
+    {
+      "id": "review_recall_day1",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_reveal",
+      "purpose": "绑定完成次日",
+      "addresses": [],
+      "timing": "绑定完成次日",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 1,
+      "content": {
+        "episode": "朋友把一本绘本交给你，说：‘周五还我。’你接过绘本，把它放进了书包。这件事里，‘你’这一方的动作——拿到别人的东西、之后要还——用你学过的英语词怎么说？",
+        "l2_word": "borrow",
+        "ipa": "/ˈbɑːroʊ/",
+        "minimal_gloss": "借入"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "review_grade_day1",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_self_grade",
+      "purpose": "绑定完成次日，揭晓后立刻",
+      "addresses": [],
+      "timing": "绑定完成次日，揭晓后立刻",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 1,
+      "content": {
+        "l2_word": "borrow",
+        "ipa": "/ˈbɑːroʊ/"
+      },
+      "evaluation": {
+        "kind": "self_grade"
+      }
+    },
+    {
+      "id": "review_recall_day3",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_reveal",
+      "purpose": "3 天后",
+      "addresses": [],
+      "timing": "3 天后",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 3,
+      "content": {
+        "episode": "管理员把一本故事书递给你，说：‘下周三前还回服务台。’你抱着书走出图书馆。这件事里，‘你’这一方的动作——从管理员那里拿到书、之后要还——用你学过的英语词怎么说？",
+        "l2_word": "borrow",
+        "ipa": "/ˈbɑːroʊ/",
+        "minimal_gloss": "借入"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "review_grade_day3",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_self_grade",
+      "purpose": "3 天后，揭晓后立刻",
+      "addresses": [],
+      "timing": "3 天后，揭晓后立刻",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 3,
+      "content": {
+        "l2_word": "borrow",
+        "ipa": "/ˈbɑːroʊ/"
+      },
+      "evaluation": {
+        "kind": "self_grade"
+      }
+    },
+    {
+      "id": "review_direction_day7",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "binary_judgment",
+      "purpose": "7 天后",
+      "addresses": [],
+      "timing": "7 天后",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 7,
+      "content": {
+        "episode": "妈妈把一把雨伞递给邻居。邻居接过雨伞说：‘周末还给你。’",
+        "evidence": [
+          "邻居是拿到雨伞的人。",
+          "妈妈是把雨伞递出去的人。"
+        ],
+        "question": "用你学过的 borrow，下面哪句话正确描述了‘邻居’的动作？",
+        "options": [
+          {
+            "id": "neighbor_borrowed",
+            "text": "The neighbor borrowed the umbrella from my mom."
+          },
+          {
+            "id": "mom_borrowed",
+            "text": "My mom borrowed the umbrella from the neighbor."
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "neighbor_borrowed"
+      }
+    },
+    {
+      "id": "review_math_day14",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "transfer_judgment",
+      "purpose": "14 天后",
+      "addresses": [],
+      "timing": "14 天后",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 14,
+      "content": {
+        "episode": "做减法竖式时，个位不够减。小林对同桌说：‘从十位借一当十。’他在竖式上做了借位标记。",
+        "evidence": [
+          "这里发生的是数字列之间的运算。",
+          "没有物品或钱在人与人之间转移，也没有归还安排。"
+        ],
+        "question": "这个‘借一当十’能说明你学过的 borrow 吗？",
+        "options": [
+          {
+            "id": "not_same_math",
+            "text": "不能，因为没有物品在人与人之间转移，也没有归还安排"
+          },
+          {
+            "id": "same_math",
+            "text": "能，因为都叫“借”"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "not_same_math"
+      }
+    },
+    {
+      "id": "review_unreturned_day21",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "single_choice",
+      "purpose": "21 天后",
+      "addresses": [],
+      "timing": "21 天后",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 21,
+      "content": {
+        "episode": "小静向哥哥借了一台游戏机，说好周末还。可是过了两周她也没还，哥哥一直催她。",
+        "evidence": [
+          "小静拿游戏机的时候约定了要还。",
+          "虽然有借约，但她一直没有实际归还。"
+        ],
+        "question": "小静从哥哥那里拿到游戏机这件事，还能用 borrow 描述吗？",
+        "options": [
+          {
+            "id": "still_borrow",
+            "text": "能，因为拿的时候就有归还约定；borrow 不要求已经实际归还"
+          },
+          {
+            "id": "cannot_unreturned",
+            "text": "不能，因为她一直没还"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "still_borrow"
+      }
+    },
+    {
+      "id": "review_bank_day30",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "single_choice",
+      "purpose": "30 天后",
+      "addresses": [],
+      "timing": "30 天后",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 30,
+      "content": {
+        "episode": "小周开超市需要本金。银行把钱转给他，他签了合同，约定两年内还清。",
+        "evidence": [
+          "小周从银行拿到钱。",
+          "他签了合同，之后要还。"
+        ],
+        "question": "下面哪句话正确描述了‘小周’的动作？",
+        "options": [
+          {
+            "id": "zhou_borrowed",
+            "text": "Xiaozhou borrowed money from the bank."
+          },
+          {
+            "id": "bank_borrowed",
+            "text": "The bank borrowed money from Xiaozhou."
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "zhou_borrowed"
+      }
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+schema_version: '1.0'
+contract_id: realize-01-contract
+sense_id: realize-01
+lemma: realize
+pos: verb
+semantic_revision: 1
+content_hash: sha256:f68dd218c210a90981f923a0a77ce8cdcae7c03937a0b5373452c9d9cd566228
+semantic_model:
+  invariant: 一个具备信念能力的体验者，对某个独立存在的事实或情况，从先前不清楚或未充分掌握，转变为清楚意识到；这一内在认知变化由证据或经验触发，而不是体验者有意让外部计划成真或变卖资产。
+  necessary_conditions:
+  - 存在一个体验者，该体验者是有感知能力并能持有信念的主体。
+  - 存在一个事实、情况或隐含意义，它在体验者的意识之外独立存在，并且先前未被体验者承认或未被充分掌握。
+  - 体验者的认知对象是一个命题或事态，而不是一个物理对象。
+  - 发生认知变化：体验者从对该事实或情况的无知/不确定，转变为清楚的意识。
+  - 该认知变化不是体验者有意促成的；它由证据或经验引发。
+  non_entailments:
+  - 主语在外部世界中使计划或想法成为现实，不蕴涵 realize-01；那是 realize-02 的行动义。
+  - 句中涉及资产、投资、财产或金额且语境为出售、变现、盈利，不蕴涵 realize-01；那是 realize-03 的财务义。
+  - realize-01 成立，不蕴涵被意识到的事实是在顿悟那一刻才产生或变为真实；它早已独立存在。
+  - realize-01 成立，不蕴涵体验者有意决定去知道或通过意志努力获得该意识；它由证据或经验触发，不是意愿的直接产物。
+  - 出现停顿、睁眼、挑眉等外在顿悟表现，不蕴涵 realize-01 成立；外在表现不能替代内在认知状态的变化。
+  typical_correlates:
+  - 体验者在顿悟前常表现出困惑或不确定（如皱眉、反复提问、按错误假设行事）；这些表现常与 realize-01 相伴，但不是成立条件。
+  - 常出现一个与先前假设相矛盾的线索或证据，触发认知变化；但并非每一次都需要某个单一可见线索。
+  - 顿悟时刻常伴随停顿、睁大眼睛、挑眉或“啊”的表情；这类可见反应可作为推断线索，但不是必要条件。
+  - 认知变化后，体验者的行为常随之改变（如停止原先做法或按新理解行动）；但外部行为改变并不是 realize-01 本身。
+  misconceptions:
+  - id: misc-1
+    description: 把 realize 等同于中文的“实现”，认为 realize a plan/dream 一定是主语通过行动使计划成真。
+    correction: 检查句中的变化发生在哪里：如果变化是体验者头脑中从不知道到知道，且宾语是命题或事态（如 that 从句、the importance
+      of X），则是 realize-01；如果变化是主语在外部世界使计划成真，才是 realize-02。
+  - id: misc-2
+    description: 在金融语境中把 realize 一律按“意识到”理解，忽略 realize-03 的“把资产变成钱/产生利润”义。
+    correction: 检查宾语是否为资产、投资、财产或金额，且语境是否涉及出售、变现或盈利；若是，就应判定为 realize-03，而不是 realize-01。
+  - id: misc-3
+    description: 认为“意识到某事实”意味着该事实在意识到的那一刻才产生或变为真实。
+    correction: 事实在体验者知晓之前已经独立存在；realize 只更新体验者的知晓状态，不改变事实本身的存在时间或真值。
+  - id: misc-4
+    description: 认为 realize 是主动决定或刻意努力的结果，等同于“学会”“查明”或“决定知道”。
+    correction: realize 由证据或经验触发，不是意愿直接启动的；即使体验者没有计划去知道，证据足够时认知变化仍会发生。
+  - id: misc-5
+    description: 认为 realize 必须来自直接感知或亲眼所见，不能来自推断。
+    correction: WordSense 只要求认知变化由证据或经验引发；一个被解读的线索、被推断出的含义也足以导致 realize。
+  l1_interference:
+  - 中文“实现”覆盖 realize-02 的外部行动义，且可能是学生看到 realize 时最先激活的对应词；这种母语切割会把 I realized that...
+    误读成“我实现了……”，把认知义覆盖掉。
+  - 中文“意识到”只覆盖 realize-01 的认知变化，不能表达 realize-02 的“实现”；学生可能把“意识到”硬套到 realize 的所有宾语上，例如把
+    realize her dream 误读成“意识到她的梦想”，而忽略语义边界。
+  - 中文“变现”覆盖 realize-03 的财务转换义；学习者在金融语境中可能不认识该义项，或把 realize gains 误解为“意识到收益”，而不是“将收益变现/实现盈利”。
+metadata:
+  compiler_version: 2.1.0
+  prompt_versions:
+    semantic_planner: v2
+  generated_at: '2026-08-16T08:44:32Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids:
+  - dd042944-d24e-4c16-8edb-462f64fb31cd

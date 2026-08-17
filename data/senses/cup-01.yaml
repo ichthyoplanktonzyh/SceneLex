@@ -1,0 +1,149 @@
+schema_version: '1.1'
+language: en
+version: 1
+status: reviewed
+id: cup-01
+word: cup
+pos: noun
+sense_label: 杯子；饮具
+definition: A small handheld concave vessel intended for drinking, typically opaque
+  and usually with a handle; the ordinary countable-noun use of cup.
+semantic_revision: 1
+inventory:
+  word: cup
+  version: 1
+  evidence_digest: sha256:a137da98e325ee09e8ddff33d5308975a8f6b95888730ef17717a2642ad40675
+  sense_id: cup-01
+  identity_digest: sha256:c7803f05c3da041ff21cc4fa55e7e79bcbaa221156176a559bf943bdd5867af2
+semantic_identity:
+  semantic_type: artifact
+  dimension: container
+  change_of_state: false
+  causative: false
+  valency: '0'
+inventory_source_entries:
+- cup-dict-005
+pronunciation:
+  ipa: /kʌp/
+frequency:
+  band: core
+difficulty: basic
+semantic_type: entity
+semantic_skeleton:
+  participants:
+  - role: object
+    description: 被识别为 cup 的实体饮具，具有内凹容积且可被单手拿起
+  - role: user
+    description: 使用该饮具饮水或持握它的人；静态场景中可以缺席
+  propositions:
+  - 存在一个可观察的物理客体，而不是一个量、单位、动作或状态。
+  - 该客体由底部和侧壁构成一个向上开口的凹形空间，能够容纳液体。
+  - 该客体被设计或普遍用于盛放饮品，并适合直接端到嘴边饮用。
+  - 该客体的尺寸适合单手稳定持握。
+  - 在语境中，cup 指称这个器物本身，而不是它盛装的内容物或它代表的容量。
+conditions:
+  required:
+  - 存在一个具体的物理器物，可被看到、摸到或拿起。
+  - 器物内部凹陷、上方开口，能容纳液体或散装物。
+  - 器物的典型用途是饮用，而非仅作为计量工具、容器内容量或装饰。
+  - 语境关注的是器物实体，而非杯子装了多少。
+  excluded:
+  - condition: 语境中的 cup 指杯内液体或可容纳的量（例如 a cup of water），而不是可触摸的杯体。
+    alternative: cup-02
+  - condition: cup 在配方计量语境中表示固定体积单位（例如 two cups of flour），即使没有实体杯具也成立。
+    alternative: cup-03
+  - condition: cup 用作动词，表示使手或物体变成杯状凹形（如 cup one's hands）。
+    alternative: cup-04
+  - condition: cup 用作动词，表示用杯状手形托住或支撑某物（如 cup the child's chin），而不是指称饮具。
+    alternative: cup-05
+relations:
+  synonyms: []
+  antonyms: []
+  hypernyms: []
+  hyponyms: []
+  confusables:
+  - cup-02
+  - cup-03
+  - cup-04
+  - cup-05
+  boundaries:
+  - target: cup-02
+    relation: overlaps
+    distinction: 区别轴是 semantic_identity 的 dimension：cup-01 是 container（器物），cup-02
+      是 volume/content（内容物或容量）。Inventory 的锁定关系为 metonymy，在场景中表现为同一杯水既可被看成器物也可被看成一份量。
+    diagnostic: 若把 cup 换成 the vessel 后场景仍指向同一个可触摸对象，则是 cup-01；若换成 the content/amount
+      才符合语境，则是 cup-02。例如 The cup broke 只能是 cup-01，Drink a cup of tea 偏向 cup-02。
+  - target: cup-03
+    relation: different_dimension
+    distinction: 区别轴是 semantic_signature 的 semantic_type 与 dimension：source 是 artifact/container，target
+      是 unit_of_measure/volume；前者必须有可触摸的杯体，后者是可脱离任何实体杯具的固定体积。
+    diagnostic: 在食谱语境中用固定数字计量（add one cup of sugar）且不需要关心哪只杯子，即为 cup-03；若语境中杯子的材质、形状或手持动作被突出，则为
+      cup-01。
+  - target: cup-04
+    relation: different_sense
+    distinction: 区别轴是 semantic_signature 的 change_of_state、causative 与 valency：source
+      为 false/false/0，target 为 true/true/transitive。Inventory 的锁定关系为 denominal_conversion。
+    diagnostic: 若同一词形可曲折为 cupped/cups 并带受事（cupped his hands），表示使手或物成杯状，则是 cup-04；若它接受冠词或形容词并指称一个可端起饮用的器物，则是
+      cup-01。
+  - target: cup-05
+    relation: different_sense
+    distinction: 区别轴是 semantic_signature 的 semantic_type 与 valency：source 是 artifact/0，target
+      是 physical_manipulation/transitive；target 的 change_of_state=false，表示持续接触而非形变。
+    diagnostic: 若场景是手已呈杯形并托住某物（she cupped the kitten），物体未改变形状，则为 cup-05；若场景是一只手端起一只饮具喝水，则为
+      cup-01。
+  l1_confusables:
+    zh:
+    - l1_term: 杯子
+      covers:
+      - cup-01
+      note: 中文“杯子”是宽泛的饮具总称，也覆盖 glass、mug 等器形；英文 cup 的核心义强调不透明、常有柄、与 glass 相对。不能把“杯子”自动对译为
+        cup，而要观察材质与器形。
+    - l1_term: 一杯
+      covers:
+      - cup-02
+      - cup-03
+      note: 中文量词“一杯”同时覆盖容器内容量（cup-02）和食谱计量单位（cup-03），不区分标准的 8 盎司或 250 mL；英文 cup-03
+        是明确单位，场景若出现 precise recipe quantity，应选择 cup-03。
+    - l1_term: 捧；拢
+      covers:
+      - cup-04
+      - cup-05
+      note: 中文“捧/拢”常用一个动词涵盖使手成杯形和以杯状手托物两个阶段；英文区别为 cup-04（使成杯状，状态变化）与 cup-05（杯状持握，持续接触）。
+scene_requirements:
+  must_show:
+  - 一个单手可拿起的小型容器，内部凹陷、顶部开口。
+  - 容器材质为不透明材料（陶瓷、搪瓷或塑料），可让观众把它与透明玻璃杯区分开。
+  - 可看到手柄，但手柄不作为判定唯一依据。
+  - 出现饮用行为或持握行为：人物端起杯子喝水，或把杯子放上桌面。
+  - 镜头把杯体作为一个完整器物呈现，而不是聚焦杯中液面或刻度。
+  must_not:
+  - 不要把透明、无柄的玻璃杯作为目标物体的中心形象。
+  - 不要把标有刻度的量杯或食材计量场景作为中心形象。
+  - 不要用“two cups of flour”这类计量短语来展示本义项。
+  - 不要展示双手拢成杯状的动作来替代实物杯具。
+  externalization:
+  - 饮具功能通过人物就口饮用或倒液体入杯来外化。
+  - 器物身份通过可被拿起、放下、触碰来外化；即使杯子是空的，它仍是场景中的可见实体。
+  - 不透明性可通过遮挡杯中液面或与透明玻璃杯并置来外化。
+  timing: 先让观众完成对杯体实物的观察和饮用动作，再在动作暂停或物体被放置时说出 cup；不要让词先于概念体验出现。
+provenance:
+  sources:
+  - type: dictionary
+    citation: https://kaikki.org/dictionary/English/meaning/c/cu/cup.jsonl (Wiktionary
+      via kaikki.org, CC-BY-SA 3.0/4.0)
+    license: CC-BY-SA
+
+# ============================================================
+# G. 教学原型建议 (非权威, 仅供 Holistic Course Author 参考)
+# ============================================================
+teaching_profile:
+  primary_archetype: entity_category
+  suggested_capabilities:
+  - object_inspection
+  - multi_label_choice
+  - scene_observation
+  - single_choice
+  - binary_judgment
+  special_risks:
+  - boundary_overlap
+  - category_metonymy

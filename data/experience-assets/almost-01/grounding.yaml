@@ -1,0 +1,40 @@
+schema_version: '1.0'
+asset_type: grounding
+sense_id: almost-01
+contract_hash: sha256:43159c1e43b8bef047fa196b3c5232dc20b1c1057d3f2559549817a3342038e0
+grounding:
+  source_experience_id: unit-1
+  l2_realization: The cup slid across the table, and for a moment it tipped—she caught
+    it just as it was about to fall; it almost fell.
+  constructions:
+  - '[subject] almost [verb]'
+  - almost [past tense verb]
+  collocations:
+  - almost there
+  - almost fell
+gate:
+  passed: true
+  dimensions:
+  - name: semantic_correctness
+    verdict: pass
+    note: 'Grounding asset unit-1 is faithful to WordSense almost-01: the target event
+      ''fell'' has a clear boundary (the cup leaving the table/hitting the floor);
+      the cup slides, tips, and is caught at the last moment; the final result is
+      explicitly unachieved (''it almost fell''). This satisfies the required conditions
+      of extreme proximity and non-achievement, and does not express barely (boundary
+      not crossed), about (no approximate quantity), or approaching (the result is
+      already determined, not ongoing). The phrases ''tipped'' and ''about to fall''
+      describe the near-crossing moment rather than a competing category; no adjacent
+      sense is expressed.'
+  scores:
+    semantic_correctness: 9.0
+metadata:
+  compiler_version: 2.0.0
+  prompt_versions:
+    program_planner: v1
+    surface_generator: v1
+    quality_gate: v1
+  generated_at: '2026-08-15T06:32:51Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids: []

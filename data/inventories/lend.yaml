@@ -1,0 +1,88 @@
+schema_version: '1.0'
+word: lend
+language: en
+status: approved
+inventory_version: 1
+source:
+  provider: wiktionary
+  entry_count: 5
+  evidence_digest: sha256:6cd7821ba259684ae3467f764c5850e2bdbf83ce02c26ebd36d7fea8eeefbed7
+senses:
+- id: lend-01
+  lemma: lend
+  pos: verb
+  label_zh: 借出；贷出
+  definition: To allow something to be used by someone temporarily on condition that
+    it or an equivalent will be returned; to make a loan.
+  semantic_signature:
+    semantic_type: temporary_transfer
+    dimension: use_or_repayment
+    change_of_state: false
+    causative: false
+    valency: ditransitive / transitive / intransitive
+  source_entries:
+  - lend-dict-001
+  - lend-dict-002
+  decision:
+    type: merge
+    reason: lend-dict-001 和 lend-dict-002 表达同一核心意义：lend 表示借出/放贷。001 是典型及物/双及物用法，002
+      是不及物用法，只是同一意义的不同论元实现，教学上不值得拆成两个独立 sense。
+  teaching_priority: core
+  usage:
+    currency: current
+    productivity: productive
+    register: neutral
+- id: lend-02
+  lemma: lend
+  pos: verb
+  label_zh: （事物）适合，适用于
+  definition: To be suitable or applicable to something, typically in the reflexive
+    construction "lend oneself to".
+  semantic_signature:
+    semantic_type: suitability
+    dimension: applicability
+    change_of_state: false
+    causative: false
+    valency: reflexive + to
+  source_entries:
+  - lend-dict-003
+  decision:
+    type: keep
+    reason: lend-dict-003 构成固定的反身构式 lend oneself to，意义已经脱离‘借出’，表示‘适合、适用于’，需要作为独立构式义项教学。
+  teaching_priority: extended
+  usage:
+    currency: current
+    productivity: limited
+    register: formal / literary
+- id: lend-03
+  lemma: lend
+  pos: verb
+  label_zh: 提供，赋予
+  definition: To afford, grant, or furnish in general, usually with an abstract object
+    such as assistance, support, or one's name.
+  semantic_signature:
+    semantic_type: provision
+    dimension: abstract_entity
+    change_of_state: false
+    causative: false
+    valency: ditransitive / transitive
+  source_entries:
+  - lend-dict-004
+  decision:
+    type: keep
+    reason: lend-dict-004 表示将帮助、名声等抽象事物‘给予’或‘使获得’，与具体的临时借用不同，构成独立的扩展义。
+  teaching_priority: extended
+  usage:
+    currency: current
+    productivity: limited
+    register: formal / semi-formal
+deferred_entries:
+- source_entry: lend-dict-005
+  decision: reject
+  reason: 该义项被标注 proscribed，表示把 lend 误用为 borrow，属于非标准用法；不适合作为 SceneLex 稳定、可教学的 sense。
+  required_evidence: []
+relations:
+- source: lend-01
+  target: lend-03
+  relation: metaphorical_extension
+  distinction: lend-01 涉及具体物品的临时借出；lend-03 将这一‘给予’隐喻延伸到帮助、支持、名声等抽象对象。

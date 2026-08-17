@@ -1,0 +1,68 @@
+schema_version: '1.0'
+contract_id: messy-01-contract
+sense_id: messy-01
+lemma: messy
+pos: adjective
+semantic_revision: 1
+content_hash: sha256:302d056f54b8385aef18b9dbabc7e260aa7d3ad1c7f2a7e82ca60d2fd1748680
+semantic_model:
+  invariant: 一个可被整体观察的空间、表面、对象或可见产物，其多个组成部分相对自身常规/预期的整齐形态呈现出整体可见的无序，即为 messy。
+  necessary_conditions:
+  - 存在一个可被整体观察的空间、表面、对象或可见产物。
+  - 该整体由多个物品、部分、线条或其他可见细节构成。
+  - 这些组成部分偏离其常规、预期或整齐的排列与形态。
+  - 组成部分之间缺乏足够的秩序、一致方向或整洁形式。
+  - 无序达到整体可见的程度，而非只有一个无关紧要的局部偏差。
+  - 这种无序可被直接观察。
+  - 无序是相对于该对象或产物自身的常规整洁状态而言，不是绝对的抽象标准。
+  - 杂乱是当前可见的状态，不是正在发生的弄乱过程。
+  non_entailments:
+  - 有污渍或不卫生，并不蕴涵 messy；若物品排列并不混乱，适用的是 dirty。
+  - 空间表面损坏或被破坏，并不蕴涵 messy；若物品仍保持整体秩序，适用的是 wrecked/trashed。
+  - 单个物品偏离原位，并不蕴涵整个对象是 messy；无序必须达到整体可见的程度。
+  - 某对象是 messy，并不蕴涵其表面不洁或存在污渍；乱与脏是两个独立维度。
+  - 某对象是 messy，并不蕴涵当前正在被弄乱或刚刚经历了弄乱过程；它只描述当前可见状态。
+  - 某个空间里物品数量多，并不蕴涵它是 messy；数量多但排列整齐可归为 cluttered。
+  typical_correlates:
+  - 常会看到衣服散落在地板或椅子上，而不是收在衣柜里。
+  - 常会看到书本、纸张堆叠方向不一、边缘不齐。
+  - 常会看到杯碗放在桌面各处而非归位。
+  - 常会看到鞋子在门口东一只西一只、朝向不一。
+  - 常会看到床铺未整理、被褥团成一堆。
+  - 常会看到同类物品分散在不同位置。
+  - 常会看到头发向多个方向乱翘、缺少整齐轮廓。
+  - 常会看到字迹方向、间距不一致，涂改线相互交叠，整体难辨认。
+  misconceptions:
+  - id: misc-1
+    description: 把 messy 和 dirty 混为一谈，认为“乱”就是“脏”，“脏”就是“乱”。
+    correction: 观察一个表面有污渍但物品排列整齐的样本：它应被判断为 dirty 而非 messy；再观察一个物品乱放但表面干净的样本，它仍可被判断为
+      messy。乱与脏可独立变化。
+  - id: misc-2
+    description: 把中文“乱”的宽泛语义直接套到 messy，把抽象局势、交通或行为秩序也称作 messy。
+    correction: 本词义的 messy 要求可见的物理无序：必须能观察到多个组成部分的排列或形态偏离整齐状态。要推翻它，需要找到母语者对一个没有可见物理排列偏差的抽象局面仍稳定使用
+      messy 的证据。
+  - id: misc-3
+    description: 认为物品多、空间拥挤就是 messy，把 cluttered 与 messy 等同。
+    correction: 观察一个物品很多但按类别整齐摆放、方向一致的空间：说话者更自然地说 cluttered 而不是 messy。若这类样本仍被母语者称为
+      messy，才能推翻这一边界。
+  - id: misc-4
+    description: 认为只要有一个物品偏离原位或一个细节不齐，整个对象就是 messy。
+    correction: 本词义要求无序达到整体可见的程度。观察一个只有一个杯子不在原位、其余部分整齐的桌面：整体通常不会被判定为 messy。需要能证明单个局部偏差足以让说话者称整体
+      messy 的经验证据。
+  - id: misc-5
+    description: 把表面损坏、蓄意破坏造成的破败场面当成 messy。
+    correction: messy 描述排列与形态的无序；观察一个表面破损但物品仍保持整体秩序的空间，应适用 wrecked/trashed 而非 messy。若母语者在这种情况下仍称它
+      messy，才能推翻。
+  l1_interference:
+  - 中文“乱”的语义范围远大于 messy：它不仅覆盖可见物理无序，还覆盖抽象局面混乱（chaotic）、行为/交通失序（disorderly）等。学习者容易把所有“乱”都迁移到
+    messy，忽略 messy 在本词义中对可见排列无序的要求。
+  - 中文“脏乱”常连用，使“脏”和“乱”在 L1 经验中被切成一个整体。学习者因此把 messy（位置/形态是否归位整齐）与 dirty（表面是否清洁）当成同一维度，看不到两者可独立成立。
+metadata:
+  compiler_version: 2.1.0
+  prompt_versions:
+    semantic_planner: v2
+  generated_at: '2026-08-15T14:24:31Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids:
+  - 1cfffca4-7bf6-462a-bc5a-35a62d3c769a

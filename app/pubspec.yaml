@@ -44,3 +44,5 @@ flutter:
   assets:
     - assets/reactions/
     - assets/content/
+    - assets/content/holistic-course-preview/
+    - assets/content/archetype-mvp.v1.json

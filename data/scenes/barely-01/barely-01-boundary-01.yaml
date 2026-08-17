@@ -1,0 +1,55 @@
+schema_version: "1.0"
+version: 1
+status: reviewed
+id: barely-01-boundary-01
+sense_ref: barely-01
+scene_type: boundary
+contrast_target: hardly-01
+contrast_relation: overlaps
+surface:
+  domain: gardening
+  participant_type: adult
+  setting: outdoor-park
+title: 最后一片绿叶
+synopsis: >
+  一株严重干枯的植物，仅剩一片叶子还带着微弱绿色。通过浇水前后的变化，
+  测试“barely alive”与“hardly alive”的用语边界。
+storyboard:
+  - beat: 1
+    visual: >
+      公园角落，一盆绿萝。画面从整体开始：大部分叶子枯黄卷曲，只有一根枝条顶端
+      有一片小叶子边缘尚存一丝绿色。特写那片叶子：绿色极淡，几乎要枯黄。
+    audio: null
+    purpose: 建立视觉证据：植物处于生死边界，仅存一丝生命迹象。
+  - beat: 2
+    visual: >
+      人物（园丁）走近，俯身观察那一片叶子，用手指轻触，叶子没有立即掉落，
+      但也毫无弹性。园丁皱眉，拿出水壶，慢慢浇水。
+    audio: "(水声)"
+    purpose: 展示临界状态——叶子尚存但极度脆弱。等待观众产生“它还是活的吗？”的疑问。
+  - beat: 3
+    visual: >
+      浇水后，特写那片叶子在阳光下慢慢舒展，绿色略微加深，但仍然是整株唯一的绿。
+      园丁直起身，擦拭额头。
+    audio: "It's barely alive—barely, but still hanging on."
+    purpose: 在临近消失但恢复的节点命名 barely，强调勉强存在。
+  - beat: 4
+    visual: >
+      分屏：左侧是现在的植物（有一片半活的叶子），右侧是另一株完全枯黄、无一丝绿色的植物。
+      （或同株植物几天后完全枯萎的虚拟对照）
+    audio: "That one? Hardly alive. Not a single green leaf."
+    purpose: 用 hardly 描述量值为零的情况，建立边界：barely 需要可感知但微乎其微的存在。
+  - beat: 5
+    visual: >
+      镜头拉远，看到园丁在他那株植物旁放了一个小标签“barely alive”，
+      另一株植物前放“hardly alive”。两个标签同框。
+    audio: "Same root, different degrees. The difference is that tiny bit of green."
+    purpose: 并置视觉标签，强化边界判断依据——barely 有微量正存在，hardly 几乎无。
+learning_tasks:
+  - type: contrast_choice
+    prompt: 给出一株植物照片（仅剩半片绿叶），学习者在“barely alive”和“hardly alive”中选一个更自然的描述。
+    choices:
+      - barely alive
+      - hardly alive
+    expected_answer: barely alive
+    scoring_note: 只要说明“还有一点绿色”即可得分；hardly 被接受但需解释理由。

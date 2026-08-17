@@ -1,0 +1,57 @@
+schema_version: '1.0'
+contract_id: through-01-contract
+sense_id: through-01
+lemma: through
+pos: adjective
+semantic_revision: 1
+content_hash: sha256:c04599f1a1d284dcf3b1ece17f01f89ed06b8452fece900d53fbf5623e14773c
+semantic_model:
+  invariant: 一个物理介质或区域具有两个可区分的侧面/边界，并且存在一条路线、开口或细长物体从一侧连续延伸到另一侧，在当前静态空间布局中使两侧相连。
+  necessary_conditions:
+  - 该词用作名词前的定语修饰语，被修饰名词的所指是路线、开口或细长物体。
+  - 存在一个可观察的物理实体或区域，具有两个可区分的侧面或边界区。
+  - 该路线/开口/细长物体在两个侧面/边界之间连续延伸，从一侧到对侧没有被中断。
+  - 在当前空间布局中可以验证这种两侧连接；它不依赖运动、意图或状态变化。
+  - 该词义不包含任何过程、进度程度、运输行程或电信接通状态。
+  - 由于连续延伸，所指与两侧形成空间连接：它要么是穿过介质的通道/路线，要么是其两端分别位于两侧的细长物体。
+  non_entailments:
+  - 某人/车辆正在穿越某个路线或开口，并不蕴涵本词义成立；本词义成立也不蕴涵实际发生了穿越——它只要求当前静态配置中存在连续连接。
+  - 本词义成立，并不蕴涵某个活动、关系或职业已经结束/完成；'be through' 的 finished/done 义不是 through-01。
+  - 本词义成立，并不蕴涵某运输服务无需换乘；'a through train' 的 through-02 义不是 through-01。
+  - 本词义成立，并不蕴涵某任务处于某个进度点；'halfway through' 的 through-03 义不是 through-01。
+  - 本词义成立，并不蕴涵电话已经接通到某人；'You're through to X' 的 through-05 义不是 through-01。
+  typical_correlates:
+  - 常看到（但非必要）被修饰的路线/开口/细长物体的两个端点分别出现在介质或区域的两个相对边界上。
+  - 常看到（但非必要）使用剖面图或透明视图展示内部通道或物体连续贯穿整个介质厚度。
+  - 常看到（但非必要）沿路线或物体方向，视线可以从一侧边界直达另一侧边界，中间没有遮挡。
+  - 若画面中出现人或车辆，常表现为站在某侧或准备进入，而不是把正在穿越作为焦点；这仍只是相关表现，不是必要条件。
+  misconceptions:
+  - id: misc-1
+    description: 把 through 当作穿越动作，认为必须有人或车辆正在从一侧移动到另一侧，静态的路线、开口或螺栓不算。
+    correction: 要推翻它，只需给出一个静止的、两端分别位于两侧的螺栓/通道示例：没有任何运动，仍然可以说 a through bolt/opening，本词义成立。
+  - id: misc-2
+    description: 只凭某个视角看到表面有开口或物体伸入，就断定它是 through；没有确认它从一侧连续到达另一侧。
+    correction: 要推翻它，需要同时验证两个侧面的端点，或通过剖面/透明视图看到内部连续延伸；单一表面证据不足。
+  - id: misc-3
+    description: 把 a through train/flight 的“无需换乘”运输含义当作本词义。
+    correction: 要推翻它，需要看句子是否可改写为“不用换乘”；若是，则属于 through-02。若场景中有一个可看见的物体或开口连接两侧，才是 through-01。
+  - id: misc-4
+    description: 把 halfway through 这类表示任务进度的用法当作本词义。
+    correction: 要推翻它，需要看能否加入程度词：through-01 的定语空间义不接受 halfway through；任务做到一半不会改变螺栓或道路的贯通属性。
+  - id: misc-5
+    description: 把 be through 的“完成/结束/不再继续”状态当作本词义。
+    correction: 要推翻它，需要把 be through 换成 be finished/done，若意思不变则是 through-04；through-01
+      是名词前的定语，去掉后仍指空间属性。
+  l1_interference:
+  - 中文“穿过”在 L1 中常被切割为“人/车辆穿越”的动词动作，比 through-01 窄且错位；学习者会把静态空间属性误认为需要有人在动。
+  - 中文“贯穿”比 through-01 宽，同时覆盖物理贯穿和过程贯穿；学习者会把“贯穿整个流程”的任务进度也纳入本词义。
+  - 中文“直通”比 through-01 宽，同时覆盖空间通路和交通直达；“不用换乘的列车/航班”会被学习者误当作 through-01。
+metadata:
+  compiler_version: 2.1.0
+  prompt_versions:
+    semantic_planner: v2
+  generated_at: '2026-08-16T08:16:35Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids:
+  - fa614e5d-a00a-4dba-b8c1-c88303ad152f

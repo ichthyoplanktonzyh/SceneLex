@@ -1,0 +1,12 @@
+schema_version: '1.0'
+word: hesitant
+language: en
+provider: wiktionary
+captured_at: '2026-08-16T06:40:01Z'
+entries:
+- entry_id: hesitant-dict-001
+  pos: adj
+  gloss: Tending to hesitate, wait, or proceed with caution or reservation.
+  labels: []
+  examples:
+  - I am hesitant to recommend him as a manager because he has a short temper.

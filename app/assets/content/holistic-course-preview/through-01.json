@@ -1,0 +1,686 @@
+{
+  "schema_version": "1.0",
+  "course_id": "course-through-01-zh-cn",
+  "target": {
+    "sense_id": "through-01",
+    "lemma": "through",
+    "pos": "adjective",
+    "ipa": "/θɹuː/",
+    "learner_l1": "zh-CN",
+    "target_l2": "en"
+  },
+  "author_intent": {
+    "course_thesis": "从一块厚钢板的剖面出发，先让学习者确认‘介质有两个可区分的侧面，且孔、通道或细长物体从一侧连续通到另一侧’这一静态空间事实，再把该定语属性绑定为 through，最后用同形异义（直达列车、halfway 进度、be through 结束）和表面 vs 内部迁移巩固边界。",
+    "learner_start": "L1 为中文；已具备基本空间认知；可能把 through 混同于动词‘穿过’、过程‘贯穿’和交通‘直通’；尚未认识目标词 through。",
+    "intended_outcome": "学习者看到孔、螺栓、道路、隧道等场景时，能判断该物体或通道是否从介质的一侧连续通到另一侧；能说出 This is a through bolt / opening / road；能排除‘有人正在穿越才算’、‘只看表面证据’、‘直达列车’、‘halfway 进度’与‘be through 结束’等反例；复习时能从 L1 场景反向回忆 through，并在 L2 句子里识别目标义。",
+    "design_rationale": "through-01 是静态定语属性而不是移动路径，所以不用空间舞台让学习者走一条路，而用剖面图和对象检视让学习者验证两个侧面的端点；符号绑定前分别用‘表面凹槽 vs 圆孔’和‘无人在场的通道’排除表面证据与运动误解；绑定后用同一词形的多义句做最小对比，把 through-02/03/04 一次排除；迁移用山体隧道 vs 盘山路同时处理表面 vs 内部与静态属性；复习按 early→later 脚手架从 L1 反向回忆走向 L2 句子与多选集合判分。"
+  },
+  "steps": [
+    {
+      "id": "learn_01_scene_plate",
+      "stage": "learning_flow",
+      "trigger": "initial",
+      "primitive": "evidence_highlight",
+      "purpose": "建立第一个核心场景：一块厚钢板同时包含一个从正面通到背面的圆孔和一个只留在表面的凹槽；用证据列表让学习者先确认‘两个可区分侧面 + 连续到达另一侧’这两个观察点。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 45,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "episode": "车间里有一块厚钢板。你站在钢板的正面，能看到靠你这一侧有一个圆孔；绕到背面，在对应的位置也能看到同一个孔。旁边的剖面图显示：这个孔从正面一直通到背面，中间没有被堵住。同一块钢板的正面还有一条凹槽，凹槽只在表面，没有延伸到背面。",
+        "evidence": [
+          "钢板有两个可区分的面：正面和背面。",
+          "圆孔从正面一直通到背面，中间没有中断。",
+          "凹槽只在正面表面，没有从正面通到背面。"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "learn_02_inspect_parts",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "object_inspection",
+      "purpose": "让学习者亲手检视两个零件的结构特征，而不是只看文字：零件甲的杆身连续穿过整块板并从背面露出，零件乙只伸入板内一部分；隐藏名称，避免提前命名概念。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 75,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "inspect_prompt": "请分别查看两个零件在钢板剖面里的形状，注意每个零件从正面伸进去之后到了哪里。",
+        "objects": [
+          {
+            "id": "part_a",
+            "name": "零件甲",
+            "category_label": "零件",
+            "features": [
+              "一端在钢板的正面，杆身穿过整块板的厚度，另一端从背面露出。",
+              "剖面图里，杆身连续经过板的内部，中间没有断开。"
+            ],
+            "variants": [
+              {
+                "id": "part_a_front",
+                "label": "从正面看",
+                "features": [
+                  "正面能看到杆头，背面看不到。"
+                ]
+              },
+              {
+                "id": "part_a_cutaway",
+                "label": "剖面看",
+                "features": [
+                  "杆身从正面一直延伸到背面。"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "part_b",
+            "name": "零件乙",
+            "category_label": "零件",
+            "features": [
+              "一端在钢板的正面，尖端停在板的中间，没有到达背面。",
+              "剖面图里，杆身只进入板的一部分，没有形成另一侧的端点。"
+            ],
+            "variants": [
+              {
+                "id": "part_b_front",
+                "label": "从正面看",
+                "features": [
+                  "正面能看到杆头，背面看不到。"
+                ]
+              },
+              {
+                "id": "part_b_cutaway",
+                "label": "剖面看",
+                "features": [
+                  "杆身只伸到板厚的一半。"
+                ]
+              }
+            ]
+          }
+        ],
+        "hide_object_names": true
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "learn_03_which_piece",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "single_choice",
+      "purpose": "判断哪个零件从钢板这一侧连续通到了另一侧；这是把‘连续到另一侧’作为判定标准的第一步。",
+      "addresses": [
+        "misc-2"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 40,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "回到刚才两个零件。零件甲：杆身从钢板正面伸入，穿过整块板，从背面露出来。零件乙：杆身从正面伸入，尖端停在钢板中间，没有到背面。",
+        "evidence": [
+          "要判断是否从一侧通到另一侧，不能只看正面有没有东西伸进去。",
+          "需要用剖面图确认：杆身是否连续到达另一侧，并在另一侧留下端点。"
+        ],
+        "question": "哪个零件从钢板这一侧连续通到了另一侧？",
+        "options": [
+          {
+            "id": "opt_part_a",
+            "text": "零件甲：杆身从正面穿过整块板，从背面露出来"
+          },
+          {
+            "id": "opt_part_b",
+            "text": "零件乙：杆身从正面伸入，尖端停在板的中间"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_part_a"
+      }
+    },
+    {
+      "id": "learn_03b_error_surface",
+      "stage": "learning_flow",
+      "trigger": "on_error",
+      "primitive": "evidence_highlight",
+      "purpose": "若学习者只凭表面证据判断，则用两个零件在正面的相似性说明：必须验证另一侧端点或剖面连续延伸，单靠一面无法判定。",
+      "addresses": [
+        "misc-2"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "如果只从正面看，零件甲和零件乙的正面都露出一个杆头；单靠这一面无法区分。关键在剖面图：零件甲的杆身穿过整块板，在背面露出；零件乙的杆身停在板中间。",
+        "evidence": [
+          "一个杆头出现在正面，并不等于它通到了另一面。",
+          "需要确认另一侧是否有对应端点，或者借助剖面图看到内部连续延伸。"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "learn_04_no_motion",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "binary_judgment",
+      "purpose": "处理 misc-1：强调当前静态配置中的连续连接就足够，不要求有人或车正在穿越。",
+      "addresses": [
+        "misc-1"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 45,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "两栋楼之间有一条地下通道。入口在 A 楼，出口在 B 楼；从入口看，通道口一直延伸进地下，从出口看，通道口也在另一侧出现。剖面图显示整条通道没有塌方或封堵。现在通道里没有人走，只在入口站着一名保安。",
+        "evidence": [
+          "通道本身从 A 楼这一侧连续通到 B 楼那一侧。",
+          "没有人在走，通道的连接仍然存在。"
+        ],
+        "question": "这条地下通道现在算不算“从一侧连续通到另一侧”？",
+        "options": [
+          {
+            "id": "opt_yes",
+            "text": "算：通道本身就把 A、B 两楼连起来了，不需要有人正在走"
+          },
+          {
+            "id": "opt_no",
+            "text": "不算：没有人走，就说不上连通"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_yes"
+      }
+    },
+    {
+      "id": "learn_04b_error_motion",
+      "stage": "learning_flow",
+      "trigger": "on_error",
+      "primitive": "evidence_highlight",
+      "purpose": "若学习者把目标义项误解成需要正在发生的穿越动作，用通道无人但连接仍在的证据纠正。",
+      "addresses": [
+        "misc-1"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "再看这条地下通道：入口在 A 楼，出口在 B 楼，剖面图显示通道从这一侧连续到另一侧。没有人走，通道本身仍然把两楼连在一起。",
+        "evidence": [
+          "目标属性描述的是物体或通道本身的空间状态：两端分别在两个侧面，中间没有断开。",
+          "有没有人正在走，不是判断条件。"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "learn_05_symbol_reveal",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "symbol_reveal",
+      "purpose": "首次把‘路线、开口或细长物体从介质的一侧连续通到另一侧’的静态空间属性绑定到 L2 符号 through。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "l2_word": "through",
+        "ipa": "/θɹuː/",
+        "presentation": "刚才反复看到的属性——一个孔、一条通道或一根螺栓，从钢板、墙或楼的一侧一直通到另一侧，中间没有断开——英语里用 through 放在名词前面来表达：a through bolt、a through opening。它说的是物体本身的空间状态，不是某个人正在走过。",
+        "minimal_l1_gloss": "贯穿的；穿过的"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "learn_06_pronunciation",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "pronunciation",
+      "purpose": "让学习者听到并跟读 through。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 20,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "l2_word": "through",
+        "ipa": "/θɹuː/"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "learn_07_grounding",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "l2_grounding",
+      "purpose": "把 through 锚定回第一个钢板场景，展示自然 L2 定语句和搭配；这是学习者第一次在完整句子里看到目标词。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 45,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "source_step_id": "learn_01_scene_plate",
+        "l2_realization": "This is a through bolt: one end is on the front side of the plate, and the other end is on the back side.",
+        "constructions": [
+          "This is a through [名词].",
+          "The [名词] is a through [名词]."
+        ],
+        "collocations": [
+          "a through bolt 贯穿螺栓",
+          "a through opening 贯穿开口",
+          "a through road 贯穿道路",
+          "a through corridor 贯穿走廊"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "learn_08_same_lemma_contrast",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "single_choice",
+      "purpose": "把目标义项与同形易混的 through-02（直达运输）和 through-03（进度 halfway）对照，建立‘必须能看见两侧相连的空间物体’的判定；选项都含目标词，所以放在绑定之后。",
+      "addresses": [
+        "misc-3",
+        "misc-4"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 60,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "下面是三个英语说法。说法一：a through bolt——一颗螺栓从钢板的这一面一直通到另一面。说法二：a through train——一列火车从起点站到终点站，一路不用换车。说法三：halfway through the project——项目进行到一半。",
+        "evidence": [
+          "我们学的 through 是名词前的定语，描述孔、螺栓、道路、通道这类东西从一侧连续通到另一侧。",
+          "a through train 说的不是物体的两侧连接，而是运输行程中不用换车。",
+          "halfway through 说的是任务进行到的位置，不是空间里两侧的连通。"
+        ],
+        "question": "哪个说法描述的是我们刚学的“物体从一侧连续通到另一侧”的空间属性？",
+        "options": [
+          {
+            "id": "opt_bolt",
+            "text": "a through bolt"
+          },
+          {
+            "id": "opt_train",
+            "text": "a through train"
+          },
+          {
+            "id": "opt_project",
+            "text": "halfway through the project"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_bolt"
+      }
+    },
+    {
+      "id": "learn_08b_error_contrast",
+      "stage": "learning_flow",
+      "trigger": "on_error",
+      "primitive": "evidence_highlight",
+      "purpose": "若学习者选错，用三个说法的画面差异再讲一次：有没有一个可看见的两侧空间连接。",
+      "addresses": [
+        "misc-3",
+        "misc-4"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 35,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "重新看三个说法。a through bolt：把螺栓放在剖面图里，能看到杆身从这一面连续到那一面。a through train：把火车画出来，它是在轨道上跑，不是两端落在两侧的物体。halfway through the project：说的是一件事做到一半的程度，眼前没有两个侧面。",
+        "evidence": [
+          "判断目标义项，需要画面里有一个物理介质或区域的两个侧面。",
+          "如果没有可见的两侧和连续连接，而是换乘或进度，就是别的意思。"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "learn_09_finished_state",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "binary_judgment",
+      "purpose": "区分 through-04（be through = 完成/结束）与目标定语义：through 放在名词前面描述空间连接，不是谓语的‘做完了’。",
+      "addresses": [
+        "misc-5"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 40,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "再看两个英语句子。句子一：The wall has a through opening.（墙里有一个从这一面通到那一面的开口。）句子二：I'm through with my homework.（我作业已经做完了，不用再继续。）",
+        "evidence": [
+          "句子一里的 through 放在 opening 前面，描述开口从墙的一侧通到另一侧。",
+          "句子二里的 be through 在说一件事情结束了；它不描述任何可见的、从一侧到另一侧的物体。"
+        ],
+        "question": "哪个句子里的 through 才是我们学的“物体从一侧连续通到另一侧”？",
+        "options": [
+          {
+            "id": "opt_wall",
+            "text": "句子一：The wall has a through opening."
+          },
+          {
+            "id": "opt_done",
+            "text": "句子二：I'm through with my homework."
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_wall"
+      }
+    },
+    {
+      "id": "learn_09b_error_finished",
+      "stage": "learning_flow",
+      "trigger": "on_error",
+      "primitive": "evidence_highlight",
+      "purpose": "若学习者把 be through 的结束义误认为目标义，强调目标义是名词前的定语，且需要可见的两侧空间。",
+      "addresses": [
+        "misc-5"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "The wall has a through opening：墙里有一个开口，这一个面能看见，另一个面也能看见，开口从这一侧通到那一侧。I'm through with my homework：homework 不是一块有两个侧面的东西，这个 through 说的是‘做完、结束’。",
+        "evidence": [
+          "目标义需要被修饰的名词是一个孔、开口、螺栓、道路或通道。",
+          "be through 后面常接事情、关系或工作，表示结束，不描述空间连接。"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "learn_10_transfer_mountain_road",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "transfer_judgment",
+      "purpose": "迁移到真实地理场景：一条山体隧道公路即使没有车辆行驶，仍是从一侧连续通到另一侧的道路；同时用盘山路在表面绕行处理表面 vs 内部风险。",
+      "addresses": [
+        "misc-1",
+        "misc-2"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 50,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "episode": "两座山谷之间有一座山，山里有一条公路隧道：从山这一侧的洞口进去，穿过整座山，从山那一侧的洞口出来。剖面图显示隧道全程没有塌方。现在隧道里没有车。山的另一侧还有一条盘山路，它沿着山体表面绕到山后，没有进入山的内部。",
+        "evidence": [
+          "隧道有两个可验证的端点：这一侧洞口和那一侧洞口，中间连续。",
+          "盘山路在山体表面绕行，没有从山的一侧内部通到另一侧。",
+          "没有车行驶时，隧道的连通属性仍然存在。"
+        ],
+        "question": "哪条路可以称为“从山的一侧连续通到另一侧”的道路？",
+        "options": [
+          {
+            "id": "opt_tunnel",
+            "text": "山体隧道：从这一侧洞口一直通到那一侧洞口"
+          },
+          {
+            "id": "opt_road",
+            "text": "盘山路：沿山体表面绕到山后"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_tunnel"
+      }
+    },
+    {
+      "id": "learn_10b_error_mountain",
+      "stage": "learning_flow",
+      "trigger": "on_error",
+      "primitive": "evidence_highlight",
+      "purpose": "若学习者把盘山路误认为贯通，强化‘进入内部或穿过介质并连接两侧’才是 through，表面绕行不是。",
+      "addresses": [
+        "misc-1",
+        "misc-2"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "episode": "再看山的两条路。隧道：从这一侧洞口进入，一直通到那一侧洞口，剖面图能看到内部连续。盘山路：贴着山体表面绕，没有在山体里形成一条从一侧到另一侧的连续连接。",
+        "evidence": [
+          "判断时，要看有没有一条路线、开口或物体从一侧连续到达另一侧。",
+          "盘山路虽然通向山后，但它没有穿过山体内部形成两侧之间的连续连接。"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "rev_01_recall_bolt",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_reveal",
+      "purpose": "绑定完成后的第 1 天",
+      "addresses": [],
+      "timing": "绑定完成后的第 1 天",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 1,
+      "content": {
+        "episode": "一块厚钢板。圆孔从正面一直通到背面，中间没有堵住；一根长螺栓也从正面伸入，穿过整块板，从背面露出。",
+        "l2_word": "through",
+        "ipa": "/θɹuː/",
+        "minimal_gloss": "贯穿的；穿过的"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "rev_02_self_grade_bolt",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_self_grade",
+      "purpose": "同第 1 天，紧跟回忆之后",
+      "addresses": [],
+      "timing": "同第 1 天，紧跟回忆之后",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 1,
+      "content": {
+        "l2_word": "through",
+        "ipa": "/θɹuː/"
+      },
+      "evaluation": {
+        "kind": "self_grade"
+      }
+    },
+    {
+      "id": "rev_03_recall_corridor",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_reveal",
+      "purpose": "绑定完成后的第 3 天",
+      "addresses": [],
+      "timing": "绑定完成后的第 3 天",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 3,
+      "content": {
+        "episode": "两栋楼之间有一条地下通道，入口在 A 楼，出口在 B 楼；通道里没有人走，但剖面图显示它从这一侧连续通到另一侧。",
+        "l2_word": "through",
+        "ipa": "/θɹuː/",
+        "minimal_gloss": "贯穿的；穿过的"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "rev_04_self_grade_corridor",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_self_grade",
+      "purpose": "同第 3 天，紧跟回忆之后",
+      "addresses": [],
+      "timing": "同第 3 天，紧跟回忆之后",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 3,
+      "content": {
+        "l2_word": "through",
+        "ipa": "/θɹuː/"
+      },
+      "evaluation": {
+        "kind": "self_grade"
+      }
+    },
+    {
+      "id": "rev_05_sentence_discrimination",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "single_choice",
+      "purpose": "绑定完成后的第 7 天",
+      "addresses": [],
+      "timing": "绑定完成后的第 7 天",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 7,
+      "content": {
+        "episode": "看三个英文说法：① a through hole（一个从墙正面通到背面的孔）；② a through train（一列不用换车的火车）；③ I'm through with the report.（报告已经做完了。）",
+        "evidence": [
+          "我们学的 through，被修饰的名词是一个孔、开口、螺栓、道路或通道。",
+          "a through train 说的是交通直达；I'm through 说的是事情结束。",
+          "只有 a through hole 描述可见的两侧之间的连续连接。"
+        ],
+        "question": "哪个说法用的是我们学的“物体从一侧连续通到另一侧”的意思？",
+        "options": [
+          {
+            "id": "opt_hole",
+            "text": "① a through hole"
+          },
+          {
+            "id": "opt_train",
+            "text": "② a through train"
+          },
+          {
+            "id": "opt_report",
+            "text": "③ I'm through with the report."
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_hole"
+      }
+    },
+    {
+      "id": "rev_06_apply_multi_label",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "multi_label_choice",
+      "purpose": "绑定完成后的第 14 天",
+      "addresses": [],
+      "timing": "绑定完成后的第 14 天",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 14,
+      "content": {
+        "episode": "下面几个画面，哪些可以用“a through + 名词”来描述？",
+        "evidence": [
+          "需要画面里有一个可验证的两侧面：东西从这一侧连续通到另一侧。",
+          "如果只是在说交通直达、任务进度或事情结束，就不是我们学的这个意思。"
+        ],
+        "question": "请选出所有符合“从一侧连续通到另一侧”空间属性的说法。",
+        "options": [
+          {
+            "id": "opt_bolt",
+            "text": "一颗螺栓从钢板这一面穿过整块板，从背面露出来",
+            "is_correct": true,
+            "feedback": "对：螺栓从一侧连续通到另一侧，这就是 a through bolt。"
+          },
+          {
+            "id": "opt_tunnel",
+            "text": "一条山体隧道从山的这一侧洞口一直通到另一侧洞口",
+            "is_correct": true,
+            "feedback": "对：隧道连接了山的两侧，是一条 through road 或 through route。"
+          },
+          {
+            "id": "opt_train",
+            "text": "一列火车从起点站到终点站不用换车",
+            "is_correct": false,
+            "feedback": "不对：这说的是交通直达，不是两个侧面之间的连续物体。"
+          },
+          {
+            "id": "opt_halfway",
+            "text": "一本书看到一半",
+            "is_correct": false,
+            "feedback": "不对：这是任务进度，不是空间里从一侧通到另一侧。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "multi_choice",
+        "correct_option_ids": [
+          "opt_bolt",
+          "opt_tunnel"
+        ]
+      }
+    }
+  ]
+}

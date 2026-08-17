@@ -161,3 +161,18 @@ scene_requirements:
     先展示空间全貌让观众自行感知到"乱"，
     然后用目标词为这个可见状态命名。
     可以对比展示整理前后的状态来强化概念边界。
+
+# ============================================================
+# G. 教学原型建议 (非权威, 仅供 Holistic Course Author 参考)
+# ============================================================
+teaching_profile:
+  primary_archetype: visible_attribute
+  suggested_capabilities:
+  - scene_observation
+  - evidence_highlight
+  - binary_judgment
+  - boundary_choice
+  - transfer_judgment
+  special_risks:
+  - conflated_pair
+  - l1_compound_脏乱

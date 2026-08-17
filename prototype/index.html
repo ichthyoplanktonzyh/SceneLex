@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SceneLex — 具身认知词义微世界交互原型全景中心</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #090a10;
+      --bg-surface: #121522;
+      --bg-card: #181d2f;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f1f3f9;
+      --text-muted: #8b92a7;
+      --text-sub: #b2b9ce;
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.25);
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 8px;
+      --font-sans: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 80px;
+      background-image: 
+        radial-gradient(ellipse 60% 40% at 50% -10%, rgba(99, 102, 241, 0.18), transparent),
+        radial-gradient(ellipse 50% 30% at 85% 85%, rgba(6, 182, 212, 0.1), transparent);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1120px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #818cf8;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, #ffffff 40%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 15px;
+      max-width: 760px;
+      line-height: 1.6;
+    }
+
+    /* Grid of 8 Microworlds */
+    .microworld-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-num {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+    }
+
+    .card-icon {
+      font-size: 26px;
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: var(--text);
+    }
+
+    .card-target-words {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      width: fit-content;
+    }
+
+    .card-desc {
+      font-size: 12.5px;
+      color: var(--text-sub);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 12px;
+    }
+
+    /* Color Themes per card */
+    .c1 { border-top: 3px solid #6366f1; }
+    .c1 .card-target-words { color: #818cf8; }
+    .c1 .card-footer { color: #818cf8; }
+
+    .c2 { border-top: 3px solid #10b981; }
+    .c2 .card-target-words { color: #34d399; }
+    .c2 .card-footer { color: #34d399; }
+
+    .c3 { border-top: 3px solid #06b6d4; }
+    .c3 .card-target-words { color: #67e8f9; }
+    .c3 .card-footer { color: #67e8f9; }
+
+    .c4 { border-top: 3px solid #ec4899; }
+    .c4 .card-target-words { color: #f472b6; }
+    .c4 .card-footer { color: #f472b6; }
+
+    .c5 { border-top: 3px solid #f59e0b; }
+    .c5 .card-target-words { color: #fbbf24; }
+    .c5 .card-footer { color: #fbbf24; }
+
+    .c6 { border-top: 3px solid #38bdf8; }
+    .c6 .card-target-words { color: #7dd3fc; }
+    .c6 .card-footer { color: #7dd3fc; }
+
+    .c7 { border-top: 3px solid #f43f5e; }
+    .c7 .card-target-words { color: #fb7185; }
+    .c7 .card-footer { color: #fb7185; }
+
+    .c8 { border-top: 3px solid #8b5cf6; }
+    .c8 .card-target-words { color: #c084fc; }
+    .c8 .card-footer { color: #c084fc; }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="badge-pill">
+      ✨ SceneLex 词义微世界体系全景展厅
+    </div>
+    <h1>8 大具身认知微世界交互原型 (Embodied Micro-Worlds)</h1>
+    <div class="subtitle">
+      彻底重构 App 渲染原语与 LLM 课程编译器：以「一次一课 (One Sense One Lesson)」为核心，支持微对话、物理失控、视觉蜕变、博弈天平等多模态 A2UI 原型。
+    </div>
+  </header>
+
+  <!-- Flagship Feature Banner -->
+  <a href="/prototype/a2ui-multimodal-player.html" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(6, 182, 212, 0.15)); border: 1px solid rgba(99, 102, 241, 0.4); border-radius: 16px; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: #fff; transition: all 0.25s; box-shadow: 0 8px 30px rgba(99,102,241,0.15);">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="font-size: 36px; background: rgba(99, 102, 241, 0.25); padding: 10px; border-radius: 12px;">🎭⚡🍂⚖️</div>
+      <div>
+        <div style="font-size: 18px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px;">
+          <span>A2UI 多模态义项微课播放器 (Flagship Lesson Player)</span>
+          <span style="font-size: 11px; background: #6366f1; color: #fff; padding: 2px 8px; border-radius: 999px;">新架构标杆</span>
+        </div>
+        <div style="font-size: 13px; color: #94a3b8; margin-top: 4px;">
+          验证「LLM 作为导演选型 + 输出纯声明式 JSON $\rightarrow$ App 动态渲染多模态交互（微对话、摩擦力物理、视觉水分形变、博弈天平）」。
+        </div>
+      </div>
+    </div>
+    <div style="font-size: 14px; font-weight: 700; color: #38bdf8; white-space: nowrap;">
+      立即体验一次一课 ➔
+    </div>
+  </a>
+
+  <div class="microworld-grid">
+    <!-- 01 -->
+    <a href="/prototype/scalar-threshold-microworld.html" class="card c1">
+      <div class="card-top">
+        <span class="card-num">#01 SCALAR</span>
+        <span class="card-icon">🎯</span>
+      </div>
+      <div class="card-title">标量逼近与临界推拉</div>
+      <div class="card-target-words">almost / barely / exceed</div>
+      <div class="card-desc">试管注水、悬崖刹车、及格线刻度。标量维度推拉与 100% 临界线逼近。</div>
+      <div class="card-footer">
+        <span>进入微世界 ➔</span>
+        <span>GaugeThreshold</span>
+      </div>
+    </a>
+
+    <!-- 02 -->
+    <a href="/prototype/dimensional-morpher-microworld.html" class="card c2">
+      <div class="card-top">
+        <span class="card-num">#02 DIMENSION</span>
+        <span class="card-icon">📏</span>
+      </div>
+      <div class="card-title">空间几何与极性形变</div>
+      <div class="card-target-words">long / short / fat / thin</div>
+      <div class="card-desc">1D 长度悬崖搭桥、2D 胖瘦钻铁栅栏。多轴形变与物理任务闭环。</div>
+      <div class="card-footer">
+        <span>进入微世界 ➔</span>
+        <span>DimensionalMorpher</span>
+      </div>
+    </a>
+
+    <!-- 03 -->
+    <a href="/prototype/spatial-topologist-microworld.html" class="card c3">
+      <div class="card-top">
+        <span class="card-num">#03 SPATIAL</span>
+        <span class="card-icon">🧭</span>
+      </div>
+      <div class="card-title">空间拓扑穿透与轨迹</div>
+      <div class="card-target-words">across / through / along</div>
+      <div class="card-desc">跨越水面、穿透山体隧道、沿河并行、掠过灯塔。地标维度与包围封闭度。</div>
+      <div class="card-footer">
+        <span>进入微世界 ➔</span>
+        <span>SpatialTopologist</span>
+      </div>
+    </a>
+
+    <!-- 04 -->
+    <a href="/prototype/perspective-flux-microworld.html" class="card c4">
+      <div class="card-top">
+        <span class="card-num">#04 PERSPECTIVE</span>
+        <span class="card-icon">👤</span>
+      </div>
+      <div class="card-title">角色视角与动量流向</div>
+      <div class="card-target-words">borrow / lend / buy / sell</div>
+      <div class="card-desc">第一人称镜头推移：同物理事件下，流出我手 (lend) vs 流入我手 (borrow)。</div>
+      <div class="card-footer">
+        <span>进入微世界 ➔</span>
+        <span>PerspectiveFlux</span>
+      </div>
+    </a>
+
+    <!-- 05 -->
+    <a href="/prototype/object-morph-radar-microworld.html" class="card c5">
+      <div class="card-top">
+        <span class="card-num">#05 ENTITY</span>
+        <span class="card-icon">☕</span>
+      </div>
+      <div class="card-title">实体范畴与原型变异</div>
+      <div class="card-target-words">cup vs mug / bowl</div>
+      <div class="card-desc">Labov 原型理论：容量与壁厚滑动，模糊重叠边界与非互斥多选判定。</div>
+      <div class="card-footer">
+        <span>进入微世界 ➔</span>
+        <span>ObjectMorphRadar</span>
+      </div>
+    </a>
+
+    <!-- 06 -->
+    <a href="/prototype/epistemic-spotlight-microworld.html" class="card c6">
+      <div class="card-top">
+        <span class="card-num">#06 COGNITIVE</span>
+        <span class="card-icon">💡</span>
+      </div>
+      <div class="card-title">认知更新与线索聚光灯</div>
+      <div class="card-target-words">notice vs realize / discover</div>
+      <div class="card-desc">外部感官突发捕获 (notice) vs 脑内多线索推理合成顿悟 (realize)。</div>
+      <div class="card-footer">
+        <span>进入微世界 ➔</span>
+        <span>EpistemicSpotlight</span>
+      </div>
+    </a>
+
+    <!-- 07 -->
+    <a href="/prototype/phase-transition-microworld.html" class="card c7">
+      <div class="card-top">
+        <span class="card-num">#07 PHASE</span>
+        <span class="card-icon">🧊</span>
+      </div>
+      <div class="card-title">相变与物理状态演化</div>
+      <div class="card-target-words">melt / freeze / shatter</div>
+      <div class="card-desc">温控可逆相变 (冰水)、不可逆冲击粉碎 (玻璃)、物质溶解与蒸发。</div>
+      <div class="card-footer">
+        <span>进入微世界 ➔</span>
+        <span>PhaseTransition</span>
+      </div>
+    </a>
+
+    <!-- 08 -->
+    <a href="/prototype/temporal-track-microworld.html" class="card c8">
+      <div class="card-top">
+        <span class="card-num">#08 TEMPORAL</span>
+        <span class="card-icon">⏱️</span>
+      </div>
+      <div class="card-title">双轨时序拓扑轴</div>
+      <div class="card-target-words">until / while / during / since</div>
+      <div class="card-desc">时间空间化：终点撞墙截断 (until)、双轨并行重叠 (while)、历史锚点延伸。</div>
+      <div class="card-footer">
+        <span>进入微世界 ➔</span>
+        <span>TemporalTrack</span>
+      </div>
+    </a>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SceneLex A2UI 多模态义项微课播放器 (One Sense, One Lesson)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-base: #0a0b10;
+      --bg-surface-1: #12141c;
+      --bg-surface-2: #191c28;
+      --bg-surface-3: #222636;
+      --bg-glass: rgba(18, 20, 28, 0.82);
+
+      --text-main: #f0f2f8;
+      --text-muted: #8c93a8;
+      --text-dim: #5a6075;
+
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-glow: rgba(99, 102, 241, 0.25);
+
+      --cyan: #06b6d4;
+      --green: #10b981;
+      --green-soft: rgba(16, 185, 129, 0.12);
+      --amber: #f59e0b;
+      --amber-soft: rgba(245, 158, 11, 0.12);
+      --rose: #f43f5e;
+      --rose-soft: rgba(244, 63, 94, 0.12);
+      --purple: #a855f7;
+
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(99, 102, 241, 0.45);
+      --radius-xl: 20px;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+
+      --shadow-elevation: 0 12px 40px rgba(0, 0, 0, 0.6);
+      --font-sans: 'Plus Jakarta Sans', 'Noto Sans SC', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-base);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* ── Top Header ── */
+    header {
+      background: var(--bg-surface-1);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-badge {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, var(--accent), var(--cyan));
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #fff;
+      font-size: 18px;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-toggle-view {
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-toggle-view:hover {
+      background: var(--bg-surface-3);
+      border-color: var(--border-focus);
+    }
+
+    .btn-toggle-view.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    /* ── Lesson Selector Bar ── */
+    .lesson-selector-bar {
+      background: var(--bg-surface-1);
+      padding: 10px 24px;
+      display: flex;
+      gap: 10px;
+      border-bottom: 1px solid var(--border-subtle);
+      overflow-x: auto;
+    }
+
+    .lesson-pill {
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: var(--radius-lg);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .lesson-pill:hover {
+      color: var(--text-main);
+      background: var(--bg-surface-3);
+    }
+
+    .lesson-pill.active {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 16px rgba(99, 102, 241, 0.2);
+    }
+
+    .lesson-pill .tag {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--bg-surface-3);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .lesson-pill.active .tag {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* ── Main Layout Workspace ── */
+    .workspace {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr;
+      padding: 20px;
+      gap: 24px;
+      max-width: 1300px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .workspace.split-mode {
+      grid-template-columns: 440px 1fr;
+    }
+
+    /* ── Mobile Player Shell ── */
+    .player-container {
+      display: flex;
+      justify-content: center;
+    }
+
+    .phone-frame {
+      width: 100%;
+      max-width: 430px;
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: 36px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-elevation);
+      min-height: 820px;
+      max-height: 90vh;
+      position: relative;
+    }
+
+    .phone-status-bar {
+      padding: 12px 20px 6px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-dim);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .phone-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 18px 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scroll-behavior: smooth;
+    }
+
+    /* ── Step Indicators ── */
+    .lesson-steps-nav {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      background: var(--bg-surface-2);
+      padding: 4px;
+      border-radius: 999px;
+    }
+
+    .step-dot-tab {
+      padding: 6px 2px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 999px;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .step-dot-tab.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .step-dot-tab.completed {
+      color: var(--green);
+    }
+
+    /* ── Sense Header Card ── */
+    .sense-header-card {
+      background: linear-gradient(145deg, var(--bg-surface-2), var(--bg-surface-3));
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sense-header-card::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .word-title-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .word-head {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #fff;
+    }
+
+    .pos-badge {
+      font-size: 11px;
+      color: var(--cyan);
+      font-weight: 700;
+      text-transform: uppercase;
+      background: rgba(6, 182, 212, 0.15);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .def-zh {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-top: 4px;
+    }
+
+    .def-en {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+
+    /* ── Modality Director Banner ── */
+    .director-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 11px;
+    }
+
+    .director-tag {
+      background: var(--purple);
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    .director-text {
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    /* ── Dynamic Experience Canvas Card ── */
+    .experience-card {
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .exp-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .exp-prompt {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .canvas-container {
+      background: var(--bg-surface-1);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 12px;
+    }
+
+    /* ── Component 1: Dialogue Vignette Styles ── */
+    .dialogue-thread {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chat-bubble {
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 13px;
+      line-height: 1.45;
+      max-width: 90%;
+      position: relative;
+    }
+
+    .chat-bubble.left {
+      background: var(--bg-surface-3);
+      color: var(--text-main);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .chat-bubble.left .speaker {
+      font-size: 10px;
+      color: var(--cyan);
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .internal-monologue {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px dashed var(--amber);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      font-size: 12px;
+      color: var(--amber);
+      font-style: italic;
+      align-self: center;
+      text-align: center;
+      width: 100%;
+      animation: pulseSlow 2s infinite;
+    }
+
+    @keyframes pulseSlow {
+      0%, 100% { opacity: 0.85; }
+      50% { opacity: 1; }
+    }
+
+    .option-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .option-item-btn {
+      background: var(--bg-surface-3);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      text-align: left;
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .option-item-btn:hover {
+      border-color: var(--accent);
+      background: rgba(99, 102, 241, 0.08);
+    }
+
+    .option-item-btn.selected-target {
+      border-color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .option-item-btn.selected-wrong {
+      border-color: var(--rose);
+      background: var(--rose-soft);
+    }
+
+    .reaction-box {
+      font-size: 11px;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      margin-top: 4px;
+      display: none;
+    }
+
+    /* ── Component 2: Physics Friction Canvas Styles ── */
+    .physics-viewport {
+      width: 100%;
+      height: 180px;
+      position: relative;
+      background: radial-gradient(circle at bottom, #1e293b 0%, #0f172a 100%);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .physics-slope {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      width: 320px;
+      height: 12px;
+      background: #475569;
+      transform-origin: left center;
+      border-radius: 6px;
+      transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    .physics-box {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border-radius: 8px;
+      top: -46px;
+      left: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      transition: left 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+    }
+
+    .physics-box.slipping {
+      left: 260px !important;
+      animation: skidWobble 0.5s ease-out;
+    }
+
+    @keyframes skidWobble {
+      0% { transform: rotate(0deg); }
+      30% { transform: rotate(18deg) scale(1.1); }
+      70% { transform: rotate(-10deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    .physics-controls {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12px;
+    }
+
+    .control-row input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+    }
+
+    .surface-pills {
+      display: flex;
+      gap: 6px;
+    }
+
+    .surface-btn {
+      padding: 4px 8px;
+      font-size: 11px;
+      background: var(--bg-surface-3);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .surface-btn.active {
+      background: var(--cyan);
+      color: #000;
+      font-weight: 700;
+    }
+
+    /* ── Component 3: Visual Metamorphosis Styles ── */
+    .morph-visual-stage {
+      width: 100%;
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .morph-organism {
+      width: 110px;
+      height: 110px;
+      background: radial-gradient(circle at 35% 35%, #48bb78, #22543d);
+      border-radius: 50%;
+      box-shadow: 0 10px 25px rgba(72, 187, 120, 0.4);
+      transition: all 0.15s ease-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .morph-texture-overlay {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(0,0,0,0.4) 5px, rgba(0,0,0,0.4) 10px);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .morph-status-caption {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      margin-top: 6px;
+    }
+
+    /* ── Component 4: Tension Scale Styles ── */
+    .tension-scale-box {
+      width: 100%;
+      padding: 10px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .scale-bar-track {
+      height: 16px;
+      background: #1e293b;
+      border-radius: 999px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .scale-tension-fill {
+      position: absolute;
+      left: 20%;
+      right: 20%;
+      top: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, #3b82f6, #10b981, #f59e0b);
+      border-radius: 999px;
+      transition: all 0.2s;
+    }
+
+    .parties-display {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .party-card {
+      background: var(--bg-surface-3);
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+    }
+
+    .party-card .name { font-weight: 700; margin-bottom: 2px; }
+    .party-card.tenant .name { color: #60a5fa; }
+    .party-card.landlord .name { color: #fbbf24; }
+
+    /* ── Contrastive Boundary Check Card ── */
+    .contrast-card {
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .contrast-header {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--amber);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .contrast-explanation {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      background: var(--bg-surface-1);
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--amber);
+    }
+
+    .quiz-question {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-top: 4px;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .quiz-opt-btn {
+      background: var(--bg-surface-3);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 12px;
+      text-align: left;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quiz-opt-btn:hover {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: var(--accent);
+    }
+
+    .quiz-opt-btn.correct {
+      background: var(--green-soft) !important;
+      border-color: var(--green) !important;
+      color: #fff;
+    }
+
+    .quiz-opt-btn.wrong {
+      background: var(--rose-soft) !important;
+      border-color: var(--rose) !important;
+      color: #fff;
+    }
+
+    .quiz-feedback {
+      font-size: 12px;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface-1);
+      color: var(--green);
+      display: none;
+      line-height: 1.4;
+    }
+
+    /* ── Aha Summary Card ── */
+    .aha-card {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(16, 185, 129, 0.08));
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .aha-headline {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .aha-formula {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      background: var(--bg-surface-1);
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      text-align: center;
+      letter-spacing: 0.2px;
+    }
+
+    .collocation-chips {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .colloc-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-surface-2);
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+    }
+
+    .colloc-item .en { font-weight: 600; color: #fff; }
+    .colloc-item .zh { color: var(--text-muted); font-size: 11px; }
+
+    /* ── Inspector Split View ── */
+    .inspector-panel {
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      height: 820px;
+    }
+
+    .inspector-header {
+      padding: 12px 18px;
+      background: var(--bg-surface-2);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .inspector-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .inspector-body {
+      flex: 1;
+      padding: 16px;
+      overflow: auto;
+      background: #090a0f;
+    }
+
+    pre code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.5;
+      color: #a5b4fc;
+    }
+
+    /* ── Bottom Fixed Action Bar ── */
+    .phone-footer-action {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 14px 20px;
+      background: linear-gradient(to top, var(--bg-surface-1) 80%, transparent);
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-action-primary {
+      flex: 1;
+      background: linear-gradient(135deg, var(--accent), #4f46e5);
+      border: none;
+      color: #fff;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px var(--accent-glow);
+      transition: all 0.2s;
+    }
+
+    .btn-action-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px var(--accent-glow);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Global Header -->
+  <header>
+    <div class="brand">
+      <div class="logo-badge">S</div>
+      <div>
+        <div class="brand-title">SceneLex A2UI Lesson Player</div>
+        <div class="brand-subtitle">一次一课 · LLM 编译器与多模态渲染器验证</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-toggle-view active" id="btnToggleSplit" onclick="toggleSplitMode()">
+        <span>🛠️</span> 开发者 / A2UI 契约透视模式
+      </button>
+    </div>
+  </header>
+
+  <!-- Lesson Switcher Ribbon -->
+  <nav class="lesson-selector-bar" id="lessonRibbon">
+    <!-- Populated by JS -->
+  </nav>
+
+  <!-- Workspace Shell -->
+  <main class="workspace split-mode" id="workspaceContainer">
+
+    <!-- Mobile Player Device View -->
+    <div class="player-container">
+      <div class="phone-frame">
+        <div class="phone-status-bar">
+          <span>9:41</span>
+          <span>5G · 100%</span>
+        </div>
+
+        <div class="phone-content" id="phoneContent">
+          <!-- Step Nav Tabs -->
+          <div class="lesson-steps-nav">
+            <div class="step-dot-tab active">1. 洞察</div>
+            <div class="step-dot-tab">2. 沉浸</div>
+            <div class="step-dot-tab">3. 辨析</div>
+            <div class="step-dot-tab">4. 顿悟</div>
+          </div>
+
+          <!-- Dynamic Sense Header Card -->
+          <section class="sense-header-card" id="cardSenseHeader">
+            <!-- Rendered by JS -->
+          </section>
+
+          <!-- Dynamic Interactive Modality Component -->
+          <section class="experience-card" id="cardExperience">
+            <!-- Rendered by JS based on Modality -->
+          </section>
+
+          <!-- Contrastive Micro-Check -->
+          <section class="contrast-card" id="cardContrast">
+            <!-- Rendered by JS -->
+          </section>
+
+          <!-- Aha Summary & Collocations -->
+          <section class="aha-card" id="cardAha">
+            <!-- Rendered by JS -->
+          </section>
+        </div>
+
+        <div class="phone-footer-action">
+          <button class="btn-action-primary" id="btnNextLesson" onclick="nextLesson()">
+            下一课 (Next Lesson) →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inspector JSON Panel -->
+    <aside class="inspector-panel" id="inspectorPanel">
+      <div class="inspector-header">
+        <div class="inspector-title">
+          <span>📄</span> 当前义项 A2UI 声明式数据包 (LLM Compiler Output)
+        </div>
+        <span style="font-size: 11px; color: var(--green); font-family: var(--font-mono);">
+          ● Schema Validated: a2ui-lesson-1.0
+        </span>
+      </div>
+      <div class="inspector-body">
+        <pre><code id="jsonCodeViewer">/* Loading JSON Package... */</code></pre>
+      </div>
+    </aside>
+
+  </main>
+
+  <script>
+    // ── Preloaded 4 Representative Sense Lessons ──
+    const LESSON_DATA = {
+      "reluctant-1": {
+        "schema_version": "a2ui-lesson-1.0",
+        "sense_id": "reluctant-1",
+        "word": "reluctant",
+        "pos": "adj",
+        "definition_en": "feeling or showing doubt, hesitation, or unwillingness to do something",
+        "definition_zh": "不情愿的；勉强的；迟疑的",
+        "director_decision": {
+          "modality": "dialogue_vignette",
+          "modality_title": "戏剧微情境对白 (Micro-Dialogue)",
+          "pedagogical_rationale": "reluctant 是典型的情绪心理阻力词。物理滑块无法传达社交压力下'想抗拒但不得不挪步'的心理拖拽感。两行极具戏剧张力、充满迟疑停顿的微情境对话能瞬间击中学习者的真实同理心。",
+          "visceral_anchor": "双脚像灌了铅、喉咙发紧、被催促时身体本能向后微倾但仍被动往前挪动的沉重阻滞感"
+        },
+        "experience_component": {
+          "component_type": "DialogueVignette",
+          "headline": "深夜的社交修罗场",
+          "prompt": "点击不同回复选项，感受心理阻力。观察角色微动作与停顿：",
+          "config": {
+            "scene_setting": "周五深夜 11:30，刚换上睡衣，同事在群里疯狂艾特你...",
+            "dialogue_steps": [
+              {
+                "speaker": "Sarah (同事)",
+                "text": "Everyone is at the bar! You HAVE to come over right now, the boss is asking for you!"
+              },
+              {
+                "speaker": "You",
+                "internal_monologue": "(心里一万个不想去...看了一眼被窝，叹了口气...)",
+                "response_options": [
+                  {
+                    "type": "reluctant",
+                    "text": "\"I... guess I can swing by for twenty minutes...\"",
+                    "reaction": "👉 He gave a reluctant nod and started putting his shoes back on with a heavy sigh.",
+                    "explanation": "这就是 reluctant：你最后虽然答应去了，但每一步动作都写满了内心的抗拒和犹豫。"
+                  },
+                  {
+                    "type": "refusing",
+                    "text": "\"No way, I'm already in bed. See you Monday.\"",
+                    "reaction": "👉 直接决绝拒绝 (Refusal)。没有妥协行动。",
+                    "explanation": "这是完全拒绝，没有 reluctant 那种'最终被动去做'的拖拽。"
+                  },
+                  {
+                    "type": "enthusiastic",
+                    "text": "\"Awesome! Ordering an Uber right now!\"",
+                    "reaction": "👉 欢欣雀跃 (Enthusiastic)。",
+                    "explanation": "这是热切积极，与 reluctant 完全相反。"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "contrastive_boundary": {
+          "confusable_concept": "reluctant vs. refuse",
+          "boundary_explanation": "【Refuse】是动作上的彻底断绝（我不去）；【Reluctant】是心理上的千般不愿，但行为上往往还是‘勉强去做了’（如 reluctant agreement, reluctant witness）。",
+          "micro_check": {
+            "question": "法庭上传唤的某位证人'极为害怕报复，但最终还是出庭作证了'。此时应描述为：",
+            "options": [
+              "A refusing witness",
+              "A reluctant witness",
+              "An indifferent witness"
+            ],
+            "correct_option": 1,
+            "feedback": "✓ 正确！他最终出庭了（做出了动作），但内心极度害怕与抗拒，这就是典型的 reluctant witness。"
+          }
+        },
+        "aha_summary": {
+          "core_formula": "reluctant = 身体在动 + 灵魂在往后拔河",
+          "real_world_collocations": [
+            { "phrase": "a reluctant smile", "zh": "勉强的微笑（挤出来的笑）" },
+            { "phrase": "reluctant to admit", "zh": "不情愿承认（嘴硬但心里清楚）" },
+            { "phrase": "reluctant agreement", "zh": "勉强答应（满脸写着不想同意）" }
+          ],
+          "mnemonic_image_prompt": "A person leaning backward while their feet get slowly dragged forward."
+        }
+      },
+
+      "slip-1": {
+        "schema_version": "a2ui-lesson-1.0",
+        "sense_id": "slip-1",
+        "word": "slip",
+        "pos": "verb",
+        "definition_en": "to lose one's footing and slide uncontrollably for a short distance; to unintentionally slide",
+        "definition_zh": "滑倒；滑脱；失去抓地力而失控滑移",
+        "director_decision": {
+          "modality": "physics_friction",
+          "modality_title": "物理摩擦力微世界 (Physics Micro-World)",
+          "pedagogical_rationale": "slip 的核心物理特征是'突然丧失静摩擦力引起的失控意外'。高交互的摩擦力微世界让手指直接感受阻力从 100% 突然断崖下跌到 0% 的失衡惊险感。",
+          "visceral_anchor": "脚底突然打滑、重心瞬间悬空、下意识心跳骤停的那一记惊颤"
+        },
+        "experience_component": {
+          "component_type": "PhysicsFrictionCanvas",
+          "headline": "摩擦力突变实验室",
+          "prompt": "调节坡道角度或切换地面材质（瓷砖/油渍）。观察物体何时发生 slip（打滑失控）：",
+          "config": {
+            "initial_angle": 15,
+            "surfaces": [
+              { "name": "水泥地 (干)", "friction": 0.85, "color": "#64748b" },
+              { "name": "湿瓷砖", "friction": 0.32, "color": "#06b6d4" },
+              { "name": "机油油渍", "friction": 0.06, "color": "#f59e0b" }
+            ]
+          }
+        },
+        "contrastive_boundary": {
+          "confusable_concept": "slip vs. slide vs. skid",
+          "boundary_explanation": "【Slide】是有意识或平稳顺畅的滑动（如滑梯）；【Skid】指制动引起的横向甩尾；【Slip】特指原本有抓地力、却意外打滑失控。",
+          "micro_check": {
+            "question": "小男孩在水上乐园顺着弯曲管道开心滑入泳池，这个动作最贴切的是：",
+            "options": [
+              "He slipped down the water flume.",
+              "He slid down the water flume.",
+              "He skidded down the water flume."
+            ],
+            "correct_option": 1,
+            "feedback": "✓ 正确！这是有预期的顺畅滑行（slid/slide），而不是意外踩翻打滑（slip）。"
+          }
+        },
+        "aha_summary": {
+          "core_formula": "slip = 稳态被打破 + 突然失去摩擦力 + 短暂失控",
+          "real_world_collocations": [
+            { "phrase": "slip on the ice", "zh": "在冰上滑了一跤" },
+            { "phrase": "slip from one's grasp", "zh": "从手中滑落（脱手）" },
+            { "phrase": "slip out of the room", "zh": "悄悄溜出房间（引申：无阻力滑出）" }
+          ],
+          "mnemonic_image_prompt": "A banana peel under a shoe with radiating comic skid lines."
+        }
+      },
+
+      "shrivel-1": {
+        "schema_version": "a2ui-lesson-1.0",
+        "sense_id": "shrivel-1",
+        "word": "shrivel",
+        "pos": "verb",
+        "definition_en": "to wrinkle and contract or cause to wrinkle and contract, especially due to loss of moisture",
+        "definition_zh": "枯萎；干瘪；（因失去水分/生命力而）起皱缩成一团",
+        "director_decision": {
+          "modality": "visual_metamorphosis",
+          "modality_title": "视觉蜕变滑块 (Visual Metamorphosis)",
+          "pedagogical_rationale": "shrivel 是极具视觉和形态蜕变特征的状态词。前后蜕变滑动条让用户肉眼直视细胞级的水分被抽干、表皮皱缩干枯的过程。",
+          "visceral_anchor": "原本饱满紧绷的水果表皮变得干瘪褶皱、叶片失去生机蜷缩变脆的触觉干枯感"
+        },
+        "experience_component": {
+          "component_type": "MetamorphosisMorphSlider",
+          "headline": "水分抽离与形态皱缩",
+          "prompt": "拖动水分脱离滑块，观察饱满的细胞在烈日下逐渐 shrivel 的全过程：",
+          "config": {
+            "stages": [
+              { "pct": 0, "name": "饱满多汁 (Plump & Fresh)", "color": "#10b981", "scale": 1.0, "wrinkles": 0 },
+              { "pct": 50, "name": "开始失水 (Losing Moisture)", "color": "#d97706", "scale": 0.8, "wrinkles": 0.5 },
+              { "pct": 100, "name": "完全干瘪皱缩 (Shriveled)", "color": "#78350f", "scale": 0.55, "wrinkles": 1.0 }
+            ]
+          }
+        },
+        "contrastive_boundary": {
+          "confusable_concept": "shrivel vs. shrink vs. wither",
+          "boundary_explanation": "【Shrink】泛指一切尺寸等比变小（如毛衣缩水）；【Wither】强调生命衰亡；【Shrivel】强调‘抽干水分 + 表面起皱缩成干皮’的具体形态。",
+          "micro_check": {
+            "question": "纯羊毛衫被扔进烘干机拿出来后小了两个尺码，布料依然平整柔软。此时应该用：",
+            "options": [
+              "The sweater shriveled in the dryer.",
+              "The sweater shrank in the dryer.",
+              "The sweater withered in the dryer."
+            ],
+            "correct_option": 1,
+            "feedback": "✓ 正确！尺寸单纯等比例缩水用 shrink / shrank；只有伴随表皮干瘪褶皱枯萎才叫 shrivel。"
+          }
+        },
+        "aha_summary": {
+          "core_formula": "shrivel = 水分/活力被抽干 + 表面皱缩成团",
+          "real_world_collocations": [
+            { "phrase": "shriveled leaves", "zh": "枯萎干瘪的树叶" },
+            { "phrase": "shrivel in the heat", "zh": "在酷热中干枯皱缩" },
+            { "phrase": "profits shriveled", "zh": "（比喻）利润急剧缩水枯竭" }
+          ],
+          "mnemonic_image_prompt": "A juicy green grape next to a dark wrinkled raisin."
+        }
+      },
+
+      "compromise-1": {
+        "schema_version": "a2ui-lesson-1.0",
+        "sense_id": "compromise-1",
+        "word": "compromise",
+        "pos": "verb",
+        "definition_en": "to settle a dispute or reach an agreement by mutual concession",
+        "definition_zh": "妥协；折中；双方各退一步达成共识",
+        "director_decision": {
+          "modality": "dilemma_tension_scale",
+          "modality_title": "双向张力博弈天平 (Tension Dilemma Scale)",
+          "pedagogical_rationale": "compromise 是抽象的社会利益博弈词。单独展示一方让步是投降 (surrender)。只有通过双向张力天平让双方各让一步，才能精准传达'谁也没得到100%，但事情能向前推进'的平衡点。",
+          "visceral_anchor": "双方原本紧绷拔河的绳子突然松弛下来、各自把底线往中间挪动一格的释然与微憾"
+        },
+        "experience_component": {
+          "component_type": "TensionBalanceScale",
+          "headline": "双向妥协天平",
+          "prompt": "调节租客与房东的报价。寻找双方各让一步的共识点：",
+          "config": {
+            "tenant_min": 1500,
+            "landlord_max": 2500,
+            "sweet_spot": 2000
+          }
+        },
+        "contrastive_boundary": {
+          "confusable_concept": "compromise vs. surrender vs. collaborate",
+          "boundary_explanation": "【Surrender】是单方面认输；【Collaborate】是一起做大蛋糕；【Compromise】是存量利益博弈下‘双方都放弃了一部分诉求（Mutual Concession）’以换取协议。",
+          "micro_check": {
+            "question": "在边境争端中，甲国全盘接受了乙国的全部要求并全面撤军，这属于：",
+            "options": [
+              "A peaceful compromise",
+              "A one-sided surrender / concession",
+              "A win-win collaboration"
+            ],
+            "correct_option": 1,
+            "feedback": "✓ 正确！只有一方单方面让步投降，这不是双方各让一步的 compromise。"
+          }
+        },
+        "aha_summary": {
+          "core_formula": "compromise = 双方各退一步 + 谁也没赢全 + 换来事情往前推进",
+          "real_world_collocations": [
+            { "phrase": "reach a compromise", "zh": "达成妥协/折中方案" },
+            { "phrase": "refuse to compromise", "zh": "拒绝妥协/绝不退让" },
+            { "phrase": "compromise one's principles", "zh": "（引申）违背/牺牲自己的原则" }
+          ],
+          "mnemonic_image_prompt": "Two hands pulling a rope slowly meeting in the center."
+        }
+      }
+    };
+
+    let currentSenseId = "reluctant-1";
+    let activeSurfaceIndex = 0;
+    let currentSlopeAngle = 15;
+    let tenantOffer = 1600;
+    let landlordOffer = 2400;
+
+    // ── Init Ribbon ──
+    function initRibbon() {
+      const ribbon = document.getElementById("lessonRibbon");
+      ribbon.innerHTML = "";
+      Object.keys(LESSON_DATA).forEach(id => {
+        const item = LESSON_DATA[id];
+        const btn = document.createElement("button");
+        btn.className = `lesson-pill ${id === currentSenseId ? 'active' : ''}`;
+        btn.onclick = () => loadLesson(id);
+
+        let icon = "🎭";
+        if (item.director_decision.modality.includes("physics")) icon = "⚡";
+        if (item.director_decision.modality.includes("visual")) icon = "🍂";
+        if (item.director_decision.modality.includes("dilemma")) icon = "⚖️";
+
+        btn.innerHTML = `<span>${icon}</span> <span>${item.word}</span> <span class="tag">${item.director_decision.modality.split('_')[0]}</span>`;
+        ribbon.appendChild(btn);
+      });
+    }
+
+    // ── Load & Render Lesson ──
+    function loadLesson(senseId) {
+      currentSenseId = senseId;
+      initRibbon();
+      const lesson = LESSON_DATA[senseId];
+
+      // Update Inspector
+      document.getElementById("jsonCodeViewer").textContent = JSON.stringify(lesson, null, 2);
+
+      // Render Header Card
+      document.getElementById("cardSenseHeader").innerHTML = `
+        <div class="word-title-row">
+          <span class="word-head">${lesson.word}</span>
+          <span class="pos-badge">${lesson.pos}</span>
+        </div>
+        <div class="def-zh">${lesson.definition_zh}</div>
+        <div class="def-en">${lesson.definition_en}</div>
+        <div class="director-badge-row">
+          <span class="director-tag">AI 导演选型</span>
+          <span class="director-text">${lesson.director_decision.modality_title}</span>
+        </div>
+        <div style="font-size: 11px; color: #a5b4fc; margin-top: 6px; line-height: 1.4;">
+          🎯 <strong>体感锚点：</strong>${lesson.director_decision.visceral_anchor}
+        </div>
+      `;
+
+      // Render Experience Card
+      renderExperienceComponent(lesson);
+
+      // Render Contrastive Boundary
+      renderContrastiveCard(lesson);
+
+      // Render Aha Summary
+      renderAhaCard(lesson);
+
+      // Scroll top
+      document.getElementById("phoneContent").scrollTop = 0;
+    }
+
+    function renderExperienceComponent(lesson) {
+      const expCard = document.getElementById("cardExperience");
+      const comp = lesson.experience_component;
+      const mod = lesson.director_decision.modality;
+
+      let innerHTML = `
+        <div class="exp-title">
+          <span>🕹️</span> <span>${comp.headline}</span>
+        </div>
+        <div class="exp-prompt">${comp.prompt}</div>
+      `;
+
+      if (mod === "dialogue_vignette") {
+        innerHTML += `
+          <div class="canvas-container" style="background: var(--bg-surface-2); border: none; padding: 0;">
+            <div class="dialogue-thread">
+              <div class="chat-bubble left">
+                <div class="speaker">${comp.config.dialogue_steps[0].speaker}</div>
+                <div>${comp.config.dialogue_steps[0].text}</div>
+              </div>
+              <div class="internal-monologue">
+                ${comp.config.dialogue_steps[1].internal_monologue}
+              </div>
+              <div class="option-list">
+                ${comp.config.dialogue_steps[1].response_options.map((opt, idx) => `
+                  <button class="option-item-btn" onclick="selectDialogueOption(${idx})">
+                    <span>${opt.text}</span>
+                    <div class="reaction-box" id="reactBox_${idx}">
+                      <div>${opt.reaction}</div>
+                      <div style="margin-top: 4px; color: #cbd5e1;">${opt.explanation}</div>
+                    </div>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (mod === "physics_friction") {
+        const surfaces = comp.config.surfaces;
+        innerHTML += `
+          <div class="canvas-container">
+            <div class="physics-viewport" id="physicsViewport">
+              <div class="physics-slope" id="slopeBar" style="transform: rotate(-${currentSlopeAngle}deg);">
+                <div class="physics-box" id="physicsBox">📦</div>
+              </div>
+            </div>
+            <div class="physics-controls">
+              <div class="control-row">
+                <span>地面材质：</span>
+                <div class="surface-pills">
+                  ${surfaces.map((s, idx) => `
+                    <button class="surface-btn ${idx === activeSurfaceIndex ? 'active' : ''}" onclick="setSurface(${idx})">
+                      ${s.name}
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+              <div class="control-row">
+                <span>坡道角度 (<span id="angleLabel">${currentSlopeAngle}°</span>)：</span>
+                <input type="range" min="0" max="45" value="${currentSlopeAngle}" id="angleSlider" oninput="updateAngle(this.value)">
+              </div>
+              <div id="physicsFeedback" style="font-size: 11px; text-align: center; color: #38bdf8; min-height: 18px;">
+                状态：静摩擦力平衡中 (Stable)
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (mod === "visual_metamorphosis") {
+        innerHTML += `
+          <div class="canvas-container">
+            <div class="morph-visual-stage">
+              <div class="morph-organism" id="morphOrganism">
+                <div class="morph-texture-overlay" id="morphTexture"></div>
+                <span id="morphEmoji" style="font-size: 40px;">🍇</span>
+              </div>
+            </div>
+            <div class="morph-status-caption" id="morphCaption">100% 水分 · 饱满多汁 (Fresh & Plump)</div>
+            <div class="physics-controls" style="margin-top: 14px;">
+              <div class="control-row">
+                <span>☀️ 脱水脱生度：</span>
+                <input type="range" min="0" max="100" value="0" id="moistureSlider" oninput="updateMorph(this.value)">
+                <span id="morphValLabel" style="font-family: var(--font-mono); font-size: 11px;">0%</span>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (mod === "dilemma_tension_scale") {
+        innerHTML += `
+          <div class="canvas-container">
+            <div class="tension-scale-box">
+              <div class="parties-display">
+                <div class="party-card tenant">
+                  <div class="name">租客出价: $<span id="tenantDisplay">1600</span></div>
+                  <input type="range" min="1500" max="2500" value="1600" step="50" oninput="updateTension('tenant', this.value)" style="width: 100%; accent-color: #3b82f6;">
+                </div>
+                <div class="party-card landlord">
+                  <div class="name">房东要价: $<span id="landlordDisplay">2400</span></div>
+                  <input type="range" min="1500" max="2500" value="2400" step="50" oninput="updateTension('landlord', this.value)" style="width: 100%; accent-color: #f59e0b;">
+                </div>
+              </div>
+              <div class="scale-bar-track">
+                <div class="scale-tension-fill" id="scaleFill"></div>
+              </div>
+              <div id="tensionStatus" style="font-size: 12px; font-weight: 700; text-align: center; color: #ef4444; padding: 6px;">
+                ⚠️ 差距 $800：谈判僵局 (Stalemate)
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      expCard.innerHTML = innerHTML;
+    }
+
+    // ── Interaction Handlers ──
+    function selectDialogueOption(idx) {
+      const lesson = LESSON_DATA[currentSenseId];
+      const opts = lesson.experience_component.config.dialogue_steps[1].response_options;
+      opts.forEach((_, i) => {
+        const box = document.getElementById(`reactBox_${i}`);
+        if (box) box.style.display = i === idx ? 'block' : 'none';
+      });
+    }
+
+    function setSurface(idx) {
+      activeSurfaceIndex = idx;
+      renderExperienceComponent(LESSON_DATA[currentSenseId]);
+      checkSlip();
+    }
+
+    function updateAngle(val) {
+      currentSlopeAngle = parseInt(val);
+      const label = document.getElementById("angleLabel");
+      const slope = document.getElementById("slopeBar");
+      if (label) label.textContent = `${val}°`;
+      if (slope) slope.style.transform = `rotate(-${val}deg)`;
+      checkSlip();
+    }
+
+    function checkSlip() {
+      const surfaces = LESSON_DATA["slip-1"].experience_component.config.surfaces;
+      const curSurface = surfaces[activeSurfaceIndex];
+      const rad = currentSlopeAngle * Math.PI / 180;
+      const isSlipped = Math.sin(rad) > curSurface.friction * Math.cos(rad);
+
+      const box = document.getElementById("physicsBox");
+      const feedback = document.getElementById("physicsFeedback");
+      if (!box || !feedback) return;
+
+      if (isSlipped) {
+        box.classList.add("slipping");
+        box.textContent = "💨";
+        feedback.innerHTML = `<span style="color: #ef4444; font-weight: 700;">⚡ SLIP! 静摩擦力失效，发生瞬间失控打滑！</span>`;
+      } else {
+        box.classList.remove("slipping");
+        box.textContent = "📦";
+        feedback.innerHTML = `<span style="color: #10b981;">✓ 状态平稳：摩擦力 (${curSurface.friction}) 足以锁死</span>`;
+      }
+    }
+
+    function updateMorph(val) {
+      const pct = parseInt(val);
+      const org = document.getElementById("morphOrganism");
+      const texture = document.getElementById("morphTexture");
+      const caption = document.getElementById("morphCaption");
+      const valLabel = document.getElementById("morphValLabel");
+      const emoji = document.getElementById("morphEmoji");
+      if (!org || !texture) return;
+
+      valLabel.textContent = `${pct}%`;
+
+      const scale = 1.0 - (pct / 100) * 0.45;
+      const borderRadius = `${50 - pct * 0.2}% ${50 + pct * 0.15}% ${45 - pct * 0.1}% ${50 + pct * 0.2}%`;
+      
+      org.style.transform = `scale(${scale})`;
+      org.style.borderRadius = borderRadius;
+
+      if (pct < 35) {
+        org.style.background = "radial-gradient(circle at 35% 35%, #10b981, #065f46)";
+        org.style.boxShadow = "0 10px 25px rgba(16, 185, 129, 0.4)";
+        texture.style.opacity = "0";
+        caption.innerHTML = "🌱 饱满多汁 (Fresh & Plump) · 细胞充盈";
+        emoji.textContent = "🍇";
+      } else if (pct < 75) {
+        org.style.background = "radial-gradient(circle at 35% 35%, #d97706, #78350f)";
+        org.style.boxShadow = "0 6px 15px rgba(217, 119, 6, 0.3)";
+        texture.style.opacity = `${(pct - 35) / 50}`;
+        caption.innerHTML = "☀️ 开始脱水皱缩 (Dehydrating) · 表面起皱";
+        emoji.textContent = "🍂";
+      } else {
+        org.style.background = "radial-gradient(circle at 35% 35%, #581c87, #2e1065)";
+        org.style.boxShadow = "none";
+        texture.style.opacity = "0.9";
+        caption.innerHTML = "🍂 <strong style='color: #f59e0b;'>SHRIVELED!</strong> 彻底脱水皱缩成干枯一团";
+        emoji.textContent = "🫒";
+      }
+    }
+
+    function updateTension(party, val) {
+      if (party === 'tenant') tenantOffer = parseInt(val);
+      if (party === 'landlord') landlordOffer = parseInt(val);
+
+      document.getElementById("tenantDisplay").textContent = tenantOffer;
+      document.getElementById("landlordDisplay").textContent = landlordOffer;
+
+      const fill = document.getElementById("scaleFill");
+      const status = document.getElementById("tensionStatus");
+      const diff = Math.abs(landlordOffer - tenantOffer);
+
+      if (tenantOffer >= landlordOffer) {
+        fill.style.background = "#10b981";
+        status.innerHTML = `<span style="color: #10b981;">🤝 达成妥协共识 (Compromise Reached)! 双方在 $${Math.round((tenantOffer+landlordOffer)/2)} 成交</span>`;
+      } else if (diff <= 200) {
+        fill.style.background = "#f59e0b";
+        status.innerHTML = `<span style="color: #f59e0b;">🤏 仅差 $${diff}！已极度接近妥协点 (Near Compromise)</span>`;
+      } else {
+        fill.style.background = "#ef4444";
+        status.innerHTML = `<span style="color: #ef4444;">⚠️ 差距 $${diff}：谈判僵局 (Stalemate)</span>`;
+      }
+    }
+
+    function renderContrastiveCard(lesson) {
+      const card = document.getElementById("cardContrast");
+      const b = lesson.contrastive_boundary;
+      card.innerHTML = `
+        <div class="contrast-header">
+          <span>⚖️</span> <span>易混辨析与临界判定 (${b.confusable_concept})</span>
+        </div>
+        <div class="contrast-explanation">${b.boundary_explanation}</div>
+        <div class="quiz-question">${b.micro_check.question}</div>
+        <div class="quiz-options">
+          ${b.micro_check.options.map((opt, i) => `
+            <button class="quiz-opt-btn" onclick="checkQuizAnswer(${i}, ${b.micro_check.correct_option})">
+              ${opt}
+            </button>
+          `).join('')}
+        </div>
+        <div class="quiz-feedback" id="quizFeedback">${b.micro_check.feedback}</div>
+      `;
+    }
+
+    function checkQuizAnswer(selected, correct) {
+      const btns = document.querySelectorAll(".quiz-opt-btn");
+      btns.forEach((b, i) => {
+        if (i === correct) b.classList.add("correct");
+        else if (i === selected) b.classList.add("wrong");
+      });
+      document.getElementById("quizFeedback").style.display = "block";
+    }
+
+    function renderAhaCard(lesson) {
+      const card = document.getElementById("cardAha");
+      const aha = lesson.aha_summary;
+      card.innerHTML = `
+        <div class="aha-headline">
+          <span>💡</span> <span>顿悟记忆公式与地道搭配</span>
+        </div>
+        <div class="aha-formula">${aha.core_formula}</div>
+        <div class="collocation-chips">
+          ${aha.real_world_collocations.map(c => `
+            <div class="colloc-item">
+              <span class="en">${c.phrase}</span>
+              <span class="zh">${c.zh}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function toggleSplitMode() {
+      const ws = document.getElementById("workspaceContainer");
+      const btn = document.getElementById("btnToggleSplit");
+      const inspector = document.getElementById("inspectorPanel");
+      ws.classList.toggle("split-mode");
+      if (ws.classList.contains("split-mode")) {
+        inspector.style.display = "flex";
+        btn.classList.add("active");
+      } else {
+        inspector.style.display = "none";
+        btn.classList.remove("active");
+      }
+    }
+
+    function nextLesson() {
+      const keys = Object.keys(LESSON_DATA);
+      const nextIdx = (keys.indexOf(currentSenseId) + 1) % keys.length;
+      loadLesson(keys[nextIdx]);
+    }
+
+    // Bootstrap
+    window.onload = () => {
+      initRibbon();
+      loadLesson("reluctant-1");
+    };
+  </script>
+</body>
+</html>

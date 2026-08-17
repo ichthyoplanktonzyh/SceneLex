@@ -1,0 +1,16 @@
+schema_version: '1.0'
+version: 1
+word: lend
+pos: [verb]
+
+frequency:
+  rank: 7909
+  band: low
+
+senses:
+  - id: lend-01
+    pos: verb
+    sense_label: "借出；贷出"
+    definition: "To grant a person or institution temporary use of something, with the understanding that the same item or an equivalent will be returned; also used for lending money."
+    status: reviewed
+    scene_count: 0

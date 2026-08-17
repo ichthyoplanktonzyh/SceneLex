@@ -1,0 +1,519 @@
+schema_version: '1.0'
+course_id: mug-01-noun-vessel-zh-v1
+target:
+  sense_id: mug-01
+  lemma: mug
+  pos: noun
+  ipa: /mʌɡ/
+  learner_l1: zh-CN
+  target_l2: en
+author_intent:
+  course_thesis: 通过‘厚实大容量 + 侧边有柄 + 直接手持饮用 + 不需要浅碟’的可观察判据建立 mug-01 的实体范畴，绑定英语符号 mug，并把它与带浅碟的小杯、以及同词形的其它义项区分开；同时诚实呈现
+    cup 与 mug 在真实使用中的部分重叠。
+  learner_start: 学习者母语为中文，日常会用‘杯子’这类宽泛词；可能见过或听过 mug，但尚未形成名词容器义与 cup/teacup 的边界，也容易把同词形其它义项拉回饮具场景。
+  intended_outcome: 学习者能在场景中指认出 mug-01 所指的厚实带柄大饮具；会说出并听懂英语 mug；不再要求必须有柄或必须装热饮；能把 mug-01
+    与带浅碟的小杯区分开，并且知道 cup 不是 mug 的简单反义词；能拒绝把抢劫、做鬼脸、警方存档照等场景解释为饮具。
+  design_rationale: 课程序遵循 L1 经验首学：先用厨房与野餐场景建立可见的器物形态和手持使用方式，再通过变体破除‘必须有柄’和‘必须装热饮’两类误区；浅碟小杯的比较用于破除‘有柄就是
+    mug’和‘mug 是杯子总称’的误区。符号绑定后，先用 l2_grounding 把 mug 锚定到原场景；接着用 l2_grounding 给 cup
+    一个最小 L2 铺垫，只把它当作可辨认的对比词，不展开完整 cup-01 义项；再用 multi_label_choice 呈现 mug 与 cup 的宽泛重叠，而不是强制二选一。最后用
+    mugged / mugging / mug shot 等场景训练同词形义项过滤。复习沿同一条主线从逆向回忆逐步走向自然 L2 使用，并覆盖教案中列出的三种排除义项。
+learning_flow:
+- id: flow_01_observe_main
+  trigger: initial
+  primitive: scene_observation
+  purpose: 在符号出现前，先用一段 L1 经验叙事建立 mug-01 的原型指称：带柄、大容量、开口、直接手持、无浅碟。
+  estimated_seconds: 25
+  can_pause_after: false
+  learner_content:
+    episode: 清晨的厨房台面上放着一只厚实的容器。它顶部开口，内腔很深，能盛一大份饮品；侧边有一个可以握住的把手。一只手握住把手把它端起来，送到嘴边喝了一口咖啡。台面上没有相配的浅碟，它就放在台面上。旁边放着一只小一号、由浅碟托着的容器，看起来更薄更轻，容量明显小很多。
+  evaluation:
+    kind: none
+- id: flow_02_evidence
+  trigger: immediate_followup
+  primitive: evidence_highlight
+  purpose: 把后续判断需要的可观察证据显性化：开口、内腔、大小、把手、直接手持、无浅碟。
+  estimated_seconds: 20
+  can_pause_after: false
+  learner_content:
+    episode: 仍然是厨房台面那一幕。
+    evidence:
+    - 顶部开口，内腔能装液体的厚实容器。
+    - 侧边有把手，一只手握住就能端起。
+    - 容量明显比旁边由浅碟托着的小容器大。
+    - 它被直接从台面端起来喝，不靠浅碟托着。
+  evaluation:
+    kind: none
+- id: flow_03_object_inspection
+  trigger: immediate_followup
+  primitive: object_inspection
+  purpose: 让学习者观察目标容器及其变体，看出哪些特征是稳定范畴证据、哪些只是临时状态；同时对比一个带浅碟的小容器。
+  addresses:
+  - misc-1
+  - misc-2
+  - misc-4
+  - misc-5
+  estimated_seconds: 60
+  can_pause_after: true
+  learner_content:
+    inspect_prompt: 请逐个观察两个容器，并切换第一个容器的三种状态。注意哪些特征是始终不变的，哪些只是临时状态。
+    objects:
+    - id: target_vessel
+      name: 对象一
+      category_label: 对象一
+      features:
+      - 顶部开口，内腔深，能盛一大份液体。
+      - 厚度和体积都比旁边的小容器大出一截。
+      - 单侧有一个明显的把手。
+      - 可以直接用手端起喝，不需要配套浅碟。
+      variants:
+      - id: v_hot_filled
+        label: 装满热咖啡
+        features:
+        - 里面是深色热咖啡，还冒着热气。
+        - 握住把手抬起来，送到嘴边喝。
+      - id: v_no_handle
+        label: 同一款，但没有侧边把手
+        features:
+        - 容量和厚实程度不变。
+        - 没有侧边把手。
+        - 仍可以双手捧起直接喝。
+      - id: v_empty_cold
+        label: 空着，或只装常温水
+        features:
+        - 没有热饮，偶尔是空的。
+        - 有时只装常温水。
+        - 拿在手里、放在桌上，都还是同一个容器。
+    - id: contrast_small_saucer
+      name: 对象二
+      category_label: 对象二
+      features:
+      - 顶部开口，内腔也能盛液体。
+      - 容量小很多，器壁更薄更轻。
+      - 侧边也有一个把手。
+      - 总有一只配套浅碟托着。
+      - 端上桌时通常放在浅碟上。
+      variants: []
+    hide_object_names: true
+  evaluation:
+    kind: none
+- id: flow_04_handle_not_required
+  trigger: immediate_followup
+  primitive: binary_judgment
+  purpose: 破除‘mug 必须带柄’的误解：用无柄变体说明手柄是典型特征但不是成立条件。
+  addresses:
+  - misc-1
+  estimated_seconds: 20
+  can_pause_after: false
+  learner_content:
+    episode: 你刚才在第一个容器上切换到一个变体：它还是同样的大小和厚实程度，只是没有侧边的把手。某人双手捧起它喝了一口咖啡。
+    evidence:
+    - 这个变体没有把手。
+    - 它依然容量大、厚实、可以直接手持饮用。
+    question: 没有把手的大容器，还算不算你今天学的这种饮具？
+    options:
+    - id: 'yes'
+      text: 算，大小和使用方式才更重要
+    - id: 'no'
+      text: 不算，必须带把手
+  evaluation:
+    kind: choice
+    correct_option_id: 'yes'
+- id: flow_05_saucer_not_enough
+  trigger: immediate_followup
+  primitive: binary_judgment
+  purpose: 破除‘任何带柄的杯子都是 mug’：带浅碟的小茶杯虽然有柄，但容量小、使用方式不同。
+  addresses:
+  - misc-2
+  - misc-5
+  estimated_seconds: 20
+  can_pause_after: false
+  learner_content:
+    episode: 台面上，第二个容器由一只配套浅碟托着。它也有把手，但容量明显比第一个容器小，器壁更薄、更轻。
+    evidence:
+    - 它也有把手。
+    - 容量小很多，器壁薄而轻。
+    - 使用方式是被浅碟托着，而不是直接手持大杯。
+    question: 这个由浅碟托着、也有把手的小容器，属于今天学的这种大杯饮具吗？
+    options:
+    - id: not_target
+      text: 不属于，它是另一种小杯饮具
+    - id: belongs
+      text: 属于，只要有把手就算
+  evaluation:
+    kind: choice
+    correct_option_id: not_target
+- id: flow_06_positive_selection
+  trigger: immediate_followup
+  primitive: single_choice
+  purpose: 从排除法推进到正向选择：在两个都带柄的容器中，选出更符合 mug-01 的那一个。
+  addresses:
+  - misc-2
+  - misc-5
+  estimated_seconds: 20
+  can_pause_after: true
+  learner_content:
+    episode: 桌上并排摆着两个都带柄的容器：一个厚实、容量大、直接放在台面上；另一个薄、容量小、放在配套浅碟上。一个人直接端起厚实的那个喝咖啡。
+    evidence:
+    - 厚实的那个用一只手握住手柄端起。
+    - 薄的那个由浅碟托着。
+    - 厚实的那个容量明显更大。
+    question: 哪一个更符合今天学的这类饮具？
+    options:
+    - id: large_no_saucer
+      text: 厚实、容量大、直接用手端着喝的那个
+    - id: small_on_saucer
+      text: 薄、容量小、由浅碟托着的那个
+  evaluation:
+    kind: choice
+    correct_option_id: large_no_saucer
+- id: flow_07_transfer_cold
+  trigger: immediate_followup
+  primitive: transfer_judgment
+  purpose: 把范畴迁移到新场景并破除‘必须装热饮’的误解：空杯或装冷水仍按设计功能归为 mug。
+  addresses:
+  - misc-4
+  estimated_seconds: 20
+  can_pause_after: false
+  learner_content:
+    episode: 户外野餐桌上，有一只厚壁、带把手的容器，里面装的是加了冰块的常温水；旁边没有浅碟。一个人把它端起来喝了一口。
+    evidence:
+    - 容器形状、容量、手里端起来的方式和刚才学的一致。
+    - 里面是冰水而不是热咖啡。
+    - 没有配套浅碟。
+    question: 这个装冰水、没有浅碟的带柄大容器，还算不算今天学的这类饮具？
+    options:
+    - id: 'yes'
+      text: 算，重点是容器本身和使用方式，不是里面装什么
+    - id: 'no'
+      text: 不算，里面不是热饮
+  evaluation:
+    kind: choice
+    correct_option_id: 'yes'
+- id: flow_08_symbol_reveal
+  trigger: immediate_followup
+  primitive: symbol_reveal
+  purpose: 首次把英语符号 mug 绑定到已经建立的实体范畴上；只给最小 L1 确认词，不展开定义。
+  estimated_seconds: 25
+  can_pause_after: true
+  learner_content:
+    l2_word: mug
+    ipa: /mʌɡ/
+    presentation: 你刚才在厨房和野餐桌上反复观察的那种厚实、容量大、侧边有柄、用手直接端着喝、不需要浅碟的饮具，英语里叫：
+    minimal_l1_gloss: 带柄大杯
+  evaluation:
+    kind: none
+- id: flow_09_pronunciation
+  trigger: immediate_followup
+  primitive: pronunciation
+  purpose: 提供独立发音机会，让学习者听并练习 mug 的读音。
+  estimated_seconds: 15
+  can_pause_after: false
+  learner_content:
+    l2_word: mug
+    ipa: /mʌɡ/
+  evaluation:
+    kind: none
+- id: flow_10_grounding_object
+  trigger: immediate_followup
+  primitive: l2_grounding
+  purpose: 用自然 L2 句和搭配把已绑定符号锚定回原场景。
+  estimated_seconds: 30
+  can_pause_after: false
+  learner_content:
+    source_step_id: flow_03_object_inspection
+    l2_realization: That thick handled vessel was a mug. She held the mug by its handle
+      and took a sip.
+    constructions:
+    - a mug
+    - a coffee mug
+    - hold a mug by the handle
+    - a mug of coffee
+    collocations:
+    - a mug of coffee
+    - hold a mug
+    - an empty mug
+  evaluation:
+    kind: none
+- id: flow_11_cup_bridge
+  trigger: immediate_followup
+  primitive: l2_grounding
+  purpose: 给后续多选边界判断中的 cup 一个最小 L2 铺垫；不单独绑定 cup 义项，只让学习者知道小容器在英语里常叫 cup，且 mug 和 cup
+    不是完全互斥。
+  addresses:
+  - misc-2
+  - misc-5
+  estimated_seconds: 20
+  can_pause_after: false
+  learner_content:
+    source_step_id: flow_03_object_inspection
+    l2_realization: The small thin vessel is a cup. The large thick one is a mug.
+      In general English, cup is broader, so a mug can sometimes also be called a
+      cup. They are not exact opposites.
+    constructions:
+    - as a cup
+    - a cup, not a mug
+    - a mug vs. a cup
+    - not exact opposites
+    collocations:
+    - a cup and saucer
+    - a small cup
+    - a mug of coffee
+  evaluation:
+    kind: none
+- id: flow_12_overlap_choice
+  trigger: immediate_followup
+  primitive: multi_label_choice
+  purpose: 用多选方式呈现 mug 与 cup 的真实重叠，同时把对比对象明确为带浅碟的小杯，避免把 cup 定义成 mug 的互斥反义词。
+  addresses:
+  - misc-2
+  - misc-5
+  estimated_seconds: 40
+  can_pause_after: true
+  learner_content:
+    episode: 同样的厨房台面上放着一大一小两个都带柄的容器。大的厚实、容量大，直接放在台面上；小的薄、容量小，由配套浅碟托着。一个人把大的端起来喝咖啡。
+    evidence:
+    - 大容器厚实、容量大、无浅碟、直接手持。
+    - 小容器薄、容量小、由浅碟托着，是带浅碟的小杯。
+    - 人端起大的喝咖啡。
+    question: 关于那个大的厚实容器，下面哪些说法在英语里可以成立？
+    options:
+    - id: mug_ok
+      text: 可以叫 mug，这是最典型的叫法
+      is_correct: true
+      feedback: 对，厚实、大容量、直接手持、不用浅碟，所以最直接的说法是 mug。
+    - id: cup_general_ok
+      text: cup 有时也可以作为宽泛说法提到它，mug 和 cup 并不完全互斥
+      is_correct: true
+      feedback: 对，cup 是比 mug 更宽泛的饮具说法；不能说‘大的就是 mug、小的就是 cup’。
+    - id: saucer_cup_ok
+      text: 它就是由浅碟托着的小杯那种东西
+      is_correct: false
+      feedback: 由浅碟托着的小杯是另一种小饮具；大而厚、直接手持的这个不是那种小杯。
+    - id: no_word
+      text: 英语里没有词能说它
+      is_correct: false
+      feedback: 英语当然有词说它，最直接的是 mug。
+  evaluation:
+    kind: multi_choice
+    correct_option_ids:
+    - mug_ok
+    - cup_general_ok
+- id: flow_13_sense_filter_mugged
+  trigger: immediate_followup
+  primitive: transfer_judgment
+  purpose: 处理同词形其它义项：mugged 在抢劫场景中不是饮具义，必须靠场景切换意义。
+  addresses:
+  - misc-3
+  estimated_seconds: 25
+  can_pause_after: false
+  learner_content:
+    episode: 晚上，朋友说：‘He got mugged on his way home.’ 画面里是一个人在街上被人抢走了包；从头到尾没有出现任何饮具。
+    evidence:
+    - 中心事件是抢包，不是喝饮具。
+    - 画面里没有厚壁带柄的大容器。
+    - mugged 的语法形式也把它变成了动作。
+    question: 这里的 mugged 虽然用了同一个词，但它是在指我们今天学的带柄大饮具吗？
+    options:
+    - id: no_sense
+      text: 不是，mug 在另一些场景里是‘抢劫’等完全不同的意思
+    - id: yes_sense
+      text: 是，mug 仍然指带柄大饮具
+  evaluation:
+    kind: choice
+    correct_option_id: no_sense
+- id: flow_14_grounding_empty
+  trigger: immediate_followup
+  primitive: l2_grounding
+  purpose: 用自然 L2 句再次锚定‘空杯/装冷水仍是 mug’，把内容物不影响范畴这一结论语言化。
+  addresses:
+  - misc-4
+  estimated_seconds: 20
+  can_pause_after: true
+  learner_content:
+    source_step_id: flow_07_transfer_cold
+    l2_realization: This is still a mug even when it is empty or full of cold water.
+    constructions:
+    - an empty mug
+    - a mug of cold water
+    - still a mug
+    collocations:
+    - an empty mug
+    - a mug of cold water
+  evaluation:
+    kind: none
+review_progression:
+- id: review_01_recall_handle
+  timing: 绑定后第 1 天
+  due_after_days: 1
+  scaffold_level: early_post_binding
+  primitive: recall_reveal
+  learner_content:
+    episode: 厨房台面上有一只厚实、大容量、带侧边把手的饮具。里面是热咖啡，一只手握住把手端起来喝，旁边没有浅碟。
+    l2_word: mug
+    ipa: /mʌɡ/
+    minimal_gloss: 带柄大杯
+  evaluation:
+    kind: none
+- id: review_02_self_grade
+  timing: 绑定后第 1 天，回忆之后立即自评
+  due_after_days: 1
+  scaffold_level: early_post_binding
+  primitive: recall_self_grade
+  learner_content:
+    l2_word: mug
+    ipa: /mʌɡ/
+  evaluation:
+    kind: self_grade
+- id: review_03_recall_no_handle
+  timing: 绑定后第 3 天
+  due_after_days: 3
+  scaffold_level: early_post_binding
+  primitive: recall_reveal
+  learner_content:
+    episode: 一个同样厚实、容量大的容器，这次没有侧边把手。一个人双手捧起来喝咖啡。没有浅碟。
+    l2_word: mug
+    ipa: /mʌɡ/
+    minimal_gloss: 带柄大杯（手柄不是必需）
+  evaluation:
+    kind: none
+- id: review_04_overlap_choice
+  timing: 绑定后第 7 天
+  due_after_days: 7
+  scaffold_level: later_post_binding
+  primitive: multi_label_choice
+  learner_content:
+    episode: 桌上一个大而厚实、有柄、无浅碟的容器；另一个小而薄、有柄、由浅碟托着。一个人端起大的喝咖啡。
+    evidence:
+    - 大容器厚实、容量大、无浅碟、直接手持。
+    - 小容器薄、容量小、由浅碟托着。
+    question: 关于那个大的厚实容器，哪些说法成立？
+    options:
+    - id: mug_ok
+      text: 最直接叫 mug
+      is_correct: true
+      feedback: 对，厚实、大容量、直接手持、不用浅碟，最典型是 mug。
+    - id: cup_general_ok
+      text: cup 有时也可作宽泛说法提到它，mug 和 cup 并不完全互斥
+      is_correct: true
+      feedback: 对，cup 是更宽泛的饮具说法；不要把它记成‘小的=cup、大的=mug’。
+    - id: saucer_cup_ok
+      text: 它就是由浅碟托着的小杯那种东西
+      is_correct: false
+      feedback: 由浅碟托着的小杯是另一种小饮具，不是这个厚实大杯。
+    - id: no_word
+      text: 英语里没有词能说它
+      is_correct: false
+      feedback: 英语当然有词说它，最直接的是 mug。
+  evaluation:
+    kind: multi_choice
+    correct_option_ids:
+    - mug_ok
+    - cup_general_ok
+- id: review_05_recall_empty_cold
+  timing: 绑定后第 14 天
+  due_after_days: 14
+  scaffold_level: early_post_binding
+  primitive: recall_reveal
+  learner_content:
+    episode: 野餐桌上有一个厚壁、带把手的容器，里面只装常温水，旁边没有浅碟。一个人把它端起来喝了一口。
+    l2_word: mug
+    ipa: /mʌɡ/
+    minimal_gloss: 带柄大杯（装什么不影响）
+  evaluation:
+    kind: none
+- id: review_06_sense_filter_mugging
+  timing: 绑定后第 21 天
+  due_after_days: 21
+  scaffold_level: later_post_binding
+  primitive: transfer_judgment
+  learner_content:
+    episode: 一个视频里的人在镜头前故意做出夸张表情，朋友笑着说：‘He’s mugging for the camera.’ 画面中没有任何饮具。
+    evidence:
+    - 核心是夸张表情和表演，不是饮具。
+    - 没有厚壁带柄的大容器。
+    question: 这里的 mugging 是指我们今天学的带柄大饮具吗？
+    options:
+    - id: no_sense
+      text: 不是，是在镜头前做夸张表情，mug 在这里是另一个意思
+    - id: yes_sense
+      text: 是，他在喝或拿一个饮具
+  evaluation:
+    kind: choice
+    correct_option_id: no_sense
+- id: review_07_sense_filter_mug_shot
+  timing: 绑定后第 24 天
+  due_after_days: 24
+  scaffold_level: later_post_binding
+  primitive: transfer_judgment
+  learner_content:
+    episode: 在警察局，朋友指着一张正面大头照说：‘That’s his mug shot from last year.’ 照片用于警方存档，画面中没有任何饮具。
+    evidence:
+    - 中心是警方存档的正面大头照，不是饮具。
+    - 没有厚壁带柄的大容器。
+    - mug shot 是一个固定的拍照/存档表达。
+    question: 这里的 mug shot 是指我们今天学的带柄大饮具吗？
+    options:
+    - id: no_sense
+      text: 不是，它指警方存档的正面大头照
+    - id: yes_sense
+      text: 是，它指一个带柄大杯
+  evaluation:
+    kind: choice
+    correct_option_id: no_sense
+- id: review_08_l2_grounding
+  timing: 绑定后第 30 天
+  due_after_days: 30
+  scaffold_level: later_post_binding
+  primitive: l2_grounding
+  learner_content:
+    source_step_id: review_05_recall_empty_cold
+    l2_realization: Could I get a mug of coffee? I don’t need a cup and saucer — a
+      plain mug is fine.
+    constructions:
+    - get a mug of coffee
+    - a plain mug
+    - mug vs. cup
+    collocations:
+    - a mug of coffee
+    - a plain mug
+  evaluation:
+    kind: none
+related_sense_material:
+- sense_id: cup-01
+  decision: 部分使用：只作为多选边界判断中的最小对比符号（flow_11_cup_bridge 用 l2_grounding 给出最小 L2 铺垫；flow_12_overlap_choice
+    与 review_04_overlap_choice 使用多选判断），不作为独立义项教学，也不做 symbol_reveal 绑定。
+  rationale: 当前最需要避免的是中文上位词‘杯子’把 mug 吸收掉，也要避免把 cup 教成 mug 的互斥反义词；因此只给 cup 一个最小 L2
+    铺垫，并用多选呈现 mug 与 cup 的真实重叠。完整 cup-01 教学留给后续课程。
+  future: 后续可以单独建立 cup-01 课程，并在同一厨房场景中复用多选判断，让‘某些厚壁大杯在某些语境中也可被叫 cup’的重叠关系持续、系统地出现。
+metadata:
+  generated_by: course_author-v1
+  design_notes: L1 经验首学 → 变体破除误区 → 符号绑定 → L2 锚定 → cup 最小 L2 铺垫（l2_grounding）→ 多选重叠判断
+    → 同词形义项过滤；复习沿同一条主线从回忆走向自然使用。
+  repair_note: 修复硬校验：将原先 flow_11_cup_bridge 中为 cup 使用 symbol_reveal（l2_word=cup，违反目标
+    lemma 必须为 mug）改为 l2_grounding；cup 只作为最小 L2 对比铺垫出现，不再进入 symbol_reveal。同时保留并继续满足各
+    diagnostics：用 multi_label_choice 替代 mug/cup 强制二选一；新增 review_07_sense_filter_mug_shot
+    覆盖 mug shot 场景；删除所有 sense_choice，多选判断统一使用 multi_choice + correct_option_ids。
+  holistic_compiler_version: 1.0.0
+  generated_at: '2026-08-16T10:21:49Z'
+  calls:
+  - role: author
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: d2bed2d8-fdb5-4ff2-8eee-206da6b19314
+  - role: author_format_retry
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: a00b1efc-6c58-4ff6-a84e-5fb65bfaf4bc
+  - role: critic
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: ec2a19d4-bd81-4594-8da9-12f5104c7b6b
+  - role: repair
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: 8d60eb0c-eb49-4721-a7fc-a65110f80248
+  - role: repair_format_retry
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: ec654a21-3c09-4e0c-aa83-d573b9f50320
+  input_digest: sha256:f668f8f97e1386fdb9ee332203496704d53655534d7c1ba574e4eea691d22638

@@ -1,0 +1,130 @@
+schema_version: '1.1'
+language: en
+version: 1
+status: reviewed
+id: mug-01
+word: mug
+pos: noun
+sense_label: 马克杯（带柄大杯）
+definition: A large drinking vessel, typically with a handle, used for beverages and
+  held in the hand rather than set on a saucer.
+semantic_type: entity
+inventory:
+  word: mug
+  version: 1
+  evidence_digest: sha256:3da58ca01fc9890c80d7bd0641273aa24869e1a4e99214dc5b5972314d1b64e5
+  sense_id: mug-01
+  identity_digest: sha256:9d867ef4f45ff86b5c0c291a22d48cd71cec62caa7d15ef6066ccd63f7c321b8
+semantic_identity:
+  semantic_type: physical_object
+  dimension: physical
+  change_of_state: false
+  causative: false
+  valency: none
+inventory_source_entries:
+- mug-dict-004
+semantic_revision: 1
+semantic_skeleton:
+  propositions:
+  - There exists a physical artifact whose primary function is to hold a single serving
+    of liquid for drinking.
+  - It is an open-top container with a capacity larger than a typical teacup, permitting
+    a generous portion.
+  - It typically has a handle on one side, supporting one-handed lifting even when
+    the liquid is hot.
+  - It is used directly from the hand, without requiring a matching saucer.
+conditions:
+  required:
+  - The referent is a concrete, three-dimensional object rather than an event or an
+    image.
+  - It has an opening at the top and a cavity capable of holding liquid.
+  - Its size, proportions, and handle, when present, place it in the category of a
+    mug rather than a small teacup or a handleless cup.
+  - It is designed for hand-held drinking, not for being served on a saucer.
+  excluded:
+  - condition: The referent is an event of assaulting someone in order to rob them.
+    alternative: mug-02
+  - condition: The referent is a deliberately exaggerated facial expression or pose
+      for a camera or performance.
+    alternative: mug-03
+  - condition: The referent is an official identification photograph of a person's
+      face, or the act of taking such a photograph.
+    alternative: mug-04
+  - condition: The object is a small cup intended to be used with a matching saucer.
+relations:
+  boundaries:
+  - target: mug-02
+    relation: different_sense
+    distinction: 'The semantic signatures differ in type and dimension: physical object
+      in the physical dimension versus action in the crime dimension, and valency
+      none versus transitive.'
+    diagnostic: If the scene cannot be pointed to as a drinkable vessel but instead
+      involves an attacker, a victim, and a theft, the vessel sense is not available.
+  - target: mug-03
+    relation: different_sense
+    distinction: 'The semantic signatures differ in type and dimension: physical object
+      in the physical dimension versus behavior in the expression dimension, and valency
+      none versus intransitive.'
+    diagnostic: If the central visual is a person distorting their face or posing
+      for an audience, and no drinking vessel is in use, the vessel sense is not selected.
+  - target: mug-04
+    relation: different_sense
+    distinction: 'The semantic signatures differ in type and dimension: physical object
+      in the physical dimension versus action in the police-record dimension, and
+      valency none versus transitive.'
+    diagnostic: If the scene centers on a camera set up for official identification
+      photographs and a subject's face being framed, the vessel sense is not selected.
+  l1_confusables:
+    zh:
+    - l1_term: 马克杯
+      covers:
+      - mug-01
+      note: 中文‘马克杯’直接对应 mug 的名词容器义。但英文 mug 还同时对应‘抢劫’‘做鬼脸’‘拍存档照’等不同义项；中文没有同一个词覆盖这些动作义，学生容易因先学名词义而无法预测动词义，必须靠场景切换。
+    - l1_term: 杯子
+      covers:
+      - mug-01
+      note: 中文‘杯子’是上位词，不区分厚壁有柄的马克杯和薄壁带碟的茶杯。学生会忽略 mug 在英语中强调大而厚、有柄、不用碟；教学中宜让马克杯与茶杯并排出现，用手柄和无碟作为视觉判据。
+    - l1_term: 做鬼脸
+      covers:
+      - mug-03
+      note: 中文‘做鬼脸’对应 mug 的动词义之一，但与名词义同形。学生可能在听到 mugged for the camera 时试图理解成与马克杯有关的动作，需要明确这是完全不同的场景。
+scene_requirements:
+  must_show:
+  - A hand-held open-top drinking vessel with a handle, noticeably larger and sturdier
+    than a teacup.
+  - The vessel containing a beverage such as coffee, tea, or hot chocolate.
+  - A hand gripping the handle and lifting the vessel to the mouth.
+  must_not:
+  - A matching saucer under the vessel.
+  - Any scene of mugging, assault, or robbery.
+  - Any emphasis on exaggerated facial expressions or camera posing.
+  - A police-style booking photo session.
+  externalization:
+  - The handle and larger volume are visible from the outside; the camera should contrast
+    the mug with a smaller saucer-based cup.
+  - No inner state needs to be projected; the object's material, handle, and hand
+    grip are the external evidence of this sense.
+  timing: The audio label should occur after a clear shot has established a handled
+    drinking vessel in use, ideally about one second after the hand lifts the mug,
+    not at the first glimpse of an ambiguous container.
+provenance:
+  sources:
+  - type: dictionary
+    citation: https://kaikki.org/dictionary/English/meaning/m/mu/mug.jsonl (Wiktionary
+      via kaikki.org, CC-BY-SA 3.0/4.0)
+    license: CC-BY-SA
+
+# ============================================================
+# G. 教学原型建议 (非权威, 仅供 Holistic Course Author 参考)
+# ============================================================
+teaching_profile:
+  primary_archetype: entity_category
+  suggested_capabilities:
+  - object_inspection
+  - multi_label_choice
+  - scene_observation
+  - single_choice
+  - binary_judgment
+  special_risks:
+  - boundary_overlap
+  - category_metonymy

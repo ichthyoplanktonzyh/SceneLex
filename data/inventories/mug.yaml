@@ -1,0 +1,117 @@
+schema_version: '1.0'
+word: mug
+language: en
+status: approved
+inventory_version: 1
+source:
+  provider: wiktionary
+  entry_count: 4
+  evidence_digest: sha256:3da58ca01fc9890c80d7bd0641273aa24869e1a4e99214dc5b5972314d1b64e5
+senses:
+- id: mug-01
+  lemma: mug
+  pos: noun
+  label_zh: 马克杯（带柄大杯）
+  definition: A large cup for beverages, usually having a handle and used without
+    a saucer.
+  semantic_signature:
+    semantic_type: physical_object
+    dimension: physical
+    change_of_state: false
+    causative: false
+    valency: none
+  source_entries:
+  - mug-dict-004
+  decision:
+    type: keep
+    reason: The noun beverage-container sense is lexically central and cannot be reduced
+      to any of the verb senses; keep as a core SceneLex sense.
+  teaching_priority: core
+  usage:
+    currency: current
+    productivity: limited
+    register: neutral
+- id: mug-02
+  lemma: mug
+  pos: verb
+  label_zh: 行凶抢劫；当街抢劫
+  definition: To assault someone for the purpose of robbing them.
+  semantic_signature:
+    semantic_type: action
+    dimension: crime
+    change_of_state: false
+    causative: false
+    valency: transitive
+  source_entries:
+  - mug-dict-001
+  decision:
+    type: keep
+    reason: This is the main current transitive verb sense. It is syntactically and
+      semantically distinct from the intransitive face-making sense and from the police-photography
+      sense, so no merge is possible.
+  teaching_priority: core
+  usage:
+    currency: current
+    productivity: limited
+    register: informal; crime reporting
+- id: mug-03
+  lemma: mug
+  pos: verb
+  label_zh: 做鬼脸；夸张地摆姿势（尤指面对镜头或表演时）
+  definition: To exaggerate one's facial expression or pose in an affected way, especially
+    for a camera or in performance.
+  semantic_signature:
+    semantic_type: behavior
+    dimension: expression
+    change_of_state: false
+    causative: false
+    valency: intransitive
+  source_entries:
+  - mug-dict-002
+  decision:
+    type: keep
+    reason: The intransitive camera/performance sense is distinct from the transitive
+      robbery and photo-ID senses; the examples establish it as a stable, teachable
+      extended sense.
+  teaching_priority: extended
+  usage:
+    currency: current
+    productivity: limited
+    register: informal; theatrical/camera contexts
+- id: mug-04
+  lemma: mug
+  pos: verb
+  label_zh: 给（嫌疑人等）拍警方存档照片；拍面部照片
+  definition: To photograph someone for official identification; to take a mug shot
+    of someone.
+  semantic_signature:
+    semantic_type: action
+    dimension: police_record
+    change_of_state: false
+    causative: false
+    valency: transitive
+  source_entries:
+  - mug-dict-003
+  decision:
+    type: keep
+    reason: This police/criminal-slang transitive sense is clearly attested and should
+      not be merged with mug-dict-002 (intransitive posing) or mug-dict-001 (robbery).
+      It is peripheral and partly dated, so it is taught only at recognition level.
+  teaching_priority: recognition
+  usage:
+    currency: dated
+    productivity: nonproductive
+    register: dated police/criminal slang
+deferred_entries: []
+relations:
+- source: mug-03
+  target: mug-04
+  relation: shared_face/photography_context
+  distinction: mug-03 is intransitive and performed by the person posing; mug-04 is
+    transitive and performed by someone taking an official identification photograph.
+- source: mug-02
+  target: mug-04
+  relation: transitive_person_object_ambiguity
+  distinction: Both senses can take a person as object, but mug-02 is street robbery
+    and mug-04 is police identification photography; context and register disambiguate
+    them.

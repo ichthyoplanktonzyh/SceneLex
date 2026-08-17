@@ -1,0 +1,123 @@
+schema_version: '1.0'
+word: across
+language: en
+status: approved
+inventory_version: 1
+source:
+  provider: wiktionary
+  entry_count: 8
+  evidence_digest: sha256:4c973d178160599e9d8c684ab27e79530967772fdd1785a5894ea6d3970538f1
+senses:
+- id: across-01
+  lemma: across
+  pos: preposition
+  label_zh: 横过；跨越
+  definition: 从……的一边到另一边；越过或横跨夹在中间的某物，也可用于说明某物延伸跨越该空间。
+  semantic_signature:
+    semantic_type: spatial_relation
+    dimension: spatial_path_extension
+    change_of_state: false
+    causative: false
+    valency: transitive_prep
+  source_entries:
+  - across-dict-006
+  decision:
+    type: keep
+    reason: 006 是介词 across 的核心空间义，统一涵盖运动跨越和物体横向延伸两个应用域，属同一个“从一边到另一边”的意义。
+  teaching_priority: core
+  usage:
+    currency: current
+    productivity: productive
+    register: neutral
+- id: across-02
+  lemma: across
+  pos: preposition
+  label_zh: 在……对面；在另一边
+  definition: 在夹在中间的某物的另一边/对面；across from 也是同一静态意义的固定搭配，后接参照对象。
+  semantic_signature:
+    semantic_type: spatial_relation
+    dimension: spatial_location
+    change_of_state: false
+    causative: false
+    valency: transitive_prep
+  source_entries:
+  - across-dict-007
+  - across-dict-008
+  decision:
+    type: merge
+    reason: 007 和 008 都表示静态的“在对面/另一边”；008 是 across from（或方言中单独 across）的句法变体，与 007
+      构成同一意义，不应另立义项。
+  teaching_priority: core
+  usage:
+    currency: current
+    productivity: productive
+    register: neutral
+- id: across-03
+  lemma: across
+  pos: adverb
+  label_zh: 到/在另一边（副词）
+  definition: 不带宾语地表示从一边到另一边；到/在另一边；也可用于说明相隔距离或宽度，如 half a mile across。
+  semantic_signature:
+    semantic_type: spatial_relation
+    dimension: spatial_path_location
+    change_of_state: false
+    causative: false
+    valency: intransitive_adverb
+  source_entries:
+  - across-dict-002
+  - across-dict-003
+  decision:
+    type: merge
+    reason: 002 和 003 同属副词空间用法，方向义“到另一边”与处所义“在另一边”由动词和语境决定，教学上可统一为一个“到/在另一边”的 sense；002
+      中的 half a mile across 是同一核心义在测量场景的延伸。
+  teaching_priority: core
+  usage:
+    currency: current
+    productivity: productive
+    register: neutral
+- id: across-04
+  lemma: across
+  pos: adverb
+  label_zh: 横向地（填字游戏）
+  definition: 在填字游戏中表示横向运行/填写；如 4 across 指第 4 条横向线索或答案。
+  semantic_signature:
+    semantic_type: grid_orientation
+    dimension: text_grid
+    change_of_state: false
+    causative: false
+    valency: no_complement
+  source_entries:
+  - across-dict-005
+  decision:
+    type: keep
+    reason: 005 是填字游戏这一固定使用域中的稳定、约定俗成义，虽非日常高频，但值得作为 recognition 级 sense 收录。
+  teaching_priority: recognition
+  usage:
+    currency: current
+    productivity: limited
+    register: crossword
+deferred_entries:
+- source_entry: across-dict-001
+  decision: defer
+  reason: 名词 acrosses 是填字游戏中 across（横向线索/答案）的临时性词性转换，仅见于行业语境，生产性低，暂不宜作为独立可教学 sense。
+  required_evidence:
+  - 超出填字游戏语域的一般名词用例；或产品决定收录 crossword 行业词表后再按 recognition 处理。
+- source_entry: across-dict-004
+  decision: defer
+  reason: gloss 'in a particular direction' 过于宽泛，目前证据仅见于 lean across 等具体动词搭配，更像构式而非独立稳定词义。
+  required_evidence:
+  - 更多独立于具体动词搭配的副词用例，以确认其具有稳定产出性；
+  - 与 across-03 的清楚语义边界。
+relations:
+- source: across-01
+  target: across-02
+  relation: path_location_pair
+  distinction: across-01 强调从一边到另一边的路径/横跨；across-02 强调位于另一边的静态位置。
+- source: across-03
+  target: across-01
+  relation: adverbial_equivalent
+  distinction: across-03 是不带宾语的副词形式，核心路径义与 across-01 相同；across-01 需带介词宾语。
+- source: across-03
+  target: across-02
+  relation: adverbial_equivalent
+  distinction: across-03 表“在另一边”时对应 across-02 的静态对面义，但不显性说出参照物。

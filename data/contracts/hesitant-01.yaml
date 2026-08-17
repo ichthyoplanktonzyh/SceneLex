@@ -1,0 +1,62 @@
+schema_version: '1.0'
+contract_id: hesitant-01-contract
+sense_id: hesitant-01
+lemma: hesitant
+pos: adjective
+semantic_revision: 1
+content_hash: sha256:17ab9ab7ac02024ae86d5a43109ad34b5833bfa11bee1c0c360ece14da6cd076
+semantic_model:
+  invariant: 当一个人面对一个具体、可采取的行动，却因为对该行动抱有疑虑、顾虑或谨慎，而在行动前或行动开始时出现可察觉的停顿、延迟或克制性开端，并且这一停顿被理解为来自他自身的顾虑时，该经验范畴成立。
+  necessary_conditions:
+  - 行动者当时面对一个具体且可识别的、他本可执行的动作。
+  - 行动者对这个动作抱有某种保留、疑虑或担忧（对可能的结果有所顾虑）。
+  - 行动者不是立即顺畅地行动，而是在行动前或行动开始时出现可察觉的停顿、试探性开始或受抑制的动作。
+  - 这个停顿/延迟被观察者解读为来自行动者自身对行动的顾虑，而不是外部阻挡、机械限制或单纯不理解情境。
+  non_entailments:
+  - 观察到某人停顿、迟疑，并不蕴涵 hesitant 成立：如果停顿完全来自没有理解局面、没有可识别的行动，或没有对行动的顾虑，就要排除 hesitant。
+  - hesitant 成立并不蕴涵行动者最终不会行动/行动失败：他可以在迟疑后仍然完成该行动，也可以最终放弃。
+  - hesitant 成立并不蕴涵‘不情愿/拒绝’（reluctant）：若顾虑得到解答后对方愿意行动，说明之前的状态是 hesitant 而非 reluctant；不情愿的特征是即使顾虑不在场，也带着厌恶或需要说服。
+  - hesitant 成立并不蕴涵‘优柔寡断’（indecisive）：当明确的最佳选择出现或顾虑被回答后，hesitant 的人会行动，而 indecisive
+    的人继续摇摆或重新打开选择。
+  - 一个人缓慢而小心地连续动作（没有停顿或克制性开端）并不蕴涵 hesitant；完全立即顺畅、无停顿地行动也不蕴涵 hesitant，而是排除条件。
+  typical_correlates:
+  - 常伴随：手在伸向目标、脚在迈步/起跳/进门之前悬停或收回。
+  - 常伴随：视线在目标与担忧来源之间来回移动。
+  - 常伴随：试探性言语，如‘嗯……也许……’或话说一半停住。
+  - 常伴随：肩膀或嘴部在行动前绷紧，或动作开始后又停下来。
+  misconceptions:
+  - id: misc-1
+    description: 把 hesitant 等同于‘不情愿/拒绝’（reluctant），以为行动者心里不愿意做这件事。
+    correction: 要推翻这个误解，可观察顾虑被移除后的行为：若对方随即愿意且没有厌恶地去行动，说明是 hesitant 而不是 reluctant；若仍带着明显厌恶或必须被说服才行动，则更可能是
+      reluctant。
+  - id: misc-2
+    description: 把 hesitant 等同于性格上的‘优柔寡断’（indecisive），认为他迟迟不决定就是 hesitant。
+    correction: 要推翻这个误解，可提供一个明确的最佳选项并消除其顾虑：若此人随即行动，说明是针对该具体行动的 hesitant；若他继续摇摆或重新打开选择，则更可能是
+      indecisive。
+  - id: misc-3
+    description: 只要看到停顿/迟疑就判定为 hesitant，把外部动作线索等同于内部状态。
+    correction: 要推翻这个误解，需要证明该停顿并非源于对行动的顾虑：例如没有可识别的具体行动，或停顿只是因为没理解局面；此时即使有停顿，也不能判定为
+      hesitant。
+  - id: misc-4
+    description: 认为 hesitant 意味着最终没有行动，或认为只要最终行动了就不是 hesitant。
+    correction: 要推翻这个误解，观察迟疑之后的结果：如果行动者在可察觉的顾虑性停顿后仍然完成了动作，这并不推翻 hesitant；若他完全无停顿地立即顺畅行动，才排除
+      hesitant。
+  - id: misc-5
+    description: 把 hesitant 等同于‘小心谨慎地做’（cautious），认为动作慢且仔细就是 hesitant。
+    correction: 要推翻这个误解，观察动作是否在行动点上有停顿/克制：如果一个人能缓慢、小心地连续移动而没有丝毫停顿，这是 cautious 而不是
+      hesitant；若他在顾虑得到解答后能立刻开始行动，则是 hesitant。
+  l1_interference:
+  - 中文‘犹豫’比 hesitant 更宽：既指具体行动前的迟疑，也指性格上的优柔寡断。学习者可能把‘他很犹豫’直接套到 hesitant，即使语境是 indecisive（难以做选择）；应看‘顾虑得到解答后是否立刻行动’来切割。
+  - 中文‘不情愿’同时覆盖 reluctant 和 hesitant。学习者容易把 hesitant 理解成‘不愿意做’，把顾虑/谨慎错当成态度上的拒绝；‘慢但乐意’的情境仍应落入
+    hesitant。
+  - 中文‘谨慎’可能把 cautious 的经验切割覆盖到 hesitant 上：学习者以为缓慢、小心地连续行动就是 hesitant，忽略了 hesitant
+    要求行动点上的延迟或克制。
+metadata:
+  compiler_version: 2.1.0
+  prompt_versions:
+    semantic_planner: v2
+  generated_at: '2026-08-16T08:26:34Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids:
+  - 680b8cc3-2ccd-461f-862c-92dd1e1110a9

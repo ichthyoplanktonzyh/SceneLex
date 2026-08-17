@@ -10,6 +10,7 @@
     "program_id",
     "program_version",
     "status",
+    "language_policy",
     "target",
     "semantic_model",
     "units",
@@ -34,13 +35,22 @@
       "description": "同一 program_id 的编译版本，从 1 开始递增。"
     },
     "status": {
-      "enum": ["draft", "reviewed", "published"],
+      "enum": [
+        "draft",
+        "reviewed",
+        "published"
+      ],
       "description": "人工审核状态。模型编译结果默认为 draft；fixture 冻结为 reviewed 表示已人工可审查。"
     },
     "target": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["sense_id", "lemma", "pos", "locale_l1"],
+      "required": [
+        "sense_id",
+        "lemma",
+        "pos",
+        "locale_l1"
+      ],
       "properties": {
         "sense_id": {
           "type": "string",
@@ -61,9 +71,36 @@
         },
         "locale_l1": {
           "type": "string",
-          "description": "学习者 L1 语言代码，例如 'zh'。"
+          "description": "学习者 L1 语言简码，如 'zh'。必须与 language_policy.learner_l1 一致（learner_l1 的 BCP-47 短码）。legacy v0 程序无 language_policy。"
         }
       }
+    },
+    "language_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_version",
+        "learner_l1",
+        "target_l2"
+      ],
+      "properties": {
+        "policy_version": {
+          "type": "integer",
+          "const": 1,
+          "description": "Learning Presentation Language Contract 版本。v1 固定为 1。"
+        },
+        "learner_l1": {
+          "type": "string",
+          "const": "zh-CN",
+          "description": "学习者母语 (L1)。v1 固定 zh-CN。"
+        },
+        "target_l2": {
+          "type": "string",
+          "const": "en",
+          "description": "目标语言 (L2)。v1 固定 en。"
+        }
+      },
+      "description": "Learning Presentation Language Contract v1：声明 learner L1、target L2 与语言政策版本。绑定前 learner-visible 内容必须使用 L1 经验叙事，不得出现目标/相邻 L2 词或直接 L1 等价标签（见 docs/learning-presentation-language-contract-v1.md）。"
     },
     "semantic_model": {
       "type": "object",
@@ -84,18 +121,24 @@
         "necessary_conditions": {
           "type": "array",
           "minItems": 1,
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "词义成立的必要条件。必须与 WordSense 语义契约一致。"
         },
         "non_entailments": {
           "type": "array",
           "minItems": 1,
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "明确不蕴涵的结论（例如 '最终没有行动' 不蕴涵 '不是 reluctant'）。"
         },
         "typical_correlates": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "常见的伴随表现。只能是相关性证据，不能升格为必要条件。"
         },
         "misconceptions": {
@@ -104,22 +147,32 @@
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["id", "description", "correction"],
+            "required": [
+              "id",
+              "description",
+              "correction"
+            ],
             "properties": {
               "id": {
                 "type": "string",
                 "pattern": "^[a-z][a-z0-9_-]*$",
                 "description": "稳定误解 ID，供 ExperienceUnit.hypothesis_target 引用。"
               },
-              "description": { "type": "string" },
-              "correction": { "type": "string" }
+              "description": {
+                "type": "string"
+              },
+              "correction": {
+                "type": "string"
+              }
             }
           },
           "description": "目标学习者的常见误解；每个误解必须有单元以 hypothesis_target 覆盖。"
         },
         "l1_interference": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "L1 经验切割与本词义不一致造成的典型干扰，供 discrimination/transfer 单元使用。"
         }
       }
@@ -127,21 +180,34 @@
     "units": {
       "type": "array",
       "minItems": 3,
-      "items": { "$ref": "#/$defs/experience_unit" },
+      "items": {
+        "$ref": "#/$defs/experience_unit"
+      },
       "description": "有序概念单元。数组顺序与 sequence 都是权威顺序；本契约不规定固定角色组合。"
     },
     "symbol_binding": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["reveal", "minimal_l1_gloss"],
+      "required": [
+        "reveal",
+        "minimal_l1_gloss"
+      ],
       "properties": {
         "reveal": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["l2_word", "ipa", "presentation"],
+          "required": [
+            "l2_word",
+            "ipa",
+            "presentation"
+          ],
           "properties": {
-            "l2_word": { "type": "string" },
-            "ipa": { "type": "string" },
+            "l2_word": {
+              "type": "string"
+            },
+            "ipa": {
+              "type": "string"
+            },
             "presentation": {
               "type": "string",
               "description": "把 L2 声音/字形绑定到刚才体验过的经验的教学呈现说明。"
@@ -176,30 +242,55 @@
         "constructions": {
           "type": "array",
           "minItems": 1,
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "承载该词义的关键 L2 结构式，例如 'reluctant to [verb]'。"
         },
         "collocations": {
           "type": "array",
           "minItems": 1,
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
     "review_pool": {
       "type": "array",
-      "minItems": 1,
+      "minItems": 6,
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "semantic_spec", "experience"],
+        "required": [
+          "id",
+          "semantic_spec",
+          "experience"
+        ],
         "properties": {
-          "id": { "type": "string", "minLength": 1 },
-          "semantic_spec": { "$ref": "#/$defs/semantic_spec" },
-          "experience": { "$ref": "#/$defs/experience" }
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "semantic_spec": {
+            "$ref": "#/$defs/semantic_spec"
+          },
+          "experience": {
+            "$ref": "#/$defs/experience"
+          },
+          "scaffold_level": {
+            "type": "string",
+            "enum": [
+              "pre_binding",
+              "symbol_binding",
+              "early_post_binding",
+              "later_post_binding"
+            ],
+            "description": "可选脚手架呈现级别，为未来脚手架衰减预留；缺省视为 early_post_binding。MVP 不实现衰减算法。"
+          }
         }
       },
-      "description": "复习池。必须使用首学未出现的新经验，不能重新播放首学故事。"
+      "description": "复习池。必须使用首学未出现的新经验，不能重新播放首学故事。由 review producer 可增量追加，正式下限为 6 条。"
     },
     "metadata": {
       "type": "object",
@@ -209,12 +300,16 @@
         "prompt_versions",
         "generated_at",
         "source_semantic_revision",
+        "source_contract_hash",
         "model_provider",
         "model_name",
+        "asset_gates",
         "quality_gate"
       ],
       "properties": {
-        "compiler_version": { "type": "string" },
+        "compiler_version": {
+          "type": "string"
+        },
         "prompt_versions": {
           "type": "object",
           "additionalProperties": false,
@@ -225,10 +320,18 @@
             "quality_gate"
           ],
           "properties": {
-            "semantic_planner": { "type": "string" },
-            "program_planner": { "type": "string" },
-            "surface_generator": { "type": "string" },
-            "quality_gate": { "type": "string" }
+            "semantic_planner": {
+              "type": "string"
+            },
+            "program_planner": {
+              "type": "string"
+            },
+            "surface_generator": {
+              "type": "string"
+            },
+            "quality_gate": {
+              "type": "string"
+            }
           }
         },
         "generated_at": {
@@ -241,47 +344,164 @@
           "minimum": 1,
           "description": "编译所依据的 WordSense semantic_revision; 1.0 legacy WordSense 没有修订概念, 统一按 1 处理。"
         },
-        "model_provider": { "type": ["string", "null"] },
-        "model_name": { "type": ["string", "null"] },
+        "source_contract_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "description": "装配所依据的 semantic contract 的 content hash。与 data/contracts/{sense_id}.yaml 的 content_hash 不一致即 stale。"
+        },
+        "model_provider": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "model_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "request_ids": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "可选的各阶段非敏感 request ID（只记录标识，不记录任何认证信息）。"
+        },
+        "asset_gates": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "concept",
+            "review",
+            "transfer",
+            "grounding"
+          ],
+          "properties": {
+            "concept": {
+              "$ref": "#/$defs/gate_record"
+            },
+            "review": {
+              "$ref": "#/$defs/gate_record"
+            },
+            "transfer": {
+              "$ref": "#/$defs/gate_record"
+            },
+            "grounding": {
+              "$ref": "#/$defs/gate_record"
+            }
+          },
+          "description": "逐资产质量门结论（concept / review / transfer / grounding），每个资产独立过闸；维度集合按资产类型裁剪。"
         },
         "quality_gate": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["passed", "dimensions"],
+          "required": [
+            "passed",
+            "dimensions"
+          ],
           "properties": {
-            "passed": { "type": "boolean" },
+            "passed": {
+              "type": "boolean"
+            },
             "dimensions": {
               "type": "array",
               "items": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["name", "verdict", "note"],
+                "required": [
+                  "name",
+                  "verdict",
+                  "note"
+                ],
                 "properties": {
-                  "name": { "type": "string" },
-                  "verdict": { "enum": ["pass", "fail", "warn"] },
-                  "note": { "type": "string" }
+                  "name": {
+                    "type": "string"
+                  },
+                  "verdict": {
+                    "enum": [
+                      "pass",
+                      "fail",
+                      "warn"
+                    ]
+                  },
+                  "note": {
+                    "type": "string"
+                  }
                 }
               }
             },
             "scores": {
               "type": "object",
-              "additionalProperties": { "type": "number", "minimum": 0, "maximum": 10 },
+              "additionalProperties": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 10
+              },
               "description": "可选维度分数 (0-10)，不是通过门的依据。"
             }
-          }
+          },
+          "description": "整程序质量门：由逐资产质量门（asset_gates）确定性地聚合而来（维度名带资产前缀），不再单独评审。"
         }
       }
     }
   },
   "$defs": {
+    "gate_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "passed",
+        "dimensions"
+      ],
+      "properties": {
+        "passed": {
+          "type": "boolean"
+        },
+        "dimensions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "verdict",
+              "note"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "verdict": {
+                "enum": [
+                  "pass",
+                  "fail",
+                  "warn"
+                ]
+              },
+              "note": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "scores": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "description": "可选维度分数 (0-10)，不是通过门的依据。"
+        }
+      }
+    },
     "semantic_spec": {
       "type": "object",
       "additionalProperties": true,
-      "required": ["judgment"],
+      "required": [
+        "judgment"
+      ],
       "properties": {
         "judgment": {
           "type": "string",
@@ -293,7 +513,11 @@
     "experience": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["episode", "observable_evidence", "surface_dimensions"],
+      "required": [
+        "episode",
+        "observable_evidence",
+        "surface_dimensions"
+      ],
       "properties": {
         "episode": {
           "type": "string",
@@ -302,7 +526,9 @@
         "observable_evidence": {
           "type": "array",
           "minItems": 1,
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "观众/学习者可观察到的证据条目；每条都必须能被直接看到或听到。"
         },
         "surface_dimensions": {
@@ -311,11 +537,21 @@
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["name", "baseline", "deviation"],
+            "required": [
+              "name",
+              "baseline",
+              "deviation"
+            ],
             "properties": {
-              "name": { "type": "string" },
-              "baseline": { "type": "string" },
-              "deviation": { "type": "string" }
+              "name": {
+                "type": "string"
+              },
+              "baseline": {
+                "type": "string"
+              },
+              "deviation": {
+                "type": "string"
+              }
             }
           },
           "description": "可检查的表面维度及其相对基线（预期状态）的偏离。"
@@ -342,47 +578,86 @@
           "pattern": "^[a-z][a-z0-9_-]*$",
           "description": "稳定 unit ID，供 grounding.source_experience_id 与内部引用使用。"
         },
-        "sequence": { "type": "integer", "minimum": 1 },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
         "role": {
-          "enum": ["anchor", "variation", "perturbation", "discrimination", "transfer"],
+          "enum": [
+            "anchor",
+            "variation",
+            "perturbation",
+            "discrimination",
+            "transfer"
+          ],
           "description": "教学 primitive。本契约不规定所有词必须使用完全相同的 role 组合。"
         },
         "hypothesis_target": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "description": "本单元用于纠正/反驳的 misconception id；无对应误解时为 null。"
         },
         "preserved_variables": {
           "type": "array",
           "minItems": 1,
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "受控不变的经验变量。"
         },
         "changed_variables": {
           "type": "array",
           "minItems": 1,
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "相对上一/基线单元改变的变量。transfer 单元必须至少改变两个表面维度。"
         },
-        "semantic_spec": { "$ref": "#/$defs/semantic_spec" },
-        "experience": { "$ref": "#/$defs/experience" },
+        "semantic_spec": {
+          "$ref": "#/$defs/semantic_spec"
+        },
+        "experience": {
+          "$ref": "#/$defs/experience"
+        },
         "interaction": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["question", "answers"],
+          "required": [
+            "question",
+            "answers"
+          ],
           "properties": {
-            "question": { "type": "string" },
+            "question": {
+              "type": "string"
+            },
             "answers": {
               "type": "array",
               "minItems": 2,
               "items": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["id", "text", "is_correct", "feedback"],
+                "required": [
+                  "id",
+                  "text",
+                  "is_correct",
+                  "feedback"
+                ],
                 "properties": {
-                  "id": { "type": "string", "minLength": 1 },
-                  "text": { "type": "string" },
-                  "is_correct": { "type": "boolean" },
-                  "feedback": { "type": "string" }
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "is_correct": {
+                    "type": "boolean"
+                  },
+                  "feedback": {
+                    "type": "string"
+                  }
                 }
               }
             }

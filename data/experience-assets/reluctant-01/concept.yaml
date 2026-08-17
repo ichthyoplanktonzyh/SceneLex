@@ -1,0 +1,597 @@
+schema_version: '1.0'
+asset_type: concept
+sense_id: reluctant-01
+contract_hash: sha256:e893727c42babcf98ab71e3ba19934bd3463efaef871c97b40db78b1bc6d73ec
+units:
+- id: unit-1
+  role: anchor
+  hypothesis_target: misc-1
+  preserved_variables:
+  - target_cause_source
+  - contrast_axis
+  - comparison_scope
+  changed_variables:
+  - setting
+  - experiencer_type
+  - target_action_domain
+  - target_evidence_type
+  - target_eventual_action
+  semantic_spec:
+    judgment: 要求学习者把“动作已完成但内在抵抗可见”的情形判为目标语义；完成动作不抵消抵抗。
+    setting: home
+    experiencer_type: child
+    target_action_domain: take_medicine
+    target_evidence_type: sigh_delay_slow_intake
+    target_eventual_action: 'yes'
+    target_cause_source: internal_resistance
+    contrast_experiencer_type: null
+    contrast_action_domain: null
+    contrast_evidence_type: null
+    contrast_eventual_action: null
+    contrast_cause_source: null
+    contrast_axis: none
+    comparison_scope: target_only
+  sequence: 1
+  experience:
+    episode: A glass of medicine stands on the kitchen table in front of Leo. He stares
+      at it without moving, then lets out a long sigh. His hand reaches out slowly
+      and stops in the air for a moment before touching the glass. He picks it up
+      and drinks in very small sips, his eyebrows pressed together, his jaw tight.
+      A minute later the glass is empty.
+    observable_evidence:
+    - Leo stares at the glass for several seconds before moving.
+    - Leo lets out a long sigh.
+    - Leo's hand stops in the air just before touching the glass.
+    - Leo drinks in very small sips with his eyebrows pressed together and his jaw
+      tight.
+    - The glass is empty at the end.
+    surface_dimensions:
+    - name: Approach speed
+      baseline: The glass is picked up right away and drunk at a normal pace.
+      deviation: The child stares, reaches slowly, stops mid-air, then drinks in very
+        small sips.
+    - name: Vocal output
+      baseline: No notable sound before or during the action.
+      deviation: A long sigh comes before the glass is touched.
+    - name: Facial tension
+      baseline: A calm, relaxed face.
+      deviation: Eyebrows pressed together and a tight jaw while drinking.
+  interaction:
+    question: What does Leo's behavior show about how he feels about the medicine?
+    answers:
+    - id: a1
+      text: He is happy and ready to take it.
+      is_correct: false
+      feedback: The scene shows sighs, a pause before the glass is touched, and tiny
+        tense sips — not a happy, ready approach.
+    - id: a2
+      text: He has to push himself to take it, and the push shows in his slow, tense
+        movements.
+      is_correct: true
+      feedback: Correct. The long sigh, the paused reach, and the small tense sips
+        are visible signs of inner resistance, even though he finishes the medicine.
+- id: unit-2
+  role: variation
+  hypothesis_target: misc-1
+  preserved_variables:
+  - experiencer_type
+  - target_cause_source
+  - contrast_axis
+  - comparison_scope
+  changed_variables:
+  - setting
+  - target_action_domain
+  - target_evidence_type
+  - target_eventual_action
+  semantic_spec:
+    judgment: 要求学习者把“最终未行动但抵抗可见”的情形判为目标语义；未行动不等于拒绝或决定不做。
+    setting: school
+    experiencer_type: child
+    target_action_domain: perform_on_stage
+    target_evidence_type: withdrawal_turn_away_stop_before_start
+    target_eventual_action: 'no'
+    target_cause_source: internal_resistance
+    contrast_experiencer_type: null
+    contrast_action_domain: null
+    contrast_evidence_type: null
+    contrast_eventual_action: null
+    contrast_cause_source: null
+    contrast_axis: none
+    comparison_scope: target_only
+  sequence: 2
+  experience:
+    episode: The school play is about to begin. Maya is waiting in the wings, and
+      when her name is called, she takes one step onto the stage. Then she steps back.
+      She turns toward the wall and presses her hands against her sides. People in
+      the audience wait. She stays at the edge, her back to the stage, and does not
+      step forward again.
+    observable_evidence:
+    - Maya steps onto the stage once and then steps back.
+    - Maya turns toward the wall.
+    - Maya presses her hands against her sides.
+    - Maya stays at the edge of the stage with her back to the audience.
+    - She does not step forward again.
+    surface_dimensions:
+    - name: Movement direction
+      baseline: Walk forward onto the stage and take a position.
+      deviation: Step forward once, then retreat and turn toward the wall.
+    - name: Spatial position
+      baseline: Move to the center of the stage.
+      deviation: Remain at the edge with the back to the audience.
+    - name: Body posture
+      baseline: Open, relaxed posture.
+      deviation: Hands pressed tightly against the sides of the body.
+  interaction:
+    question: What does Maya's behavior during this moment show?
+    answers:
+    - id: a1
+      text: She is happy and ready to perform.
+      is_correct: false
+      feedback: She steps back and turns away from the stage instead of moving forward,
+        so her behavior does not show a ready approach.
+    - id: a2
+      text: She pulls back from the performance even though she could walk onto the
+        stage.
+      is_correct: true
+      feedback: Correct. Stepping onto the stage, then retreating, turning away, and
+        staying at the edge shows resistance to starting, even though it ends with
+        no performance.
+- id: unit-3
+  role: discrimination
+  hypothesis_target: misc-2
+  preserved_variables:
+  - experiencer_type
+  - target_cause_source
+  changed_variables:
+  - setting
+  - target_action_domain
+  - target_evidence_type
+  - target_eventual_action
+  - contrast_experiencer_type
+  - contrast_action_domain
+  - contrast_evidence_type
+  - contrast_eventual_action
+  - contrast_cause_source
+  - contrast_axis
+  - comparison_scope
+  semantic_spec:
+    judgment: 要求学习者分辨相同缓慢行为的不同来源：目标语义侧的缓慢来自对已知动作的内在抵抗，对照侧的缓慢来自疲劳/体力限制；不能仅凭缓慢行为判为目标语义。
+    setting: family_gathering
+    experiencer_type: child
+    target_action_domain: carrying_tray_to_guests
+    target_evidence_type: slow_approach_sigh_minimal_contact
+    target_eventual_action: 'yes'
+    target_cause_source: internal_resistance
+    contrast_experiencer_type: elderly
+    contrast_action_domain: carrying_tray_to_guests
+    contrast_evidence_type: slow_stiff_gait_tired_sigh
+    contrast_eventual_action: 'yes'
+    contrast_cause_source: fatigue_or_physical_limitation
+    contrast_axis: origin_of_slow_movement
+    comparison_scope: target_and_contrast
+  sequence: 3
+  experience:
+    episode: At a family gathering, Tom's mother asks him to carry a tray of drinks
+      to the guests. He walks toward it slowly and stops in front of it for a moment.
+      Then he sighs and lifts the tray with just his fingertips, holding it away from
+      his body. Later, his grandfather carries the same tray with stiff, heavy steps,
+      sighing with tiredness and one hand pressed against his back.
+    observable_evidence:
+    - Tom walks toward the tray slowly and stops in front of it.
+    - Tom sighs before lifting the tray.
+    - Tom lifts the tray with only his fingertips and holds it away from his body.
+    - Tom carries the tray around to the guests.
+    - Grandpa later walks with stiff, heavy steps and a tired sigh, one hand pressed
+      against his back.
+    - Grandpa also carries the tray around to the guests.
+    surface_dimensions:
+    - name: Approach speed
+      baseline: A normal walking pace toward the tray.
+      deviation: Tom moves slowly and stops before the tray (target); Grandpa walks
+        slowly with stiff, heavy steps (contrast).
+    - name: Object contact
+      baseline: A full, natural grip.
+      deviation: Tom uses only his fingertips and keeps the tray away from his body
+        (target).
+    - name: Accompanying signals
+      baseline: No extra sounds or gestures.
+      deviation: Tom sighs (target); Grandpa sighs and presses a hand against his
+        back (contrast).
+  interaction:
+    question: Tom and Grandpa both walk slowly to carry the tray. Which person's slowness
+      shows inner resistance to doing the task?
+    answers:
+    - id: a1
+      text: Tom's, because he sighs and touches the tray only with his fingertips
+        before carrying it.
+      is_correct: true
+      feedback: Correct. Tom's sigh and his minimal fingertip contact are signs of
+        resistance directed at the task; he can do the job but holds himself back.
+    - id: a2
+      text: Grandpa's, because he walks stiffly and sighs with tiredness.
+      is_correct: false
+      feedback: Not exactly. Grandpa's slow, stiff steps and the hand pressed against
+        his back point to physical strain, not inner resistance to the task.
+- id: unit-4
+  role: discrimination
+  hypothesis_target: misc-3
+  preserved_variables:
+  - experiencer_type
+  - target_cause_source
+  - target_eventual_action
+  - comparison_scope
+  changed_variables:
+  - setting
+  - target_action_domain
+  - target_evidence_type
+  - contrast_experiencer_type
+  - contrast_action_domain
+  - contrast_evidence_type
+  - contrast_eventual_action
+  - contrast_cause_source
+  - contrast_axis
+  semantic_spec:
+    judgment: 要求学习者区分两种内部状态：对已知动作的抵抗（目标语义）与在两个选项间犹豫不决（相邻范畴）；暂停本身不足以做判断。
+    setting: playground
+    experiencer_type: child
+    target_action_domain: joining_a_known_game
+    target_evidence_type: flat_voice_sigh_slow_join
+    target_eventual_action: 'yes'
+    target_cause_source: internal_resistance
+    contrast_experiencer_type: child
+    contrast_action_domain: choosing_between_two_games
+    contrast_evidence_type: looks_back_and_forth_uncertain_pause
+    contrast_eventual_action: 'no'
+    contrast_cause_source: uncertainty_between_options
+    contrast_axis: decision_structure
+    comparison_scope: target_and_contrast
+  sequence: 4
+  experience:
+    episode: On the playground, Ben's friends start a game he knows well and wave
+      him over. He says "I guess so" in a flat voice, sighs, and walks over with slow,
+      dragging steps, then joins the circle. Nearby, Sara stands between two games,
+      looking from one to the other. She steps toward the first, then toward the second,
+      then stops in the middle, and does not pick either game.
+    observable_evidence:
+    - Ben says "I guess so" in a flat voice when his friends wave him over.
+    - Ben sighs.
+    - Ben walks to the circle with slow, dragging steps.
+    - Ben joins the circle.
+    - Sara stands between two games and looks from one to the other.
+    - Sara steps toward the first game, then toward the second, then stops in the
+      middle.
+    - Sara does not pick either game.
+    surface_dimensions:
+    - name: Vocal tone
+      baseline: A bright, normal reply.
+      deviation: Ben says "I guess so" in a flat voice (target).
+    - name: Movement rhythm
+      baseline: Walking over at a normal, light pace.
+      deviation: Ben walks with slow, dragging steps (target).
+    - name: Choice structure
+      baseline: A single clear action is available.
+      deviation: Ben faces one known action (target); Sara faces two options and keeps
+        switching her look between them (contrast).
+  interaction:
+    question: Both Ben and Sara pause before acting. Which one shows resistance to
+      a single known action?
+    answers:
+    - id: a1
+      text: Ben, because he already knows the game and still answers in a flat voice,
+        sighs, and drags his feet before joining.
+      is_correct: true
+      feedback: Correct. Ben has one known action—joining the game—and his flat voice,
+        sigh, and slow walk show resistance while he still joins.
+    - id: a2
+      text: Sara, because she looks back and forth between the two games and cannot
+        decide.
+      is_correct: false
+      feedback: Not quite. Sara's back-and-forth looking is uncertainty between two
+        options, not resistance to one known action.
+- id: unit-5
+  role: discrimination
+  hypothesis_target: misc-4
+  preserved_variables:
+  - target_cause_source
+  - target_eventual_action
+  - comparison_scope
+  changed_variables:
+  - setting
+  - experiencer_type
+  - target_action_domain
+  - target_evidence_type
+  - contrast_experiencer_type
+  - contrast_action_domain
+  - contrast_evidence_type
+  - contrast_eventual_action
+  - contrast_cause_source
+  - contrast_axis
+  semantic_spec:
+    judgment: 要求学习者区分对动作的抵抗且仍执行（目标语义）与决定不做且无情绪挣扎（相邻范畴）；执行/不执行本身不是判断依据。
+    setting: office
+    experiencer_type: adult
+    target_action_domain: staying_late_to_finish_work
+    target_evidence_type: sigh_flat_voice_slow_return_to_desk
+    target_eventual_action: 'yes'
+    target_cause_source: internal_resistance
+    contrast_experiencer_type: adult
+    contrast_action_domain: staying_late_to_finish_work
+    contrast_evidence_type: brisk_verbal_decline_no_emotional_display
+    contrast_eventual_action: 'no'
+    contrast_cause_source: decision_not_to_act
+    contrast_axis: act_decision_vs_emotional_resistance
+    comparison_scope: target_and_contrast
+  sequence: 5
+  experience:
+    episode: In the office at six, a manager asks both Emma and Marcus to stay late
+      to finish a report. Emma looks at the clock, sighs, and says "Fine, I'll do
+      it" in a flat voice. She walks back to her desk slowly and sits down. Marcus,
+      asked the same question, says "I'm leaving" quickly and picks up his bag without
+      any pause or change in his face, then walks out the door.
+    observable_evidence:
+    - Emma looks at the clock and sighs.
+    - Emma says "Fine, I'll do it" in a flat voice.
+    - Emma walks back to her desk slowly and sits down.
+    - Marcus says "I'm leaving" quickly.
+    - Marcus picks up his bag without any pause.
+    - Marcus's face does not change as he responds.
+    - Marcus walks out the door.
+    surface_dimensions:
+    - name: Response tone
+      baseline: A normal tone of agreement or decline.
+      deviation: Emma says "Fine, I'll do it" in a flat voice (target); Marcus says
+        "I'm leaving" quickly (contrast).
+    - name: Movement back to the task
+      baseline: A normal pace back to the desk.
+      deviation: Emma walks back slowly and sits down (target).
+    - name: Visible emotional display
+      baseline: A neutral face and steady pace.
+      deviation: Emma's sigh and slow walk show struggle (target); Marcus shows no
+        pause and no facial change (contrast).
+  interaction:
+    question: Emma and Marcus both receive the same request. What do their behaviors
+      show?
+    answers:
+    - id: a1
+      text: Emma stays and works, but her sigh, flat voice, and slow steps show inner
+        resistance; Marcus says he is leaving quickly and shows no such signs.
+      is_correct: true
+      feedback: Correct. Emma's sigh, flat voice, and slow walk back are signs of
+        resistance, yet she completes the task; Marcus's quick, calm response shows
+        a simple decision not to stay, not emotional conflict.
+    - id: a2
+      text: Leaving the office is stronger evidence of inner resistance than staying
+        and working.
+      is_correct: false
+      feedback: Not exactly. The outcome alone does not decide the meaning; leaving
+        can be quick and calm, and staying can come with visible inner struggle.
+- id: unit-6
+  role: discrimination
+  hypothesis_target: misc-5
+  preserved_variables:
+  - experiencer_type
+  - target_cause_source
+  - target_eventual_action
+  - comparison_scope
+  - contrast_experiencer_type
+  changed_variables:
+  - setting
+  - target_action_domain
+  - target_evidence_type
+  - contrast_action_domain
+  - contrast_evidence_type
+  - contrast_eventual_action
+  - contrast_cause_source
+  - contrast_axis
+  semantic_spec:
+    judgment: 要求学习者区分针对特定动作的抵抗（目标语义）与不指向任何可做动作的悲伤/恐惧，或对物体的感官厌恶（相邻范畴）；仅凭表情/厌恶不能判为目标语义。
+    setting: bedroom
+    experiencer_type: adult
+    target_action_domain: getting_out_of_bed_to_start_day
+    target_evidence_type: heavy_sigh_turns_away_then_slowly_rises
+    target_eventual_action: 'yes'
+    target_cause_source: internal_resistance
+    contrast_experiencer_type: adult
+    contrast_action_domain: none_specific_action_not_presented
+    contrast_evidence_type: tearful_still_or_grimacing_expression
+    contrast_eventual_action: not_applicable
+    contrast_cause_source: unattached_distress_or_sensory_dislike
+    contrast_axis: emotion_attachment_to_action
+    comparison_scope: target_and_contrast
+  sequence: 6
+  experience:
+    episode: The alarm rings, and Anna sits up in bed. She lets out a heavy sigh,
+      turns away from the edge of the bed, and stares at the wall. After a long moment,
+      she swings her legs out and slowly stands up to start her day. In the next room,
+      Paul sits on the edge of his bed with tears in his eyes and a tight, pained
+      face. The room is quiet; he stays there, unmoving.
+    observable_evidence:
+    - Anna lets out a heavy sigh after the alarm rings.
+    - Anna turns away from the edge of the bed and stares at the wall.
+    - After a long moment, Anna swings her legs out and slowly stands up.
+    - Paul sits on the edge of his bed with tears in his eyes and a tight, pained
+      face.
+    - The room around Paul is quiet, and he stays there, unmoving.
+    surface_dimensions:
+    - name: Direction relative to the action
+      baseline: Getting out of bed right after sitting up.
+      deviation: Anna turns away from the bed edge and stares at the wall before slowly
+        rising (target).
+    - name: Vocal output
+      baseline: No notable sound.
+      deviation: Anna lets out a heavy sigh (target).
+    - name: Attachment of the expression to an action
+      baseline: Emotional signs appear while a specific action is available.
+      deviation: Anna's signs sit in front of an available action—getting out of bed
+        (target); Paul's tears and pained face appear with no action presented in
+        the quiet room (contrast).
+  interaction:
+    question: Anna and Paul both show unhappy looks. Which scene connects those looks
+      to a specific action the person could take?
+    answers:
+    - id: a1
+      text: Anna's scene, because she sighs and turns away from the bed, then slowly
+        gets up to start her day.
+      is_correct: true
+      feedback: Correct. Anna's sigh and turn-away happen right in front of an available
+        action—getting out of bed—and the resistance stays visible as she slowly stands.
+    - id: a2
+      text: Paul's scene, because he sits with tears and a pained face for a long
+        time.
+      is_correct: false
+      feedback: Not quite. Paul's tears and pained face are not tied to any specific
+        action he could take, so the scene shows distress, not resistance to an available
+        action.
+symbol_binding:
+  reveal:
+    l2_word: reluctant
+    ipa: rɪˈlʌktənt
+    presentation: 'After the six units end, reveal the label: write "reluctant" on
+      screen and say /rɪˈlʌktənt/ (re-LUCK-tant). Point back to the shared pattern
+      the learners just saw in all six scenes — a person facing an action they could
+      perform, inner resistance, and visible signs such as sighs, pauses, turn-aways,
+      or slow steps — and say: "This word names that pattern." Have learners point
+      at different scenes and repeat the word aloud, then read it together.'
+  minimal_l1_gloss: 不情愿的
+gate:
+  passed: true
+  dimensions:
+  - name: semantic_correctness
+    verdict: pass
+    note: 'All six units present scenes where an experiencer consciously faces a specific
+      available action and shows inner resistance through observable behavior, consistent
+      with the WordSense required conditions. unit-1 (Leo takes medicine with sigh/pause/small
+      sips) and unit-2 (Maya steps on stage then withdraws) cover both compatible
+      outcomes: action performed and action not performed. units 3–6 discriminate
+      slow movement from fatigue, hesitation between options, decision not to act
+      without emotional display, and unattached distress/sensory dislike, which matches
+      the required conditions and non_entailments. No unit expresses eagerness, external
+      prohibition, physical inability, or bare refusal as the target. The scenes intentionally
+      do not name the word before reveal, so the semantics are carried by behavior.
+      The invariant in semantic_model also accurately states that no single behavior
+      is definitional and that outcome is open.'
+  - name: sense_purity
+    verdict: pass
+    note: 'The units stay within the reluctant-01 sense boundary. unit-2 and unit-5
+      could look like refuse-01 or unwilling-01, but the interaction and observable
+      evidence explicitly tie the outcome to resistance: Maya steps onto the stage
+      and then withdraws with hands pressed to sides (internal resistance, not a brisk
+      refusal), and Emma agrees to stay late with sigh/flat voice/slow return. unit-4
+      contrasts hesitant-01 by using Sara''s back-and-forth between options, while
+      Ben shows resistance to one known action. unit-3 uses fatigue/physical limitation
+      as the contrast, not as the target, and unit-6 distinguishes unattached sadness/sensory
+      dislike from action-directed reluctance. The target episodes do not rely on
+      facial expression alone; each has behavioral evidence tied to the action. The
+      ''I guess so'' line in unit-4 is a permissible vocal-tone correlate in the WordSense
+      externalization list, and it is accompanied by sigh and dragging steps, so it
+      does not make speech carry the meaning alone.'
+  - name: prototype_quality
+    verdict: pass
+    note: 'unit-1 provides a clear, uncontroversial prototype: a child facing medicine,
+      a concrete available action, visible inner resistance through stare/sigh/paused
+      reach/small tense sips, with the action completed. This aligns with the most
+      typical reluctant scenario (''reluctant to take medicine'') and supports both
+      the invariant and the ''compliance can still be reluctant'' teaching point.
+      The observables are redundant and legible without any dialogue or label. If
+      any improvement were wanted, unit-1 could add a one-word ''I guess so'' or ''if
+      I have to'' as an additional optional vocal correlate, but it is not necessary
+      for prototype clarity.'
+  - name: definition_leakage
+    verdict: pass
+    note: No learner-visible content in any episode caption, question, or answer displays
+      the word reluctant or defines the sense in a dictionary-style way before reveal.
+      unit-1's correct answer 'He has to push himself to take it...' describes the
+      scene's visible evidence rather than stating that the word means X. unit-5's
+      answer 'Emma stays and works, but her sigh, flat voice, and slow steps show
+      inner resistance...' similarly describes behavior. The reveal is not included
+      in the episode/interaction text and thus does not leak into the pre-reveal units.
+      The only direct semantic description is in semantic_spec/invariant fields, which
+      are not learner-visible in the program as presented. No captions or narration
+      name the target word.
+  - name: l2_leakage
+    verdict: pass
+    note: The target L2 word 'reluctant' does not appear in any unit episode, observable_evidence,
+      surface_dimensions, question, answer, or feedback text. The reveal in symbol_binding
+      is the only place the word appears, as required. Adjacent L2 words from the
+      sense network (unwilling, hesitant, refuse) also do not appear in learner-visible
+      strings; the feedback uses 'not exactly' and behavioral paraphrases instead
+      of naming the confusables. The Chinese gloss '不情愿的' appears only in symbol_binding.reveal.minimal_l1_gloss,
+      which is also part of the reveal layer and not in the pre-reveal units. No L1
+      confusable words leak into the pre-reveal content either. The title/asset_type
+      fields are metadata and not learner-visible episode content, so they do not
+      affect this verdict.
+  - name: variable_isolation
+    verdict: pass
+    note: 'Each unit''s preserved/changed variables isolate the intended comparison.
+      unit-1 and unit-2 vary action domain, setting, evidence type, and outcome while
+      keeping internal resistance, establishing the invariant across outcomes. unit-3
+      keeps target/contrast experiences roughly matched on action domain (carrying
+      tray), experiencer setting, and eventual action, and varies the origin/cause
+      of the slow movement (internal resistance vs fatigue/physical strain), so the
+      slowness is the compared variable. unit-4 matches both on child+cause source+eventual
+      action? Actually target eventual_action is yes and contrast eventual_action
+      is no, but the semantic comparison is decision structure: one known action vs
+      two options. The difference in outcome is part of the contrast (Sara does not
+      pick either game), and the core comparison dimension is the ''choice structure''
+      variable; since the unit explicitly contrasts decision structure, this is a
+      designed change rather than a confound. unit-5 matches target and contrast on
+      setting, request, action domain, adult experiencer, and eventual action? Target
+      eventual_action is yes; contrast eventual_action is no. The contrast is the
+      decision-vs-emotional-resistance axis; the outcome difference is intrinsic to
+      the contrast (staying vs leaving), and the feedback explicitly teaches that
+      outcome alone is not decisive. While the outcome difference is not held constant,
+      the unit is designed so that the diagnosed feature is emotional display/act-decision
+      axis; the eventual action is the visible consequence of decision vs resistance,
+      not a hidden confound. unit-6 matches experiencer type and target cause source
+      and sets contrast_action_domain to ''none_specific_action_not_presented'' so
+      the compared dimension is emotion attachment to action. No unit has an obvious
+      extra uncontrolled variable that would invalidate the intended judgment.'
+  - name: accidental_invariant
+    verdict: pass
+    note: 'The target episodes vary across multiple surface dimensions: child/adult,
+      home/school/office/playground/bedroom/family_gathering, medicine/performance/tray/joining
+      game/staying late/getting out of bed, and both action-completed and action-not-completed
+      outcomes. Specifically unit-1 (outcome yes) and unit-2 (outcome no) break any
+      invariant that the action must be performed; unit-4 and unit-5 vary the presence
+      of verbal acknowledgment (flat ''I guess so'' / ''Fine, I''ll do it''), unit-6
+      has no speech at all, and unit-3 includes only the sigh/fingertip-contact evidence.
+      The evidence also varies: sigh+pause+slow intake; withdrawal+turn away+stop;
+      slow approach+sigh+minimal contact; flat voice+sigh+slow walk; sigh+flat voice+slow
+      return; heavy sigh+turn away+slow rise. Thus no single behavior is accidentally
+      treated as the required sign. The outcome of the contrast is not invariant either
+      (contrast eventual action varies: yes in unit-3, no in unit-5, not applicable
+      in unit-6), which is appropriate for the comparison design.'
+  - name: cognitive_noise
+    verdict: pass
+    note: Learner-visible content is concise and behavior-focused. Each episode is
+      short, uses common vocabulary appropriate to the target level, and each interaction
+      asks one direct question about the behavior. The two-answer format limits working
+      memory load. unit-6 uses 'pained face' and 'tears' without introducing extra
+      backstory, which is clear enough for the intended contrast of unattached distress.
+      unit-3 includes grandpa's tired back and stiff steps, and while it is a richer
+      scene, it is one continuous comparison and the question specifically directs
+      attention to the two people carrying the same tray, so it should not create
+      confusion. The 'I guess so' and 'Fine, I'll do it' utterances are short and
+      congruent with the externalization list. No unrelated plot lines, unusual vocabulary,
+      or ambiguous camera-only facial expressions are required; all evidence is described
+      as clear observable behavior. The reveal is separated from the experience phase,
+      so cognitive load is controlled.
+  scores:
+    semantic_correctness: 8.0
+    sense_purity: 8.5
+    prototype_quality: 8.5
+    definition_leakage: 9.0
+    l2_leakage: 9.5
+    variable_isolation: 8.0
+    accidental_invariant: 9.0
+    cognitive_noise: 8.0
+metadata:
+  compiler_version: 2.0.0
+  prompt_versions:
+    program_planner: v1
+    surface_generator: v1
+    quality_gate: v1
+  generated_at: '2026-08-15T05:42:44Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids: []

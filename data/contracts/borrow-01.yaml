@@ -1,0 +1,60 @@
+schema_version: '1.0'
+contract_id: borrow-01-contract
+sense_id: borrow-01
+lemma: borrow
+pos: verb
+semantic_revision: 1
+content_hash: sha256:07bd7287033a935903a732b6bee8be6cf27caf25e5593949a31df1725080317c
+semantic_model:
+  invariant: 当一个可归还/可偿还的资源从来源方转入接受方，接受方取得后来源方仍保有要求其归还/偿还的权利，且事件以接受方为变化主体来陈述时，该经验单元即属于
+    borrow-01。
+  necessary_conditions:
+  - 存在一个资源从来源方（个人或机构）向接受方的转移，接受方取得对该资源的持有或控制。
+  - 接受方取得该资源是从来源方获得的，而不是来自自己原有的持有。
+  - 存在期待或约定：该资源或其等价物经过一段时间后要归还/偿还给来源方。
+  - 接受方取得后，来源方仍保有要求接受方归还/偿还的权利；该转移不消灭来源方的这一权利。
+  - 事件以接受方为发生变化的一方来报道；在小句层面体现为接受方作主语。
+  non_entailments:
+  - borrow-01 成立，并不蕴涵接受方实际归还或偿还已经发生；关于归还/偿还，它蕴涵的只是存在期待或约定。
+  - borrow-01 成立，并不蕴涵来源方失去了对该资源或其等价物的返还/偿还请求权。
+  - 物品或资金从一方转移到了另一方，并不蕴涵就是 borrow-01；若没有归还/偿还期待，可能是赠与或买卖。
+  - 来源方作主语的小句（如“我把书借给他”），并不蕴涵 borrow-01；本词义要求以接受方为主语/视角。
+  - 被转移的是想法、词语、风格等抽象内容且焦点是采用为己用，并不蕴涵 borrow-01；这属于 borrow-02。
+  - borrow-01 成立，并不蕴涵归还的必须是借出的同一物理个体；若是金钱，按等值金额偿还即可。
+  typical_correlates:
+  - 常出现借据、写着还书日期的便条、日历上的到期标记或还款计划表。
+  - 接受方常会当面点头、口头承诺“我会还的”，或与来源方约定归还时间。
+  - 来源方在物品离开后常会视线跟随、伸手提醒，或保管借据以显示物品仍归来源方所有。
+  - 场景中常出现书、工具、现金等具体可返还/可偿还物品。
+  misconceptions:
+  - id: misc-1
+    description: 把英文 borrow 当成和中文“借”一样方向中性，认为“借出”也能说 borrow。
+    correction: 看小句主语/视角：若主语是给出方，则是借出（lend），不是 borrow-01；只有主语是接受方且存在归还预期，才是 borrow-01。
+  - id: misc-2
+    description: 看到“借用一个说法/想法”就认为 borrow-01 也覆盖抽象内容。
+    correction: 若被转移实体是想法、词语、风格等抽象物，且焦点只是采纳为己用、没有归还义务，则属于 borrow-02；只有实体可归还/可偿还并存在归还预期时才是
+      borrow-01。
+  - id: misc-3
+    description: 因汉字“借”相同，把减法竖式的“借位”（borrow-03）等同于日常借物 borrow-01。
+    correction: 检查有无来源方、接受方和占有转移；若看到数字列之间的借一当十运算而无任何物品或钱在人与人之间转移，就不是 borrow-01。
+  - id: misc-4
+    description: 以为只要“拿到/收到东西”就一定是 borrow，把赠送、出售也当成借入。
+    correction: 寻找归还/偿还预期；若出现“keep it”、礼品包装等永久转让线索，或没有任何归还/偿还约定，则是赠送或出售，不是 borrow-01。
+  - id: misc-5
+    description: 以为 borrow 意味着接受方实际归还/偿还了。
+    correction: borrow-01 并不以实际归还为条件；它要求的是存在归还/偿还的期待或约定。若观察到借后从未归还，只要当初有借约，borrow-01
+      仍可成立。
+  l1_interference:
+  - 中文“借”比英文 borrow 更宽：方向中性，既覆盖 borrow-01（借入），也覆盖“借出”（对应 lend）；学习者容易在借出者做主语的语境中把 lend
+    的经验也归入 borrow。
+  - 中文“借用”同时覆盖 borrow-01（具体物暂时使用并归还）和 borrow-02（抽象概念采纳为己用），L1 不强制区分归还义务，学习者容易忽略“能否归还”这一判据。
+  - 中文“借位”是算术术语，与 borrow-01 共享“借”字但无占有转移；数学运算经验会覆盖日常借物的经验切割。
+metadata:
+  compiler_version: 2.1.0
+  prompt_versions:
+    semantic_planner: v2
+  generated_at: '2026-08-16T08:20:32Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids:
+  - b6842381-e990-4da0-a776-ebbaa4a38f6e

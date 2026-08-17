@@ -21,6 +21,11 @@ Map<String, Object> programJsonWithUnitCount(int count) {
     'program_id': 'synthetic-program',
     'program_version': 1,
     'status': 'reviewed',
+    'language_policy': {
+      'policy_version': 1,
+      'learner_l1': 'zh-CN',
+      'target_l2': 'en',
+    },
     'target': {
       'sense_id': 'synthetic-01',
       'lemma': 'synthetic',

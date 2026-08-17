@@ -1,0 +1,154 @@
+schema_version: '1.1'
+language: en
+version: 1
+status: reviewed
+id: borrow-01
+word: borrow
+pos: verb
+sense_label: 借；借入
+definition: To receive something, such as an object or money, from another person
+  or institution for a limited time, with an expectation or agreement to return it
+  or repay it.
+frequency:
+  band: high
+  rank: 700
+difficulty: basic
+pronunciation:
+  ipa: /ˈbɑːroʊ/
+collocations:
+- borrow money
+- borrow a book
+- borrow something from someone
+- borrow from a bank
+- borrow against something
+sentence_patterns:
+- '[Someone] borrows [something] from [someone].'
+- '[Someone] borrows [money] from [a bank or lender].'
+- Can I borrow [something]?
+- '[Someone] borrows [something] for [a period of time].'
+semantic_type: state_change
+semantic_skeleton:
+  participants:
+  - role: recipient
+    description: The participant who takes or receives the object or resource and
+      is expected to return or repay it.
+  - role: source
+    description: The participant who gives up temporary possession or control of the
+      object or resource and keeps a claim to its return or repayment.
+  - role: transferred_entity
+    description: The object, money, or other resource that moves from the source to
+      the recipient and is meant to be returned or repaid.
+  propositions:
+  - A recipient participant comes to hold or control a transferable entity that was
+    previously held or controlled by a source participant.
+  - 'The recipient''s new hold or control is understood as time-delimited: the source
+    retains a claim such that the same entity or an equivalent value is expected to
+    return to the source.'
+  - The transfer does not eliminate the source's claim; it creates an open obligation
+    that is discharged by return or repayment.
+  - The event is reported from the perspective of the recipient, so the recipient
+    is the participant whose situation undergoes the change.
+conditions:
+  required:
+  - There is a transfer of an object or resource from a source to a recipient.
+  - The recipient obtains the entity from the source, not from their own existing
+    possession.
+  - There is an expectation or agreement that the entity or its equivalent will be
+    returned to the source after some time.
+  - The source remains the person to whom return or repayment is owed after the recipient
+    takes the entity.
+  - The clause presents the recipient as the subject of the verb.
+  excluded:
+  - condition: The entity transferred is an abstract idea, word, style, or similar
+      creation and the focus is on adopting it for one's own use, not on returning
+      it.
+    alternative: borrow-02
+  - condition: The verb is used to describe a regrouping step in subtraction, where
+      digits move between place values and no possession transfer occurs.
+    alternative: borrow-03
+  - condition: The event is presented from the source's perspective, with the source
+      providing an item to someone else; the subject is not the recipient.
+  - condition: The transfer is permanent, such as a gift or sale, with no expectation
+      of return or repayment.
+relations:
+  confusables:
+  - borrow-02
+  - borrow-03
+  boundaries:
+  - target: borrow-02
+    relation: different_sense
+    distinction: 区别轴是语义维度：borrow-01 是具象资源在时间维度上的暂时转移；borrow-02 是抽象内容从他人处化为己用，不产生归还义务。
+    diagnostic: 若场景里被转移的实体可以归还或偿还，且归还期待是事件的一部分，则是 borrow-01；若实体是想法、词语等抽象物，且‘采用为自己所用’是唯一要点，则是
+      borrow-02。
+  - target: borrow-03
+    relation: different_sense
+    distinction: 区别轴是所在领域与有无占有转移：borrow-01 发生在日常所有或借贷领域，涉及实际或金融资源的暂时取得；borrow-03 把词项限定在减法竖式的借位操作中，不涉及占有关系。
+    diagnostic: 如果句子描述一个人从另一个人处拿到物品或钱并要归还，是 borrow-01；如果描述的是对数字列进行‘借一当十’的运算步骤，则是 borrow-03。
+  l1_confusables:
+    zh:
+    - l1_term: 借
+      covers:
+      - borrow-01
+      - borrow-02
+      note: 中文‘借’是方向中性词，同一形式可表达‘借入’（borrow-01）和‘借出’（对应英文 lend）；英文 borrow 只指向借入一方。此外‘借’在‘借用一个说法’里覆盖
+        borrow-02，学生需根据是否有归还或偿还预期来判断义项。
+    - l1_term: 借用
+      covers:
+      - borrow-01
+      - borrow-02
+      note: ‘借用’既能指暂时使用具体物品并归还（borrow-01），也能指采纳抽象概念或说法为己用（borrow-02）。判据是实体是否可归还：可归还→borrow-01；抽象采纳→borrow-02。
+    - l1_term: 借位
+      covers:
+      - borrow-03
+      note: 减法竖式里的‘借位’是专业术语，与日常借物共享‘借’字，但语义上是数学运算规则；学生容易因汉字相同而误以为 borrow-03 与 borrow-01
+        同义。
+scene_requirements:
+  must_show:
+  - 一个明确的传递动作：source 把物品或钱交给 recipient，recipient 的占有状态从无到有。
+  - 至少一个可见的归还或偿还预期：例如日历上的到期日、写着‘周五还’的便条、双方点头确认、银行柜台旁的还款计划表。
+  - 物品或资金在 recipient 手中停留，且 source 对它的归属关系保持可见，如提醒归还、保管借据或指向还款计划。
+  must_not:
+  - 不得出现赠送、出售或永久转让的线索，如礼品包装、‘keep it’、丢弃原物。
+  - 不得把抽象物（想法、词语、风格）作为被转移实体。
+  - 不得出现减法竖式或数字借位操作。
+  - 不得在物品转移之前让画面先出现‘borrow’的语音或字幕。
+  externalization:
+  - 归还或偿还期待外化为可见约定：借据、日历标记、伸手指约定时间、还款进度表。
+  - source 对物品的持续所有权外化为视线跟随、伸手提醒或保管抵押品。
+  timing: 目标表达‘borrow’必须出现在观众已经看到转移完成，并理解到‘这不是赠予或买卖，而是要还或要还钱’之后；不要让语音先于事件出现。
+inventory:
+  word: borrow
+  version: 1
+  evidence_digest: sha256:4ea6d43aa9fe1e8d36f5bd147c8ae34092b843dbe15ddb8145313018fc20b0f0
+  sense_id: borrow-01
+  identity_digest: sha256:eae6c5404179ce48a498aa2ccd75c5f6a3fe47fe0f64d90e8311d29cceefff39
+semantic_identity:
+  semantic_type: temporary_possession_transfer
+  dimension: temporal
+  change_of_state: true
+  causative: false
+  valency: transitive
+inventory_source_entries:
+- borrow-dict-001
+- borrow-dict-002
+semantic_revision: 1
+provenance:
+  sources:
+  - type: dictionary
+    citation: https://kaikki.org/dictionary/English/meaning/b/bo/borrow.jsonl
+    license: CC-BY-SA
+
+# ============================================================
+# G. 教学原型建议 (非权威, 仅供 Holistic Course Author 参考)
+# ============================================================
+teaching_profile:
+  primary_archetype: role_perspective
+  suggested_capabilities:
+  - participant_map
+  - scene_observation
+  - single_choice
+  - binary_judgment
+  - boundary_choice
+  special_risks:
+  - viewpoint_dependence
+  - event_perspective_shift

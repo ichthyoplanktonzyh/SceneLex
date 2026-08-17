@@ -1,0 +1,534 @@
+{
+  "schema_version": "1.0",
+  "course_id": "messy-01-zhcn-v1",
+  "target": {
+    "sense_id": "messy-01",
+    "lemma": "messy",
+    "pos": "adjective",
+    "ipa": "/ˈmɛsi/",
+    "learner_l1": "zh-CN",
+    "target_l2": "en"
+  },
+  "author_intent": {
+    "course_thesis": "messy 的判断轴是「可见的排列与形态」——东西不在该在的位置、方向不一、整体明显不整齐；它不同于「脏」（表面污物）、不同于「东西多」（cluttered），也不用于抽象的局面「乱」（chaotic），也不用于表面损坏的破败场面（wrecked/trashed）。",
+    "learner_start": "学习者以中文为母语，熟悉「乱」「脏乱」等说法，知道「房间很乱」这类日常表达，但尚未稳定绑定 messy 这个 L2 符号；容易把「乱」的宽泛义（包括抽象局面）与「脏」的维度合并迁移到 messy。",
+    "intended_outcome": "学习者能把 messy 稳定用于可见的物理排列无序（房间、桌面、头发、字迹等）；面对整齐但有污渍、东西多但整齐、抽象局面、表面损坏等反例时能正确排除；并在后续复习中保持对词的回忆、对 dirty 边界的再提取，以及更自然 L2 句型的使用。",
+    "design_rationale": "首学阶段先用纯观察与两轮对比，建立「排列/位置」这一可观察维度，特别是让「排列无序」与「表面污渍」分离，并确立「整体可见」的判据；绑定符号前不出现任何目标 L2。绑定后先通过 l2_grounding 回看 dirty 作为系统预绑定对照词，使 boundary_choice 的两个 L2 lemma 都可用，然后用 boundary 题把 messy/dirty 的词汇对比固化；之后用迁移题封堵「抽象乱」「数量多=乱」「表面损坏=乱」三个 false positive，并用正迁移把对象类型从房间扩展到头发、字迹。复习沿同一主线：先回忆房间场景，再推进到头发场景，中间插入一次 messy/dirty 边界再提取以对抗「脏乱」连用的持续干扰，最后纳入更自然的 L2 句型（so messy that）。"
+  },
+  "steps": [
+    {
+      "id": "s1_see_room",
+      "stage": "learning_flow",
+      "trigger": "initial",
+      "primitive": "scene_observation",
+      "purpose": "让学习者先整体观察一个「物品不在该在的位置」的房间，不给出任何命名，只建立可观察经验。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "content": {
+        "episode": "你推开一扇门，看到房间的全貌：地板上散落着外套、帽子和两三只鞋；\n书桌上书本和纸张摞得歪歪扭扭，几支笔分别放在桌角、键盘边和书堆上；\n床上的被子团成一团堆在床尾，枕头歪到一边；椅背上搭着一件衬衫。\n房间里没有明显的灰尘或污渍，每样东西看起来都还算干净，\n只是不在它该在的位置。"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "s2_evidence",
+      "stage": "learning_flow",
+      "trigger": "initial",
+      "primitive": "evidence_highlight",
+      "purpose": "把「可见排列无序」外显为具体可观察线索，为后续判断建立证据基础。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "content": {
+        "episode": "还是这个房间。停下来，按顺序看几个角落。",
+        "evidence": [
+          "衣服、鞋子散落在地板和椅子上，没有收进衣柜或鞋柜。",
+          "书本和纸张堆叠的方向不一致，边缘没有对齐。",
+          "同一种类的笔分散在桌面不同的地方，没有集中在一起。",
+          "被子团成一堆，没有铺平，枕头也歪着。",
+          "整体一眼看过去，找不到一个统一的排列方向。"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "s3_dimension",
+      "stage": "learning_flow",
+      "trigger": "initial",
+      "primitive": "binary_judgment",
+      "purpose": "绑定前先让学习者区分「排列无序」与「表面不洁」两条独立维度，为后续 messy/dirty 边界打基础。",
+      "addresses": [
+        "misc-1"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "content": {
+        "episode": "两个房间，都拍了全景。甲房：地板上到处是衣服和书本，椅背上搭着外套，\n被子堆成一团，桌面上的纸张方向不一——不过地板和桌椅都擦得很干净，\n没有污渍。乙房：地板上有几块明显的泥脚印和一片洒落的酱油，\n桌面玻璃上也有指印——但所有物品都收在柜子里、放在该放的位置，\n桌面整整齐齐。",
+        "evidence": [
+          "看排列：物品是否在它该在的位置、方向是否一致。",
+          "看表面：地板上、桌面上是否有污渍或脏痕。"
+        ],
+        "question": "哪种状态属于「物品不在该在的位置、整体排列不整齐」？",
+        "options": [
+          {
+            "id": "甲房",
+            "text": "甲房——物品散落各处、方向不一，整体没有整齐的样子。",
+            "feedback": "对。判断的关键在排列：甲房的东西没有待在该在的地方，方向不齐，\n整体不整齐。乙房虽然地板有泥脚印、桌面有指印，但物品都归位了——\n那是「表面不洁」，不是这里讨论的状态。"
+          },
+          {
+            "id": "乙房",
+            "text": "乙房——物品都归位了，只是表面有污渍。",
+            "feedback": "再仔细看排列：乙房的东西都收在柜子里、放在该放的位置，桌面整齐；\n地板上的泥脚印和酱油属于「表面不洁」，那是另一个维度。\n这里描述的是「物品位置和排列无序」，所以应选甲房——\n物品散落各处、方向不齐、整体不整齐。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "甲房"
+      }
+    },
+    {
+      "id": "s4_whole_visible",
+      "stage": "learning_flow",
+      "trigger": "initial",
+      "primitive": "binary_judgment",
+      "purpose": "建立「无序必须整体可见」的判据，防止把单个局部偏差直接当成整体 messy。",
+      "addresses": [
+        "misc-4"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "content": {
+        "episode": "再看两间房间。甲房：整个桌面和地面都很整齐，只有一个小杯子没放回杯垫上，\n歪在桌子边缘。乙房：书桌抽屉半开，里面的文具散落在桌面上，\n好几张纸方向不一地叠在一起，椅背上搭着外套，地上还有两三双鞋，\n彼此朝不同方向。",
+        "evidence": [
+          "注意：是一处小细节偏了，还是多个部分同时偏离。",
+          "注意：整体看过去有没有一个整齐的轮廓。"
+        ],
+        "question": "哪种状态会被看作「整体明显不整齐」？",
+        "options": [
+          {
+            "id": "乙房",
+            "text": "乙房——多个部分都偏离了原本的位置，整体一看就不整齐。",
+            "feedback": "对。乙房是多个组成部分各自偏离了原本的位置，整体可见地不整齐。\n甲房虽然也有一个小杯子偏了，但其余都整齐，整体看起来仍然整齐——\n判断的核心是「无序是否整体可见」，而不是任何一个细节是否完美。"
+          },
+          {
+            "id": "甲房",
+            "text": "甲房——只是一个小东西没放好，整体看着还是整齐的。",
+            "feedback": "再看整体：甲房只有一个杯子没放回杯垫，其余部分都整齐——\n单独一个局部偏位不会让整个房间显得不整齐。\n应选乙房：文具散落、纸张方向不一、椅背挂外套、地上横着几双鞋，\n多个部分各自偏离原位，整体一眼看去就是不整齐的。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "乙房"
+      }
+    },
+    {
+      "id": "s5_reveal",
+      "stage": "learning_flow",
+      "trigger": "initial",
+      "primitive": "symbol_reveal",
+      "purpose": "首次揭示目标 L2 拼写与发音，将符号绑定到已建立的可见无序经验上。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "content": {
+        "l2_word": "messy",
+        "ipa": "/ˈmɛsi/",
+        "presentation": "刚才你看到的那些状态——物品不在该在的位置、方向不一、整体明显不整齐——在英语里用这个词来形容。它说的是「排列和形态」，不是「污渍」，也不是「东西多」。",
+        "minimal_l1_gloss": "对，就是刚才那种「物品不在该在的位置、整体不整齐」的状态。"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "s6_pronounce",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "pronunciation",
+      "purpose": "提供发音锚点，让学习者熟悉 /ˈmɛsi/ 的音形对应。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "content": {
+        "l2_word": "messy",
+        "ipa": "/ˈmɛsi/"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "s7_ground",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "l2_grounding",
+      "purpose": "把新符号锚定到刚经历过的房间场景，给出自然 L2 句、句型与搭配。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "content": {
+        "source_step_id": "s1_see_room",
+        "l2_realization": "This room is messy.",
+        "constructions": [
+          "[place/thing] is messy —— 这个房间整体不整齐 / 这个桌面不整齐",
+          "a messy [noun] —— a messy desk（一张不整齐的书桌）/ a messy room（一间不整齐的房间）",
+          "look/get messy —— 看起来不整齐 / 变得不整齐"
+        ],
+        "collocations": [
+          "messy room 不整齐的房间",
+          "messy desk 不整齐的书桌",
+          "messy hair 乱翘的头发",
+          "messy handwriting 歪歪扭扭的字迹"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "s7b_dirty_ground",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "l2_grounding",
+      "purpose": "确认 dirty 作为系统预绑定对照词，并把它回看锚定到之前「表面不洁但排列整齐」的场景，为接下来的边界对比做准备。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "content": {
+        "source_step_id": "s3_dimension",
+        "l2_realization": "The second room is dirty, but it is not messy.",
+        "constructions": [
+          "[thing] is dirty —— 表面有污物、不干净",
+          "[thing] is not messy —— 排列并不乱"
+        ],
+        "collocations": [
+          "dirty floor 有污渍的地板",
+          "dirty kitchen 表面不干净的厨房",
+          "get dirty 变脏"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "s8_boundary_dirty",
+      "stage": "learning_flow",
+      "trigger": "initial",
+      "primitive": "boundary_choice",
+      "purpose": "用两个可用的 L2 词正式固化 messy 与 dirty 的维度区分，正面处理「脏乱」连用造成的最大干扰。",
+      "addresses": [
+        "misc-1"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "content": {
+        "episode": "厨房的全景：台面和地板上能看到油渍、水痕和几处污点；\n但锅碗都洗净收进了柜子，调料瓶在架子上整齐排成一排，\n台面上没有乱放的东西。",
+        "options": [
+          {
+            "sense_id": "messy-01",
+            "text": "messy"
+          },
+          {
+            "sense_id": "dirty-01",
+            "text": "dirty"
+          }
+        ],
+        "correct_sense_id": "dirty-01",
+        "explanation": [
+          "这个厨房的问题在「表面不干净」——油渍、水痕、污点都附着在表面上；但物品都在该在的地方，排列整齐。所以母语者会选 dirty（表面有污物），不会选 messy。",
+          "messy 判断的是「东西是否在该在的位置、整体排列是否整齐」；dirty 判断的是「表面是否有污物」。两条维度可以同时成立，也可以各自独立成立。"
+        ]
+      },
+      "evaluation": {
+        "kind": "sense_choice",
+        "correct_sense_id": "dirty-01"
+      }
+    },
+    {
+      "id": "s9_transfer_abstract",
+      "stage": "learning_flow",
+      "trigger": "initial",
+      "primitive": "transfer_judgment",
+      "purpose": "封堵中文「乱」的抽象义迁移，强调本词义要求可见的物理排列无序。",
+      "addresses": [
+        "misc-2"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "content": {
+        "episode": "新闻画面：因为临时管制，城市里多条道路严重拥堵，车流走走停停，\n路口有警察在指挥，司机们排着长队等待。记者说：「现在的局面很乱。」",
+        "evidence": [
+          "拥堵的是车流和调度秩序。",
+          "画面上没有一个具体的空间或物品群在「排列」上偏离整齐。",
+          "中文的「乱」可以形容这种抽象局面，但需要确认它是否属于 messy 描述的那类状态。"
+        ],
+        "question": "如果用刚学的 messy 来形容这个交通局面，合适吗？",
+        "options": [
+          {
+            "id": "opt_yes",
+            "text": "合适——局面很乱，英语里也这么说。",
+            "feedback": "再想一下 messy 描述的是什么：看得见的物品或表面缺少整齐排列。\n交通拥堵是「车流秩序」的问题，没有一个具体空间里的物品偏离排列位置。\n中文「乱」的范围比 messy 宽，它可以形容局势乱、交通乱；\n但 messy 说的是可见的物理无序，所以这个局面母语者更常说 chaotic。"
+          },
+          {
+            "id": "opt_no",
+            "text": "不合适——messy 说的是可见的物品排列不整齐，这里不是。",
+            "feedback": "对。messy 描述的是「看得见的物理排列无序」——物品不在该在的位置、\n方向不一、整体不整齐。交通拥堵是抽象的秩序状态，画面上没有物品群\n在排列上偏离整齐，所以这个局面应用别的词（如 chaotic），不是 messy。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_no"
+      }
+    },
+    {
+      "id": "s10_transfer_visible",
+      "stage": "learning_flow",
+      "trigger": "initial",
+      "primitive": "transfer_judgment",
+      "purpose": "正迁移：把 messy 从房间推广到头发、字迹等可见产物，确认「任何由多个可见部分构成、可整体观察的对象」都适用。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "content": {
+        "episode": "两个小场景。① 一个人刚睡醒：头发向好几个方向翘起来，有的地方贴在头皮上，\n有的地方竖着，整体没有整齐的轮廓。② 一张手写字条：字与字的间距忽宽忽窄，\n有的字向右斜、有的向左斜，几道涂改线交叠在一起，整张字条很难看清楚。",
+        "evidence": [
+          "① 头发由很多绺组成，各自方向不一致。",
+          "② 字迹有很多笔画和涂改线，方向、间距都不一致。",
+          "两个场景都没有污渍，也不是东西太多。"
+        ],
+        "question": "这两种情形能用 messy 形容吗？",
+        "options": [
+          {
+            "id": "opt_both",
+            "text": "都可以——它们都是多个可见部分缺少整齐排列。",
+            "feedback": "对。messy 不限于房间：头发、字迹、桌面、衣柜都是\n「由多个可见部分构成、可以整体观察」的对象。只要这些部分偏离了整齐的\n排列或形态，整体被一眼看出不整齐，就可以用 messy。"
+          },
+          {
+            "id": "opt_room_only",
+            "text": "只有房间或空间才能说 messy，头发和字迹不行。",
+            "feedback": "messy 不限于房间或空间。头发由很多绺组成、方向乱翘；\n字迹由笔画和字组成、间距和方向不齐——它们都是可见的对象或产物，\n多个组成部分缺少整齐排列，母语者会说 messy hair、messy handwriting。"
+          },
+          {
+            "id": "opt_none",
+            "text": "都不能——刚学的词只用来形容「东西乱放」的房间。",
+            "feedback": "刚学的词描述的是「可见的排列无序」，不挑对象种类。\n头发向多个方向乱翘、字迹方向和间距不齐，都是多个可见部分缺少整齐排列，\n可以用 messy hair 和 messy handwriting 来表达。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_both"
+      }
+    },
+    {
+      "id": "s11_transfer_quantity",
+      "stage": "learning_flow",
+      "trigger": "initial",
+      "primitive": "transfer_judgment",
+      "purpose": "区分「数量多」与「排列乱」，封堵 cluttered 混淆。",
+      "addresses": [
+        "misc-3"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "content": {
+        "episode": "储物间：架子和地面上堆满了收纳箱、书和日用品，几乎没剩多少空处；\n但每个箱子都按标签叠放，书按大小顺序排列，边缘对齐，过道也能正常走人。",
+        "evidence": [
+          "东西非常多，空间显得满满当当。",
+          "但每样东西都在该在的位置，方向一致，排列整齐。"
+        ],
+        "question": "这个储物间是 messy 吗？",
+        "options": [
+          {
+            "id": "opt_yes_quantity",
+            "text": "是——东西这么多，看起来就乱。",
+            "feedback": "数量多不等于排列乱。这个储物间虽然满满当当，但每样东西都归位、\n方向一致、边缘对齐——母语者不会说它 messy。「东西多但整齐」的情况下，\n更自然的说法是 cluttered（强调东西很多、满满当当），\n而 messy 强调的是「东西不在该在的位置、排列不整齐」。"
+          },
+          {
+            "id": "opt_no_tidy",
+            "text": "不是——东西虽然多，但都归位整齐。",
+            "feedback": "对。判断 messy 看的是排列：物品是否在该在的位置、方向是否一致、\n整体是否整齐。这个储物间只是东西多，排列并不乱，所以它不是 messy。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_no_tidy"
+      }
+    },
+    {
+      "id": "s12_transfer_damage",
+      "stage": "learning_flow",
+      "trigger": "initial",
+      "primitive": "transfer_judgment",
+      "purpose": "封堵「表面损坏/破坏场面」与 messy 的混淆，排除 wrecked/trashed 边界。",
+      "addresses": [
+        "misc-5"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "content": {
+        "episode": "一间房间的门玻璃有一道裂缝，墙纸有一块破损脱落，窗台也有裂痕；\n但房间里的书按大小在书架上排好，椅子在桌前，床铺整齐，\n没有乱放的东西。",
+        "evidence": [
+          "破损的是表面和结构，不是物品的位置排列。",
+          "物品仍在原位，方向一致，整体排列整齐。",
+          "画面看起来「破败、损坏」，但并不是「东西不在该在的位置」。"
+        ],
+        "question": "这个房间能用 messy 形容吗？",
+        "options": [
+          {
+            "id": "opt_no_damage",
+            "text": "不能——破损是损坏，不是排列无序。",
+            "feedback": "对。messy 说的是物品或组成部分的排列与形态无序；\n表面损坏、被破坏的场面更接近 wrecked/trashed。\n这里物品仍归位整齐，所以不是 messy。"
+          },
+          {
+            "id": "opt_yes_damage",
+            "text": "能——看起来破败不齐，就是乱。",
+            "feedback": "再想一下 messy 判断的不是「破损程度」，而是「物品是否不在该在的位置、\n排列是否整齐」。这间房虽然门玻璃裂、墙纸破，但书、椅子、床铺都归位整齐，\n所以不能形容为 messy；破损的场面更适合 wrecked/trashed。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_no_damage"
+      }
+    },
+    {
+      "id": "r1_recall",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_reveal",
+      "purpose": "next_day",
+      "addresses": [],
+      "timing": "next_day",
+      "scaffold_level": "early_post_binding",
+      "content": {
+        "episode": "你推开房间的门：地板上散落着外套、帽子和两三只鞋；\n书桌上书本和纸张摞得歪歪扭扭，笔分散在几个角落；\n床上的被子团成一堆，枕头歪着。表面没有污渍，只是东西都不在该在的位置。\n这是什么词形容的状态？",
+        "l2_word": "messy",
+        "ipa": "/ˈmɛsi/",
+        "minimal_gloss": "对，就是这种「物品不在该在的位置、整体不整齐」的可见状态。"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "r1_selfgrade",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_self_grade",
+      "purpose": "next_day",
+      "addresses": [],
+      "timing": "next_day",
+      "scaffold_level": "early_post_binding",
+      "content": {
+        "l2_word": "messy",
+        "ipa": "/ˈmɛsi/"
+      },
+      "evaluation": {
+        "kind": "self_grade"
+      }
+    },
+    {
+      "id": "r2_recall_transfer",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_reveal",
+      "purpose": "3_days_later",
+      "addresses": [],
+      "timing": "3_days_later",
+      "scaffold_level": "later_post_binding",
+      "content": {
+        "episode": "一个人刚睡醒：头发向好几个方向翘起，有的贴在头皮上、有的竖着，\n整体没有整齐的轮廓。这个词也可以用来形容这个状态——是哪个词？",
+        "l2_word": "messy",
+        "ipa": "/ˈmɛsi/",
+        "minimal_gloss": "对，messy hair——头发乱翘、不整齐。"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "r2_ground_later",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "l2_grounding",
+      "purpose": "3_days_later",
+      "addresses": [],
+      "timing": "3_days_later",
+      "scaffold_level": "later_post_binding",
+      "content": {
+        "source_step_id": "s10_transfer_visible",
+        "l2_realization": "His handwriting is so messy that I can't read it.",
+        "constructions": [
+          "so messy that [clause] —— 乱到……的程度",
+          "look/get messy —— 看起来不整齐 / 变得不整齐"
+        ],
+        "collocations": [
+          "messy handwriting 歪歪扭扭的字迹",
+          "messy hair 乱翘的头发"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "r2_selfgrade",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_self_grade",
+      "purpose": "3_days_later",
+      "addresses": [],
+      "timing": "3_days_later",
+      "scaffold_level": "later_post_binding",
+      "content": {
+        "l2_word": "messy",
+        "ipa": "/ˈmɛsi/"
+      },
+      "evaluation": {
+        "kind": "self_grade"
+      }
+    },
+    {
+      "id": "r3_boundary_dirty",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "boundary_choice",
+      "purpose": "7_days_later",
+      "addresses": [],
+      "timing": "7_days_later",
+      "scaffold_level": "later_post_binding",
+      "content": {
+        "episode": "厨房台面上所有调料瓶按大小在架子上排成一排，锅碗收进柜子；\n但台面上有大片油污和水痕，抹布上也有黑点。这个状态应该用哪个词？",
+        "options": [
+          {
+            "sense_id": "messy-01",
+            "text": "messy"
+          },
+          {
+            "sense_id": "dirty-01",
+            "text": "dirty"
+          }
+        ],
+        "correct_sense_id": "dirty-01",
+        "explanation": [
+          "这个厨房的问题是「表面不干净」——油污、水痕都附着在表面上；物品本身都归位整齐，所以应选 dirty。",
+          "对比：如果东西散落一地但表面干净，那就应选 messy。乱与脏是两条独立维度，复习时仍然要分开判断。"
+        ]
+      },
+      "evaluation": {
+        "kind": "sense_choice",
+        "correct_sense_id": "dirty-01"
+      }
+    }
+  ]
+}

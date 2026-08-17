@@ -1,0 +1,42 @@
+Capability Report — Teaching Archetype MVP
+capabilities_version=1 registered=18
+
+[entity_category]
+  suggested: binary_judgment, multi_label_choice, object_inspection, scene_observation, single_choice
+  registered: binary_judgment, multi_label_choice, object_inspection, scene_observation, single_choice
+  course_used: binary_judgment, multi_label_choice, object_inspection, scene_observation, single_choice
+
+[visible_attribute]
+  suggested: binary_judgment, boundary_choice, evidence_highlight, scene_observation, transfer_judgment
+  registered: binary_judgment, boundary_choice, evidence_highlight, scene_observation, transfer_judgment
+  course_used: binary_judgment, boundary_choice, evidence_highlight, scene_observation, transfer_judgment
+
+[spatial_path]
+  suggested: binary_judgment, scene_observation, single_choice, spatial_stage, transfer_judgment
+  registered: binary_judgment, scene_observation, single_choice, spatial_stage, transfer_judgment
+  course_used: binary_judgment, scene_observation, single_choice, spatial_stage, transfer_judgment
+
+[role_perspective]
+  suggested: binary_judgment, boundary_choice, participant_map, scene_observation, single_choice
+  registered: binary_judgment, boundary_choice, participant_map, scene_observation, single_choice
+  course_used: binary_judgment, participant_map, scene_observation, single_choice
+  not_used_by_courses: boundary_choice
+
+[threshold_scale]
+  suggested: binary_judgment, scalar_threshold, single_choice, transfer_judgment
+  registered: binary_judgment, scalar_threshold, single_choice, transfer_judgment
+  course_used: binary_judgment, scalar_threshold, single_choice, transfer_judgment
+
+[intention_cues]
+  suggested: binary_judgment, evidence_highlight, scene_observation, single_choice, transfer_judgment
+  registered: binary_judgment, evidence_highlight, scene_observation, single_choice, transfer_judgment
+  course_used: binary_judgment, evidence_highlight, scene_observation, transfer_judgment
+  not_used_by_courses: single_choice
+
+[cognitive_update]
+  suggested: binary_judgment, information_state, scene_observation, single_choice
+  registered: binary_judgment, information_state, scene_observation, single_choice
+  course_used: binary_judgment, information_state, scene_observation, single_choice
+
+全部 14 门课实际使用的 primitive: binary_judgment, boundary_choice, evidence_highlight, information_state, l1_confirmation, l2_grounding, multi_label_choice, object_inspection, participant_map, pronunciation, recall_reveal, recall_self_grade, scalar_threshold, scene_observation, single_choice, spatial_stage, symbol_reveal, transfer_judgment
+注册但未被任何课程使用: （无）

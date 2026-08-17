@@ -1,0 +1,611 @@
+{
+  "schema_version": "1.0",
+  "course_id": "course-across-01-zh-cn",
+  "target": {
+    "sense_id": "across-01",
+    "lemma": "across",
+    "pos": "preposition",
+    "ipa": "/əˈkɹɔs/",
+    "learner_l1": "zh-CN",
+    "target_l2": "en"
+  },
+  "author_intent": {
+    "course_thesis": "先让学习者用可观察场景建立‘figure 连续地从中间物的一侧到达或延伸到另一侧’的跨越关系，再把该关系绑定到介词 across（后接被跨过的中间物），最后用静态‘对面’、水平方向窄化、内部穿透等反例巩固边界并迁移。",
+    "learner_start": "L1 为中文；已具备基本空间认知；尚未认识目标词 across；可能受中文‘横’‘对面’的干扰，倾向把 across 理解为水平方向或静态位置。",
+    "intended_outcome": "学习者面对跨河、过街、翻墙、桥横跨等场景时，能判断‘从 landmark 的一侧到另一侧的连续跨越或延伸’是否成立；能用 across + 被跨过的名词表达（walk/swim/stretch across the river/field/bridge）；能排除静态‘在对面’、单纯水平移动、进入中间物内部穿行等反例；后续复习能从 L1 场景反向回忆 across。",
+    "design_rationale": "本义项是空间路径/延伸关系，所以先用空间舞台让学习者操作路径的几何区分，再在绑定前用‘静态对面 vs 完整跨越’的 L1 画面对比把核心判别标准提纯；绑定后立即用 grounding 锚定到运动句，再用照片判断题建立静态延伸用法；两个迁移判断分别处理方向窄化与内部穿透这两个高风险反例；复习按 early→later 的脚手架梯度，从 L1 反向回忆走向 L2 句子语境判别。未使用 boundary_choice，因为最近邻义项 across-02 与目标词形完全相同，用 boundary_choice 两个选项都会显示 across，无法从词形上区分；改用 L1 判别与 L2 语境判别完成同样的边界工作。"
+  },
+  "steps": [
+    {
+      "id": "learn_01_scene",
+      "stage": "learning_flow",
+      "trigger": "initial",
+      "primitive": "scene_observation",
+      "purpose": "建立第一个经验场景：人从河的一边走到另一边，途中连续经过河面；让学习者先只观察‘起点侧—中间物—终点侧’三个空间要素。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 45,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "episode": "村子中间有一条小河，河水不深。小红要去找河那一边的朋友。她先站在河这面的岸边，脱掉鞋子，卷起裤脚，然后走进水里。她一步一步趟过河面，水花在她脚边散开；她走到河中间时水没过小腿，但她继续向前，最后踏上河那一边的干燥地面，朝朋友挥手。"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "learn_02_spatial_stage",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "spatial_stage",
+      "purpose": "让学习者在 2D 舞台上亲手选出‘从一边到另一边、连续经过中间河面’的路线，排除绕行与半途而废的反例，建立路径与 landmark 的几何关系。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 60,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "stage_title": "小红要从河的这一边走到河的那一边。哪条路线符合‘从一边到另一边、中间经过河面’？",
+        "stage_width": 400,
+        "stage_height": 300,
+        "start": {
+          "x": 50,
+          "y": 150
+        },
+        "end": {
+          "x": 350,
+          "y": 150
+        },
+        "regions": [
+          {
+            "id": "river",
+            "label": "小河",
+            "shape": "rect"
+          }
+        ],
+        "paths": [
+          {
+            "id": "path_cross",
+            "label": "路线一：直穿河面",
+            "points": [
+              [
+                50,
+                150
+              ],
+              [
+                150,
+                150
+              ],
+              [
+                250,
+                150
+              ],
+              [
+                350,
+                150
+              ]
+            ]
+          },
+          {
+            "id": "path_around",
+            "label": "路线二：绕过小河的上游",
+            "points": [
+              [
+                50,
+                150
+              ],
+              [
+                50,
+                60
+              ],
+              [
+                350,
+                60
+              ],
+              [
+                350,
+                150
+              ]
+            ]
+          },
+          {
+            "id": "path_mid",
+            "label": "路线三：走到河中间就停",
+            "points": [
+              [
+                50,
+                150
+              ],
+              [
+                150,
+                150
+              ],
+              [
+                250,
+                150
+              ]
+            ]
+          }
+        ],
+        "correct_path_id": "path_cross",
+        "feedback": "路线一是唯一一条从河的这一边出发、连续经过河面、最后到达河那一边的路线。路线二绕开了小河，没有经过河面；路线三只走到河中间就停了，没有到达河的另一边。"
+      },
+      "evaluation": {
+        "kind": "path_choice",
+        "correct_path_id": "path_cross"
+      }
+    },
+    {
+      "id": "learn_03_static_vs_cross",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "binary_judgment",
+      "purpose": "处理 misc-1（把 across 当成静态‘在对面’）：通过两幕画面对比，让学习者认识到必须有从一边到另一边的路径或延伸，而不是只看到人在另一边。",
+      "addresses": [
+        "misc-1"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 45,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "再看两幕画面。画面一：一个人站在河对岸的岸边，手里拿着钓竿，正在钓鱼。画面二：一个人从河的这边岸走进水里，一路游到河的那一边，然后上岸。",
+        "evidence": [
+          "两幕里都有‘河’这个中间物，而且都能说这个人最后在河的另一边。",
+          "区别在于：画面一没有任何从这边到那边的过程或延伸；画面二能看到从这边下水、游过河面、到那边上岸的完整路线。"
+        ],
+        "question": "哪一幕里，能看到从河的一边到另一边的完整移动过程，而不只是最后站在那边？",
+        "options": [
+          {
+            "id": "opt_fish",
+            "text": "画面一：在河对岸钓鱼的人"
+          },
+          {
+            "id": "opt_swim",
+            "text": "画面二：从这边游到那边的人"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_swim"
+      }
+    },
+    {
+      "id": "learn_03b_error_static",
+      "stage": "learning_flow",
+      "trigger": "on_error",
+      "primitive": "evidence_highlight",
+      "purpose": "若学习者把静态‘在对面’误选为跨越关系，用证据高亮再讲一次判别标准：没有跨越轨迹或延伸就没有 across 关系。",
+      "addresses": [
+        "misc-1"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "回到刚才两幕画面。钓鱼的人确实站在河的另一边，但这个画面只显示‘人已经在那边’，没有显示他从这边到那边的过程，也没有一座桥或一条路把两岸连起来。",
+        "evidence": [
+          "要判断这种关系，需要看到：起点在这边、路线连续经过中间的河、终点在那边。",
+          "钓鱼一幕缺少中间的路线；游泳一幕三样都有。"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "learn_04_symbol_reveal",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "symbol_reveal",
+      "purpose": "首次把‘figure 连续从 landmark 的一侧跨越到另一侧’的经验与 L2 符号 across 绑定，给出拼写、发音与最小 L1 确认。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "l2_word": "across",
+        "ipa": "/əˈkɹɔs/",
+        "presentation": "刚才看到的‘从河的这一边到河的那一边、中间经过河面’这种关系，英语里用 across 这个词表示。它放在被跨过的物体或空间前面，组成 across the river、across the field 这样的说法。",
+        "minimal_l1_gloss": "横过；跨越"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "learn_05_pronunciation",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "pronunciation",
+      "purpose": "提供发音按钮，让学习者听到并跟读 across。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 20,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "l2_word": "across",
+        "ipa": "/əˈkɹɔs/"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "learn_06_grounding_motion",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "l2_grounding",
+      "purpose": "把 across 锚定回最初的运动场景，给出自然 L2 句、句型与搭配。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 40,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "source_step_id": "learn_01_scene",
+        "l2_realization": "She walked across the river.",
+        "constructions": [
+          "[名词] [动词] across [名词]",
+          "There is a [名词] across [名词]."
+        ],
+        "collocations": [
+          "walk across 走着跨过",
+          "swim across 游着跨过",
+          "run across 跑着穿过",
+          "stretch across 延伸着横跨"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "learn_07_bridge_span",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "single_choice",
+      "purpose": "建立 across 的静态延伸用法（misc-4）：不动的桥也能构成跨越关系；同时用‘沿着河岸跑’和‘绕圈回到原点’作反例。",
+      "addresses": [
+        "misc-4"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 50,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "有三张照片。照片一：一座木桥横跨小河，桥的一端搭在这边岸，另一端搭在那一边岸，桥身从这头一直连到那头。照片二：一个人沿着河边的小路跑步，跑了几百米，始终没有离开河岸。照片三：一个人划着小船绕着湖心岛转了一圈，又回到了出发的位置。",
+        "evidence": [
+          "照片一里，桥的两端分别在河的两岸，桥身连续跨过河面——这是一种跨越。",
+          "照片二里，人始终在河这一边的岸上，没有从一边到另一边。",
+          "照片三里，船绕了一圈回到原点，没有到达‘另一边’作为终点。"
+        ],
+        "question": "哪一张照片可以用 across 来描述？",
+        "options": [
+          {
+            "id": "opt_bridge",
+            "text": "照片一：桥横跨小河"
+          },
+          {
+            "id": "opt_run",
+            "text": "照片二：沿着河岸跑步"
+          },
+          {
+            "id": "opt_boat",
+            "text": "照片三：绕湖心岛一圈回到原点"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_bridge"
+      }
+    },
+    {
+      "id": "learn_08_transfer_wall",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "transfer_judgment",
+      "purpose": "迁移：across 不要求水平方向（misc-2）；翻墙这种上下方向但跨越中间物的路径也是 across。",
+      "addresses": [
+        "misc-2"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 40,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "小杰要翻过一堵矮墙，去墙那一边的院子。他先爬上墙头，再从墙头跳到那边的地上。整段路线从墙的这一边到墙的那一边，中间经过了墙。",
+        "evidence": [
+          "墙是一个把空间分成两边的中间物。",
+          "小杰的路线连续地从墙的一边翻到另一边；方向是向上再向下，而不是左右水平。"
+        ],
+        "question": "这个‘翻墙过去’的场景，可以用 across 来说吗？",
+        "options": [
+          {
+            "id": "opt_yes",
+            "text": "可以，因为小杰的路线从墙的一边跨到了另一边，中间经过了墙"
+          },
+          {
+            "id": "opt_no_horizontal",
+            "text": "不可以，因为翻墙是上下方向，不是水平方向"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_yes"
+      }
+    },
+    {
+      "id": "learn_08b_error_direction",
+      "stage": "learning_flow",
+      "trigger": "on_error",
+      "primitive": "evidence_highlight",
+      "purpose": "若学习者把方向窄化为水平，澄清判断关键是从一边到另一边并跨过中间物，方向无关。",
+      "addresses": [
+        "misc-2"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "再看小杰翻墙：墙是一个把院子分成两边的中间物；他先爬上墙头，再从墙头落到另一边。",
+        "evidence": [
+          "判断的关键是路线是否从中间物的一边到了另一边，而不是运动方向。",
+          "小杰的路线虽然先向上再向下，但它完整地跨过了墙这个中间物，从一边到另一边。",
+          "across 不要求水平方向。"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "learn_09_transfer_tunnel",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "transfer_judgment",
+      "purpose": "处理 misc-5（进入中间物内部再离开不是 across）：卡车穿隧道这种‘进入山体内部’的路径与跨越表面/整体区域不同，用否定迁移划定边界，并为将来 through 埋下区辨伏笔。",
+      "addresses": [
+        "misc-5"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 45,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "episode": "一座山的山体里有一条隧道。隧道在山体这一侧有一个入口，穿过整座山的内部，从山体那一侧的出口出来。一辆卡车开进洞口，在黑暗的隧道里行驶，最后从另一侧的洞口开出。",
+        "evidence": [
+          "卡车确实从山的一侧到了另一侧。",
+          "但卡车的路线是进入山体内部穿行，山体本身不是被跨越其表面或上方，而是被从内部穿过。"
+        ],
+        "question": "这个‘开卡车穿过山体内部’的场景，可以用 across 来描述吗？",
+        "options": [
+          {
+            "id": "opt_no_tunnel",
+            "text": "不可以，因为车是进入山的内部穿过去，不是在山体表面或上方跨越过去"
+          },
+          {
+            "id": "opt_yes_tunnel",
+            "text": "可以，因为车也从山的一边到了另一边"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_no_tunnel"
+      }
+    },
+    {
+      "id": "learn_09b_error_tunnel",
+      "stage": "learning_flow",
+      "trigger": "on_error",
+      "primitive": "evidence_highlight",
+      "purpose": "若学习者把‘从一侧到另一侧但进入内部’误判为 across，再强调跨越关系是连续经过中间物表面或上方，进入内部是另一种空间关系。",
+      "addresses": [
+        "misc-5"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 30,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "episode": "再来看这辆卡车：它从山的这一侧洞口进入，在山的内部开了很久，再从那一侧的洞口出来。",
+        "evidence": [
+          "这条路线确实连接了山的两侧，但是它在山的内部穿行。",
+          "我们学的 across 关系，是路线连续经过中间物（比如河、马路、操场表面）或延伸物横跨中间物；进入山体内部、被山体包住的穿行是另一种空间关系。"
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "rev_01_recall_motion",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_reveal",
+      "purpose": "绑定完成后的第 1 天",
+      "addresses": [],
+      "timing": "绑定完成后的第 1 天",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 1,
+      "content": {
+        "episode": "一个人走进水里，从河的这边游到河的那一边，然后上岸。",
+        "l2_word": "across",
+        "ipa": "/əˈkɹɔs/",
+        "minimal_gloss": "横过；跨越"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "rev_02_self_grade_motion",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_self_grade",
+      "purpose": "同第 1 天，紧跟回忆之后",
+      "addresses": [],
+      "timing": "同第 1 天，紧跟回忆之后",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 1,
+      "content": {
+        "l2_word": "across",
+        "ipa": "/əˈkɹɔs/"
+      },
+      "evaluation": {
+        "kind": "self_grade"
+      }
+    },
+    {
+      "id": "rev_03_recall_extension",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_reveal",
+      "purpose": "绑定完成后的第 3 天",
+      "addresses": [],
+      "timing": "绑定完成后的第 3 天",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 3,
+      "content": {
+        "episode": "一座桥横跨小河：桥的一端搭在这边岸，另一端搭在那一边岸，桥身连续地从这头连到那头。",
+        "l2_word": "across",
+        "ipa": "/əˈkɹɔs/",
+        "minimal_gloss": "横过；跨越"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "rev_04_self_grade_extension",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_self_grade",
+      "purpose": "同第 3 天，紧跟回忆之后",
+      "addresses": [],
+      "timing": "同第 3 天，紧跟回忆之后",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 3,
+      "content": {
+        "l2_word": "across",
+        "ipa": "/əˈkɹɔs/"
+      },
+      "evaluation": {
+        "kind": "self_grade"
+      }
+    },
+    {
+      "id": "rev_05_l2_sentence_discrimination",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "single_choice",
+      "purpose": "绑定完成后的第 7 天",
+      "addresses": [],
+      "timing": "绑定完成后的第 7 天",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 7,
+      "content": {
+        "episode": "有两个英语句子。句子一：The truck drove across the road. 句子二：The truck was parked across the road. 现场画面：一辆卡车从马路的一边开到另一边，穿过了路面。",
+        "evidence": [
+          "句子一用动词 drove（开过去），表达的是卡车从路的一边开到另一边的过程。",
+          "句子二用 was parked（停着），表达的是卡车停在马路的另一边这一静态位置。",
+          "我们学过的 across 表示从一边到另一边、中间经过中间物的跨越关系。"
+        ],
+        "question": "要描述画面里‘卡车从马路的一边开到另一边、穿过路面’，应该选哪一句？",
+        "options": [
+          {
+            "id": "opt_drove",
+            "text": "句子一：The truck drove across the road."
+          },
+          {
+            "id": "opt_parked",
+            "text": "句子二：The truck was parked across the road."
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_drove"
+      }
+    },
+    {
+      "id": "rev_06_multi_label_apply",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "multi_label_choice",
+      "purpose": "绑定完成后的第 14 天",
+      "addresses": [],
+      "timing": "绑定完成后的第 14 天",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 14,
+      "content": {
+        "episode": "下面三个画面，哪些可以用 across 来描述？",
+        "evidence": [
+          "要符合 across，需要看到从中间物的这一边到另一边、连续跨越或延伸的关系。",
+          "如果只是站在另一边、或没有跨过中间物，就不算。"
+        ],
+        "question": "请选出所有可以用 across 描述的画面。",
+        "options": [
+          {
+            "id": "opt_dog",
+            "text": "一条狗从马路的这头跑到那头，穿过了马路",
+            "is_correct": true,
+            "feedback": "对：狗的路线从马路一边到另一边，中间经过了马路。"
+          },
+          {
+            "id": "opt_bridge_span",
+            "text": "一座木桥横跨小河，桥身从这边岸连到那边岸",
+            "is_correct": true,
+            "feedback": "对：桥是静止的延伸物，但它从河的一边延伸到另一边，也构成跨越。"
+          },
+          {
+            "id": "opt_person",
+            "text": "一个人站在马路对面的商店门口，没有显示他怎么过去的",
+            "is_correct": false,
+            "feedback": "这个画面只显示人在另一边，是静态位置，没有跨越的路径或延伸。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "multi_choice",
+        "correct_option_ids": [
+          "opt_dog",
+          "opt_bridge_span"
+        ]
+      }
+    }
+  ]
+}

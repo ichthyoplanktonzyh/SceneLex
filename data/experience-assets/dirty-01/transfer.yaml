@@ -1,0 +1,227 @@
+schema_version: '1.0'
+asset_type: transfer
+sense_id: dirty-01
+contract_hash: sha256:1dac7398d697e332cd4f545fdaa24f90633aea10666a2f78a3dd1d8051761d17
+units:
+- id: transfer-1
+  role: transfer
+  hypothesis_target: null
+  preserved_variables:
+  - surface_type
+  - visibility
+  - object_integrity
+  changed_variables:
+  - contaminant_type
+  - setting
+  - cleaning_evidence
+  semantic_spec:
+    judgment: 判断对象是否因表面附着外来污物而偏离洁净状态：户外水龙头金属表面上可见的鸟粪附着，物体本身完好，目标是 dirty。
+    surface_type: metal_tap
+    visibility: visible
+    object_integrity: intact
+    contaminant_type: bird_droppings
+    setting: outdoor_garden
+    cleaning_evidence: none
+  sequence: 1
+  experience:
+    episode: 花园角落的墙边装着一个金属水龙头。水龙头表面原本是光亮的银灰色。一根树枝从上方垂下来，正对着水龙头。走近看，水龙头的顶部和开关把手上有几处灰白色、带颗粒的斑块，形状不规则，边缘翘起。水龙头本身没有生锈，也没有破损，金属部分完好。
+    observable_evidence:
+    - 水龙头顶部和开关把手上有几处灰白色、带颗粒的斑块，边缘翘起。
+    - 斑块下方的金属表面完好，没有锈迹或裂纹。
+    - 上方的树枝正对着水龙头，附近地面上也有少量同样的灰白痕迹。
+    - 斑块边缘没有水冲过或布擦过的迹象。
+    surface_dimensions:
+    - name: 附着物形态
+      baseline: 表面没有可见的外来物，露出均匀的银灰色金属光泽
+      deviation: 顶部与把手上出现多处灰白色、带颗粒、边缘翘起的斑块
+    - name: 环境关联
+      baseline: 水龙头周围地面上没有与表面相似的痕迹
+      deviation: 水龙头位于花丛与下垂树枝之间，地面也有同样的灰白痕迹
+    - name: 擦拭痕迹
+      baseline: 表面没有近期被擦拭或冲洗留下的条纹
+      deviation: 斑块边缘没有水冲过或布擦过的迹象
+  interaction:
+    question: 根据你刚才观察到的水龙头表面，哪种说法符合实际情况？
+    answers:
+    - id: a1
+      text: 表面有灰白色颗粒斑块，斑块下方金属完好，需要擦拭才能恢复原先的光泽。
+      is_correct: true
+      feedback: 对——水龙头顶部和把手上的灰白斑块附着在金属表面上，下方金属没有破损；斑块使原本光亮的表面偏离了常态。
+    - id: a2
+      text: 表面没有外来附着物，只是旁边的工具和花盆没有放回原来的位置。
+      is_correct: false
+      feedback: 不对——你看到的是水龙头表面有灰白颗粒斑块，而不是周围物品摆放位置的问题；物品位置不在本单元要判断的表面状态里。
+- id: transfer-2
+  role: transfer
+  hypothesis_target: null
+  preserved_variables:
+  - surface_type
+  - contaminant_type
+  - object_integrity
+  changed_variables:
+  - visibility
+  - perception_channel
+  - setting
+  - cleaning_evidence
+  semantic_spec:
+    judgment: 判断对象是否因表面附着外来污物而偏离洁净状态：厨房台面上透明黏腻的残留物，肉眼不明显但触摸到黏腻且闻到酸馊味，目标是 dirty。
+    surface_type: countertop
+    contaminant_type: sticky_residue
+    object_integrity: intact
+    visibility: low_visibility
+    perception_channel: touch_and_smell
+    setting: kitchen
+    cleaning_evidence: none
+  sequence: 2
+  experience:
+    episode: 厨房的浅色台面上，乍看只有几处很淡的反光，没有明显的斑点或痕迹。走近后，手掌平贴上台面，能感到一小片区域发黏；手指抬起时，指尖和台面之间拉起一根细丝。同时一股发酸的气味从台面飘上来。这片区域周围没有抹布，也没有水渍。台面本身平整完好，没有裂缝或破损。
+    observable_evidence:
+    - 从正上方看，异常区域只有很淡的反光差异，没有明显色斑。
+    - 手掌平贴台面后抬起，指尖和台面之间拉起一根细丝。
+    - 靠近台面能闻到一股发酸的气味，气味位置与发黏区域重合。
+    - 台面平整完好，附近没有抹布、海绵或擦拭留下的痕迹。
+    surface_dimensions:
+    - name: 视觉可辨度
+      baseline: 台面颜色均匀，只需看一眼就能分辨表面是否与周围相同
+      deviation: 正上方看只有很淡的反光差异，眼睛几乎看不出问题
+    - name: 感知通道
+      baseline: 异常与否只靠眼睛就能确认
+      deviation: 眼睛看不出差别，手掌贴上后感到局部发黏，靠近后闻到酸味
+    - name: 环境位置
+      baseline: 厨房台面上没有明显的气味来源或黏腻区域
+      deviation: 台面中间位置出现一片摸起来发黏的区域，同时有持续酸味
+    - name: 擦拭痕迹
+      baseline: 台面上没有近期被擦拭或冲洗留下的水痕、布纹
+      deviation: 黏腻区域边缘没有擦痕，附近也没有抹布、海绵等工具
+  interaction:
+    question: 根据你看到、摸到和闻到的现象，这个台面处于哪种情况？
+    answers:
+    - id: a1
+      text: 台面只是有几道反光，表面和周围没有差别。
+      is_correct: false
+      feedback: 不对——虽然从正上方看不太明显，但手掌摸到局部发黏、靠近后闻到酸味，说明这一片表面有东西附着，和周围不一样。
+    - id: a2
+      text: 台面局部摸起来发黏、闻起来发酸，需要处理才能恢复原来平整、无味的状态。
+      is_correct: true
+      feedback: 对——黏腻触感和酸味都集中在同一片区域，外来附着物改变了台面原本平整、无味的状态，所以应选择这一项。
+- id: transfer-3
+  role: transfer
+  hypothesis_target: null
+  preserved_variables:
+  - visibility
+  - object_integrity
+  - setting
+  changed_variables:
+  - surface_type
+  - contaminant_type
+  - perception_channel
+  - cleaning_evidence
+  semantic_spec:
+    judgment: 判断对象是否因表面附着外来污物而偏离洁净状态：浴室镜子表面有牙膏飞溅形成的白色斑点，镜子本身完好，目标是 dirty。
+    surface_type: mirror
+    contaminant_type: toothpaste_splatter
+    object_integrity: intact
+    visibility: visible
+    perception_channel: visual
+    setting: bathroom
+    cleaning_evidence: wiped_with_cloth_revealing_clean_streak
+  sequence: 3
+  experience:
+    episode: 浴室的镜子挂在洗手台上方。镜面上散落着十几处白色小点，大小不一，边缘有的带着细小的沫状突起。其中一片区域被人用布擦过，留下一条清晰的亮条纹，条纹经过的地方白色小点消失，露出原本银亮的镜面；条纹两侧仍保留着成片的白色斑点。镜子没有裂纹，边角完好。
+    observable_evidence:
+    - 镜面上散落着十几处白色小点，大小不一，部分边缘带沫状突起。
+    - 一条亮条纹斜穿过镜面，条纹内没有白色小点，露出银亮反光。
+    - 亮条纹两侧仍保留着成片白色斑点，斑点没有扩散或流挂。
+    - 镜子玻璃完好，没有裂纹或缺口。
+    surface_dimensions:
+    - name: 表面材质
+      baseline: 镜面是平整的玻璃，表面均匀反光
+      deviation: 镜面虽然平整反光，但分布着白色小点，局部反光被遮挡
+    - name: 附着物形态
+      baseline: 镜面上没有可见的外来物
+      deviation: 有十几处白色小点，大小不一，边缘带沫状突起，呈飞溅状分布
+    - name: 感知通道
+      baseline: 只需眼睛就能确认表面是否与周围相同
+      deviation: 所有异常都通过眼睛直接看到，没有借助触摸或嗅觉
+    - name: 擦拭痕迹
+      baseline: 镜面上没有近期被擦拭的痕迹
+      deviation: 一条布擦过的亮条纹穿过斑点区，条纹内斑点消失，两侧仍保留斑点
+  interaction:
+    question: 根据你看到的镜面现象，哪种说法符合实际情况？
+    answers:
+    - id: a1
+      text: 镜面上有白色斑点，但一处被擦过后露出了原本的银亮反光，说明斑点只是附着在镜面上。
+      is_correct: true
+      feedback: 对——白色小点散布在镜面上，被布擦过的条纹里斑点消失并露出银亮镜面，说明外来附着物覆盖了表面，而且可以被擦掉。
+    - id: a2
+      text: 镜面上的白色斑点是镜子玻璃自身长出来的花纹，擦不掉。
+      is_correct: false
+      feedback: 不对——被布擦过的条纹里白色小点消失了，露出银亮反光，说明斑点来自表面附着物，而不是玻璃自身的变化。
+batches:
+- count: 3
+  generated_at: '2026-08-15T16:27:07Z'
+  gate:
+    passed: true
+    dimensions:
+    - name: semantic_correctness
+      verdict: pass
+      note: transfer-1（金属水龙头/鸟粪附着）、transfer-2（厨房台面/黏腻残留，经触觉与嗅觉感知）、transfer-3（浴室镜面/牙膏飞溅）均呈现
+        dirty-01 的成立条件：表面附着外来不受欢迎物质、偏离该表面应有的洁净状态、且可被直接感知。未出现环境污染、言语粗俗或位置无序等非本义项场景。
+    - name: sense_purity
+      verdict: pass
+      note: 三单元均未滑向 messy/filthy/muddy/grimy/polluted/dirty-02。transfer-1 的 a2 把“东西没放回原位”设为错误项，并在
+        feedback 中区分表面污物与位置秩序；transfer-2 用触觉和嗅觉证据覆盖 WordSense 非视觉感知条件；transfer-3 用擦拭亮条纹证明外来附着物而非镜子自身属性。
+    - name: definition_leakage
+      verdict: pass
+      note: episode、observable_evidence、surface_dimensions 均以具体感知描述承载经验，未出现“脏的意思是……”或语义标签式旁白。interaction
+        反馈中的概括（如“斑块使原本光亮的表面偏离了常态”）都锚定于本单元可观察证据，不是独立定义。
+    - name: l2_leakage
+      verdict: pass
+      note: 检查 episode、observable_evidence、surface_dimensions、question、answers、feedback，均未出现目标词
+        dirty 或相邻 L2 词（messy/filthy/grimy/muddy/polluted 等）。semantic_spec.judgment
+        中的 “dirty” 是内部判定标签，不向学习者展示。
+    - name: l1_label_leakage
+      verdict: pass
+      note: learner-visible 内容未用中文“脏”“脏乱”等词命名或定义概念，也未复制 WordSense 的 l1_confusables
+        中文注释；出现的是对行为的描述（“灰白色斑块”“摸起来发黏”“白色小点”），不构成中文等价标签命名概念。
+    - name: surface_language_compliance
+      verdict: pass
+      note: 本资产为 transfer，无 grounding/boundary 文本；episode、evidence、question、answers、feedback
+        均为中文经验叙事，未见成段英语或英文解释段落。
+    - name: variable_isolation
+      verdict: pass
+      note: 每个 transfer 单元是独立场景，不是同刺激多变量对照；三单元的 preserved/changed_variables 与正文一致（如
+        transfer-3 的 cleaning_evidence 对应“亮条纹”）。错误选项都只在“表面是否有外来附着物”这一判断维度上做干扰，未发现未声明变量悄悄改变判断依据。
+    - name: transfer_novelty
+      verdict: pass
+      note: 三单元进入明显不同的经验域：户外花园金属水龙头（鸟粪/可见/无清洁证据）→ 厨房台面（黏腻残留/低可见/触嗅觉）→ 浴室镜面（牙膏飞溅/可见/有擦拭亮条纹）。surface_type、contaminant_type、setting、perception_channel、cleaning_evidence
+        等至少两个表面维度改变，且词义成立条件保持不变。
+    - name: cognitive_noise
+      verdict: pass
+      note: 未发现无关情节或生僻干扰项；额外细节（树枝与地面痕迹、无抹布、亮条纹）都服务于污物来源或清洁证据，帮助而非干扰范畴绑定。
+    scores:
+      semantic_correctness: 9.5
+      sense_purity: 9.5
+      definition_leakage: 9.0
+      l2_leakage: 10.0
+      l1_label_leakage: 10.0
+      surface_language_compliance: 10.0
+      variable_isolation: 9.0
+      transfer_novelty: 9.5
+      cognitive_noise: 9.0
+metadata:
+  compiler_version: 2.1.0
+  prompt_versions:
+    program_planner: v2
+    surface_generator: v2
+    quality_gate: v2
+  generated_at: '2026-08-15T16:27:07Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids:
+  - 00640efe-b586-490d-931e-7f2b19ec5cad
+  - d4c39e0e-c232-424d-a407-57985c427964
+  language_policy:
+    policy_version: 1
+    learner_l1: zh-CN
+    target_l2: en

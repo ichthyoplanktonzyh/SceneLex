@@ -1,0 +1,128 @@
+schema_version: '1.1'
+inventory:
+  word: lend
+  version: 1
+  evidence_digest: sha256:6cd7821ba259684ae3467f764c5850e2bdbf83ce02c26ebd36d7fea8eeefbed7
+  sense_id: lend-01
+  identity_digest: sha256:02a2a4ca373c18f1814e8e0aeb272fdc4d5e7d79320f5b5927d49402bbf85054
+semantic_identity:
+  semantic_type: temporary_transfer
+  dimension: use_or_repayment
+  change_of_state: false
+  causative: false
+  valency: ditransitive / transitive / intransitive
+inventory_source_entries:
+- lend-dict-001
+- lend-dict-002
+language: en
+version: 1
+semantic_revision: 1
+status: reviewed
+id: lend-01
+word: lend
+pos: verb
+sense_label: 借出；贷出
+definition: To grant a person or institution temporary use of something, with the
+  understanding that the same item or an equivalent will be returned; also used for
+  lending money.
+collocations:
+- lend someone something
+- lend something to someone
+- lend money
+- lend out books
+sentence_patterns:
+- '[verb] [someone] [something]'
+- '[verb] [something] to [someone]'
+- '[verb] out [something]'
+- '[verb] to [someone]'
+provenance:
+  sources:
+  - type: dictionary
+    citation: https://kaikki.org/dictionary/English/meaning/l/le/lend.jsonl (Wiktionary
+      via kaikki.org, CC-BY-SA 3.0/4.0)
+    license: CC-BY-SA
+semantic_type: action
+semantic_skeleton:
+  participants:
+  - role: source
+    description: the current holder or controller of the item whose use is being transferred
+  - role: recipient
+    description: the person or institution that receives temporary use or possession
+  - role: item
+    description: the concrete object or fungible value that is handed over and expected
+      to be returned in kind or in equivalent form
+  propositions:
+  - 存在两个可区分的参与者：一方当前持有或控制某物，另一方需要获得该物的使用或临时占有。
+  - 持有者把该物的使用或临时占有让渡给另一方，且该让渡不是永久转移。
+  - 让渡语境中存在明示或默示的归还约定，归还对象可以是原物，也可以是约定的等价物。
+conditions:
+  required:
+  - 存在一个可辨识的源持有者和一个接收者。
+  - 源持有者将某物的使用或临时占有转移给接收者。
+  - 转移伴随归还条件：接收者需归还同一物品或约定等价物。
+  - 事件在语境中被理解为临时安排，而非永久转移。
+  excluded:
+  - condition: 接收者获得物品后，没有任何明示或默示的归还约定，原持有者也不再主张归还。
+  - condition: 没有任何物品或等价物的临时转移，句子只表示某事物对另一事物适合或适用。
+    alternative: lend-02
+  - condition: 转移的对象是帮助、支持、名声等抽象物，语境中不存在可归还的同物或等价物。
+    alternative: lend-03
+  - condition: 句子主语是获得临时使用的一方而不是提供使用的一方，即误用 lend 表达借入。
+relations:
+  boundaries:
+  - target: lend-02
+    relation: mutually_exclusive
+    distinction: lend-01 的核心是实物或等值金额的临时转移与归还条件；lend-02 的核心是事物对另一事物的适用性，通常出现在 reflexive
+      结构，不涉及任何物品转移。
+    diagnostic: 如果句子采用 reflexive 结构且不存在可归还的实物或等价物，则是 lend-02；如果场景中能看到物品从一方转到另一方并伴随归还预期，则是
+      lend-01。
+  - target: lend-03
+    relation: different_sense
+    distinction: Inventory 将 lend-01 到 lend-03 记为 metaphorical_extension。lend-01 的转移物是实物或等值金额并带归还条件，lend-03
+      的转移物是帮助、支持、名声等抽象物且无归还条件。
+    diagnostic: 用归还测试：宾语若可设想为需归还的同物或等价物，则是 lend-01；若宾语是抽象帮助/支持且无法归还，则是 lend-03。
+  l1_confusables:
+    zh:
+    - l1_term: 借
+      covers:
+      - lend-01
+      note: 中文‘借’不区分借出与借入，英语必须用 lend 和 borrow 区分。lend-01 的主语是提供方；学习者常把‘我借你的书’直接对应成
+        I lend your book，导致方向颠倒。
+    - l1_term: 借给
+      covers:
+      - lend-01
+      note: 中文‘借给’明确标出借出方向，与 lend-01 的方向一致；教学中可用‘借给’帮助校正方向混淆。
+    - l1_term: 提供/赋予
+      covers:
+      - lend-03
+      note: lend-03 常被中文译为‘提供、赋予’，而不是‘借出’；若把 lend 一律理解成‘借出’，会把 lend support 误认为具体物品的临时借出。
+scene_requirements:
+  must_show:
+  - 一个可辨识的持有者甲和一个接收者乙共同出现在场景中，并共同关注一件物品。
+  - 物品从甲的支配范围进入乙的支配范围，例如甲交付给乙、乙从甲处拿取，或甲允许乙取走。
+  - 有归还约定的视觉或语言提示，例如日历上的日期、借条、甲说‘周五还我’，或双方对归还的点头确认。
+  - 物品仍带有甲的归属线索，例如书名、标签或周围环境，以支持临时转移而非所有权转移。
+  must_not:
+  - 出现礼物包装、‘送给你’、‘不用还了’等永久转移信号。
+  - 乙只是独自持有物品，而甲从未参与交付过程。
+  - 出现甲收钱后把物品交给乙且没有归还约定的画面（销售/永久让渡）。
+  externalization:
+  - 归还预期用可见动作或简短语言外化：甲指一下日历，或乙把物品放回甲处后场景才结束。
+  - 如果省略话语，可用镜头对照表现临时性：甲先展示物品的位置，乙使用后物品回到原位。
+  - 借贷场景可用借条、账户转账记录或点钞后记账等视觉符号表现等值归还。
+  timing: 目标词 lend 应出现在观众已经看到物品转移并接收到归还提示之后；不要在物品仍在甲手中或归还约定尚未可见时命名。
+
+# ============================================================
+# G. 教学原型建议 (非权威, 仅供 Holistic Course Author 参考)
+# ============================================================
+teaching_profile:
+  primary_archetype: role_perspective
+  suggested_capabilities:
+  - participant_map
+  - scene_observation
+  - single_choice
+  - binary_judgment
+  - boundary_choice
+  special_risks:
+  - viewpoint_dependence
+  - event_perspective_shift

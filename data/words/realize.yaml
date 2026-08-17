@@ -1,0 +1,20 @@
+schema_version: '1.0'
+version: 1
+word: realize
+pos: [verb]
+
+pronunciation:
+  ipa:
+    - "/ˈriːəlaɪz/"
+
+frequency:
+  rank: 1505
+  band: mid
+
+senses:
+  - id: realize-01
+    pos: verb
+    sense_label: "意识到；明白；领会"
+    definition: "To become aware of a fact or situation clearly; to grasp the truth or significance of something."
+    status: reviewed
+    scene_count: 0

@@ -1,0 +1,55 @@
+schema_version: '1.0'
+asset_type: grounding
+sense_id: dirty-01
+contract_hash: sha256:1dac7398d697e332cd4f545fdaa24f90633aea10666a2f78a3dd1d8051761d17
+language_policy:
+  policy_version: 1
+  learner_l1: zh-CN
+  target_l2: en
+grounding:
+  source_experience_id: unit-1
+  l2_realization: After wiping her hands on her pants, she looks at the brown smudges
+    on her palms and says, "My hands are dirty."
+  constructions:
+  - '[thing] is dirty'
+  - a dirty [noun]
+  - get/make [something] dirty
+  collocations:
+  - dirty hands
+  - dirty dishes
+  - dirty clothes
+  - dirty floor
+  - dirty water
+  - get dirty
+gate:
+  passed: true
+  dimensions:
+  - name: semantic_correctness
+    verdict: pass
+    note: grounding.l2_realization（source_experience_id=unit-1）呈现手掌上可见的棕色污迹，作为附着于皮肤表面的外来、不受欢迎且可直接感知的污物，随后由学习者说出
+      'My hands are dirty.'，符合 dirty-01 的成立条件：存在表面对象、附着外来污物、偏离洁净基准、状态可被直接感知。semantic_model
+      的 non_entailments 与 misconceptions 也正确区分了 messy、filthy、muddy/grimy、dirty-02、polluted
+      等相邻范畴，未发现单元滑向相邻或更具体范畴。
+  - name: surface_language_compliance
+    verdict: pass
+    note: grounding.l2_realization 是自然完整的英文情境句，且包含目标词 'dirty'；constructions 与 collocations
+      均以 L2 形式呈现。未发现在 grounding 阶段用中文标签命名概念或使用成段英语的问题，符合 grounding 的语言合同要求。
+  scores:
+    semantic_correctness: 9.0
+    surface_language_compliance: 9.0
+metadata:
+  compiler_version: 2.1.0
+  prompt_versions:
+    program_planner: v2
+    surface_generator: v2
+    quality_gate: v2
+  generated_at: '2026-08-15T16:31:16Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids:
+  - 7d30e842-7715-463a-913d-71eb34920807
+  - 0b742b18-856f-4c6e-9620-8cd54e09859a
+  language_policy:
+    policy_version: 1
+    learner_l1: zh-CN
+    target_l2: en

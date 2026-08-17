@@ -1,0 +1,60 @@
+schema_version: '1.0'
+contract_id: dirty-01-contract
+sense_id: dirty-01
+lemma: dirty
+pos: adjective
+semantic_revision: 1
+content_hash: sha256:1dac7398d697e332cd4f545fdaa24f90633aea10666a2f78a3dd1d8051761d17
+semantic_model:
+  invariant: 某对象、身体部位或空间，因其表面附着外来的、不受欢迎的、可直接感知的污物，而偏离了它应有的洁净状态。
+  necessary_conditions:
+  - 存在一个对象、身体部位或空间，其表面状态成为被观察对象。
+  - 该表面上附着有外来的、不受欢迎的物质（如灰尘、泥、污渍、油腻等），而非对象自身固有属性。
+  - 该附着使表面偏离了该对象应有的洁净基准，并被看作需要清除或清洗的负面状态。
+  - 该不洁状态可被直接感知：视觉上看到污渍，触觉上感到黏腻/粗糙，或嗅觉上闻到污物气味。
+  non_entailments:
+  - dirty 成立不蕴涵物品位置无序（messy）；东西乱放但表面干净不是 dirty，地板有污但物品整齐仍是 dirty。
+  - dirty 成立不蕴涵言语或内容粗俗下流；dirty joke/dirty word 属于另一个义项 dirty-02，不要求物理表面有污物。
+  - dirty 成立不蕴涵脏污程度已达到 filthy 的强度或令人作呕；轻微尘土、少量污渍仍可成立。
+  - dirty 成立不蕴涵污物是泥或长期积垢；muddy、grimy 是更具体的污物/表面状态判断。环境污染不是本义项所蕴涵，水体/空气的有害杂质污染应判断为
+    polluted（日常搭配 dirty water 指洗涤后混入可见污物的水，不是环境污染判断）。
+  - dirty 成立不蕴涵整个表面都被污物覆盖；局部污渍或局部触感不洁即足以成立。
+  - dirty 成立不蕴涵有人实际实施清洗或擦拭；‘需要清洗’是状态评价，不是已发生的行为。
+  typical_correlates:
+  - 手上、脸上沾着泥土或黑色污渍，常伴随 dirty。
+  - 白色衣物上有明显的斑点、油渍、草渍，常伴随 dirty。
+  - 餐盘上残留食物油腻、水杯杯壁留下污垢圈，常伴随 dirty。
+  - 地板上有脚印、灰尘或洒落的污迹，常伴随 dirty。
+  - 用抹布擦拭后污物转移到抹布上、表面变干净，常作为确认 dirty 的伴随证据。
+  - 洗手或洗涤时水变浑浊，常伴随 dirty。
+  misconceptions:
+  - id: misc-1
+    description: 把 dirty 与 messy 混为一谈，认为房间乱放东西就是 dirty，或者 dirty 一定乱。
+    correction: 需要同时检查表面污物与位置秩序：若物品散乱但表面无污物，该证据只能支持 messy；若地板有污渍但物品整齐，仍支持 dirty。
+  - id: misc-2
+    description: 把 dirty 等同于程度强烈的 filthy/grimy，认为不令人作呕、不是大面积长期积垢就不能叫 dirty。
+    correction: 需要比较脏污程度：少量浮尘或一点油渍就足以推翻‘必须很严重’的误解；程度增加只是让 filthy/grimy 更自然，不会使 dirty
+      变成假。
+  - id: misc-3
+    description: 把 dirty 当成本义项也覆盖环境污染和言语粗俗，把水/空气污染或脏话都归入同一概念。
+    correction: 需要检查被评价对象与污物位置：言语内容属于 dirty-02，水体/空气的有害杂质污染属于 polluted；只有表面附着可见污物才支持
+      dirty-01。
+  - id: misc-4
+    description: 认为 dirty 必须看得见污渍，看不见就不是 dirty。
+    correction: 需要接受非视觉的直接感知证据：触摸到黏腻/粗糙、闻到污物气味，并且可归因于外来附着物，即可推翻‘必须看见污渍’。
+  - id: misc-5
+    description: 认为 dirty 是绝对状态，必须整个表面都被污物覆盖或与洁净部分形成明显对比才算。
+    correction: 需要接受局部污渍样本：一个局部斑点在原本洁净的表面上就足以让表面偏离应有的洁净状态，不需要整面覆盖或与洁净部分对比。
+  l1_interference:
+  - 中文‘脏’比 dirty-01 更宽，覆盖 filthy、grimy、polluted；学习者可能把程度很重、油腻结垢或环境污染的样本都归入 dirty。
+  - 中文‘脏乱’常连用，使学习者把 dirty（表面污物）与 messy（位置秩序）当作同一经验维度，难以分辨混乱但干净、整齐但脏的样本。
+  - 中文‘脏’同时表示言语内容的粗俗下流（脏话/下流），学习者可能把 dirty joke/dirty word 当作 dirty-01，或从物理 dirty
+    反向推断内容必然粗俗。
+metadata:
+  compiler_version: 2.0.0
+  prompt_versions:
+    semantic_planner: v1
+  generated_at: '2026-08-15T06:34:59Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids: []

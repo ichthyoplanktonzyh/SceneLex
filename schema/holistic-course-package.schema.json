@@ -1,0 +1,521 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scenelex.local/schema/holistic-course-package.schema.json",
+  "title": "Holistic Course Package",
+  "description": "LLM 直接创作的完整课程交付物（Holistic Course Compiler v1）。学习流、复习、边界、迁移、误解分配全部由 Course Author 一次性决定；本 schema 只保证可执行结构，不规定课程数量、顺序和教学模板。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "course_id",
+    "target",
+    "author_intent",
+    "learning_flow"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "course_id": { "type": "string", "minLength": 1 },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sense_id", "lemma", "pos", "ipa", "learner_l1", "target_l2"],
+      "properties": {
+        "sense_id": { "type": "string", "minLength": 1 },
+        "lemma": { "type": "string", "minLength": 1 },
+        "pos": { "type": "string", "minLength": 1 },
+        "ipa": { "type": "string", "minLength": 1 },
+        "learner_l1": { "type": "string", "minLength": 1 },
+        "target_l2": { "type": "string", "minLength": 1 }
+      }
+    },
+    "author_intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["course_thesis", "learner_start", "intended_outcome", "design_rationale"],
+      "properties": {
+        "course_thesis": { "type": "string", "minLength": 1 },
+        "learner_start": { "type": "string", "minLength": 1 },
+        "intended_outcome": { "type": "string", "minLength": 1 },
+        "design_rationale": { "type": "string", "minLength": 1 }
+      }
+    },
+    "learning_flow": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/step" }
+    },
+    "review_progression": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/review_item" }
+    },
+    "related_sense_material": {
+      "description": "可选。Author 决定是否为邻近义项编写材料；可以为空或缺失。不是 learner-visible 内容。接受四种等价形状：数组对象（sense_id 必填）、字符串条目（'sense_id：说明'）、按 sense_id 为键的对象映射（值为对象或字符串）、以及单个 sense 材料对象（含 sense_id 键）。",
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "object",
+                "required": ["sense_id"],
+                "properties": {
+                  "sense_id": { "type": "string", "minLength": 1 },
+                  "lemma": { "type": "string" },
+                  "role": { "type": "string" },
+                  "content": { "type": "string" },
+                  "decision": { "type": "string" },
+                  "rationale": { "type": "string" },
+                  "relationship": { "type": "string" },
+                  "treatment": { "type": "string" },
+                  "usage": { "type": "string" },
+                  "future_plan": { "type": "string" }
+                }
+              },
+              { "type": "string", "minLength": 1 }
+            ]
+          }
+        },
+        {
+          "type": "object",
+          "required": ["sense_id"],
+          "properties": {
+            "sense_id": { "type": "string", "minLength": 1 },
+            "lemma": { "type": "string" },
+            "role": { "type": "string" },
+            "content": { "type": "string" },
+            "decision": { "type": "string" },
+            "rationale": { "type": "string" },
+            "relationship": { "type": "string" },
+            "treatment": { "type": "string" },
+            "usage": { "type": "string" },
+            "future_plan": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "decision": { "type": "string" },
+                  "rationale": { "type": "string" }
+                }
+              },
+              { "type": "string", "minLength": 1 }
+            ]
+          }
+        }
+      ]
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "trigger", "primitive", "purpose", "learner_content", "evaluation"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "trigger": {
+          "type": "string",
+          "enum": ["initial", "on_error", "immediate_followup", "scheduled_review"]
+        },
+        "primitive": { "$ref": "#/$defs/primitive" },
+        "purpose": { "type": "string", "minLength": 1 },
+        "addresses": {
+          "description": "可选。本步骤处理的 misconception id；不要求覆盖所有 misconception。",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "learner_content": { "$ref": "#/$defs/learner_content" },
+        "evaluation": { "$ref": "#/$defs/evaluation" },
+        "next": { "type": "string" },
+        "estimated_seconds": {
+          "description": "可选：该步骤的预计完成秒数（Course Author 的估算值，非精确模型）。",
+          "type": "integer",
+          "minimum": 1
+        },
+        "can_pause_after": {
+          "description": "可选：Course Author 声明的自然断点——只有 true 的位置 App 才能在未完成课程时暂停；symbol binding 前若 Author 未声明断点，App 不得随意切断。",
+          "type": "boolean"
+        }
+      }
+    },
+    "review_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "timing", "scaffold_level", "primitive", "learner_content", "evaluation"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "timing": { "type": "string", "minLength": 1 },
+        "due_after_days": {
+          "description": "可选：结构化调度字段——绑定完成多少天后到期（App 调度用；timing 文案只用于解释）。",
+          "type": "integer",
+          "minimum": 1
+        },
+        "estimated_seconds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "scaffold_level": {
+          "type": "string",
+          "enum": ["early_post_binding", "later_post_binding"]
+        },
+        "primitive": { "$ref": "#/$defs/primitive" },
+        "learner_content": { "$ref": "#/$defs/learner_content" },
+        "evaluation": { "$ref": "#/$defs/evaluation" }
+      }
+    },
+    "primitive": {
+      "type": "string",
+      "enum": [
+        "scene_observation",
+        "evidence_highlight",
+        "single_choice",
+        "binary_judgment",
+        "symbol_reveal",
+        "pronunciation",
+        "l1_confirmation",
+        "l2_grounding",
+        "boundary_choice",
+        "transfer_judgment",
+        "recall_reveal",
+        "recall_self_grade",
+        "multi_label_choice",
+        "object_inspection",
+        "spatial_stage",
+        "participant_map",
+        "scalar_threshold",
+        "information_state"
+      ]
+    },
+    "learner_content": {
+      "description": "learner-visible 内容。具体允许的字段由 primitive 决定（App Teaching Capabilities 文件 + 校验器检查）。",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "episode": { "type": "string" },
+        "evidence": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "question": { "type": "string" },
+        "options": {
+          "description": "choice 类 primitive 使用 {id, text, is_correct, feedback}；boundary_choice 使用 {sense_id, lemma} 或 {sense_id, text}（text 作为显示词）。具体形状由校验器按 primitive 强制。",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "anyOf": [
+              { "required": ["id", "text"] },
+              { "required": ["sense_id"], "anyOf": [{"required": ["lemma"]}, {"required": ["text"]}] }
+            ],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "text": { "type": "string", "minLength": 1 },
+              "is_correct": { "type": "boolean" },
+              "feedback": { "type": "string" },
+              "sense_id": { "type": "string", "minLength": 1 },
+              "lemma": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "l2_word": { "type": "string" },
+        "ipa": { "type": "string" },
+        "presentation": { "type": "string" },
+        "minimal_l1_gloss": { "type": "string" },
+        "minimal_gloss": { "type": "string" },
+        "prompt_text": { "type": "string" },
+        "source_step_id": { "type": "string" },
+        "l2_realization": { "type": "string" },
+        "constructions": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "collocations": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "correct_sense_id": { "type": "string" },
+        "explanation": {
+          "description": "boundary 的对比解释：数组（对象 {sense_id, note|text} 或纯字符串）或单个字符串（整段解释）。",
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["sense_id"],
+                    "anyOf": [
+                      { "required": ["note"] },
+                      { "required": ["text"] }
+                    ],
+                    "properties": {
+                      "sense_id": { "type": "string", "minLength": 1 },
+                      "note": { "type": "string", "minLength": 1 },
+                      "text": { "type": "string", "minLength": 1 }
+                    }
+                  },
+                  { "type": "string", "minLength": 1 }
+                ]
+              }
+            },
+            { "type": "string", "minLength": 1 }
+          ]
+        },
+        "inspect_prompt": { "type": "string" },
+        "objects": {
+          "description": "object_inspection 的对象列表。",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "name", "features"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "name": { "type": "string", "minLength": 1 },
+              "category_label": { "type": "string" },
+              "features": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "type": "string", "minLength": 1 }
+              },
+              "variants": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["id", "label", "features"],
+                  "properties": {
+                    "id": { "type": "string", "minLength": 1 },
+                    "label": { "type": "string", "minLength": 1 },
+                    "features": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": { "type": "string", "minLength": 1 }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "hide_object_names": { "type": "boolean" },
+        "stage_title": { "type": "string" },
+        "stage_width": { "type": "number", "exclusiveMinimum": 0 },
+        "stage_height": { "type": "number", "exclusiveMinimum": 0 },
+        "start": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" }
+          }
+        },
+        "end": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" }
+          }
+        },
+        "regions": {
+          "description": "spatial_stage 的可选区域/容器（through 的内部空间）。",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "label", "shape"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "label": { "type": "string", "minLength": 1 },
+              "shape": {
+                "type": "string",
+                "enum": ["rect", "circle"]
+              }
+            }
+          }
+        },
+        "paths": {
+          "description": "spatial_stage 的候选路径。",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "label", "points"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "label": { "type": "string", "minLength": 1 },
+              "points": {
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "items": { "type": "number" }
+                }
+              }
+            }
+          }
+        },
+        "correct_path_id": { "type": "string" },
+        "feedback": { "type": "string" },
+        "participants": {
+          "description": "participant_map 的参与者。",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "label", "role"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "label": { "type": "string", "minLength": 1 },
+              "role": {
+                "type": "string",
+                "enum": ["giver", "receiver", "observer"]
+              }
+            }
+          }
+        },
+        "transferable": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "label"],
+          "properties": {
+            "id": { "type": "string", "minLength": 1 },
+            "label": { "type": "string", "minLength": 1 }
+          }
+        },
+        "arrows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "from", "to", "label"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "from": { "type": "string", "minLength": 1 },
+              "to": { "type": "string", "minLength": 1 },
+              "label": { "type": "string" }
+            }
+          }
+        },
+        "perspective": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["current_role", "roles"],
+          "properties": {
+            "current_role": { "type": "string", "minLength": 1 },
+            "roles": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "scale": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["min", "max", "label"],
+          "properties": {
+            "min": { "type": "number" },
+            "max": { "type": "number" },
+            "label": { "type": "string" }
+          }
+        },
+        "initial_value": { "type": "number" },
+        "threshold": { "type": "number" },
+        "direction": {
+          "type": "string",
+          "enum": ["reaches", "falls_short"]
+        },
+        "outcome_markers": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["reached", "not_reached"],
+          "properties": {
+            "reached": { "type": "string", "minLength": 1 },
+            "not_reached": { "type": "string", "minLength": 1 }
+          }
+        },
+        "agents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "label"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "label": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "facts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "text"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "text": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "beats": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "label"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "label": { "type": "string", "minLength": 1 },
+              "visible_evidence": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "reveals": {
+                "type": "array",
+                "items": { "type": "string", "minLength": 1 }
+              },
+              "known_by": {
+                "type": "array",
+                "items": { "type": "string", "minLength": 1 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["choice", "multi_choice", "sense_choice", "path_choice", "self_grade", "none"]
+        },
+        "correct_option_id": { "type": "string" },
+        "correct_option_ids": {
+          "description": "multi_label_choice 的正确答案集合（至少 1 个，全部必须在选项 id 中）。",
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "correct_sense_id": { "type": "string" },
+        "correct_path_id": { "type": "string" }
+      }
+    }
+  }
+}

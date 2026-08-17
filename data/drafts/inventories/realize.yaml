@@ -1,0 +1,112 @@
+schema_version: '1.0'
+word: realize
+language: en
+status: reviewed
+inventory_version: 1
+source:
+  provider: wiktionary
+  entry_count: 8
+  evidence_digest: sha256:10f7f5b27379d26de6ee6d57de24ac1b610bf51b1919a560db8d996ea192aa79
+senses:
+- id: realize-01
+  lemma: realize
+  pos: verb
+  label_zh: 意识到；明白；领会
+  definition: To become aware of or understand (a fact or situation); to grasp or
+    appreciate the truth or significance of something clearly.
+  semantic_signature:
+    semantic_type: cognitive_event
+    dimension: awareness
+    change_of_state: true
+    causative: false
+    valency: transitive
+  source_entries:
+  - realize-dict-001
+  - realize-dict-002
+  decision:
+    type: merge
+    reason: realize-dict-001 and realize-dict-002 express the same cognitive act of
+      grasping something as real; dict-002 is a more vivid/literary variant of becoming
+      aware, not a separately teachable sense.
+  teaching_priority: core
+  usage:
+    currency: current
+    productivity: productive
+    register: neutral
+- id: realize-02
+  lemma: realize
+  pos: verb
+  label_zh: 实现；使成为现实
+  definition: To bring (a plan, idea, ambition, or potential) into actual existence;
+    to make real or achieve.
+  semantic_signature:
+    semantic_type: accomplishment
+    dimension: actuality
+    change_of_state: true
+    causative: true
+    valency: transitive
+  source_entries:
+  - realize-dict-004
+  - realize-dict-005
+  decision:
+    type: merge
+    reason: 'realize-dict-005 is a reflexive/applicational use of the same ''make
+      real'' meaning: achieving one''s potential is a specific case of bringing an
+      idea or goal into reality.'
+  teaching_priority: core
+  usage:
+    currency: current
+    productivity: productive
+    register: neutral
+- id: realize-03
+  lemma: realize
+  pos: verb
+  label_zh: 变现；获利；产生收益
+  definition: To convert (assets, property, or investments) into money, especially
+    by selling; to obtain or generate (money, profit, or interest) from an asset or
+    investment.
+  semantic_signature:
+    semantic_type: financial_conversion
+    dimension: finance
+    change_of_state: true
+    causative: false
+    valency: transitive
+  source_entries:
+  - realize-dict-006
+  - realize-dict-007
+  - realize-dict-008
+  decision:
+    type: merge
+    reason: 'realize-dict-006, realize-dict-007, and realize-dict-008 are the same
+      financial-domain sense: making an asset or investment yield actual money/profit.
+      The subject alternation (person converts/sells vs asset generates) is a syntactic
+      variant, not a distinct sense.'
+  teaching_priority: extended
+  usage:
+    currency: current
+    productivity: limited
+    register: business/finance
+deferred_entries:
+- source_entry: realize-dict-003
+  decision: defer
+  reason: This sense ('to cause something to seem real; present clearly to the mind')
+    is only evidenced in early-modern English religious texts and is not productive
+    or clearly distinct in current English. It overlaps confusingly with both the
+    cognitive and the 'make real' senses.
+  required_evidence:
+  - Multiple 20th/21st-century attested uses of realize meaning 'make (something)
+    seem real or realistic', preferably in non-religious prose.
+  - Clear usage examples distinguishing this sense from realize-02 ('make real') and
+    realize-01 ('become aware').
+relations:
+- source: realize-01
+  target: realize-02
+  relation: semantic_extension
+  distinction: realize-01 is mental/cognitive (making something real in the mind);
+    realize-02 is external/action-oriented (making something real in the world).
+- source: realize-02
+  target: realize-03
+  relation: domain_specialization
+  distinction: realize-02 applies to goals, plans, and potential; realize-03 applies
+    the same 'making real' logic to assets, investments, and profits, resulting in
+    money or financial gain.

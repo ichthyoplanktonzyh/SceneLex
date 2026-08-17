@@ -1,0 +1,531 @@
+schema_version: '1.0'
+asset_type: concept
+sense_id: dirty-01
+contract_hash: sha256:1dac7398d697e332cd4f545fdaa24f90633aea10666a2f78a3dd1d8051761d17
+language_policy:
+  policy_version: 1
+  learner_l1: zh-CN
+  target_l2: en
+units:
+- id: unit-1
+  role: anchor
+  hypothesis_target: null
+  preserved_variables:
+  - target_sense
+  - contaminant_origin
+  - clean_baseline_deviation
+  - state_evaluation
+  changed_variables:
+  - surface_object
+  - contaminant
+  - perceptual_evidence
+  - coverage
+  - intensity
+  - spatial_order
+  semantic_spec:
+    judgment: 判断任务：这个有可见食物油污的餐盘是否属于 dirty-01？
+    target_sense: dirty-01
+    contaminant_origin: external
+    clean_baseline_deviation: present
+    state_evaluation: needs_cleaning
+    surface_object: white_ceramic_plate
+    contaminant: dried_food_grease_and_sauce
+    perceptual_evidence: visual_stain
+    coverage: partial_area
+    intensity: moderate
+    spatial_order: not_applicable
+  sequence: 1
+  experience:
+    episode: 一个白色陶瓷餐盘放在水槽边。盘面上残留着干掉的炒菜油渍和褐色的酱汁痕迹，集中在盘子中间和边缘的一侧。餐盘其他部分看得出原本的白净底色。手指摸过油渍处，指腹上留下一层滑腻的光泽。
+    observable_evidence:
+    - 餐盘中央和一侧边缘有干掉的黄色油渍与褐色酱汁，其余部分露出原本的白瓷底色
+    - 手指摸过油渍处后，指腹出现一层滑腻的反光
+    - 餐盘放在水槽边，附近没有堆满的杂物
+    surface_dimensions:
+    - name: 表面对象
+      baseline: 白色陶瓷餐盘原本光洁、底色均匀
+      deviation: 盘面局部附着干油渍和酱汁，滑腻反光
+    - name: 污物来源
+      baseline: 餐盘自身不含油污
+      deviation: 油渍与酱汁来自外部食物残渣并附着在盘面
+    - name: 覆盖范围
+      baseline: 整面洁净无附着物
+      deviation: 油渍只覆盖盘面中央和一侧边缘的部分区域
+    - name: 物品秩序
+      baseline: 水槽边无杂物堆叠
+      deviation: 周边没有散乱物品，仅有餐盘本身需要清洗
+  interaction:
+    question: 这个餐盘当前的状态，是否属于“表面附着外来污物、偏离原来的洁净状态”？
+    answers:
+    - id: a1
+      text: 是，盘面有可见的油渍和酱汁，且摸起来滑腻
+      is_correct: true
+      feedback: 对。盘面附着的是外部食物残渣，原来白净的底色被局部油渍覆盖，这正是表面附着外来污物、偏离洁净状态的情况。
+    - id: a2
+      text: 不是，餐盘只是放得有点乱
+      is_correct: false
+      feedback: 不对。水槽边并没有堆满杂物，餐盘的问题不是位置乱，而是盘面本身有油渍和酱汁附着。
+- id: unit-2
+  role: variation
+  hypothesis_target: null
+  preserved_variables:
+  - target_sense
+  - contaminant_origin
+  - clean_baseline_deviation
+  - state_evaluation
+  - spatial_order
+  changed_variables:
+  - surface_object
+  - contaminant
+  - perceptual_evidence
+  - coverage
+  - intensity
+  semantic_spec:
+    judgment: 判断任务：小孩玩泥后手上沾泥，既看得见泥斑又摸得到颗粒，是否仍属于 dirty-01？
+    target_sense: dirty-01
+    contaminant_origin: external
+    clean_baseline_deviation: present
+    state_evaluation: needs_cleaning
+    spatial_order: not_applicable
+    surface_object: child_hands
+    contaminant: garden_mud
+    perceptual_evidence: visual_stain_and_tactile_grit
+    coverage: multiple_local_spots
+    intensity: light
+  sequence: 2
+  experience:
+    episode: 一个小孩从花园里跑回门口，摊开两只手。手心、手指缝里粘着深褐色的湿泥，有的地方能看到泥斑，有的地方是薄薄一层。他搓了搓手指，指腹上能搓出细小的泥粒。
+    observable_evidence:
+    - 小孩手心与指缝有深褐色湿泥痕迹，颜色与皮肤底色明显不同
+    - 小孩搓手指时，指腹搓出细小的泥粒
+    - 泥斑分布在两只手掌的多个局部位置，没有覆盖整只手
+    surface_dimensions:
+    - name: 表面对象
+      baseline: 小孩的手洗干净时皮肤呈均匀肤色
+      deviation: 手心、指缝出现深褐色泥斑，搓动时掉下泥粒
+    - name: 污物来源
+      baseline: 手上原本没有泥土
+      deviation: 湿泥来自花园土壤，是外部附着物
+    - name: 感知方式
+      baseline: 手部表面没有肉眼可见的附着物
+      deviation: 既能看到泥斑，也能摸到细小的泥粒
+    - name: 覆盖范围
+      baseline: 整双手洁净
+      deviation: 泥斑分布在手掌多个局部，不是整片覆盖
+  interaction:
+    question: 这个小孩的手，当前状态是否属于“表面附着外来污物、偏离原来的洁净状态”？
+    answers:
+    - id: a1
+      text: 不是，只是手掌上沾了泥
+      is_correct: false
+      feedback: 不对。沾上的泥土正是外部附着物，它让原本干净的手掌出现可见泥斑和可搓出的泥粒，这已经偏离了洁净状态。
+    - id: a2
+      text: 是，手心与指缝沾着泥土，还能搓出泥粒
+      is_correct: true
+      feedback: 对。泥土是来自花园的外部污物，手原本干净，现在出现了泥斑和泥粒，属于表面附着外来污物、偏离洁净状态。
+- id: unit-3
+  role: perturbation
+  hypothesis_target: misc-4
+  preserved_variables:
+  - target_sense
+  - contaminant_origin
+  - clean_baseline_deviation
+  - state_evaluation
+  - spatial_order
+  - intensity
+  changed_variables:
+  - surface_object
+  - contaminant
+  - perceptual_evidence
+  - coverage
+  semantic_spec:
+    judgment: 判断任务：台面上有一层几乎无色的黏腻残留，看不到明显色斑但摸得到黏，是否仍属于 dirty-01？
+    target_sense: dirty-01
+    contaminant_origin: external
+    clean_baseline_deviation: present
+    state_evaluation: needs_cleaning
+    spatial_order: not_applicable
+    intensity: moderate
+    surface_object: kitchen_tabletop
+    contaminant: sticky_syrup_residue
+    perceptual_evidence: tactile_stickiness_alone
+    coverage: local_spot
+  sequence: 3
+  experience:
+    episode: 厨房台面上有一片几乎看不出颜色的区域。表面没有明显色斑，但用手指平贴上去再抬起，指腹会被轻微黏住；移动指尖时能感到一层薄薄的黏腻阻力。用湿布擦过之后，那片区域变得顺滑，指尖不再被黏住。
+    observable_evidence:
+    - 台面那片区域没有明显色斑，颜色与周围几乎一致
+    - 手指平贴后抬起，指腹被轻微黏住
+    - 移动指尖时感到黏腻阻力
+    - 用湿布擦过后，指尖不再被黏住，台面恢复顺滑
+    surface_dimensions:
+    - name: 表面对象
+      baseline: 厨房台面平时光滑、手指移动无阻力
+      deviation: 局部有一层透明黏腻残留，指尖被轻微黏住
+    - name: 感知方式
+      baseline: 表面无可见或可触的附着物
+      deviation: 眼睛看不出明显色斑，但触摸能直接感到黏腻
+    - name: 污物来源
+      baseline: 台面自身是光滑材质，不含黏性物质
+      deviation: 黏腻来自外部泼洒的含糖液体干涸后留在表面
+    - name: 覆盖范围
+      baseline: 整个台面顺滑
+      deviation: 黏腻残留只出现在一个局部区域
+  interaction:
+    question: 这片台面当前的状态，是否属于“表面附着外来污物、偏离原来的洁净状态”？
+    answers:
+    - id: a1
+      text: 是，虽然看不出色斑，但摸得到黏腻残留
+      is_correct: true
+      feedback: 对。外来的残留物让台面从顺滑变得黏手，视觉上看不出来，但触觉能直接感知到，这正是表面附着外来污物、偏离洁净状态。
+    - id: a2
+      text: 不是，看不见颜色变化就不算
+      is_correct: false
+      feedback: 不对。判断附着物不一定非要看见颜色；指尖被黏住、擦后恢复顺滑，说明表面确实有外来的黏性残留。
+- id: unit-4
+  role: perturbation
+  hypothesis_target: misc-5
+  preserved_variables:
+  - target_sense
+  - contaminant_origin
+  - clean_baseline_deviation
+  - state_evaluation
+  - spatial_order
+  - perceptual_evidence
+  changed_variables:
+  - surface_object
+  - contaminant
+  - coverage
+  - intensity
+  semantic_spec:
+    judgment: 判断任务：白衬衫上只有一个小咖啡渍，是否仍属于 dirty-01？
+    target_sense: dirty-01
+    contaminant_origin: external
+    clean_baseline_deviation: present
+    state_evaluation: needs_cleaning
+    spatial_order: not_applicable
+    perceptual_evidence: visual_stain
+    surface_object: white_shirt
+    contaminant: coffee_stain
+    coverage: single_small_spot
+    intensity: mild
+  sequence: 4
+  experience:
+    episode: 一件白色衬衫搭在椅背上。衬衫前襟靠近下摆的位置有一个指甲盖大小的浅褐色咖啡渍，边缘颜色略深。衬衫其余部分保持白色，没有其他斑点。
+    observable_evidence:
+    - 白色衬衫前襟下摆处有一个指甲盖大小的浅褐色咖啡渍
+    - 咖啡渍边缘颜色比中间略深
+    - 衬衫其余部分仍是白色，没有其他斑点
+    surface_dimensions:
+    - name: 表面对象
+      baseline: 白衬衫整体白色、无斑点
+      deviation: 前襟出现一个浅褐色咖啡渍，边缘颜色略深
+    - name: 污物来源
+      baseline: 衬衫布料本身不含咖啡成分
+      deviation: 咖啡渍来自外部液体洒落并渗入布料
+    - name: 覆盖范围
+      baseline: 整件衬衫无附着物
+      deviation: 只有一个小斑点，面积很小，其余部分仍白净
+    - name: 程度
+      baseline: 布料原本无颜色差异
+      deviation: 斑点颜色浅、面积小，属于轻微痕迹
+  interaction:
+    question: 这件白衬衫当前的状态，是否属于“表面附着外来污物、偏离原来的洁净状态”？
+    answers:
+    - id: a1
+      text: 是，前襟有一个咖啡渍
+      is_correct: true
+      feedback: 对。咖啡渍是外部液体留下的附着物，它让原本全白的衬衫出现了一个色斑，即使只有一小块，也已经偏离了原来的洁净状态。
+    - id: a2
+      text: 不是，只有一个斑点，不算
+      is_correct: false
+      feedback: 不对。判断依据不是斑点面积的大小；一个外来咖啡渍附着在白衬衫上，就已经让表面偏离了原本的洁净状态。
+- id: unit-5
+  role: discrimination
+  hypothesis_target: misc-1
+  preserved_variables:
+  - target_sense
+  - contaminant_origin
+  - clean_baseline_deviation
+  - state_evaluation
+  - perceptual_evidence
+  - intensity
+  changed_variables:
+  - surface_object
+  - contaminant
+  - coverage
+  - spatial_order
+  semantic_spec:
+    judgment: 判断任务：在散乱但表面干净的房间与物品整齐但有泥脚印的客厅地板之间，哪一样属于 dirty-01？同时确认 dirty-01 与 messy
+      是两条独立维度。
+    target_sense: dirty-01
+    contaminant_origin: external
+    clean_baseline_deviation: present
+    state_evaluation: needs_cleaning
+    perceptual_evidence: visual_stain
+    intensity: moderate
+    surface_object: living_room_floor
+    contaminant: muddy_footprints
+    coverage: multiple_footprints
+    spatial_order: neat
+    contrast_detail:
+      messy_only:
+        surface_contaminant_presence: absent
+        spatial_order: scattered
+        dirty_verdict: 'false'
+        messy_verdict: 'true'
+      dirty_neat:
+        surface_contaminant_presence: present
+        spatial_order: neat
+        dirty_verdict: 'true'
+        messy_verdict: 'false'
+  sequence: 5
+  experience:
+    episode: 客厅里有两个相邻的场景。左边房间：书本、遥控器、抱枕散落在地板和沙发上，但地板上看不到任何污渍或灰尘。右边客厅：拖鞋整齐地摆在门口，沙发靠垫摆放端正，但从门口到沙发之间的浅色地板上留着一串深褐色泥脚印，脚印边缘还能看到细泥渣。
+    observable_evidence:
+    - 左边房间地板干净无污渍，但书本、遥控器、抱枕散落各处
+    - 右边客厅物品摆放整齐，但浅色地板上有一串深褐色泥脚印
+    - 泥脚印边缘散落着细小的泥渣
+    surface_dimensions:
+    - name: 表面对象
+      baseline: 浅色地板原本干净、无深色痕迹
+      deviation: 地板出现一串深褐色泥脚印和细泥渣
+    - name: 物品秩序
+      baseline: 物品应放在固定位置
+      deviation: 左边房间多处物品散落；右边客厅物品整齐
+    - name: 污物来源
+      baseline: 地板自身无泥土
+      deviation: 泥脚印是外部泥土被踩过后带到地板上的附着物
+    - name: 覆盖范围
+      baseline: 整块地板无痕迹
+      deviation: 泥脚印从门口延伸到沙发前，呈一串局部痕迹
+  interaction:
+    question: 在这两个场景中，哪一样最符合“表面附着外来污物、偏离原来的洁净状态”？
+    answers:
+    - id: a1
+      text: 左边房间——东西散落但地板干净
+      is_correct: false
+      feedback: 不对。左边地板没有污物，问题只是物品位置散乱；这只是位置秩序的问题，不是表面附着外来污物。
+    - id: a2
+      text: 右边客厅——物品整齐但有泥脚印
+      is_correct: true
+      feedback: 对。右边物品虽然整齐，但浅色地板上有一串外来泥土脚印和泥渣，附着物让地板偏离了原本洁净的状态。
+- id: unit-6
+  role: discrimination
+  hypothesis_target: misc-2
+  preserved_variables:
+  - target_sense
+  - contaminant_origin
+  - clean_baseline_deviation
+  - state_evaluation
+  - perceptual_evidence
+  - spatial_order
+  changed_variables:
+  - surface_object
+  - contaminant
+  - coverage
+  - intensity
+  semantic_spec:
+    judgment: 判断任务：轻微积尘是否已足以属于 dirty-01？重度油污结垢是否仍可属于 dirty-01，只是更适合 filthy/grimy？
+    target_sense: dirty-01
+    contaminant_origin: external
+    clean_baseline_deviation: present
+    state_evaluation: needs_cleaning
+    perceptual_evidence: visual_stain
+    spatial_order: not_applicable
+    surface_object: kitchen_tile_wall
+    contaminant: loose_dust_film
+    coverage: even_thin_layer
+    intensity: slight
+    contrast_detail:
+      mild_case:
+        contaminant: loose_dust_film
+        severity: slight
+        dirty_verdict: 'true'
+        filthy_better_fit: 'false'
+      severe_case:
+        contaminant: thick_caked_grease
+        severity: severe
+        dirty_verdict: 'true'
+        filthy_better_fit: 'true'
+        grimy_supported: 'true'
+  sequence: 6
+  experience:
+    episode: 厨房的一面浅色瓷砖墙，离灶台较远的位置覆盖着一层薄薄的浮尘。用指尖横向划过墙面，指尖侧面会沾起一小层灰；用手电筒斜照时，能看到灰尘颗粒在光线下浮动。同一面墙靠近灶台的位置则有另一处状态：油污结成深黄色的厚垢，表面发亮，需要用铲刀才能刮掉。
+    observable_evidence:
+    - 远灶台处瓷砖表面有一层薄浮尘，手电斜照能看到颗粒
+    - 指尖划过墙面后，指侧沾起一小层灰
+    - 靠近灶台处有深黄色厚油垢，表面发亮，需用铲刀才能刮掉
+    surface_dimensions:
+    - name: 表面对象
+      baseline: 浅色瓷砖墙原本平整、无覆盖物
+      deviation: 一部分区域覆盖薄浮尘，另一部分区域结着深黄色厚油垢
+    - name: 程度
+      baseline: 墙面无任何附着物
+      deviation: 浮尘层较薄，油垢层较厚且发亮，两种程度差异明显
+    - name: 感知方式
+      baseline: 墙面色泽均匀、无颗粒感
+      deviation: 浮尘在斜照光下可见，指尖能沾起灰；油垢肉眼可见并形成硬壳
+    - name: 覆盖范围
+      baseline: 整面墙无附着物
+      deviation: 浮尘呈薄薄一层覆盖部分区域，油垢集中在一处灶台附近
+  interaction:
+    question: 这两处墙面状态，哪一句说得对？
+    answers:
+    - id: a1
+      text: 薄浮尘那处已经是表面附着外来污物，厚油垢那处也同样是
+      is_correct: true
+      feedback: 对。薄浮尘和厚油垢都是外来附着物，都让瓷砖墙偏离了原本洁净的状态；程度轻或重都不改变这一点。
+    - id: a2
+      text: 只有厚油垢那处才算，薄浮尘太轻了不算
+      is_correct: false
+      feedback: 不对。薄浮尘虽然轻，但手电照得到颗粒、指尖能沾起灰，说明表面确实附着外来灰尘；程度轻也仍然属于表面附着外来污物。
+- id: unit-7
+  role: discrimination
+  hypothesis_target: misc-3
+  preserved_variables:
+  - target_sense
+  - contaminant_origin
+  - clean_baseline_deviation
+  - state_evaluation
+  - perceptual_evidence
+  - intensity
+  - spatial_order
+  changed_variables:
+  - surface_object
+  - contaminant
+  - coverage
+  semantic_spec:
+    judgment: 判断任务：表面有泥水溅落的台面、内容粗俗的言语、被污染的水体，哪一个属于 dirty-01？另外两个应分别归入其他范畴。
+    target_sense: dirty-01
+    contaminant_origin: external
+    clean_baseline_deviation: present
+    state_evaluation: needs_cleaning
+    perceptual_evidence: visual_stain
+    intensity: moderate
+    spatial_order: not_applicable
+    surface_object: kitchen_counter
+    contaminant: muddy_splashes
+    coverage: scattered_splashes
+    contrast_detail:
+    - case_type: dirty-02
+      object_of_judgment: spoken_content
+      surface_contaminant_presence: absent
+      dirty01_verdict: 'false'
+      category_verdict: dirty-02
+    - case_type: polluted
+      object_of_judgment: river_water
+      surface_contaminant_presence: not_surface_attachment
+      dirty01_verdict: 'false'
+      category_verdict: polluted
+  sequence: 7
+  experience:
+    episode: 厨房台面上有深褐色泥水溅落的痕迹，泥点沿台面边缘散开，干后留下粗糙的泥痕。旁边有人在讲一个笑话，说完后周围人皱起眉头，有人说“这话不该在这里说”。远处电视新闻里播放着一条河的画面：河面上漂着白色泡沫，水体呈灰绿色。
+    observable_evidence:
+    - 台面边缘有深褐色泥水溅落后干掉的粗糙泥痕
+    - 有人讲笑话后，周围人皱眉并说“这话不该在这里说”
+    - 电视画面中的河水呈灰绿色，河面漂着白色泡沫
+    surface_dimensions:
+    - name: 表面对象
+      baseline: 台面原本平整、无深色痕迹
+      deviation: 台面边缘出现深褐色泥痕和粗糙泥点
+    - name: 被评价对象
+      baseline: 台面是物理表面，有明确的表面状态
+      deviation: 台面有泥水附着；笑话内容没有物理表面；河水是水体而非表面附着
+    - name: 污物来源
+      baseline: 台面自身无泥土
+      deviation: 泥痕来自外部泥水溅落后干涸
+    - name: 覆盖范围
+      baseline: 整条台面无痕迹
+      deviation: 泥点沿边缘散开，形成多处局部痕迹
+  interaction:
+    question: 在刚才出现的三个事物中，哪一样最符合“表面附着外来污物、偏离原来的洁净状态”？
+    answers:
+    - id: a1
+      text: 电视里那条河水
+      is_correct: false
+      feedback: 不对。河水是水体整体受到污染，不是某个物理表面上附着外来污物；这个情况应归入环境污染，而不是表面附着污物。
+    - id: a2
+      text: 厨房台面上的泥痕
+      is_correct: true
+      feedback: 对。泥水溅到台面上并干涸，形成了附着在表面的外来泥痕，让原本平整干净的台面偏离了洁净状态。笑话内容属于言语内容范畴，河水属于环境污染范畴，都不是表面附着污物。
+symbol_binding:
+  reveal:
+    l2_word: dirty
+    ipa: /ˈdɜːrti/
+    presentation: 把刚才七段经验放在一起：白色餐盘上的油渍和酱汁、小孩手上的泥、台面上摸得到的黏腻、白衬衫上的咖啡渍、客厅地板的泥脚印、瓷砖墙的浮尘和厚油垢、台面上的泥痕——这些都是“表面附着外来污物、偏离原本洁净状态”。现在把这个共同经验绑定到声音
+      /ˈdɜːrti/ 和拼写 dirty 上。
+  minimal_l1_gloss: 表面附着污物、不洁净的
+gate:
+  passed: true
+  dimensions:
+  - name: semantic_correctness
+    verdict: pass
+    note: 所有七单元的 judgment/target_sense 均指向 dirty-01（表面附着外来污物、偏离洁净状态）。unit-1 餐盘油渍、unit-2
+      小孩手上的泥、unit-4 白衬衫咖啡渍、unit-5 泥脚印、unit-7 台面泥痕都满足“有表面、有外来附着物、偏离洁净基准、可感知”；unit-3
+      黏腻残留用触觉证据覆盖 WordSense 的“触觉可感知”；unit-6 薄浮尘也满足“可见/可触的外来附着”。未发现任何单元在表达相邻范畴（messy/polluted/dirty-02）。
+  - name: sense_purity
+    verdict: pass
+    note: 对照 WordSense 的 excluded 与 confusables：unit-5 明确对比“散乱但表面干净”与“整齐但有泥脚印”，直接把
+      messy 排除；unit-6 用“薄浮尘/厚油垢”同时覆盖轻微 dirty 与 filthy/grimy 的程度邻接，并正确保持两者都成立；unit-7
+      将 dirty-02（笑话内容）与 polluted（河水）作为反例排除。各单元均未滑向 filthy 的极端令人作呕、未用乱放代替污物、未把水体污染当表面附着。
+  - name: prototype_quality
+    verdict: pass
+    note: anchor unit-1 是很好的基线原型：白色陶瓷餐盘 + 干油渍/酱汁，视觉可见、触觉滑腻、有明确的白净底色对照、且“水槽边无杂物”排除了
+      messy 混淆。它同时满足 WordSense scene_requirements 的“清晰可见污物”“与洁净部分对比”“有明确表面对象”。作为 dirty-01
+      最典型、最无争议的实例成立。
+  - name: definition_leakage
+    verdict: pass
+    note: 经验内容全部由具体行为事件承载，没有旁白式定义或直接贴语义标签。各单元 interaction 文本只是把学习者在 episode 中已看到/摸到的证据表述为对状态的判断，没有出现“dirty
+      的意思是……”之类定义式解释。唯一较接近说明的是单元 feedback 中的“……正是表面附着外来污物、偏离洁净状态”，这是判断理由的反馈，仍以可见证据（油渍/酱汁、泥斑/泥粒、黏住/擦后恢复）为支撑，不构成定义泄漏。
+  - name: l2_leakage
+    verdict: pass
+    note: '检查了所有单元的 episode、observable_evidence、surface_dimensions、interaction 的 question/answers/feedback，以及
+      symbol_binding 中 reveal 之前的可见文本（asset 内无 review 场景）。绑定前没有任何英文目标词 dirty，也没有相邻英文词（messy、filthy、grimy、muddy、polluted）出现在
+      learner-visible 位置。英语只出现在 symbol_binding.reveal 应出现的位置（l2_word: dirty, ipa,
+      以及 reveal 的“绑定到声音 /ˈdɜːrti/ 和拼写 dirty 上”），属于绑定动作本身。'
+  - name: l1_label_leakage
+    verdict: pass
+    note: learner-visible 内容没有用中文概念标签命名或作为答案。各单元 question 使用的是“表面附着外来污物、偏离原来的洁净状态”这一描述性判断，属于行为/状态描述而非用“脏”给概念贴标签；选项文本也以具体证据（“盘面有可见的油渍和酱汁”“手心与指缝沾着泥土”“摸得到黏腻残留”等）作答，没有原样复制
+      minimal_l1_gloss 或把中文“脏”当答案。symbol_binding.reveal 中的“表面附着外来污物、不洁净的”是绑定后的 minimal
+      gloss，且与 minimal_l1_gloss 一致，符合合同允许的绑定位置。
+  - name: surface_language_compliance
+    verdict: pass
+    note: '按 # Presentation Language Policy（默认 zh-CN → en）：绑定前所有 learner-visible 内容均为中文经验叙事，没有成段英语；grounding
+      在 symbol_binding.reveal 中以自然 L2 形式出现（“Now bind this common experience to the
+      sound /ˈdɜːrti/ and spelling dirty”），包含目标词 dirty 及 IPA；boundary 选项为合法 L2 lemma（dirty），而非英文解释段落。未发现违反语言合同的情况。'
+  - name: variable_isolation
+    verdict: pass
+    note: 各单元 preserved/changed 变量设计合理。unit-1 anchor 在泛化变量上变化以建立原型；unit-2 保持 spatial_order=not_applicable
+      并改变 surface_object/contaminant/perceptual_evidence；unit-3 专门把 perceptual_evidence
+      改为 tactile_stickiness_alone，同时保持 intensity=moderate；unit-4 把 coverage 改为 single_small_spot、intensity
+      改为 mild；unit-5 改变 spatial_order 与 surface_object 以对照 messy；unit-6 在 intensity
+      上做程度对比；unit-7 在 judge object 类型上做范畴对比。每处关键判断都只沿目标维度变化，未发现多余变量悄悄改变导致任务失效。unit-6
+      的 severe_case 隐含表面对象同为瓷砖墙、污物同为外来附着，对比成立。
+  - name: accidental_invariant
+    verdict: pass
+    note: 正例的表面对象（餐盘、手、台面、衬衫、地板、瓷砖墙、厨房台面）、污物（油渍酱汁、泥、糖液残留、咖啡渍、泥脚印、浮尘/油垢、泥水痕迹）、感知通道（视觉、视觉+触觉、仅触觉、视觉）、覆盖范围、程度均不同，没有形成“同一种结局/同一表面场景”的假不变式。交互题正确答案位置并不固定：unit-1/3/4/6/7
+      正确项在 a1，unit-2 正确项在 a2，unit-5 正确项在 a2，位置已交替。未发现 accidental invariant。
+  - name: cognitive_noise
+    verdict: pass
+    note: 各 episode 紧贴目标词义，未夹带无关情节：unit-1 水槽边无杂物、unit-2 花园泥、unit-3 黏腻残留、unit-4 咖啡渍、unit-5
+      散乱vs整齐对照、unit-6 浮尘与油垢程度对照、unit-7 笑话与河水作为反例对照。没有生僻词或含混歧义；unit-7 中笑话和河水虽然增加场景数量，但作用是明确排除
+      dirty-02 与 polluted，与目标判断直接相关，不构成无关认知负担。
+  scores:
+    semantic_correctness: 9.5
+metadata:
+  compiler_version: 2.1.0
+  prompt_versions:
+    program_planner: v2
+    surface_generator: v2
+    quality_gate: v2
+  generated_at: '2026-08-15T16:23:12Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids:
+  - 20217126-b272-4667-8536-f3ea14402867
+  - c16bc67a-fe45-45c8-9ef8-c66872d050e3
+  language_policy:
+    policy_version: 1
+    learner_l1: zh-CN
+    target_l2: en

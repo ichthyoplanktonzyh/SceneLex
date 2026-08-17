@@ -1,0 +1,16 @@
+schema_version: '1.0'
+version: 1
+word: through
+pos: [adjective]
+
+frequency:
+  rank: 131
+  band: core
+
+senses:
+  - id: through-01
+    pos: adjective
+    sense_label: "贯穿的；穿过的"
+    definition: "A property of a route, opening, or elongated object that runs continuously from one side of a physical medium or region to the other, creating a spatial connection between the two sides."
+    status: reviewed
+    scene_count: 0

@@ -8,8 +8,12 @@ import 'auth/auth_controller.dart';
 import 'data/content/experience_program_repository.dart';
 import 'data/product_providers.dart';
 import 'data/providers.dart';
+import 'features/daily_session_prototype/daily_session_preview_app.dart';
 import 'features/experience_runtime/experience_runtime_page.dart';
 import 'features/experience_runtime/experience_runtime_view_model.dart';
+import 'features/archetype_mvp/archetype_mvp_preview_app.dart';
+import 'features/holistic_course_prototype/holistic_course_preview_app.dart';
+import 'features/journey_prototype/journey_preview_app.dart';
 import 'features/login/login_page.dart';
 import 'features/settings/notifications_service.dart';
 import 'l10n/gen/app_localizations.dart';
@@ -23,12 +27,71 @@ const String kExperiencePreviewSense = String.fromEnvironment(
   'SCENELEX_EXPERIENCE_PREVIEW',
 );
 
+/// Development-only entry: `--dart-define=SCENELEX_JOURNEY_PREVIEW=true`
+/// boots the "Today's Journey" product prototype (bundled catalog, prototype
+/// learner state, no login / server / workspace / sync). The production App
+/// behavior is unchanged; the whole prototype lives under
+/// `features/journey_prototype` and can be deleted as one directory.
+const String kJourneyPreviewFlag = String.fromEnvironment(
+  'SCENELEX_JOURNEY_PREVIEW',
+);
+
+/// Development-only entry: `--dart-define=SCENELEX_SESSION_PREVIEW=true`
+/// boots the "Daily Learning Session" product prototype (unified entry +
+/// dynamic task orchestration + modes; bundled catalog, prototype learner
+/// state, memory-only session resume, no login / server / workspace / sync).
+/// The production App and the Journey preview are unchanged; the whole
+/// prototype lives under `features/daily_session_prototype` and can be
+/// deleted as one directory.
+///
+/// Precedence: when both SESSION_PREVIEW and JOURNEY_PREVIEW are set,
+/// SESSION_PREVIEW wins — the two previews are independent prototypes and
+/// must never interfere, but only one can own the entry at a time.
+const String kSessionPreviewFlag = String.fromEnvironment(
+  'SCENELEX_SESSION_PREVIEW',
+);
+
+/// Development-only entry: `--dart-define=SCENELEX_HOLISTIC_COURSE_PREVIEW=<sense>`
+/// boots the Holistic Course preview (LLM 整课创作纵向实验): it loads the
+/// generated holistic course preview asset and executes the Course Author's
+/// learning_flow + review_progression strictly in order. The production App
+/// and the other previews are unchanged; the whole prototype lives under
+/// `features/holistic_course_prototype` and can be deleted as one directory.
+///
+/// Precedence (existing flags keep their order): SESSION > JOURNEY >
+/// EXPERIENCE > HOLISTIC > production.
+const String kHolisticCoursePreviewSense = String.fromEnvironment(
+  'SCENELEX_HOLISTIC_COURSE_PREVIEW',
+);
+
+/// Development-only entry: `--dart-define=SCENELEX_ARCHETYPE_MVP=true`
+/// boots the Teaching Archetype MVP (七类义项 × 十四门课程 × 十四天学习模拟):
+/// it loads the real generated Holistic Course bundle and runs a memory-only
+/// Today Session with a mock clock. Archetypes are not user-visible modes;
+/// the production App and all other previews are unchanged. The whole
+/// prototype lives under `features/archetype_mvp` and can be deleted as one
+/// directory.
+const String kArchetypeMvpFlag = String.fromEnvironment(
+  'SCENELEX_ARCHETYPE_MVP',
+);
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final themeMode = await loadThemeMode();
-  final Widget app = kExperiencePreviewSense.isEmpty
-      ? SceneLexApp(initialThemeMode: themeMode)
-      : ExperiencePreviewApp(senseId: kExperiencePreviewSense);
+  final Widget app;
+  if (kSessionPreviewFlag.isNotEmpty) {
+    app = const SessionPreviewApp();
+  } else if (kJourneyPreviewFlag.isNotEmpty) {
+    app = const JourneyPreviewApp();
+  } else if (kExperiencePreviewSense.isNotEmpty) {
+    app = ExperiencePreviewApp(senseId: kExperiencePreviewSense);
+  } else if (kHolisticCoursePreviewSense.isNotEmpty) {
+    app = HolisticCoursePreviewApp(senseId: kHolisticCoursePreviewSense);
+  } else if (kArchetypeMvpFlag.isNotEmpty) {
+    app = const ArchetypeMvpPreviewApp();
+  } else {
+    app = SceneLexApp(initialThemeMode: themeMode);
+  }
   runApp(ProviderScope(child: app));
 }
 

@@ -79,4 +79,9 @@ class ReviewItem {
   String? get id => raw['id'] as String?;
   Map<String, dynamic>? get experience =>
       raw['experience'] as Map<String, dynamic>?;
+
+  /// Learning Presentation Language Contract scaffold level. Optional in the
+  /// wire format; defaults to early_post_binding. Reserved for future scaffold
+  /// decay; the MVP does not implement the decay algorithm.
+  String? get scaffoldLevel => raw['scaffold_level'] as String?;
 }

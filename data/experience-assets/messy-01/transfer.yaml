@@ -1,0 +1,239 @@
+schema_version: '1.0'
+asset_type: transfer
+sense_id: messy-01
+contract_hash: sha256:302d056f54b8385aef18b9dbabc7e260aa7d3ad1c7f2a7e82ca60d2fd1748680
+units:
+- id: transfer-1
+  role: transfer
+  hypothesis_target: null
+  preserved_variables:
+  - observed_entity
+  - component_type
+  - setting
+  changed_variables:
+  - deviation_type
+  - surface_condition
+  - quantity_pattern
+  - contrast_state
+  semantic_spec:
+    judgment: 判断：桌子表面是否呈现整体可见的形态无序（messy），而非因数量多或污渍造成的其他范畴。
+    observed_entity: 桌子表面
+    component_type: 文具与纸张
+    setting: 书桌
+    deviation_type: 方向、朝向与边缘对齐度
+    surface_condition: 干净
+    quantity_pattern: 中等偏多
+    contrast_state: 无整洁对照
+  sequence: 1
+  experience:
+    episode: 午后的书桌上摊着七八支笔、三本笔记本和几页纸。笔有的指向窗户，有的指向门口，在桌面上分散开来；笔记本互相叠压，书脊朝的方向各不相同。纸张的边缘参差不齐，有一半探出笔记本外面。桌面本身没有污渍，也没有明显的垃圾。整面桌子在视野里没有其他可作对照的台面。
+    observable_evidence:
+    - 七八支笔在桌面上指向多个方向，笔与笔之间的距离不一，呈散开状态
+    - 三本笔记本互相叠压，书脊朝向不同，边缘没有对齐
+    - 几页纸从笔记本之间探出，边缘高低不齐，方向不一致
+    - 桌面没有油渍、水痕或垃圾，清洁状况正常
+    - 视野内没有第二个台面可作对照
+    surface_dimensions:
+    - name: 排列方向与边缘对齐度
+      baseline: 同类的笔、本子和纸通常会朝同一方向摆放，边缘大体平齐
+      deviation: 笔的朝向分散，笔记本书脊方向各异，纸张边缘参差，整体缺乏一致方向
+    - name: 表面清洁状况
+      baseline: 台面无明显污渍、水痕或垃圾
+      deviation: 台面干净，没有油渍、水痕或垃圾
+    - name: 物品数量分布
+      baseline: 物品按习惯归位，数量适中
+      deviation: 中等偏多的物品散落在台面各区域，没有集中在收纳位置
+    - name: 对照状态
+      baseline: 场景中有一个可比较的归位台面
+      deviation: 视野内没有可比较的台面，只能依据桌面自身判断
+  interaction:
+    question: 你看到的这张书桌，更接近哪一种状态？
+    answers:
+    - id: a1
+      text: 桌面上的笔、笔记本和纸朝向各不相同，边缘参差，整体缺少一致的排列方向
+      is_correct: true
+      feedback: 正确。你看到的是多支笔朝向分散、笔记本书脊方向不同、纸边参差，这些证据共同说明整体排列缺少一致性，而不是只有个别物品偏移。
+    - id: a2
+      text: 桌面上只有一两件物品略微偏离原位，其余物品都保持同一方向和边缘平齐
+      is_correct: false
+      feedback: 不对。你看到的证据是笔的朝向分散、笔记本叠压且书脊方向不同、纸边参差，这已经波及整张桌面，不是一两件物品的轻微偏移。
+- id: transfer-2
+  role: transfer
+  hypothesis_target: null
+  preserved_variables:
+  - observed_entity
+  - setting
+  - surface_condition
+  changed_variables:
+  - component_type
+  - deviation_type
+  - quantity_pattern
+  - contrast_state
+  semantic_spec:
+    judgment: 判断：水槽台面上的厨具与调料瓶是否处于整体可见的无序排列，而不是因为残留污渍被归为脏。
+    observed_entity: 厨房水槽台面
+    setting: 厨房
+    surface_condition: 表面有油污水渍
+    component_type: 厨具、锅盖与调料瓶
+    deviation_type: 物品散放、相互交叠、朝向不一
+    quantity_pattern: 少而乱
+    contrast_state: 无整洁对照
+  sequence: 2
+  experience:
+    episode: 厨房水槽边的台面上只放着四件东西：一把锅铲、一个玻璃锅盖、两只调料瓶。锅铲斜搭在倒扣的锅盖上，一只调料瓶横躺在水槽边沿，另一只立在台面远端。锅铲与锅盖相互交叠，两只瓶子的瓶口朝向相反方向。台面上可见几处油渍和水痕，从锅盖边缘延伸到水槽边。视野内没有其他可作对照的台面。
+    observable_evidence:
+    - 锅铲斜搭在倒扣的锅盖上，两者相互交叠
+    - 一只调料瓶横躺在水槽边沿，另一只立在台面远端，瓶口朝向相反
+    - 玻璃锅盖倒扣，锅铲的握柄悬在台面边缘外
+    - 台面可见油渍和水痕，分布不规则
+    - 视野内没有另一个归位台面可作对照
+    surface_dimensions:
+    - name: 物品位置与朝向
+      baseline: 厨具和调料瓶通常放在固定区域，锅盖正放，瓶身竖直
+      deviation: 四件物品分散在台面各处，锅盖倒扣、一瓶横躺、锅铲斜搭交叠，瓶口朝向不一
+    - name: 表面清洁状况
+      baseline: 厨房台面通常保持干燥、少油污
+      deviation: 台面有可见油渍和水痕，分布不规则
+    - name: 物品数量分布
+      baseline: 物品数量少时容易形成有序排列
+      deviation: 物品数量少却分散在多个位置，彼此交错
+    - name: 对照状态
+      baseline: 场景中有可比较的归位台面
+      deviation: 视野内没有可比较的台面
+  interaction:
+    question: 你看到的这处厨房台面，更接近哪一种状态？
+    answers:
+    - id: a1
+      text: 台面上有几处水渍，但所有物品都放在各自原本的位置，方向和位置保持一致
+      is_correct: false
+      feedback: 不对。你看到的是锅铲斜搭在倒扣锅盖上、一只调料瓶横躺、瓶口方向相反；这些位置和朝向偏差与台面水渍无关。
+    - id: a2
+      text: 台面上物品不多，但位置分散、朝向不同，锅铲与锅盖还相互交叠
+      is_correct: true
+      feedback: 正确。锅铲与锅盖交叠、瓶口朝向相反、锅盖倒扣，这些可见的位置和朝向差异说明物品没有保持在各自原来的归位状态。
+- id: transfer-3
+  role: transfer
+  hypothesis_target: null
+  preserved_variables:
+  - observed_entity
+  - component_type
+  - contrast_state
+  changed_variables:
+  - setting
+  - surface_condition
+  - deviation_type
+  - quantity_pattern
+  semantic_spec:
+    judgment: 判断：一个开放的储物格整体是否呈现可见的杂乱形态，并排除表面损坏或物品过多但整齐的情形。
+    observed_entity: 储物格内部空间
+    component_type: 鞋子与鞋盒
+    contrast_state: 有整洁对照
+    setting: 玄关鞋柜
+    surface_condition: 干净无污渍
+    deviation_type: 位置错位、开口方向不一、相互挤压
+    quantity_pattern: 数量多但未溢出
+  sequence: 3
+  experience:
+    episode: 玄关的鞋柜分成上下两格。下格里放着六双鞋和三只鞋盒：一双运动鞋横着卡在格子中间，一只皮鞋鞋头朝里、另一只皮鞋鞋头朝外；三只鞋盒的开口分别朝左、朝上和斜前方，盒盖半开，相互挤压。上格则是一排鞋头统一朝外、间隔均匀的鞋，看起来保持着原样。柜体内没有灰尘，也没有泥土或污渍。
+    observable_evidence:
+    - 下格中一双运动鞋横着卡在格子中间，没有与其他鞋同向摆放
+    - 下格中一只皮鞋鞋头朝里，另一只皮鞋鞋头朝外，方向相反
+    - 三只鞋盒的开口分别朝左、朝上和斜前方，盒盖半开，相互挤压变形
+    - 上格的一排鞋鞋头统一朝外、间隔均匀，形成对照
+    - 柜体内没有灰尘、泥土或污渍，表面干净
+    surface_dimensions:
+    - name: 物品位置与方向
+      baseline: 鞋和鞋盒通常按同一方向摆放，盒口朝同一侧
+      deviation: 下格中鞋头方向相反、鞋盒开口方向不一，盒体相互挤压变形
+    - name: 表面清洁状况
+      baseline: 柜体内无尘无渍
+      deviation: 柜体干净，没有可见灰尘、泥土或污渍
+    - name: 物品数量分布
+      baseline: 鞋盒和鞋在可容纳范围内按序排列
+      deviation: 六双鞋与三只鞋盒把下格填得较满，但没有溢出到柜外
+    - name: 对照状态
+      baseline: 同一场景中有一个保持原样的区域
+      deviation: 上格保持鞋头统一朝外、间隔均匀，下格的偏差因而更明显
+  interaction:
+    question: 你看到的这个鞋柜，更接近哪一种状态？
+    answers:
+    - id: a1
+      text: 下格里的鞋和鞋盒方向不一致、相互挤压，上格则保持统一方向和均匀间隔
+      is_correct: true
+      feedback: 正确。你看到下格运动鞋横卡、一双皮鞋鞋头一内一外、鞋盒开口朝左/上/斜前方并互相挤压，而上格鞋头统一朝外，这种对比说明下格整体偏离了原有排列。
+    - id: a2
+      text: 下格只是放的鞋盒较多，但所有鞋头都朝同一方向，鞋盒也没有相互挤压
+      is_correct: false
+      feedback: 不对。你看到的是下格中鞋头方向相反、鞋盒开口方向各异且盒盖半开，不是数量多但方向一致的状态。
+batches:
+- count: 3
+  generated_at: '2026-08-15T16:03:08Z'
+  gate:
+    passed: true
+    dimensions:
+    - name: semantic_correctness
+      verdict: pass
+      note: transfer-1/2/3 均呈现可整体观察的表面/空间（桌面、水槽台面、鞋柜下格），多个组成部分偏离预期位置或朝向，无序达到整体可见程度，符合
+        WordSense messy-01 成立条件。transfer-2 的油污水渍由选项和 feedback 明确排除为判断依据，transfer-3
+        的上格整洁对照用于排除 cluttered，均未表达相邻范畴。
+    - name: sense_purity
+      verdict: pass
+      note: 对照 WordSense boundaries/excluded：transfer-2 a1 是“有污渍但物品归位”的反例，避免滑向 dirty；transfer-3
+        a2 是“数量多但整齐”的反例，避免滑向 cluttered；transfer-1 a2 是“仅局部偏移”的反例，守住整体可见无序的边界。未发现滑向
+        chaotic 或 wrecked/trashed。
+    - name: definition_leakage
+      verdict: warn
+      note: episode 与 observable_evidence 本身没有直接定义词义，但每个 unit 的 surface_dimensions
+        的 baseline/deviation（如 transfer-1 的“整体缺乏一致方向”）以及正确 feedback 的“这些证据共同说明整体排列缺少一致性”已经接近定义式语义概括，而不是让学习者自行从经验中归纳。建议将
+        surface_dimensions 降为内部元数据、不展示；feedback 改为只重述可见证据（如“笔的朝向不同、书脊方向不一、纸边参差”），不做语义概括。
+    - name: l2_leakage
+      verdict: pass
+      note: 检查了 episode、observable_evidence、surface_dimensions、question、answers、feedback，均为中文，未出现
+        messy、untidy、dirty、cluttered 等目标或相邻 L2 词。semantic_model/semantic_spec 内部字段中的
+        L2 词不属于绑定前 learner-visible 内容；若未来这些字段会被渲染给学习者，需额外过滤。
+    - name: l1_label_leakage
+      verdict: pass
+      note: learner-visible 文本没有用中文等价标签“乱/脏”命名概念，也没有把中文翻译当作答案。选项与 feedback 均为行为/证据描述，如“笔朝向分散”“锅铲与锅盖交叠”“鞋头方向相反”，属于允许的中文描述行为，而非中文命名概念。
+    - name: surface_language_compliance
+      verdict: pass
+      note: 绑定前 episode、选项、feedback 均为中文经验叙事，无成段英语；该资产不含 grounding/boundary 文本，因此不触发自然
+        L2 句与 boundary lemma 检查。
+    - name: variable_isolation
+      verdict: pass
+      note: 各 unit 的 changed_variables 均对应 episode 中实际出现的表面变化：transfer-1 改变方向/边缘、清洁状况、数量分布、对照状态；transfer-2
+        改变组件、散放交叠方式、少而乱、无对照；transfer-3 改变 setting、清洁状况、方向/挤压、数量多。未发现未声明的多余变量悄悄变化。transfer-2
+        的油污水渍是显式 confound，由 a1 反例与 feedback 排除，不构成判断任务失效。
+    - name: transfer_novelty
+      verdict: pass
+      note: transfer-1/2/3 分别进入书桌文具、厨房台面厨具、玄关鞋柜鞋盒三个明显不同的经验域；每单元 changed_variables
+        均包含至少 3 个表面维度，同时保留“多组件、整体可见、位置/朝向偏离”的 messy-01 成立条件，未把词义扩展到抽象或过程义。
+    - name: cognitive_noise
+      verdict: pass
+      note: episode 与 observable_evidence 均围绕目标维度，无无关情节；interaction 选项虽较长，但语义清晰，不含生词或含混歧义。transfer-2
+        的油污水渍属于 dirty 边界控制信息，不是与目标词义无关的认知负担。
+    scores:
+      semantic_correctness: 9.0
+      sense_purity: 9.0
+      definition_leakage: 6.0
+      l2_leakage: 10.0
+      l1_label_leakage: 10.0
+      surface_language_compliance: 10.0
+      variable_isolation: 8.0
+      transfer_novelty: 9.0
+      cognitive_noise: 8.0
+metadata:
+  compiler_version: 2.1.0
+  prompt_versions:
+    program_planner: v2
+    surface_generator: v2
+    quality_gate: v2
+  generated_at: '2026-08-15T16:03:08Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids:
+  - 274b03e1-67d3-4ece-bd9b-93a1368ba2bb
+  - 60d6af06-a5d4-478c-94b7-d3f107b937a7
+  language_policy:
+    policy_version: 1
+    learner_l1: zh-CN
+    target_l2: en

@@ -970,5 +970,275 @@
         "type": "Object"
       }
     }
-  }
+  },
+  "journeyHomeGreeting": "早上好",
+  "journeyHomeJourneyTitle": "今日旅程",
+  "journeyHomeMinutes": "约 {minutes} 分钟",
+  "journeyHomeTaskSummary": "{recall} 次回想 · {newConcepts} 个新概念 · {boundary} 次辨析 · {transfer} 次迁移",
+  "journeyHomeExplanation": "先唤醒一个旧概念，再建立两个新概念，并检查它们的边界。",
+  "journeyHomeContinue": "继续旅程",
+  "journeyHomeContinueAgain": "再走一遍旅程",
+  "journeyHomeDone": "旅程已完成",
+  "journeyHomeSemanticMap": "语义地图",
+  "journeyHomeExplore": "探索",
+  "journeyHomeSecondaryHint": "主线由系统编排，自由探索随时可进入",
+  "journeySessionTitle": "今日旅程",
+  "journeySessionQuit": "退出旅程",
+  "journeyTaskRecall": "回想",
+  "journeyTaskDiscover": "发现",
+  "journeyTaskBoundary": "辨析",
+  "journeyTaskTransfer": "迁移",
+  "journeyRecallPrompt": "这个场景让你想到哪个词？先在脑中回想它。",
+  "journeyRecallHint": "回想清楚再查看答案。",
+  "journeyRecallReveal": "查看答案",
+  "journeyRecallForgot": "忘了",
+  "journeyRecallHard": "勉强",
+  "journeyRecallGotIt": "记得",
+  "journeyBoundaryPrompt": "这个场景更接近哪一个概念？",
+  "journeyBoundaryCorrect": "对——这个场景属于这里。",
+  "journeyBoundaryIncorrect": "不太对——看看关键区别。",
+  "journeyBoundaryKey": "关键区别",
+  "journeyTransferHint": "一个全新的情境——刚才的概念还成立吗？",
+  "journeyTransferCorrect": "迁移成功",
+  "journeyTransferIncorrect": "不太对",
+  "journeyContinue": "继续",
+  "journeyNextTask": "下一个任务",
+  "journeyFinishJourney": "完成旅程",
+  "journeySkipTask": "跳过此任务",
+  "journeyTaskUnavailable": "这个任务的内容暂时不可用。",
+  "journeyCompleteTitle": "今日旅程完成",
+  "journeyCompleteGrew": "你的语义地图长大了。",
+  "journeyLedgerRecalled": "唤醒了 {lemma}",
+  "journeyLedgerEstablished": "建立了 {lemma}",
+  "journeyLedgerBoundary": "区分了 {a} / {b}",
+  "journeyLedgerTransfer": "把 {lemma} 迁移到了新情境",
+  "journeyCompleteViewMap": "查看语义地图",
+  "journeyCompleteBackHome": "返回首页",
+  "journeyCompleteNewBadge": "NEW",
+  "journeyCompleteNewBoundary": "新的边界",
+  "journeyMapTitle": "语义地图",
+  "journeyMapHint": "拖动查看 · 点按节点查看详情",
+  "journeyMapStatusMastered": "已掌握",
+  "journeyMapStatusLearning": "学习中",
+  "journeyMapStatusNewlyLearned": "新建立",
+  "journeyMapStatusUnseen": "未学习",
+  "journeyMapDetailStatus": "当前状态",
+  "journeyMapDetailSymbol": "符号回想",
+  "journeyMapDetailMeaning": "词义",
+  "journeyMapDetailBoundary": "相关边界",
+  "journeyMapBoundaryEdge": "{a} ↔ {b}",
+  "journeyExploreTitle": "探索",
+  "journeyExploreSubtitle": "浏览真实目录——以下每个词义都来自内置内容。",
+  "@journeyHomeMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@journeyHomeTaskSummary": {
+    "placeholders": {
+      "recall": {
+        "type": "int"
+      },
+      "newConcepts": {
+        "type": "int"
+      },
+      "boundary": {
+        "type": "int"
+      },
+      "transfer": {
+        "type": "int"
+      }
+    }
+  },
+  "@journeyLedgerRecalled": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "@journeyLedgerEstablished": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "@journeyLedgerBoundary": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "@journeyLedgerTransfer": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "@journeyMapBoundaryEdge": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionHomeKicker": "每日学习",
+  "sessionHomeTitle": "今日学习",
+  "sessionHomeMinutes": "约 {minutes} 分钟",
+  "@sessionHomeMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSummaryRecall": "{count, plural, =1{1 个待复习} other{{count} 个待复习}}",
+  "@sessionSummaryRecall": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSummaryDiscover": "{count, plural, =1{1 个新义项} other{{count} 个新义项}}",
+  "@sessionSummaryDiscover": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSummaryBoundary": "{count, plural, =1{1 个辨析} other{{count} 个辨析}}",
+  "@sessionSummaryBoundary": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSummaryTransfer": "{count, plural, =1{1 个迁移} other{{count} 个迁移}}",
+  "@sessionSummaryTransfer": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionHomeExplanation": "系统会根据你的掌握状态安排本次学习：唤醒到期内容、建立一个新义项，并检查它与已学内容的边界。",
+  "sessionHomeStart": "开始学习",
+  "sessionHomeResume": "继续本次学习",
+  "sessionHomeRedo": "重新体验今日学习",
+  "sessionHomeDone": "今日已完成",
+  "sessionHomeAdjust": "调整本次学习",
+  "sessionHomeSemanticMap": "语义地图",
+  "sessionHomeExplore": "自由探索",
+  "sessionHomeEmptyHint": "今天暂无安排——系统会继续留意到期内容。",
+  "sessionHomeFooterHint": "系统替你编排学习 · 自由探索随时可进入",
+  "sessionModeTitle": "调整本次学习",
+  "sessionModeStandard": "标准模式",
+  "sessionModeStandardDesc": "复习 + 一个新义项 + 必要的辨析",
+  "sessionModeReviewOnly": "只复习",
+  "sessionModeReviewOnlyDesc": "只复习今天到期的义项",
+  "sessionModeLearnOnly": "只学新内容",
+  "sessionModeLearnOnlyDesc": "学习一个新义项，不复习",
+  "sessionModeCancel": "取消",
+  "sessionModeConfirmTitle": "丢弃本次学习？",
+  "sessionModeConfirmBody": "切换模式将丢弃尚未完成的学习。确定继续吗？",
+  "sessionModeConfirmSwitch": "丢弃并切换",
+  "sessionModeChanged": "已调整学习安排",
+  "sessionBlockWarmup": "快速唤醒",
+  "sessionBlockCore": "核心义项",
+  "sessionBlockBoundary": "边界辨析",
+  "sessionBlockTransfer": "迁移加练",
+  "sessionBlockCompletion": "完成",
+  "sessionTaskRecall": "回想",
+  "sessionTaskDiscover": "学习新义项",
+  "sessionTaskBoundary": "辨析",
+  "sessionTaskTransfer": "迁移",
+  "sessionProgress": "任务 {current} / {total}",
+  "@sessionProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionQuitTooltip": "退出学习（稍后可继续）",
+  "sessionSafeExitNote": "可以安全退出，本次学习会从当前任务继续。",
+  "sessionSkipTask": "跳过任务",
+  "sessionTaskUnavailable": "这个任务的内容暂不可用。",
+  "sessionContinue": "继续",
+  "sessionNextTask": "下一任务",
+  "sessionFinishSession": "完成本次学习",
+  "sessionEmptyTitle": "今天暂无任务",
+  "sessionEmptyReviewBody": "今天没有到期的义项。去自由探索，或稍后再来。",
+  "sessionEmptyLearnBody": "暂时没有可学的新义项，等新内容准备好再来吧。",
+  "sessionEmptyBackHome": "返回首页",
+  "sessionCompleteTitle": "本次学习完成",
+  "sessionCompleteNote": "原型总结——不计算也不保存长期记忆分数。",
+  "sessionCompleteSection": "本次学习做了什么",
+  "sessionLedgerRecalled": "唤醒 {lemma}",
+  "@sessionLedgerRecalled": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionLedgerEstablished": "新建立 {lemma}",
+  "@sessionLedgerEstablished": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionLedgerBoundary": "辨析 {a} 与 {b}",
+  "@sessionLedgerBoundary": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionLedgerTransferred": "对 {lemma} 进行了迁移加练",
+  "@sessionLedgerTransferred": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionCompleteViewMap": "查看语义地图",
+  "sessionCompleteBackHome": "返回首页",
+  "sessionCompleteNewBadge": "新",
+  "sessionCompleteNewBoundary": "新边界",
+  "sessionMapTitle": "语义地图",
+  "sessionMapHint": "你的语义世界——今天遇到的节点会高亮。",
+  "sessionMapStatusMastered": "已掌握",
+  "sessionMapStatusLearning": "学习中",
+  "sessionMapStatusNewlyLearned": "今日新学",
+  "sessionMapStatusUnseen": "未学习",
+  "sessionExploreTitle": "自由探索",
+  "sessionExploreSubtitle": "浏览真实目录——以下每个义项都来自 bundled content。",
+  "sessionStatusDue": "今日到期",
+  "sessionStatusStable": "已稳定",
+  "sessionStatusNew": "新内容"
 }

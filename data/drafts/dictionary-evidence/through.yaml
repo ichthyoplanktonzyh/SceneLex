@@ -1,0 +1,79 @@
+schema_version: '1.0'
+word: through
+language: en
+provider: wiktionary
+captured_at: '2026-08-16T06:37:34Z'
+entries:
+- entry_id: through-dict-001
+  pos: adj
+  gloss: Passing from one side of something to the other.
+  labels:
+  - not-comparable
+  examples:
+  - Interstate highways form a nationwide system of through roads.
+  - It is possible to use a through bolt so that the bolt will be loaded axially,
+    but usually axial loads are only components of the total load on the bolt.
+- entry_id: through-dict-002
+  pos: adj
+  gloss: Finished; complete.
+  labels:
+  - US
+  - not-comparable
+  examples:
+  - They were through with laying the subroof by noon.
+  - Early in the Talmudic period the service was divided between two officers. One
+    was invited to recite the Shema including the benedictions connected with it […]
+    After he was through, another man was invited to stand up before the pulpit facing
+    the direction of Jerusalem to recite the prayer proper, i.e., the Amida.
+- entry_id: through-dict-003
+  pos: adj
+  gloss: Along the course of a task etc.; used in expressions of progress towards
+    the end.
+  labels:
+  - not-comparable
+  examples:
+  - It's a big job but we're halfway through.
+- entry_id: through-dict-004
+  pos: adj
+  gloss: Without a future; done for.
+  labels:
+  - not-comparable
+  examples:
+  - After being implicated in the scandal, he was through as an executive in financial
+    services.
+  - You chumps are tougher than you look. But I'm not through yet! Everyone! GET 'EM!!!
+- entry_id: through-dict-005
+  pos: adj
+  gloss: No longer interested; wearied or turned off by experience.
+  labels:
+  - not-comparable
+  examples:
+  - She was through with him.
+  - “I'm through with all pawn-games,” I laughed. “Come, let us have a game of lansquenet.
+    Either I will take a farewell fall out of you or you will have your sevenfold
+    revenge”.
+- entry_id: through-dict-006
+  pos: adj
+  gloss: Proceeding from origin to destination without the need to change transport
+    vehicle.
+  labels:
+  - not-comparable
+  examples:
+  - The through flight through Memphis was the fastest.
+  - When is the next through train to London?
+- entry_id: through-dict-007
+  pos: adj
+  gloss: Connected (to someone) by telephone.
+  labels:
+  - not-comparable
+  examples:
+  - You're through to the doctor now.
+- entry_id: through-dict-008
+  pos: adj
+  gloss: In possession of the ball beyond the last line of defence but not necessarily
+    the goalkeeper; through on goal.
+  labels:
+  - not-comparable
+  examples:
+  - With the Swifts calling for offside the striker was through and only a great save
+    from McIlravey prevented the opener.

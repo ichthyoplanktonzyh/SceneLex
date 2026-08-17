@@ -1,0 +1,122 @@
+schema_version: '1.1'
+language: en
+version: 1
+status: reviewed
+id: across-01
+word: across
+pos: preposition
+sense_label: 横过；跨越
+definition: Movement or extension from one side of an intervening object or space
+  to the other side.
+pronunciation:
+  ipa: /əˈkɹɔs/
+collocations:
+- walk across
+- swim across
+- run across
+- stretch across
+- bridge across
+sentence_patterns:
+- '[noun] [verb] across [noun]'
+- There is a [noun] across [noun].
+inventory:
+  word: across
+  version: 1
+  evidence_digest: sha256:4c973d178160599e9d8c684ab27e79530967772fdd1785a5894ea6d3970538f1
+  sense_id: across-01
+  identity_digest: sha256:ac419d2f4b946acb9dedecca02677d96adbc637431d28b33a6930dcde8fef9c4
+semantic_identity:
+  semantic_type: spatial_relation
+  dimension: spatial_path_extension
+  change_of_state: false
+  causative: false
+  valency: transitive_prep
+inventory_source_entries:
+- across-dict-006
+semantic_revision: 1
+provenance:
+  sources:
+  - type: dictionary
+    citation: https://kaikki.org/dictionary/English/meaning/a/ac/across.jsonl
+    license: CC-BY-SA
+semantic_type: spatial_relation
+semantic_skeleton:
+  participants:
+  - role: figure
+    description: 被观察的移动者或延伸物，是 across 关系所定位的主体。
+  - role: landmark
+    description: 介词宾语所指的中间空间或物体，路径或延伸必须跨越它。
+  propositions:
+  - 存在一个将空间划分为两侧的中间物或区域（landmark）。
+  - 被观察的主体（figure）被理解为沿一条路径运动，或以延伸形态覆盖从 landmark 一侧到另一侧的空间。
+  - 该路径或延伸必须横穿 landmark 占据的区域，而不是只到达 landmark 近侧或只停留在远侧。
+  - 整体空间关系是一个连续的跨度，而不是终点位置。
+conditions:
+  required:
+  - 必须存在一个可识别的 landmark，它位于 figure 路径或延伸的中间。
+  - 必须能确定 landmark 的两侧各有一个与 figure 相关的空间端点。
+  - 路径或延伸必须连续经过 landmark 所在区域。
+  - 场景或语境必须指向“跨越”这一整体关系，而非仅指向终点位置。
+  excluded:
+  - condition: 场景只表示 figure 位于中间物的另一边，没有任何跨越或延伸路径。
+    alternative: across-02
+  - condition: across 后面没有名词短语充当宾语，仅以副词形式表示从一边到另一边或另一边。
+    alternative: across-03
+  - condition: 语境是填字游戏，across 表示横向填入格子，而不是空间跨越。
+    alternative: across-04
+relations:
+  boundaries:
+  - target: across-02
+    relation: different_dimension
+    distinction: 本义项的维度是空间路径/延伸，强调从一边到另一边跨过中间物；across-02 的维度是静态空间位置，只表示在中间物的另一边/对面。
+    diagnostic: 若画面中出现运动轨迹、过河/过桥过程，或延伸物两端分别位于中间物两侧，则是本义项；若画面只显示某物位于参照对象的另一侧，没有跨越过程或延伸关系，则是
+      across-02。
+  - target: across-03
+    relation: overlaps
+    distinction: 本义项是介词，必须带宾语以指明被跨越的中间物；across-03 是副词，不带宾语，但保留“从一边到另一边”的核心路径义。
+    diagnostic: 若 across 后跟名词短语（如 across the river），可归为本义项；若 across 独立使用（如 He walked
+      across），没有介词宾语，则归为 across-03。
+  - target: across-04
+    relation: different_dimension
+    distinction: 本义项是空间关系，across-04 是填字游戏的横向方向；二者维度不同。
+    diagnostic: 若场景涉及填字游戏或文字格中的“横向”，则为 across-04；若涉及物理空间中的跨越或延伸，则为本义项。
+  l1_confusables:
+    zh:
+    - l1_term: 横（横过/横跨）
+      covers:
+      - across-04
+      note: 中文“横”的“横过/横跨”义与当前义项（从一边到另一边）对应，而其“横向/水平方向”义对应 across-04。学习者容易把当前义项的路径义窄化为“水平方向”，忽略“必须从一侧到另一侧穿过中间物”这一核心。
+    - l1_term: 对面
+      covers:
+      - across-02
+      note: 中文“对面”是静态的“另一边”，对应 across-02；但它也常被用来翻译当前义项的终点位置，导致学习者把当前义项误解为静态位置，忽略路径或延伸。
+scene_requirements:
+  must_show:
+  - 一个中间物或空间（如河、路、桥下方的沟、操场等）把画面分为两侧。
+  - 与本义项匹配的路径或延伸：画面中要有可辨识的移动轨迹，或一个延伸物的两端分别落在中间物的两侧。
+  - 镜头需在同一个画面中呈现“起点侧、中间物、终点侧”三个空间要素，使跨越关系可验证。
+  must_not:
+  - 不得只呈现人物或物体静置于中间物另一侧的镜头，这种静态位置会指向 across-02。
+  - 不得让运动轨迹中途消失或只显示起点一侧，否则无法确认“到另一边”。
+  - 不得出现“进入中间物内部后再离开”的视觉，这会指向其他空间关系，而不是本义项的跨越。
+  - 不得只展示中间物本身而没有跨越它的路径或延伸物。
+  externalization:
+  - 用运动箭头、轨迹线或连续桥梁/道路结构把“从一边到另一边”的路径可视化。
+  - 若要表达延伸物跨越，应让延伸物两端与中间物两侧边界同时入镜。
+  - 本义项为具体空间关系，通过运动轨迹和端点位置即可完成外化，无需额外心理状态提示。
+  timing: 先让观众完整看到跨越或延伸过程，在终点到达或延伸关系清晰可辨后再出现 across 的语音；不要在前半段路径未呈现时提前命名。
+
+# ============================================================
+# G. 教学原型建议 (非权威, 仅供 Holistic Course Author 参考)
+# ============================================================
+teaching_profile:
+  primary_archetype: spatial_path
+  suggested_capabilities:
+  - spatial_stage
+  - scene_observation
+  - single_choice
+  - binary_judgment
+  - transfer_judgment
+  special_risks:
+  - surface_vs_interior
+  - viewpoint_dependence

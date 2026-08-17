@@ -1,0 +1,77 @@
+schema_version: '1.0'
+word: borrow
+language: en
+provider: wiktionary
+captured_at: '2026-08-16T06:39:09Z'
+entries:
+- entry_id: borrow-dict-001
+  pos: verb
+  gloss: To receive (something) from somebody temporarily, expecting to return it.
+  labels: []
+  examples:
+  - Finance is seldom romantic. But the idea of peer-to-peer lending comes close.
+    This is an industry that brings together individual savers and lenders on online
+    platforms. Those that want to borrow are matched with those that want to lend.
+- entry_id: borrow-dict-002
+  pos: verb
+  gloss: To receive money from a bank or other lender under the agreement that the
+    lender will be paid back over time.
+  labels: []
+  examples: []
+- entry_id: borrow-dict-003
+  pos: verb
+  gloss: To adopt (an idea) as one's own.
+  labels: []
+  examples:
+  - to borrow the style, manner, or opinions of another
+  - It is not hard for any man, who hath a Bible in his hands, to borrow good words
+    and holy sayings in abundance; but to make them his own is a work of grace only
+    from above.
+- entry_id: borrow-dict-004
+  pos: verb
+  gloss: To adopt a word from another language.
+  labels: []
+  examples:
+  - Americans, for example, call newcomers to Antarctica “fingies”, which comes from
+    FNGs – a borrowed military abbreviation that means “Fucking New Guy”.
+- entry_id: borrow-dict-005
+  pos: verb
+  gloss: In a subtraction, to deduct (one) from a digit of the minuend and add ten
+    to the following digit, in order that the subtraction of a larger digit in the
+    subtrahend from the digit in the minuend to which ten is added gives a positive
+    result.
+  labels: []
+  examples: []
+- entry_id: borrow-dict-006
+  pos: verb
+  gloss: To lend.
+  labels:
+  - Malaysia
+  - Singapore
+  - West-Midlands
+  - proscribed
+  examples:
+  - “Rosie, borrow me your look looker, I bet my lips are all. Everytime^([sic]) I
+    eat or drink, so quick I gotta fix ’em, yet.”
+  - 'Johari Salleh: Ya, ya. Better not waste time. Must prepare, tomorrow morning
+    got inspection. Teo Ah Beng: Ya lah, must kiwi [polish] the boots. Can borrow
+    me your cloth? Krishnamoorthy: Ya, no problem. You better kiwi quickly. 11 pm
+    lights off. […]'
+- entry_id: borrow-dict-007
+  pos: verb
+  gloss: To temporarily obtain (something) for (someone).
+  labels:
+  - ditransitive
+  examples:
+  - 'You must borrow me Garagantua''s mouth first: ''tis a word too great for any
+    mouth of this age''s size: To say, ay, and no, to these particulars, is more than
+    to answer in a catechism.'
+  - Yes, my lord, he told me this in my own house; and I told him he might go to esquire
+    Tindal, and I lent him eighteen pence, and borrowed him a horse in the town.
+- entry_id: borrow-dict-008
+  pos: verb
+  gloss: To feign or counterfeit.
+  labels: []
+  examples:
+  - borrowed hair
+  - the borrowed majesty of England

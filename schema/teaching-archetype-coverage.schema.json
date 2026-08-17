@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scenelex.dev/schema/teaching-archetype-coverage.schema.json",
+  "title": "Teaching Archetype Coverage Manifest",
+  "description": "MVP 教学原型覆盖清单：定义 semantic_types（词义是什么）之上的 teaching_archetype（App 如何让学习者经验到这个意义），登记每个 lemma 的身份链与每对 minimal pair 的边界允许度。状态不是手工快照——identity-chain / Holistic Course / related course / bundle / capability-gap 全部由 tools/teaching_coverage.py 从仓库真实文件计算。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "plan_id",
+    "policy_version",
+    "learner_l1",
+    "target_l2",
+    "capability_version",
+    "curriculum",
+    "archetypes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "plan_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_version": {
+      "type": "integer",
+      "const": 1,
+      "description": "Learning Presentation Language Contract 版本 (v1)。"
+    },
+    "learner_l1": {
+      "type": "string",
+      "const": "zh-CN"
+    },
+    "target_l2": {
+      "type": "string",
+      "const": "en"
+    },
+    "capability_version": {
+      "type": "integer",
+      "const": 1,
+      "description": "对应 config/app-teaching-capabilities.v1.yaml 的 capabilities_version。"
+    },
+    "curriculum": {
+      "description": "确定性 prototype curriculum：只决定哪门新义项课程先进入候选范围，不决定课程内部结构。App 的 Today Planner 可以因复习压力/课程自然章节延后新课程。",
+      "type": "array",
+      "minItems": 14,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["day", "course"],
+        "properties": {
+          "day": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "模拟日序号（1..14）。"
+          },
+          "course": {
+            "type": "string",
+            "description": "该日进入候选范围的新课程 sense_id。"
+          }
+        }
+      }
+    },
+    "archetypes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "semantic_types",
+          "teaching_archetype",
+          "experience_mechanism",
+          "suggested_capabilities",
+          "special_risks",
+          "clusters"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z_]+$"
+          },
+          "semantic_types": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "description": "该 archetype 服务的词义语义类型（对应 WordSense semantic_type）。"
+          },
+          "teaching_archetype": {
+            "type": "string",
+            "description": "教学原型名：描述'可能怎样让学习者经验到这个意义'（不是用户可见的模式）。"
+          },
+          "experience_mechanism": {
+            "type": "string",
+            "description": "经验机制：App 如何让学习者经验到这个意义（一句话机制说明）。"
+          },
+          "suggested_capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "建议的 App primitive（必须是 config/app-teaching-capabilities.v1.yaml 已注册的 id）。这只是 Course Author 的建议输入，不强制使用。"
+          },
+          "special_risks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "该义项组的特殊教学风险（如 viewpoint_dependence、boundary_overlap）。"
+          },
+          "clusters": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "lemmas"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z_]+$"
+                },
+                "priority": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5
+                },
+                "boundary": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "between",
+                    "allowed"
+                  ],
+                  "properties": {
+                    "between": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "minimal pair 涉及的两个 sense id。"
+                    },
+                    "allowed": {
+                      "type": "string",
+                      "enum": [
+                        "one",
+                        "other",
+                        "both",
+                        "insufficient_evidence"
+                      ],
+                      "description": "该 minimal pair 的边界答案允许度：one=场景恰好一个义项成立（互斥，两侧都可能成为正确项）；other=固定以邻接义项为正确项/干扰方向出题；both=两个义项可同时成立（如又脏又乱、cup/mug 重叠）；insufficient_evidence=部分场景证据不足以二选一。这是 manifest 的教学允许度记录，不是对 Course Author 的强制。"
+                    },
+                    "insufficient_evidence_allowed": {
+                      "type": "boolean",
+                      "description": "可选：边界题是否允许出现'证据不足'答案（一般与 both 或 one 搭配使用）。"
+                    }
+                  }
+                },
+                "lemmas": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "lemma",
+                      "pos",
+                      "sense_id"
+                    ],
+                    "properties": {
+                      "lemma": {
+                        "type": "string"
+                      },
+                      "pos": {
+                        "type": "string"
+                      },
+                      "sense_id": {
+                        "type": "string",
+                        "description": "该 lemma 在本次 MVP 中锁定教学的具体 WordSense 义项 id（经 Dictionary Evidence → Sense Inventory → WordSense 身份链确认）。"
+                      },
+                      "note": {
+                        "type": "string",
+                        "description": "可选：身份链证据缺口或义项选择理由（例如词典证据截断导致只能锁定最近似义项）。"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

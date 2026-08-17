@@ -1,0 +1,107 @@
+schema_version: '1.0'
+contract_id: reluctant-01-contract
+sense_id: reluctant-01
+lemma: reluctant
+pos: adjective
+semantic_revision: 2
+content_hash: sha256:e893727c42babcf98ab71e3ba19934bd3463efaef871c97b40db78b1bc6d73ec
+semantic_model:
+  invariant: Reluctant picks out an experiencer who is consciously facing an available
+    action and feels inner resistance to performing it, with that resistance legible
+    in observable behavior, regardless of whether the action is ultimately performed.
+  necessary_conditions:
+  - There is an animate experiencer who is consciously facing a specific, physically
+    available action or course of action that they could choose to perform; an opportunity
+    to act has actually been presented.
+  - 'The experiencer’s subjective willingness toward performing that action is negative:
+    they feel unwilling, internally resistant, or averse to doing it, not eager or
+    enthusiastic.'
+  - This negative willingness originates from the experiencer’s own disposition, not
+    from external prohibition, procedural constraint, or physical inability.
+  - The negative willingness is supported by observable behavior, but no single behavior
+    (delay, sighing, facial expression, minimal contact, refusal, etc.) is definitionally
+    required.
+  - 'The eventual performance or non-performance of the action is left open by the
+    definition: both outcomes are compatible with reluctant, and “no action in the
+    end” is not excluded.'
+  - If the action is performed, the negative willingness remains visible while it
+    is happening.
+  non_entailments:
+  - Performing the action does not entail that the person was willing or eager; a
+    compliant person can still be reluctant. Conversely, reluctance does not entail
+    that the action is performed.
+  - Not performing the action does not entail reluctance; a refusal or a stop with
+    no observable negative-willingness evidence is not reluctant by itself. Conversely,
+    reluctance does not entail that the action will be left undone.
+  - A bare refusal does not entail reluctance; refusal is an observable act of declining
+    and can be brisk, procedural, or externally motivated. Conversely, reluctance
+    does not entail refusal, because the person may comply.
+  - No single behavior—delay, sigh, frown, turning away, minimal contact, slowed movement—entails
+    reluctance; each is only possible evidence and may have other causes.
+  - Slow movement caused by age, injury, fatigue, or by the task being simply laborious
+    does not entail reluctance.
+  - Fear, sadness, or general distress that is not attached to a specific action the
+    experiencer could perform does not entail reluctance.
+  - Reluctance does not entail any specific outward sign; the observable expression
+    of inner resistance can vary from person to person and situation to situation.
+  typical_correlates:
+  - Often appears as a pause or delay before the experiencer moves toward the task.
+  - 'Often appears as withdrawal: stepping back, leaning away, crossing arms, or turning
+    away.'
+  - Often appears as minimal, brief, or slowed engagement with the object or action.
+  - Often appears as sighing, a flat or quiet voice, or grudging verbal acknowledgments
+    such as “I guess so” or “If I have to”.
+  - Often appears as facial signs such as a downturned mouth, furrowed brows, or side-eye,
+    though no facial expression is definitional.
+  - Often appears as stopping before starting or never engaging with the action, while
+    the behavior leading up to the stop still makes the resistance legible.
+  misconceptions:
+  - id: misc-1
+    description: Reluctant means the person refuses or does not do the action.
+    correction: The action’s outcome is not definitional. A person can perform the
+      action with visible inner struggle and still be reluctant; a person can also
+      not perform it for unrelated reasons and not be reluctant.
+  - id: misc-2
+    description: Any delay, sigh, frown, or slowed movement is enough evidence of
+      reluctance.
+    correction: These signs are only possible evidence. They can result from fatigue,
+      age, injury, sadness, fear, annoyance, or task difficulty. To establish reluctance,
+      they must be tied to negative willingness toward a specific available action.
+  - id: misc-3
+    description: Reluctant means hesitant, so the person is uncertain which way to
+      decide.
+    correction: Hesitancy is uncertainty between options; reluctance is resistance
+      to a known action. A pause alone supports neither. Wavering between options
+      is hesitant evidence, while resistance to one identified action is reluctant
+      evidence.
+  - id: misc-4
+    description: Reluctant and unwilling are interchangeable, so reluctant should
+      involve a clear decision not to do it.
+    correction: Unwilling focuses on a decision not to act; reluctant emphasizes emotional
+      resistance and internal conflict, and the action may still happen. Compliance
+      with visible emotional struggle favors reluctant; a flat refusal without emotional
+      display favors unwilling.
+  - id: misc-5
+    description: A frightened, sad, or disgusted expression is the same as reluctance.
+    correction: Reluctance is low willingness toward an action, not general distress
+      or sensory dislike. A frown alone does not distinguish reluctance from fear,
+      sadness, or annoyance; the evidence must connect to the action the experiencer
+      could still take.
+  l1_interference:
+  - 中文“不情愿” often covers reluctant, unwilling, and hesitant as one broad negative
+    stance; learners may fail to distinguish reluctant’s specific inner resistance
+    to an identified action, which can still end in compliance.
+  - 中文“不愿意” is more will-level and refusal-oriented; learners may expect rejection
+    or non-action and miss reluctant scenes where the person complies but shows visible
+    emotional resistance.
+  - When translating reluctant actions into Chinese, learners may use “不愿意” and thereby
+    imply a decision not to act, changing the meaning; “不情愿地” is often closer when
+    the action is performed despite resistance.
+metadata:
+  compiler_version: 2.0.0
+  prompt_versions:
+    semantic_planner: v1
+  generated_at: '2026-08-15T05:34:41Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids: []

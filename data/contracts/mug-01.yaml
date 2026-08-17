@@ -1,0 +1,56 @@
+schema_version: '1.0'
+contract_id: mug-01-contract
+sense_id: mug-01
+lemma: mug
+pos: noun
+semantic_revision: 1
+content_hash: sha256:7493931d608694f2778dfa20f90a60b9cf792df92a6029ebcc79bf0c1d4dc194
+semantic_model:
+  invariant: 一个经验单元若属于 mug-01，其指称必须是一个具体三维、顶部开口、内腔可盛液体的饮用器物；容量和尺寸属于‘大杯/马克杯’一类（大于典型茶杯），设计用途是手持直接饮用而不是以相配茶碟为使用方式；若带手柄，其手柄形态也参与这一大杯归类，但手柄本身不是成立条件。
+  necessary_conditions:
+  - 指称物是具体的、三维的物理器物，而不是事件、图像、面部表情或照片记录。
+  - 该器物顶部有开口，内腔能盛装液体；其主要功能是盛装单份饮品供人饮用。
+  - 它的容量大于典型茶杯，尺寸、比例（以及存在手柄时的手柄形态）使其归入‘大杯/马克杯’类，而不是小茶杯或无柄杯。
+  - 它被设计用于手持直接饮用，不需要相配茶碟；不像小茶杯那样以放在相配茶碟上为使用方式。
+  non_entailments:
+  - 一个器物有手柄，并不蕴涵它就是 mug：带柄的小茶杯仍不是 mug-01，还需看容量、比例与是否配碟使用。
+  - 一个器物没有手柄，并不自动蕴涵它不是 mug：WordSense 只说 typically has a handle，手柄不是必要条件。
+  - 当前没有茶碟伴随，并不蕴涵它就是 mug：许多普通杯子也无须茶碟；是否成立仍取决于大杯/马克杯的范畴条件。
+  - 一个 mug 被放在茶碟上，并不蕴涵它就不再是 mug：mug-01 排除的是以相配茶碟为使用方式的小茶杯设计，而不是排除茶碟与器物的任何接触。
+  - 容器当前是空的，并不蕴涵它不是 mug：词义取决于设计功能，不取决于当前内容物。
+  - 出现词形 mug，并不蕴涵选择 mug-01 容器义：若场景中心是抢劫、做鬼脸或警方存档照，则选择的是其他义项。
+  typical_correlates:
+  - 常见的可观察行为是：一只手握住侧边手柄，把容器举起送到嘴边；这是相关现象，不是词义成立的必要条件。
+  - 画面中常看到容器内有咖啡、茶或热巧克力等饮料；有饮料不是必要条件。
+  - 器物常显得比典型茶杯更厚实、更沉重；这种外观是常见的伴随表现，而非判定条件。
+  - 常见的呈现是直接用手端起容器，而不是由相配茶碟托着；无碟不是必要条件。
+  - 侧边通常有一个明显的手柄；这是典型特征，但不是必须条件。
+  misconceptions:
+  - id: misc-1
+    description: 学习者认为 mug 必须带手柄，因此看到无柄的大杯会拒绝称它为 mug。
+    correction: 需要能指认一个无柄大杯仍被母语者接受为 mug 的经验证据；WordSense 中 handle 是 typical 而非 necessary，尺寸、容量与手持饮用才是判定项。
+  - id: misc-2
+    description: 学习者认为任何带柄的杯子都是 mug，把小茶杯也混入 mug-01。
+    correction: 将带柄小茶杯与 mug 并排观察：小茶杯容量小、常与相配茶碟成套出现；仅凭有柄不能判定，必须满足大杯/马克杯的范畴条件。
+  - id: misc-3
+    description: 学习者听到或看到 mug 就默认是‘马克杯’，忽略 mug-02/03/04 等不同义项。
+    correction: 需要检查场景中是否有可指认的饮具；如果中心事件是抢劫、做鬼脸或警方存档照，则容器义不成立。
+  - id: misc-4
+    description: 学习者认为 mug 必须装有咖啡/茶等热饮，空杯或装冷水的杯子不是 mug。
+    correction: 展示一个形状、容量和手持方式符合 mug 但空着或装冷水的容器仍被母语者称为 mug；词义靠设计功能而非当前内容物成立。
+  - id: misc-5
+    description: 学习者把 mug 当成中文‘杯子’的总称，覆盖 teacup 和无柄小杯。
+    correction: 需要对比 teacup 与 mug 的容量、手柄和茶碟使用；mug-01 只覆盖大容量、手持直接饮用的一类，不覆盖所有 cup。
+  l1_interference:
+  - 中文‘马克杯’与 mug-01 的容器义大致对应，但没有覆盖‘抢劫’‘做鬼脸’‘警方存档照’等义项；学习者先学名词义后，容易把动词或照片义都拉回马克杯场景。
+  - 中文‘杯子’是上位词，比 mug-01 更宽，不区分有柄大杯（马克杯）与带碟小杯（teacup）；学习者容易把 teacup 也称作 mug。
+  - 中文‘做鬼脸’对应 mug-03，却与容器义同形；当场景是 mugged for the camera 时，学习者可能仍试图用马克杯/带柄杯来理解该动作。
+metadata:
+  compiler_version: 2.1.0
+  prompt_versions:
+    semantic_planner: v2
+  generated_at: '2026-08-16T08:13:46Z'
+  model_provider: openai-chat
+  model_name: deepseek-v4-flash
+  request_ids:
+  - d0528b6d-9ee7-42e4-abe1-bd25f50d5bc6

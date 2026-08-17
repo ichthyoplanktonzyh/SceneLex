@@ -1,0 +1,147 @@
+schema_version: '1.0'
+word: cup
+language: en
+status: approved
+inventory_version: 1
+source:
+  provider: wiktionary
+  entry_count: 8
+  evidence_digest: sha256:a137da98e325ee09e8ddff33d5308975a8f6b95888730ef17717a2642ad40675
+senses:
+- id: cup-01
+  lemma: cup
+  pos: noun
+  label_zh: 杯子；饮具
+  definition: A concave drinking vessel, usually opaque and typically with a handle,
+    as opposed to a glass.
+  semantic_signature:
+    semantic_type: artifact
+    dimension: container
+    change_of_state: false
+    causative: false
+    valency: '0'
+  source_entries:
+  - cup-dict-005
+  decision:
+    type: keep
+    reason: 名词核心义，直接对应词典证据 cup-dict-005，是其他名词义和动词义的基础。
+  teaching_priority: core
+  usage:
+    currency: current
+    productivity: productive
+    register: neutral
+- id: cup-02
+  lemma: cup
+  pos: noun
+  label_zh: 一杯之量；杯中物
+  definition: The contents of a cup; the amount that a cup contains or could contain.
+  semantic_signature:
+    semantic_type: containerful
+    dimension: volume
+    change_of_state: false
+    causative: false
+    valency: '0'
+  source_entries:
+  - cup-dict-006
+  decision:
+    type: keep
+    reason: 词典证据 cup-dict-006 表示容器转指所盛之物/容量，与具体杯子义不同，是高频可教学的独立义项。
+  teaching_priority: core
+  usage:
+    currency: current
+    productivity: productive
+    register: neutral
+- id: cup-03
+  lemma: cup
+  pos: noun
+  label_zh: 杯（计量单位）
+  definition: A customary unit of volume used especially in cooking, typically equal
+    to 8 fluid ounces; the exact metric value varies by country, about 236.6 mL in
+    the US and about 227.3 mL or 250 mL in Canada.
+  semantic_signature:
+    semantic_type: unit_of_measure
+    dimension: volume
+    change_of_state: false
+    causative: false
+    valency: '0'
+  source_entries:
+  - cup-dict-007
+  - cup-dict-008
+  decision:
+    type: merge
+    reason: cup-dict-007 与 cup-dict-008 都是‘杯’作为计量单位的义项，仅因美加标准不同而有细微数值差异；教学上不宜拆成两个独立
+      sense。
+  teaching_priority: extended
+  usage:
+    currency: current
+    productivity: limited
+    register: standard in recipes, especially US/Canada
+- id: cup-04
+  lemma: cup
+  pos: verb
+  label_zh: 使成杯状；拢成杯形
+  definition: To form (especially one's hands) into a concave cup-like shape, or to
+    make an object concave in this way.
+  semantic_signature:
+    semantic_type: change_of_state
+    dimension: shape
+    change_of_state: true
+    causative: true
+    valency: transitive
+  source_entries:
+  - cup-dict-001
+  - cup-dict-004
+  decision:
+    type: merge
+    reason: cup-dict-001 指将手拢成杯状，cup-dict-004 泛指使物体成杯形/凹形；二者都是‘使成为杯状’这一核心动词义的不同应用域，教学上可合并为一个
+      sense。
+  teaching_priority: extended
+  usage:
+    currency: current
+    productivity: limited
+    register: neutral; technical for general objects
+- id: cup-05
+  lemma: cup
+  pos: verb
+  label_zh: （用杯状双手）托住；捧着
+  definition: To hold or support something in hands that are shaped like a cup.
+  semantic_signature:
+    semantic_type: physical_manipulation
+    dimension: position/contact
+    change_of_state: false
+    causative: false
+    valency: transitive
+  source_entries:
+  - cup-dict-002
+  decision:
+    type: keep
+    reason: cup-dict-002 表示用已呈杯状的手托住某物，与‘使成杯状’不同，是稳定的动词义项。
+  teaching_priority: extended
+  usage:
+    currency: current
+    productivity: limited
+    register: neutral
+deferred_entries:
+- source_entry: cup-dict-003
+  decision: defer
+  reason: 该条 glosss 为‘把液体倒入杯中’，但例句实际指向咖啡杯测等专业语境；该动词用法证据薄弱、普通语境能产性不足，暂不建立独立 sense。
+  required_evidence:
+  - 更多普通语境中 cup 作‘倒入杯中’解的独立例句（如 cup the milk into a pot）
+  - 澄清此义与咖啡行业 cupping / cup coffee 用法之间的语义关系
+relations:
+- source: cup-01
+  target: cup-02
+  relation: metonymy
+  distinction: 容器转指所盛之物：a cup of water 中 cup 既可指杯子，也可指杯中的水量/内容物。
+- source: cup-02
+  target: cup-03
+  relation: conventionalization
+  distinction: cup-02 是实际杯子的容量，不是一个有精确标准的计量单位；cup-03 则是被标准化为烹饪计量单位的‘杯’。
+- source: cup-01
+  target: cup-04
+  relation: denominal_conversion
+  distinction: 由名词‘杯’转成动词，表示使某物呈杯状/凹形。
+- source: cup-04
+  target: cup-05
+  relation: entailment
+  distinction: cup-04 是使手呈杯状，cup-05 是在这种手形下托住某物；两者构成先后/结果关系。

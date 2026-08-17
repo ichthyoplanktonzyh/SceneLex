@@ -1,0 +1,403 @@
+schema_version: '1.0'
+course_id: dirty-01-zhcn-v1
+target:
+  sense_id: dirty-01
+  lemma: dirty
+  pos: adjective
+  ipa: /ˈdɜːrti/
+  learner_l1: zh-CN
+  target_l2: en
+author_intent:
+  course_thesis: dirty 的判断轴是「表面附着外来的、不受欢迎的、可直接感知的污物」，它让对象偏离应有的 洁净状态；它不是位置乱（messy），不要求严重到令人作呕（filthy），不是环境污染
+    （polluted），也不是言语粗俗（dirty-02）。
+  learner_start: 学习者以中文为母语，熟悉「脏」「脏乱」等说法。中文「脏」是一个宽泛的负面表面词，从轻微 沾灰到极度肮脏、油腻结垢、环境污染、言语粗俗都可以用同一个字，学习者尚未把最中性、
+    程度最轻的默认词 dirty 从这一谱系中稳定分化出来。本课假设 messy 已作为预绑定对照词存在 （来自配对课程 messy-01-zhcn-v1），学习者已知道
+    messy 表示「可见的排列无序」。
+  intended_outcome: 学习者能把 dirty 稳定用于各种固体表面（餐具、衣物、地板、身体部位）上可见或可感知的 外来污物；面对「乱但干净」「轻微浮尘」「一小块污渍」「看不见但摸得到」「河水污染」
+    「低俗笑话」等样本时能正确判断；能使用 The plate is dirty.、a dirty [noun]、 get dirty、so dirty that
+    … 等结构表达；并在后续复习中保持对词的回忆，持续区分 dirty 与 messy 两条维度。
+  design_rationale: 首学先从「餐后未洗的盘子」这一典型表面污物场景出发，用证据高亮把「外来附着物＋偏离洁净 基准＋可直接感知」外显；再用双房间判断把「表面污物」从「位置无序」中独立出来，直接对抗
+    中文「脏乱」连用造成的核心混淆；用三个均为正例的轻微/局部/重度样本打破「必须很严重、 必须大面积」的预设；用「看不见但摸得到油膜、闻得到气味」的样本破除「必须看见污渍」的
+    误区。绑定后先把 dirty 锚定回盘子场景，再对预绑定的 messy 做 grounding 锚定，使 boundary 中两个 L2 lemma 都可用；随后用正迁移把对象类型扩展到地板、袜子、手背，并用
+    多选负迁移把环境污染与言语粗俗排除出本义项。复习沿同一条「表面污物」主线：次日回忆核心 盘子场景并自评；3 天后把场景扩展到身体部位并用更自然的 L2 句型再激活；7
+    天后用「表面 干净但物品乱放」的反向样本再次提取 dirty/messy 边界，让两条维度在时间间隔后仍保持分离。
+learning_flow:
+- id: s1_see_plate
+  trigger: initial
+  primitive: scene_observation
+  purpose: 让学习者先整体观察一个「表面附着外来污物」的典型对象（餐后未洗的盘子），并同时看到干净半边作为对照，不给出任何命名。
+  estimated_seconds: 35
+  can_pause_after: false
+  learner_content:
+    episode: 晚餐后的厨房水槽边，放着一个白色瓷盘。盘面没有洗：左半边有一片红色酱汁的痕迹、几滴 油渍，还有一小块黏住的饭粒；右半边是干净的白瓷，微微反光。
+      盘子旁边立着一个玻璃杯，杯壁内侧有一圈浅褐色的茶垢。 厨房其他地方很整齐——抹布叠好挂在挂钩上，调料瓶在架子上排成一排。
+  evaluation:
+    kind: none
+- id: s2_evidence
+  trigger: initial
+  primitive: evidence_highlight
+  purpose: 把「表面附着外来污物」外显为具体可观察线索：外来性、与洁净部分对照、可被感知、覆盖不完整仍成立，为后续判断建立证据基础。
+  estimated_seconds: 30
+  can_pause_after: false
+  learner_content:
+    episode: 还是这个白色瓷盘。停下来，仔细看它的表面。
+    evidence:
+    - 酱汁、油渍和饭粒是吃饭时沾上的——它们是外来的，不是盘子本身的花纹或颜色。
+    - 沾了东西的左半边和干净的白瓷右半边形成对比，一眼能看出哪部分不再干净。
+    - 如果用手摸，油渍的地方是滑腻的；如果用水冲，污物会大部分被冲掉，只在表面留下浅痕。
+    - 左半边被残留物覆盖，但覆盖并不完整——还露着几处白瓷。
+  evaluation:
+    kind: none
+- id: s3_dimension
+  trigger: initial
+  primitive: binary_judgment
+  purpose: 绑定前先让学习者区分「表面污物」与「位置秩序」两条独立维度，为后续 dirty/messy 边界打基础。
+  addresses:
+  - misc-1
+  estimated_seconds: 75
+  can_pause_after: false
+  learner_content:
+    episode: 看两个房间。甲房：一间浴室的洗手台——台面上有几道牙膏渍，镜子下方有水垢印，水杯内壁 有污垢圈；但毛巾都挂得整整齐齐，瓶瓶罐罐在架子上排成一行。
+      乙房：一间书桌——书本和纸张歪歪叠叠，三支笔分别在桌面不同角落，椅子上搭着外套，地上 散落着几双鞋；但桌面和地板都擦得很干净，没有污渍，每件东西本身都干干净净。
+    evidence:
+    - 看表面：台面、镜面、杯壁上有没有不想有的附着物。
+    - 看位置：物品是否在它该在的位置、排列是否整齐。
+    question: 哪种状态属于「表面上有外来附着物、已经不再干净」？
+    options:
+    - id: opt_a_room
+      text: 甲房——洗手台、镜面、杯壁上有牙膏渍和水垢，毛巾和瓶子都整齐。
+      feedback: 对。判断点是「表面」：甲房的问题在台面、镜面、杯壁上附着了牙膏渍、水垢这些不想有的 东西；而物品本身都在该在的位置。乙房恰好相反——物品不在该在的位置、排列不齐，
+        但表面是干净的。
+    - id: opt_b_room
+      text: 乙房——书桌上书本歪叠、东西散落，看起来很乱。
+      feedback: 再想想：乙房的问题是物品的位置——书本和纸张不在该在的位置、笔分散各处。这些状态里， 表面并没有外来附着物。这里要判断的是「表面上有外来附着物、已经不再干净」，所以应选
+        甲房：洗手台、镜面、杯壁上附着了牙膏渍和水垢。位置乱是另一条维度，不是这里说的 「表面不干净」。
+  evaluation:
+    kind: choice
+    correct_option_id: opt_a_room
+- id: s4_partial_mild
+  trigger: initial
+  primitive: multi_label_choice
+  purpose: 用三个均为正例的样本打破「必须很严重、必须大面积覆盖」的预设，直接处理程度门槛与局部性两个误区。
+  addresses:
+  - misc-2
+  - misc-5
+  estimated_seconds: 60
+  can_pause_after: false
+  learner_content:
+    episode: 三个状态，都可能是平日里常见的。① 一张白色桌面，表面有一层薄薄的浮尘——用手一抹， 指尖会留下灰痕。② 一件白衬衫，袖口有一小块指甲盖大小的酱油渍，其余地方都干净。
+      ③ 厨房地面：大片油污从灶台前方一直延伸到门口，踩上去发黏，凑近能闻到明显的气味。
+    evidence:
+    - ① 的浮尘很少很薄，要贴近看才明显，但确实是一层外来物质。
+    - ② 只有一小块污渍，整件衣服大部分地方干净。
+    - ③ 油污面积大、程度重，一进门就能注意到。
+    question: 哪些状态属于「表面附着外来污物」？
+    options:
+    - id: light_dust
+      text: ① 桌面上的薄薄浮尘
+      is_correct: true
+      feedback: 对。薄薄一层浮尘也是外来的附着物，它让桌面失去了原本的干净状态。判断不要求污物很多、 很厚。
+    - id: small_stain
+      text: ② 袖口一小块酱油渍
+      is_correct: true
+      feedback: 对。一块指甲盖大小的污渍也是污物附着。判断不要求整个表面都被盖住，也不要求与干净 部分形成大范围对比。
+    - id: heavy_floor
+      text: ③ 厨房地面的大片油污
+      is_correct: true
+      feedback: 对。大面积油污当然也算。要注意：即使程度更重，这仍然归在同一个判断里；程度更重时， 母语者可能会选择另一个更强烈的词来形容，但「表面附着外来污物」这个判断在①②③
+        都已成立。
+  evaluation:
+    kind: multi_choice
+    correct_option_ids:
+    - light_dust
+    - small_stain
+    - heavy_floor
+- id: s5_sense_channels
+  trigger: initial
+  primitive: binary_judgment
+  purpose: 用「看起来干净但摸得到油膜、闻得到气味、擦得出黄印」的样本破除「必须看见污渍才算」的误区。
+  addresses:
+  - misc-4
+  estimated_seconds: 60
+  can_pause_after: true
+  learner_content:
+    episode: 厨房的操作台。灯光下看起来亮亮的，没有明显的污点或颜色变化。但你把手平贴在台面上 滑过去，指尖感到一层黏黏的油膜；凑近闻，有一股油烟和食物残渣混在一起的气味。
+      旁边的人拿抹布一擦，抹布上立刻出现一道黄灰色的印子。
+    evidence:
+    - 视觉：表面看不出明显的污渍。
+    - 触觉：手指滑过有黏腻感，好像有一层东西附着。
+    - 嗅觉：有油烟和食物残留的气味。
+    - 擦拭结果：抹布擦出黄灰色印子，说明有外来物质在表面上。
+    question: 这种情况算「表面附着外来污物」吗？
+    options:
+    - id: yes_attached
+      text: 算——摸得到、闻得到、擦得出来，确实有东西附在表面。
+      feedback: 对。判断表面是否有外来附着物，不只有「看见」这一条路。手摸到的黏腻、鼻子闻到的 气味、擦拭后抹布变脏，都是直接证据。看不见污渍不代表表面没有污物。
+    - id: no_invisible
+      text: 不算——看不见污渍就不能算。
+      feedback: 看不见不等于没有。手指感到的油膜、闻到的油烟气、抹布擦出的黄印，都在说明台面上 附着了外来物质。判断「表面附着外来污物」可以用视觉、触觉或嗅觉的直接感知。
+  evaluation:
+    kind: choice
+    correct_option_id: yes_attached
+- id: s6_reveal
+  trigger: initial
+  primitive: symbol_reveal
+  purpose: 首次揭示目标 L2 拼写与发音，将符号绑定到已建立的「表面附着外来污物」经验上。
+  estimated_seconds: 20
+  can_pause_after: false
+  learner_content:
+    l2_word: dirty
+    ipa: /ˈdɜːrti/
+    presentation: 刚才你看到的那些状态——盘子上的酱汁和油渍、桌上的浮尘、袖口的酱油渍、台面上摸得到的 油膜——都可以用英语里的这个形容词来形容。它说的是「表面上有外来的、不想有的东西，
+      不再干净」。发音时，第一个音节重读：/ˈdɜːr/，然后轻轻带出 /ti/。
+    minimal_l1_gloss: 对，就是这种「表面有外来污物、不干净（脏）」的状态。
+  evaluation:
+    kind: none
+- id: s7_pronounce
+  trigger: immediate_followup
+  primitive: pronunciation
+  purpose: 提供发音锚点，让学习者熟悉 /ˈdɜːrti/ 的音形对应。
+  estimated_seconds: 15
+  can_pause_after: false
+  learner_content:
+    l2_word: dirty
+    ipa: /ˈdɜːrti/
+  evaluation:
+    kind: none
+- id: s8_ground
+  trigger: immediate_followup
+  primitive: l2_grounding
+  purpose: 把新符号锚定到刚经历过的盘子场景，给出自然 L2 句、句型与搭配。
+  estimated_seconds: 35
+  can_pause_after: false
+  learner_content:
+    source_step_id: s1_see_plate
+    l2_realization: The plate is dirty.
+    constructions:
+    - '[thing] is dirty —— 某物表面有污物、不干净'
+    - a dirty [noun] —— a dirty plate（一个脏盘子）/ a dirty floor（有污渍的地板）
+    - get/make [something] dirty —— 变脏 / 把…弄脏
+    - so dirty that [clause] —— 脏到……的程度
+    collocations:
+    - dirty hands 沾了污物的手
+    - dirty dishes 用过的脏餐具
+    - dirty clothes 脏衣服
+    - dirty floor 有污渍的地板
+    - dirty water 洗过东西、变浑浊的水
+    - get dirty 变脏
+  evaluation:
+    kind: none
+- id: s9_messy_ground
+  trigger: immediate_followup
+  primitive: l2_grounding
+  purpose: 为边界对比做对照锚定：确认 messy 是预绑定词、表示「位置乱」，与 dirty 表面污物是不同维度；同时给出 not dirty 的否定用法。
+  estimated_seconds: 30
+  can_pause_after: false
+  learner_content:
+    source_step_id: s3_dimension
+    l2_realization: The desk is messy, but it is not dirty.
+    constructions:
+    - '[place/thing] is messy —— 东西不在该在的位置、排列不整齐'
+    - '[thing] is not dirty —— 表面没有外来污物'
+    collocations:
+    - messy room 东西乱放、不整齐的房间
+    - messy desk 东西散乱、不整齐的书桌
+  evaluation:
+    kind: none
+- id: s10_boundary
+  trigger: initial
+  primitive: boundary_choice
+  purpose: 用两个可用的 L2 词正式固化 dirty 与 messy 的维度区分，正面处理「脏乱」连用造成的最大干扰（首学时错向：整齐但有污物 → dirty）。
+  addresses:
+  - misc-1
+  estimated_seconds: 60
+  can_pause_after: true
+  learner_content:
+    episode: 一间客厅的茶几：沙发上的靠枕都摆放到位，书在书架上一排排立好，遥控器和纸巾盒也放在 固定的位置。但茶几表面有几道咖啡渍，其中一圈杯印很明显，地毯上有一块深色污迹。
+    options:
+    - sense_id: messy-01
+      text: messy
+    - sense_id: dirty-01
+      text: dirty
+    correct_sense_id: dirty-01
+    explanation:
+    - 这个客厅的问题在「表面」：茶几上有咖啡渍和杯印，地毯上有深色污迹——外来污物附着在 表面上。物品都在该在的位置，排列整齐，所以不是 messy。
+    - 对比思路：如果这间客厅的物品散落一地、靠枕扔在地上，但表面都擦得很干净，那就是 messy。 dirty 看表面、messy 看位置，两条维度各自独立。
+  evaluation:
+    kind: sense_choice
+    correct_sense_id: dirty-01
+- id: s11_transfer_positive
+  trigger: initial
+  primitive: transfer_judgment
+  purpose: 正迁移：把 dirty 从餐具推广到地板、袜子、手背等不同对象类型，并再次确认「表面污物」与「位置乱」无关。
+  addresses:
+  - misc-1
+  estimated_seconds: 60
+  can_pause_after: false
+  learner_content:
+    episode: 一个孩子从外面玩泥巴回来：鞋底和鞋边沾着泥，进门时在门口地板上留下一串泥脚印；白袜子 的边缘有一圈灰印，手背上有几块干掉的泥。他进屋后把玩具小车收进了玩具箱，箱子放在墙角。
+    evidence:
+    - 鞋底、袜子边缘、手背都附着着泥和灰。
+    - 地板上有一串泥脚印——泥附着在表面的结果。
+    - 玩具被收进箱子，物品位置不乱。
+    question: 地板上的泥脚印、袜子的灰印、手背上的泥，这些状态能用刚才学的词（dirty）形容吗？
+    options:
+    - id: yes_all
+      text: 都能——地板、袜子、手背都是表面，上面附着着外来的泥和灰。
+      feedback: 对。刚才学的词说的是「表面有外来污物」：地板上有泥脚印（dirty floor），袜子有灰印 （dirty socks），手背有泥（dirty
+        hands）。这些对象类型不同，但判断维度相同，都是 表面附着外来污物。
+    - id: only_floor
+      text: 只有地板的泥脚印能算，袜子和手背不算。
+      feedback: 再想想：袜子边缘的灰印、手背上的泥也是外来的附着物，并且粘在物体、身体的表面上。 身体部位也可以说 dirty hands / dirty
+        face。判断维度都是「表面附着外来污物」， 不因对象是身体、衣物还是地板而改变。
+    - id: none
+      text: 都不算——这只是在乱放东西。
+      feedback: 这里没有「乱放」：玩具已经收进箱子。问题在表面附着：鞋底的泥踩到地板上、袜子沾灰、 手背沾泥，这些都是表面出现外来污物，所以都能用。
+  evaluation:
+    kind: choice
+    correct_option_id: yes_all
+- id: s12_transfer_negative
+  trigger: initial
+  primitive: multi_label_choice
+  purpose: 负迁移：把环境污染（polluted）与言语粗俗（dirty-02）排除出本义项，同时用茶杯的正例确认「表面附着可见污物」仍在本义项内。
+  addresses:
+  - misc-3
+  estimated_seconds: 75
+  can_pause_after: true
+  learner_content:
+    episode: 三个场景。场景一：一条河，水面上浮着一层彩色油膜，岸边漂着饮料瓶，一根工厂管道正在 向外排废水。场景二：几个人在聊天，其中一人讲了个笑话，笑话内容粗俗下流，其他人听得
+      很尴尬。场景三：一只白色茶杯，内壁积了一圈茶垢，杯底还有没洗掉的咖啡渍。
+    evidence:
+    - 场景一被评价的对象是「河水」，它被工厂废水污染。
+    - 场景二被评价的对象是「笑话的内容」，它粗俗下流。
+    - 场景三被评价的对象是「茶杯的表面」，它附着着茶垢和咖啡渍。
+    question: 哪些场景中的状态可以用刚才学的词（dirty）来形容？
+    options:
+    - id: river
+      text: 场景一——河水被污染了
+      is_correct: false
+      feedback: 河水的污染是环境介质中的有害杂质，这不是「固体表面附着可见污物」。环境污染更常用 另一个词 polluted；刚才学的词（dirty）主要指表面状态。注意：日常搭配
+        dirty water 指的是洗过东西、变得浑浊的水，不是这条河的环境污染判断。
+    - id: joke
+      text: 场景二——笑话内容粗俗下流
+      is_correct: false
+      feedback: 笑话内容粗俗下流是「言语/内容」层面的判断，属于同一个词的另一义项，不描述物理表面 附着污物。母语者熟悉的 dirty joke 用的就是那一义项。要判断本义项时，看的是有没有
+        物理表面和外来污物。
+    - id: cup
+      text: 场景三——茶杯内壁有茶垢和咖啡渍
+      is_correct: true
+      feedback: 对。茶杯内壁是物理表面，上面附着了茶垢和咖啡渍——外来的、不想有的、可直接看到的 污物。可以说 a dirty cup / The
+        teacup is dirty。
+  evaluation:
+    kind: multi_choice
+    correct_option_ids:
+    - cup
+review_progression:
+- id: r1_recall
+  timing: 次日复习：回忆核心「表面污物」场景。
+  due_after_days: 1
+  scaffold_level: early_post_binding
+  primitive: recall_reveal
+  learner_content:
+    episode: 晚餐后的厨房水槽边，一个白色瓷盘没有洗：左半边有一片红色酱汁、几滴油渍，右半边是 干净的白瓷。旁边一个玻璃杯内壁有一圈茶垢。厨房其他地方很整齐。这是什么词形容的状态？
+    l2_word: dirty
+    ipa: /ˈdɜːrti/
+    minimal_gloss: 对，就是这种「表面有外来污物、不干净」的状态。
+  evaluation:
+    kind: none
+- id: r1_selfgrade
+  timing: 次日复习后自评。
+  due_after_days: 1
+  scaffold_level: early_post_binding
+  primitive: recall_self_grade
+  learner_content:
+    l2_word: dirty
+    ipa: /ˈdɜːrti/
+  evaluation:
+    kind: self_grade
+- id: r2_recall_hands
+  timing: 3 天后复习：把核心场景扩展到身体部位，并再次与「位置乱」做隐含区分。
+  due_after_days: 3
+  scaffold_level: later_post_binding
+  primitive: recall_reveal
+  learner_content:
+    episode: 孩子在花园里挖土玩了一下午：两只手的手背和指甲缝里都沾着深色的泥，裤子的膝盖处也有 一块灰印。玩具铲子已经收进收纳箱，花园里并没有乱放东西。这个词用来形容手和裤子的
+      状态，是哪个词？
+    l2_word: dirty
+    ipa: /ˈdɜːrti/
+    minimal_gloss: 对，dirty hands / dirty trousers——表面沾着泥、不干净。
+  evaluation:
+    kind: none
+- id: r2_ground_later
+  timing: 3 天后同时做 grounding：在更自然的 L2 句式中再次激活 dirty。
+  due_after_days: 3
+  scaffold_level: later_post_binding
+  primitive: l2_grounding
+  learner_content:
+    source_step_id: s11_transfer_positive
+    l2_realization: His hands are so dirty that he has to wash them before dinner.
+    constructions:
+    - so dirty that [clause] —— 脏到……的程度
+    - get dirty —— 变脏
+    collocations:
+    - dirty hands 沾了泥的手
+    - dirty clothes 脏衣服
+    - get sb/sth dirty 把…弄脏
+  evaluation:
+    kind: none
+- id: r2_selfgrade
+  timing: 3 天后自评。
+  due_after_days: 3
+  scaffold_level: later_post_binding
+  primitive: recall_self_grade
+  learner_content:
+    l2_word: dirty
+    ipa: /ˈdɜːrti/
+  evaluation:
+    kind: self_grade
+- id: r3_boundary_messy
+  timing: 7 天后反向边界再提取：从「脏但整齐」转向「干净但乱」，防止「脏乱」连用导致两条维度再次合并。
+  due_after_days: 7
+  scaffold_level: later_post_binding
+  primitive: boundary_choice
+  learner_content:
+    episode: 儿童房的照片：地板擦得很亮，没有污渍；但积木、绘本和玩偶散落一地，椅子倒着，床上的 被子团成一团。房内所有东西表面都是干净的。
+    options:
+    - sense_id: messy-01
+      text: messy
+    - sense_id: dirty-01
+      text: dirty
+    correct_sense_id: messy-01
+    explanation:
+    - 这个房间的表面是干净的，没有外来污物，所以不是 dirty。问题在位置：积木、绘本、玩偶 不在该在的位置，整体排列不整齐——所以是 messy。
+    - 对照首学时相反的场景：物品整齐但表面有咖啡渍→dirty；现在表面干净但物品乱放→messy。 两条维度要一直分开判断。
+  evaluation:
+    kind: sense_choice
+    correct_sense_id: messy-01
+related_sense_material:
+- sense_id: messy-01
+  usage: contrast_sense
+  note: messy-01 视为已存在配对课程（messy-01-zhcn-v1）产生的系统预绑定对照词，本课不重复做 messy 的 symbol binding；在
+    s9 仅用 l2_grounding 回看锚定后，作为 dirty/messy boundary 的对照 lemma 使用。首学的 boundary 方向是「整齐但表面有污物→dirty」，
+    复习 r3 使用反向样本「表面干净但物品乱放→messy」，两次提取方向互补而非机械重复。
+- sense_id: dirty-02
+  usage: deferred_boundary
+  note: dirty-02（言语/内容粗俗下流）不在本课展开教学，仅在 s12 的负迁移中作为排除项出现： 学习者看到「低俗笑话」样本并被告知那是另一个义项（dirty
+    joke），从而不把本义项扩展到 言语内容。后续如果有 dedicated dirty-02 课程，再去处理引申义位的完整边界。
+metadata:
+  authoring_note: 完整课程由 course_author 端到端设计，首学、绑定、边界、迁移、复习共用同一条「表面附着 外来污物」主线。dirty
+    为目标词做完整 symbol binding；messy 作为系统预绑定对照词， 在 grounding 后用于 boundary。misc-1 在首学维度区分、boundary、正迁移和
+    7 天复习 反向提取中多次出现，每次有递进（经验区分→词汇对比→对象扩展→反向再提取）；misc-2/misc-5 合并为首学多选正例样本处理一次；misc-4
+    用非视觉感知样本处理一次；misc-3 用负迁移 多选处理一次。环境污染（polluted）与言语粗俗（dirty-02）只做排除性说明，不展开教学。
+  holistic_compiler_version: 1.0.0
+  generated_at: '2026-08-16T08:51:18Z'
+  calls:
+  - role: author
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: aec1e76b-cba0-4391-a44b-33c02e5a2750
+  - role: critic
+    provider: openai-chat
+    model: deepseek-v4-flash
+    request_id: 1d37ef45-08d6-4b3a-a337-a3219317203d
+  input_digest: sha256:cb4ecb008e6d98054f4928cc422fc2d9e048ba30125d5a1fc92adc2f952ef56d

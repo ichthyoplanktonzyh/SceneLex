@@ -1,0 +1,124 @@
+schema_version: '1.1'
+language: en
+version: 1
+status: reviewed
+id: barely-01
+word: barely
+pos: adverb
+sense_label: 勉强；几乎不
+definition: To a degree that is just above zero; at the very edge of the minimum threshold.
+inventory:
+  word: barely
+  version: 1
+  evidence_digest: sha256:7082b61d7bcf4ec63c0212e43feb9a00e6007145016917f573d54468a6403784
+  sense_id: barely-01
+  identity_digest: sha256:e921544ac1921f10b505e3cdf3edd72526e6c84ed203a9dafae116cbcd7a79b2
+inventory_source_entries:
+- barely-dict-001
+- barely-dict-002
+semantic_revision: 1
+difficulty: intermediate
+pronunciation:
+  ipa: /ˈbɛrli/
+collocations:
+- barely visible
+- barely audible
+- barely enough
+- barely made it
+- can barely see
+sentence_patterns:
+- '[subject] can barely [verb]'
+- '[subject] barely [verb]'
+- barely [adj]
+provenance:
+  sources:
+  - type: dictionary
+    citation: https://kaikki.org/dictionary/English/meaning/b/ba/barely.jsonl
+    license: CC-BY-SA
+semantic_type: scalar_degree
+semantic_identity:
+  semantic_type: degree
+  dimension: extent
+  change_of_state: false
+  causative: false
+  valency: modifier
+semantic_skeleton:
+  participants:
+  - role: target
+    description: The event, state, or property whose degree is being evaluated.
+  propositions:
+  - There exists a scalar property, event, or outcome that can be evaluated from an
+    observable situation.
+  - The actual degree lies extremely close to the lower endpoint of the scalar range.
+  - 'The degree is still positive: the property holds or the event occurs at a minimal,
+    perceptible level.'
+  - The distance from the lower endpoint is negligible, so the value is perceived
+    as barely reaching the threshold.
+conditions:
+  required:
+  - A scalar property or outcome is being evaluated.
+  - The degree is extremely close to the lower endpoint of the scale.
+  - The degree remains above zero, so the property or outcome holds at least minimally.
+  - The evaluator presents the small margin as the salient information.
+  excluded:
+  - condition: The context expresses temporal recency (recently, just now) rather
+      than degree.
+  - condition: The intended meaning is complete absence (zero degree), with no minimal
+      positive residue.
+  - condition: The intended meaning is 'only/merely' (restriction to a small subset)
+      rather than 'to a very small extent'.
+relations:
+  boundaries:
+  - target: almost-01
+    relation: degree_neighbor
+    distinction: almost 表示接近下限但未达到，barely 表示达到下限且超出量极小。二者在“接近”这一语义上相邻，但在结果是否成立上对立。
+    diagnostic: 用同一个结果句检验：X almost passed 意味着 X 没有通过；X barely passed 意味着 X 通过了，只是分数接近及格线。
+  - target: hardly-01
+    relation: overlaps
+    distinction: hardly 与 barely 在“程度趋近于零”的语境中重叠，但 hardly 更强调几乎不存在，barely 保留“刚刚达到”的肯定结果。
+    diagnostic: 在无法区分“达到”与“未达到”的数量语境（如 I could hardly/barely hear him）中二者可互换；在结果句中（I
+      barely finished）hardly 会带出“几乎没完成”的不同解读。
+  l1_confusables:
+    zh:
+    - l1_term: 几乎
+      covers:
+      - barely-01
+      note: 中文“几乎”可对应 barely 和 almost/nearly：区别在于事件结果是否成立。“几乎及格”是没及格，而“barely passed”是刚好及格。教学中应让学生看到分数刚过线的场景，再引出
+        barely。
+    - l1_term: 勉强
+      covers:
+      - barely-01
+      note: “勉强”强调刚刚达到标准，与 barely 的“only just”面重合；但“勉强”还可表示不情愿地做某事（对应 reluctantly），而
+        barely 只表程度，不表意愿。
+    - l1_term: 刚刚
+      covers:
+      - barely-01
+      note: “刚刚”既有时间义“just now”也有程度义“just barely”。barely 不能表达时间上的“刚刚”，只表达程度上的“勉强、几乎不”。
+scene_requirements:
+  must_show:
+  - 一个可被判断为极低程度的事件或状态：例如物体在远处或雾中仅存模糊轮廓，表示 barely visible。
+  - 若表现“刚好达到”义，显示目标物越过一条界定线的瞬间，且越过的分量非常小。
+  - 提供一个参照阈值（如及格线、界限、可听音量），使观众能比较程度与下限的距离。
+  must_not:
+  - 不要显示完全缺失的状态（彻底隐形、无声、分数完全不在纸上）。
+  - 不要显示中等或较高程度的表现（清晰可见、大部分完成、高质量通过）。
+  - 不要用时间回溯或“刚才发生”的镜头表达 barely，除非同时呈现程度判断。
+  externalization:
+  - 把“程度极低”外化为物体与阈值的视觉距离：线条/标记与及格线的距离、音量计指针位置、可见轮廓的清晰度。
+  - 把“勉强成立”外化为结果状态与临界状态之间的微小差距：例如红笔标记刚超过分数线一两毫米，或参赛者冲线时只比第二名早一个身位。
+  timing: 先让观众完成概念体验（看到几乎看不见的物体、看到刚过线的结果），再在事件结果充分明确后说出或显示 barely。如果场景包含多个事件，barely
+    的音频或字幕应紧跟在目标事件的结果呈现之后，避免在结果出现前提前命名。
+
+# ============================================================
+# G. 教学原型建议 (非权威, 仅供 Holistic Course Author 参考)
+# ============================================================
+teaching_profile:
+  primary_archetype: threshold_scale
+  suggested_capabilities:
+  - scalar_threshold
+  - binary_judgment
+  - single_choice
+  - transfer_judgment
+  special_risks:
+  - threshold_side_confusion
+  - l1_overlap_几乎

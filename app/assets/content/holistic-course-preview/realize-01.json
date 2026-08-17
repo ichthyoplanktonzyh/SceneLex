@@ -1,0 +1,658 @@
+{
+  "schema_version": "1.0",
+  "course_id": "realize-01-cn-v1",
+  "target": {
+    "sense_id": "realize-01",
+    "lemma": "realize",
+    "pos": "verb",
+    "ipa": "/ˈriːəlaɪz/",
+    "learner_l1": "zh-CN",
+    "target_l2": "en"
+  },
+  "author_intent": {
+    "course_thesis": "把 realize 教成‘由证据或经历触发、从一种判断或认知转变成清楚认知’的内在变化：关键不在让计划成真，不在变现，而在头脑中的认知更新。",
+    "learner_start": "学习者熟悉中文‘实现’，看到 realize 时可能先激活‘实现’义；也可能听说过‘意识到’，但对宾语类型以及外部变化和内在变化的分界不清楚；尚未绑定 realize 的 L2 符号。",
+    "intended_outcome": "学习者能识别‘由证据触发、发生在头脑中的判断转变’，知道事实先于知晓存在、不需要亲眼所见、不是靠意志硬查出来；能在英语句子中用 realize 表达‘意识到’，并区分 realize（意识到）、realize（实现）、realize（变现）。",
+    "design_rationale": "先用一个完整故事建立‘误解—证据—判断转变—后续行为’的经验原型，再用时间线定位认知变化的触发点，然后通过三组概念判断分别拆掉‘事实随知晓而变’‘刻意查明’‘必须亲眼看到’三个误解；绑定后先用句子模式把 that 从句和 the importance of + 名词与 awareness 义锚定，再用句子选择处理‘实现’与‘变现’两个 L1 强干扰义，最后用一个跨域推断场景迁移到推理路径。复习先反向回忆，再逐步从单句判义升级到多选综合判义，最后用推断型迁移收尾，与首学主线复用同一宾语线索。邻近项 notice-01 不在本课主线处理，避免在两门认知动词课中重复叠加。"
+  },
+  "steps": [
+    {
+      "id": "pre_intro_key_scene",
+      "stage": "learning_flow",
+      "trigger": "initial",
+      "primitive": "scene_observation",
+      "purpose": "用一个完整故事建立经验原型：误解、线索、判断转变、后续行为；让学习者先看到‘变化发生在头脑里’的可观察轨迹。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 45,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "老周一直觉得，项目进度慢是因为小王做事慢。这周开例会时，他当着大家的面问：‘小王，你那个模块怎么还没交？’小王没抬头，只低声说：‘我尽快。’散会后，老周整理共享文件夹，翻到一封两周前就存在的邮件：总经理要求小王先完成另一个客户的项目，还说那个项目优先级最高。老周又想起这几天小王每天加班到很晚，中午都不休息，偶尔被问到进展时总说‘手上还有更急的事’。老周停住鼠标，愣了两三秒，睁大眼睛，低声说：‘原来他不是慢……他是一直在忙另一个更急的项目。我这几天一直错怪他了。’说完他拿起手机，给小王发了一条道歉消息。"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "timeline_key_moment",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "information_state",
+      "purpose": "用时间线逐步展示证据与知晓状态，让学习者定位认知变化发生在哪个时间点，专门处理 temporal order 风险。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 90,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "用时间线再走一遍老周的经历：每个时间点显示他看到了什么、知道了什么。",
+        "agents": [
+          {
+            "id": "zhou",
+            "label": "老周"
+          }
+        ],
+        "facts": [
+          {
+            "id": "fact_slow",
+            "text": "老周最初的判断：小王做事慢"
+          },
+          {
+            "id": "fact_urgent",
+            "text": "总经理让小王先做另一个更急的项目（这个事实两周前就存在）"
+          },
+          {
+            "id": "fact_overtime",
+            "text": "小王最近常加班，常说‘有急事’（这个事实也一直存在）"
+          }
+        ],
+        "beats": [
+          {
+            "id": "b1",
+            "label": "会议前后",
+            "visible_evidence": [
+              "小王没交模块",
+              "老周当众催问"
+            ],
+            "reveals": [
+              "fact_slow"
+            ],
+            "known_by": [
+              "zhou"
+            ]
+          },
+          {
+            "id": "b2",
+            "label": "整理文件夹时",
+            "visible_evidence": [
+              "翻到两周前的邮件：另一个项目优先级最高"
+            ],
+            "reveals": [
+              "fact_urgent"
+            ],
+            "known_by": []
+          },
+          {
+            "id": "b3",
+            "label": "想起最近的加班后",
+            "visible_evidence": [
+              "小王这几天加班到很晚",
+              "他常说‘手上还有更急的事’"
+            ],
+            "reveals": [
+              "fact_urgent",
+              "fact_overtime"
+            ],
+            "known_by": [
+              "zhou"
+            ]
+          }
+        ],
+        "question": "老周对小王的说法，从‘小王慢’变成‘小王在忙更急的项目’，发生在哪一步之后？",
+        "options": [
+          {
+            "id": "opt_b1",
+            "text": "会议前后（b1）",
+            "feedback": "那时他心里还是‘小王慢’，只是想催小王。"
+          },
+          {
+            "id": "opt_b2",
+            "text": "整理文件夹时翻到邮件（b2）",
+            "feedback": "邮件是一个线索，但只有它还不够；他还没有把它和最近的加班连起来。"
+          },
+          {
+            "id": "opt_b3",
+            "text": "想起最近的加班之后（b3）",
+            "feedback": "正确。邮件和加班的证据在这一刻合到一起，他的说法从‘小王慢’变成了‘小王在忙更急的项目’。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_b3"
+      }
+    },
+    {
+      "id": "changed_what",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "single_choice",
+      "purpose": "让学习者判断变化发生在头脑里而非外部世界，破除‘事实在知晓时才产生’的误解。",
+      "addresses": [
+        "misc-3"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 50,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "整个过程里，有的事没有变，有的事变了。",
+        "evidence": [
+          "那封邮件两周前就存在。",
+          "小王这两周的加班也一直存在。",
+          "老周先前的说法是‘小王慢’，后来的说法是‘小王在忙更急的项目’。"
+        ],
+        "question": "真正发生变化的是什么？",
+        "options": [
+          {
+            "id": "opt_world",
+            "text": "小王的工作安排变了：从不太忙变成了很忙。",
+            "feedback": "不对。邮件和小王的繁忙在这两周里一直存在；并不是老周转变后才出现。"
+          },
+          {
+            "id": "opt_claim",
+            "text": "老周的说法变了：从‘小王慢’变成‘小王在忙更急的项目’。",
+            "feedback": "正确。外面的安排一直是这样；变的只是老周心里的说法。"
+          },
+          {
+            "id": "opt_relation",
+            "text": "老周和小王的关系突然变好了。",
+            "feedback": "关系变化是后来的结果；作判断的时机早了。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_claim"
+      }
+    },
+    {
+      "id": "not_deliberate",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "binary_judgment",
+      "purpose": "让学习者意识到认知转变不是靠意志刻意研究得来的，而是由证据触发。",
+      "addresses": [
+        "misc-4"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 50,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "老周只是顺手整理共享文件夹，并不是为了调查小王才去翻邮件。",
+        "evidence": [
+          "他本来在整理文件夹。",
+          "那封邮件是翻到的，不是他专门去搜的。",
+          "他也没有事先定计划要弄清楚小王为什么慢。"
+        ],
+        "question": "老周这次的转变，是靠他有意安排调查、刻意查资料得到的吗？",
+        "options": [
+          {
+            "id": "opt_not_deliberate",
+            "text": "不是。他本来没计划调查；证据出现后，他的判断自然地变了。",
+            "feedback": "正确。这种转变不是靠意志硬想出来的，而是由碰到的证据触发。"
+          },
+          {
+            "id": "opt_deliberate",
+            "text": "是。他专门整理了文件夹，想查清小王为什么慢。",
+            "feedback": "不是。整理文件夹是日常工作；查清原因不是他事先的计划。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_not_deliberate"
+      }
+    },
+    {
+      "id": "inference_allowed",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "binary_judgment",
+      "purpose": "用一个与观察不同的推断场景，破除‘必须亲眼看到才算’的误解。",
+      "addresses": [
+        "misc-5"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 50,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "赵阿姨早上发现餐厅靠窗的地板湿了一条。她伸手摸了一下窗台，是湿的；又看见窗户开着一道缝。她没有亲眼看见雨飘进来，却放下手里的碗说：‘哦，昨晚下雨时窗户没关严。’",
+        "evidence": [
+          "地板湿了一条，窗台也是湿的。",
+          "窗户开着一道缝。",
+          "她没有亲眼看见雨飘进屋里。"
+        ],
+        "question": "她没有直接看见雨进来，还能得出这个判断吗？",
+        "options": [
+          {
+            "id": "opt_can",
+            "text": "能。地板湿、窗台湿、窗户有缝这些线索足以让她推断出结果；判断不一定需要亲眼看见。",
+            "feedback": "正确。由线索推出结论，和亲眼看到同样可以带来判断的转变。"
+          },
+          {
+            "id": "opt_cannot",
+            "text": "不能。只有亲眼看到雨飘进来，才算判断的转变。",
+            "feedback": "不对。推断出的结论同样成立；是否亲眼看到不是必要条件。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_can"
+      }
+    },
+    {
+      "id": "pre_binding_pause",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "l1_confirmation",
+      "purpose": "短暂停顿与确认，给首学一个自然断点后再进入符号绑定。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 15,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "prompt_text": "你已经看过几段故事：人物的说法或判断从一种变成了另一种，而且这些变化都是由证据触发的。准备好后，我们把这类变化和一个英语词连起来。"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "symbol_binding",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "symbol_reveal",
+      "purpose": "首次把‘判断从一种变成另一种’的经验绑定到 realize 符号。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 20,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "l2_word": "realize",
+        "ipa": "/ˈriːəlaɪz/",
+        "presentation": "刚才那些‘从一种判断变成另一种判断’的变化，英语里用一个动词表达：realize。它描述一个人原本对一个事实或情况不清楚，后来因为证据或经历，心里变得清楚了。",
+        "minimal_l1_gloss": "意识到；明白"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "pronunciation",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "pronunciation",
+      "purpose": "听读目标词，巩固音形连接；提供又一个自然断点。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 15,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "l2_word": "realize",
+        "ipa": "/ˈriːəlaɪz/"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "grounding_scene",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "l2_grounding",
+      "purpose": "把 realize 放回最初场景，给出 that 从句、suddenly realize、come to realize、importance of 等真实句型与搭配。",
+      "addresses": [],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 70,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "source_step_id": "pre_intro_key_scene",
+        "l2_realization": "As Zhou stared at the email, he suddenly realized that Wang was not slow — he had been working on a more urgent project. “I’ve been blaming him unfairly,” he said, and sent Wang an apology.",
+        "constructions": [
+          "[subject] realized that [clause]. — She realized that the keys were in her bag.",
+          "[subject] suddenly realized ... — He suddenly realized what the noise meant.",
+          "[subject] came to realize that [clause]. — Over time, she came to realize that he was right.",
+          "[subject] realized the importance of [noun]. — They realized the importance of saving energy."
+        ],
+        "collocations": [
+          "realize that ...",
+          "suddenly realize",
+          "come to realize",
+          "realize the importance of ..."
+        ]
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "sentence_sense_achieve",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "single_choice",
+      "purpose": "用 that 从句与 her dream 对比，让学习者从句子模式识别 awareness 义与‘实现’义的分界。",
+      "addresses": [
+        "misc-1"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 60,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "读下面两句话，观察变化发生在哪里。",
+        "evidence": [
+          "第一句的宾语是 that 从句，表示一个事实。",
+          "第二句的宾语是 her dream，表示一个目标。",
+          "两句都用了同一个动词。"
+        ],
+        "question": "哪一句描述的是‘一个人的头脑里从一种说法变成另一种说法’，而不是‘在外部世界让一个计划成真’？",
+        "options": [
+          {
+            "id": "opt_mind",
+            "text": "She realized that her keys were on the kitchen table.",
+            "feedback": "正确。钥匙在桌上是一个事实；这句话里，之前她不知道钥匙在哪，后来知道了，变化发生在头脑里。"
+          },
+          {
+            "id": "opt_plan",
+            "text": "She realized her dream of opening a bakery.",
+            "feedback": "her dream 是一个目标，不是事实；‘实现梦想’是让外部世界发生变化，属于另一个含义。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_mind"
+      }
+    },
+    {
+      "id": "financial_sense",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "binary_judgment",
+      "purpose": "用 profit 与出售语境识别财务义 realize-03，防止在金融语境中误读为‘意识到’。",
+      "addresses": [
+        "misc-2"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 50,
+      "can_pause_after": false,
+      "due_after_days": null,
+      "content": {
+        "episode": "读这句话：She realized a large profit from the sale of her apartment.",
+        "evidence": [
+          "宾语是 a large profit。",
+          "语境是卖掉公寓。"
+        ],
+        "question": "这句话里 realize 的含义，和我们刚学的‘头脑里从一种说法变成另一种说法’一样吗？",
+        "options": [
+          {
+            "id": "opt_same",
+            "text": "一样，她明白了利润很大。",
+            "feedback": "不对。profit 是收益，不是事实；这里说的是把资产卖成钱后得到收益，属于财务含义。"
+          },
+          {
+            "id": "opt_diff",
+            "text": "不一样，这里说的是卖掉公寓后得到了收益。",
+            "feedback": "正确。判断线索：宾语是收益/金额，语境是出售资产；这时 realize 是‘变现/取得收益’，不是‘意识到’。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_diff"
+      }
+    },
+    {
+      "id": "transfer_inference",
+      "stage": "learning_flow",
+      "trigger": "immediate_followup",
+      "primitive": "transfer_judgment",
+      "purpose": "把概念迁移到推断情境：不亲眼看见也能由证据形成新判断，并选择自然 L2 句。",
+      "addresses": [
+        "misc-5"
+      ],
+      "timing": null,
+      "scaffold_level": null,
+      "estimated_seconds": 60,
+      "can_pause_after": true,
+      "due_after_days": null,
+      "content": {
+        "episode": "The waiter walked back into the kitchen. On the floor were an empty plate and a few bits of fish. Under the table, the cat was licking its paws. The waiter had not seen the cat eating anything.",
+        "evidence": [
+          "盘子空了。",
+          "地上有鱼屑，猫在舔爪子。",
+          "他并没有亲眼看见猫吃鱼。"
+        ],
+        "question": "下面哪句最能描述这位服务员现在的转变？",
+        "options": [
+          {
+            "id": "opt_realized",
+            "text": "He realized that the cat had eaten the fish.",
+            "feedback": "正确。他没有看见猫吃，但空盘子、鱼屑、猫舔爪子这些证据合起来让他得出新说法；这正是由证据触发的判断转变。"
+          },
+          {
+            "id": "opt_saw",
+            "text": "He saw the cat eating the fish.",
+            "feedback": "不对。他并没有亲眼看见猫吃鱼。"
+          },
+          {
+            "id": "opt_thought_still",
+            "text": "He thought the fish was still on the plate.",
+            "feedback": "不对。这与他最后的新说法相反。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_realized"
+      }
+    },
+    {
+      "id": "rev_1_recall",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_reveal",
+      "purpose": "绑定后第 1 天（次日在日常复习中出现）",
+      "addresses": [],
+      "timing": "绑定后第 1 天（次日在日常复习中出现）",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 1,
+      "content": {
+        "episode": "小许一直觉得楼下邻居很吵是在故意针对他。一天傍晚，他看见邻居家门口放着一盒隔音耳塞，又听到楼上传来电钻声。他站在门口愣了一会儿，对家里人说：‘原来不是他故意吵，是楼上天天装修。’",
+        "l2_word": "realize",
+        "ipa": "/ˈriːəlaɪz/",
+        "minimal_gloss": "意识到；明白"
+      },
+      "evaluation": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "rev_2_self_grade",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "recall_self_grade",
+      "purpose": "绑定后第 1 天，紧接回忆后自评",
+      "addresses": [],
+      "timing": "绑定后第 1 天，紧接回忆后自评",
+      "scaffold_level": "early_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 1,
+      "content": {
+        "l2_word": "realize",
+        "ipa": "/ˈriːəlaɪz/"
+      },
+      "evaluation": {
+        "kind": "self_grade"
+      }
+    },
+    {
+      "id": "rev_3_sentence_sense",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "single_choice",
+      "purpose": "绑定后第 3 天",
+      "addresses": [],
+      "timing": "绑定后第 3 天",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 3,
+      "content": {
+        "episode": "Mia finally realized her dream of opening a café.",
+        "question": "这里的 realized 是什么意思？",
+        "options": [
+          {
+            "id": "opt_understand",
+            "text": "她终于明白自己的梦想是什么。",
+            "feedback": "不对。her dream 是一个目标而不是事实；这句话说的是‘努力让目标成真’，不是‘意识到’。"
+          },
+          {
+            "id": "opt_achieve",
+            "text": "她终于把梦想变成了现实：成功开了一家咖啡店。",
+            "feedback": "正确。‘实现梦想’是外部世界的变化，属于 realize 的另一个含义。本课学的‘意识到’常带 that 从句或 the importance of + 名词。"
+          },
+          {
+            "id": "opt_look",
+            "text": "她终于看到了梦想中的咖啡店。",
+            "feedback": "没有证据表明是‘看到’；句中重点是多年努力后目标达成，英语里常说 She achieved/fulfilled her dream，而不是本课的‘意识到’义。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_achieve"
+      }
+    },
+    {
+      "id": "rev_4_multi_sense",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "multi_label_choice",
+      "purpose": "绑定后第 5 天",
+      "addresses": [],
+      "timing": "绑定后第 5 天",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 5,
+      "content": {
+        "episode": "读下面四句话，选出其中 realize 表示‘意识到；明白’的句子。",
+        "evidence": [
+          "判断方法：宾语表示一个事实或事态（如 that 从句、the importance of ...）时，通常是‘意识到’。",
+          "宾语表示一个目标或行动计划时，可能是‘实现’；宾语表示收益或出售资产时，是‘变现/取得收益’。"
+        ],
+        "question": "哪些句子里 realize 是‘意识到；明白’的意思？",
+        "options": [
+          {
+            "id": "s1",
+            "text": "I realized that the meeting had been moved to Friday.",
+            "is_correct": true,
+            "feedback": "正确。that 从句说的是一件事实：会议改到周五。变化发生在头脑里：从不知道到知道。"
+          },
+          {
+            "id": "s2",
+            "text": "He realized his plan to travel around the world.",
+            "is_correct": false,
+            "feedback": "不对。his plan 是一个目标，不是事实。这句话是‘实现计划’，属于外部行动义。"
+          },
+          {
+            "id": "s3",
+            "text": "She realized the importance of getting enough sleep.",
+            "is_correct": true,
+            "feedback": "正确。the importance of + 名词是一个事态/含义；她从前低估它，后来清楚了，变化在头脑里。"
+          },
+          {
+            "id": "s4",
+            "text": "They realized a big profit from selling the old warehouse.",
+            "is_correct": false,
+            "feedback": "不对。profit 是收益，语境是出售资产；这是‘变现/取得收益’的财务义。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "multi_choice",
+        "correct_option_ids": [
+          "s1",
+          "s3"
+        ]
+      }
+    },
+    {
+      "id": "rev_5_inference_transfer",
+      "stage": "review_progression",
+      "trigger": "scheduled_review",
+      "primitive": "transfer_judgment",
+      "purpose": "绑定后第 7 天",
+      "addresses": [],
+      "timing": "绑定后第 7 天",
+      "scaffold_level": "later_post_binding",
+      "estimated_seconds": null,
+      "can_pause_after": null,
+      "due_after_days": 7,
+      "content": {
+        "episode": "Jun rides the bus to work. He touches the window; it is cold. Outside, car rooftops are white and the ground is wet. He did not see any snow fall during the night. He thinks to himself, ‘So that’s why the heating was warm.’",
+        "evidence": [
+          "窗户是冷的，车顶是白的，地面是湿的。",
+          "他并没有亲眼看见夜里下雪。",
+          "他现在的说法是：夜里下过雪。"
+        ],
+        "question": "下面哪句最能描述 Jun 现在的转变？",
+        "options": [
+          {
+            "id": "opt_realized",
+            "text": "He realized that it had snowed during the night.",
+            "feedback": "正确。他没有看见雪，但窗户、车顶、地面的线索合起来让他得出新判断；这正是由证据触发的头脑中的转变。"
+          },
+          {
+            "id": "opt_saw",
+            "text": "He saw the snow falling outside his window.",
+            "feedback": "不对。他并没有亲眼看见雪落下。"
+          },
+          {
+            "id": "opt_decided",
+            "text": "He decided to find out why it was cold.",
+            "feedback": "不对。他不是有意决定去查明；证据出现后，判断自然地变了。"
+          }
+        ]
+      },
+      "evaluation": {
+        "kind": "choice",
+        "correct_option_id": "opt_realized"
+      }
+    }
+  ]
+}

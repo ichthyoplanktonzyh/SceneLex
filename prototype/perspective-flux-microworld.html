@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SceneLex — 词义微世界交互原型 #04: 角色视角与事件动量流向 (Perspective Flux)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #090a0f;
+      --bg-surface: #131622;
+      --bg-card: #1b1f30;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f1f3f9;
+      --text-muted: #8b92a7;
+      --text-sub: #b2b9ce;
+      --accent: #ec4899;
+      --accent-glow: rgba(236, 72, 153, 0.25);
+      --indigo: #6366f1;
+      --indigo-glow: rgba(99, 102, 241, 0.25);
+      --cyan: #06b6d4;
+      --amber: #f59e0b;
+      --emerald: #10b981;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 8px;
+      --font-sans: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 60px;
+      background-image: 
+        radial-gradient(ellipse 60% 40% at 50% -10%, rgba(236, 72, 153, 0.15), transparent),
+        radial-gradient(ellipse 50% 30% at 85% 85%, rgba(99, 102, 241, 0.08), transparent);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1080px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(236, 72, 153, 0.12);
+      border: 1px solid rgba(236, 72, 153, 0.3);
+      color: #f472b6;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffffff 40%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+      max-width: 720px;
+      line-height: 1.5;
+    }
+
+    /* Nav Tabs */
+    .tabs {
+      display: flex;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    /* Layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 860px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-title span.tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      font-family: var(--font-mono);
+    }
+
+    /* Perspective Stage Viewport */
+    .sim-viewport {
+      background: #090a10;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      position: relative;
+      height: 350px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    canvas#fluxCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Overlays */
+    .state-overlay {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .state-chip {
+      background: rgba(15, 17, 26, 0.85);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(8px);
+    }
+
+    .state-chip .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Crystal Word Toast */
+    .crystal-badge {
+      position: absolute;
+      bottom: 16px;
+      background: rgba(22, 25, 38, 0.95);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transform: translateY(20px) scale(0.95);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+      backdrop-filter: blur(12px);
+    }
+
+    .crystal-badge.show {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .crystal-word {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .crystal-ipa {
+      font-size: 13px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+
+    .crystal-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+      border-left: 1px solid var(--border);
+      padding-left: 14px;
+      max-width: 260px;
+      line-height: 1.4;
+    }
+
+    /* POV Switcher Button Bar */
+    .pov-bar {
+      display: flex;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 6px;
+      gap: 8px;
+    }
+
+    .pov-btn {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      color: var(--text-sub);
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-family: inherit;
+    }
+
+    .pov-btn:hover {
+      border-color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .pov-btn.active-giver {
+      border-color: #f472b6;
+      background: rgba(236, 72, 153, 0.15);
+      color: #ffffff;
+    }
+
+    .pov-btn.active-receiver {
+      border-color: #60a5fa;
+      background: rgba(99, 102, 241, 0.15);
+      color: #ffffff;
+    }
+
+    /* Scenarios Selector Grid */
+    .flux-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .flux-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 4px;
+    }
+
+    .flux-card:hover {
+      border-color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .flux-card.active {
+      border-color: var(--accent);
+      background: rgba(236, 72, 153, 0.12);
+    }
+
+    .flux-card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .flux-card-words {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: #f472b6;
+    }
+
+    /* Radar Panel (Right) */
+    .flux-analysis-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .flux-feature-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      font-size: 12.5px;
+    }
+
+    .flux-feature-label {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .flux-feature-val {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #f472b6;
+    }
+
+    /* Minimal Pair Clash */
+    .clash-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      background: var(--bg-surface);
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .clash-col {
+      padding: 12px;
+      border-radius: 10px;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .clash-col.giver-col { border-color: rgba(236, 72, 153, 0.3); }
+    .clash-col.receiver-col { border-color: rgba(99, 102, 241, 0.3); }
+
+    .clash-col.highlight-giver {
+      border-color: #ec4899;
+      background: rgba(236, 72, 153, 0.15);
+      transform: scale(1.02);
+    }
+    .clash-col.highlight-receiver {
+      border-color: #6366f1;
+      background: rgba(99, 102, 241, 0.15);
+      transform: scale(1.02);
+    }
+
+    .clash-badge {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .giver-col .clash-badge { color: #f472b6; }
+    .receiver-col .clash-badge { color: #818cf8; }
+
+    .clash-desc {
+      font-size: 11.5px;
+      color: var(--text-sub);
+      line-height: 1.4;
+    }
+
+    .clash-tag {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-top: 4px;
+    }
+    .tag-outflow { background: rgba(236,72,153,0.15); color: #f472b6; }
+    .tag-inflow { background: rgba(99,102,241,0.15); color: #818cf8; }
+
+    /* Flow Stepper */
+    .flow-steps {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .step-pill {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 4px;
+      border-radius: 8px;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .step-pill.active {
+      background: rgba(236, 72, 153, 0.15);
+      border-color: var(--accent);
+      color: #f472b6;
+    }
+
+    .step-pill.done {
+      border-color: var(--emerald);
+      color: var(--emerald);
+    }
+
+    .flow-action-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .flow-btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+    .btn.primary:hover { background: #db2777; }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .quiz-opt-btn {
+      padding: 16px;
+      border-radius: 12px;
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .quiz-opt-btn:hover { border-color: var(--accent); }
+    .quiz-opt-btn.correct { border-color: var(--emerald)!important; background: rgba(16,185,129,0.15)!important; color:#34d399; }
+    .quiz-opt-btn.wrong { border-color: #ef4444!important; background: rgba(239,68,68,0.15)!important; color:#f87171; }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <header>
+    <div>
+      <div class="badge-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M9 21H4v-5"/></svg>
+        SceneLex 词义微世界体系 · 类别 #04
+      </div>
+      <h1>角色视角与事件动量流向微世界 (Perspective Flux)</h1>
+      <div class="subtitle">
+        同一个物理事件（物品/力量从 A 转移到 B），如何通过<strong>第一人称镜头推移 (First-Person POV)</strong> 与 <strong>动量流向 (+Inflow 流入 vs -Outflow 流出)</strong>，直接结晶出 <strong>borrow/lend, give/take, buy/sell, push/pull</strong>。
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchView('interactive')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8m-4-4h8"/></svg>
+        第一人称视角实验台
+      </button>
+      <button class="tab-btn" onclick="switchView('walkthrough')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        4 步视角顿悟心流
+      </button>
+      <button class="tab-btn" onclick="switchView('theory')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        角色流向与 Schema
+      </button>
+    </div>
+  </header>
+
+  <!-- VIEW 1: INTERACTIVE LAB -->
+  <div id="view-interactive" class="grid-2">
+    <!-- Left: Canvas Sim -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          第一人称动量流向视窗 (Deictic Momentum Stage)
+          <span class="tag" id="flux-tag">借还物品: borrow / lend</span>
+        </div>
+        <div class="state-chip" id="flux-state-chip">
+          <div class="dot" id="flux-dot"></div>
+          <span id="flux-status-txt">站在 Alice 视角 (流出)</span>
+        </div>
+      </div>
+
+      <!-- Canvas Viewport -->
+      <div class="sim-viewport">
+        <div class="state-overlay">
+          <div class="state-chip">
+            <span>当前主视角 (POV): </span>
+            <span id="overlay-pov" style="font-family: var(--font-mono); color: #f472b6; font-weight:800;">👤 Alice (提供者)</span>
+          </div>
+          <div class="state-chip">
+            <span>动量矢量: </span>
+            <span id="overlay-vector" style="font-family: var(--font-mono); color:#93c5fd; font-weight:800;">向外递出 (Outflow)</span>
+          </div>
+        </div>
+
+        <canvas id="fluxCanvas" width="560" height="350"></canvas>
+
+        <!-- Crystal Word Toast -->
+        <div class="crystal-badge" id="crystal-badge">
+          <div>
+            <div class="crystal-word" id="toast-word" style="color: #f472b6;">lend</div>
+            <div class="crystal-ipa" id="toast-ipa">/lɛnd/</div>
+          </div>
+          <div class="crystal-desc" id="toast-desc">
+            从我的主视角，把物品暂时向外提供给他人（流出）。
+          </div>
+        </div>
+      </div>
+
+      <!-- POV Switcher Controls -->
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div style="font-size:13px; font-weight:700; color:var(--text-sub);">点击切换主视角镜头（感受同事件的截然相反动量）：</div>
+        <div class="pov-bar">
+          <button class="pov-btn active-giver" id="btn-pov-giver" onclick="switchPOV('giver')">
+            <span style="font-size:16px;">👤 我是 Alice (左侧提供方)</span>
+            <span style="font-size:11px; color:#f472b6;">动量方向：从我手中流出 (Outflow) ➔ <strong id="pov-giver-word">lend</strong></span>
+          </button>
+          <button class="pov-btn" id="btn-pov-receiver" onclick="switchPOV('receiver')">
+            <span style="font-size:16px;">👤 我是 Bob (右侧接收方)</span>
+            <span style="font-size:11px; color:#818cf8;">动量方向：流入我的手心 (Inflow) ➔ <strong id="pov-receiver-word">borrow</strong></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scenarios Selector Grid -->
+      <div>
+        <div style="font-size:13px; font-weight:700; color:var(--text-sub); margin-bottom:8px;">选择关系动词流向族系：</div>
+        <div class="flux-grid">
+          <div class="flux-card active" onclick="selectFluxScenario('borrow_lend', this)">
+            <div class="flux-card-title">📚 物品借用</div>
+            <div class="flux-card-words">borrow / lend</div>
+          </div>
+          <div class="flux-card" onclick="selectFluxScenario('buy_sell', this)">
+            <div class="flux-card-title">💰 商业买卖</div>
+            <div class="flux-card-words">buy / sell</div>
+          </div>
+          <div class="flux-card" onclick="selectFluxScenario('push_pull', this)">
+            <div class="flux-card-title">📦 物理推拉</div>
+            <div class="flux-card-words">push / pull</div>
+          </div>
+          <div class="flux-card" onclick="selectFluxScenario('give_take', this)">
+            <div class="flux-card-title">🤝 物品交接</div>
+            <div class="flux-card-words">give / take</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Perspective & Momentum Schema Panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          主客观动量映射雷达 (Deictic Flux Schema)
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <!-- Topo Attributes -->
+        <div class="flux-analysis-box">
+          <div class="flux-feature-row">
+            <span class="flux-feature-label">客观物理事件:</span>
+            <span class="flux-feature-val" id="feat-obj-event">书本从 Alice 转移给 Bob</span>
+          </div>
+          <div class="flux-feature-row">
+            <span class="flux-feature-label">主视角锚定 (POV):</span>
+            <span class="flux-feature-val" id="feat-pov-role">Alice (Giver)</span>
+          </div>
+          <div class="flux-feature-row">
+            <span class="flux-feature-label">主观动量矢量:</span>
+            <span class="flux-feature-val" id="feat-momentum">- 向外流出 (Outward)</span>
+          </div>
+        </div>
+
+        <!-- Minimal Pair Clash: Giver vs Receiver -->
+        <div style="font-size:13px; font-weight:700; color:var(--text);">同物理事件的视角双结晶（Perspective Minimal Pair）：</div>
+        <div class="clash-card">
+          <div class="clash-col giver-col highlight-giver" id="col-giver">
+            <div class="clash-badge" id="card-giver-word">lend</div>
+            <div class="clash-desc" id="card-giver-desc">从主视角递出物品</div>
+            <div class="clash-tag tag-outflow">Outflow · 提供方</div>
+          </div>
+          <div class="clash-col receiver-col" id="col-receiver">
+            <div class="clash-badge" id="card-receiver-word">borrow</div>
+            <div class="clash-desc" id="card-receiver-desc">从他人处流入手中</div>
+            <div class="clash-tag tag-inflow">Inflow · 接收方</div>
+          </div>
+        </div>
+
+        <!-- Invariant Rule -->
+        <div style="background:var(--bg-surface); padding:12px 14px; border-radius:10px; border:1px solid var(--border); font-size:12px; color:var(--text-sub); line-height:1.5;">
+          💡 <strong>流向不变式</strong>：<br>
+          • 动词的决定权不在于物理事实本身，而在于<strong>“说话者的观察摄像机架在谁的身上”</strong>。<br>
+          • <strong>流入我 (Inflow)</strong> ➔ <em>borrow / buy / take / pull</em><br>
+          • <strong>流出我 (Outflow)</strong> ➔ <em>lend / sell / give / push</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: 4-STEP WALKTHROUGH -->
+  <div id="view-walkthrough" class="grid-2" style="display:none;">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          App 真实端到端教学心流 (Learner Journey)
+        </div>
+      </div>
+
+      <div class="flow-steps">
+        <div class="step-pill active" id="pill-step-1">1. 客观物理事件</div>
+        <div class="step-pill" id="pill-step-2">2. 视角推移切换</div>
+        <div class="step-pill" id="pill-step-3">3. 视角符号双结晶</div>
+        <div class="step-pill" id="pill-step-4">4. 零翻译主视角盲测</div>
+      </div>
+
+      <div id="flow-content-box" class="flow-action-box">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+    <!-- Right: Cognitive State Monitor -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          心智模型建构状态 (Cognitive State)
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="background:var(--bg-surface); padding:14px; border-radius:12px; border:1px solid var(--border);">
+          <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:6px;">大脑流向神经通道：</div>
+          <div id="walk-mental-status" style="font-size:14px; font-weight:700; color:#f472b6; line-height:1.5;">
+            🔘 阶段 1: 观察客观物理流向（无任何语言干扰）
+          </div>
+        </div>
+
+        <div style="background:var(--bg-surface); padding:14px; border-radius:12px; border:1px solid var(--border);">
+          <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:6px;">为什么 borrow 和 lend 极易混淆？</div>
+          <div style="font-size:13px; color:var(--text-sub); line-height:1.6;">
+            • 中文里“借”一个字兼具“借入”和“借出”（“我借你一本书” vs “我跟你借一本书”），导致混淆。<br>
+            • <strong>视角流向微世界</strong>通过“流入我手”与“从我手递出”的第一人称镜头推移，让学习者依靠肌肉触感形成条件反射。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 3: THEORY & SCHEMA -->
+  <div id="view-theory" class="panel" style="display:none;">
+    <div class="panel-header">
+      <div class="panel-title">
+        PerspectiveFlux 原语组件的技术架构与 Schema
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; font-size:13.5px; line-height:1.6;">
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#f472b6; margin-bottom:8px;">1. 什么是视角流向原语？</h3>
+        <p style="color:var(--text-sub);">
+          所有描述<strong>转移、交易、力量方向、互动关系</strong>的成对动词，在 App 端统一由 1 个 <strong>第一人称视角推移渲染器</strong> 驱动。
+        </p>
+      </div>
+
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#818cf8; margin-bottom:8px;">2. LLM 编译器入参 Schema</h3>
+        <pre style="background:#090a0f; padding:10px; border-radius:8px; font-family:var(--font-mono); font-size:11px; color:#a5b4fc; overflow-x:auto; margin-top:6px;">
+{
+  "primitive": "perspective_flux",
+  "domain": "temporary_transfer",
+  "transferred_item": "book",
+  "source_agent": "Alice",
+  "target_agent": "Bob",
+  "current_pov": "source",
+  "bound_symbols": {
+    "source_outflow": "lend",
+    "target_inflow": "borrow"
+  }
+}</pre>
+      </div>
+
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#34d399; margin-bottom:8px;">3. 学习者体验提升</h3>
+        <ul style="color:var(--text-sub); padding-left:18px; margin-top:6px; display:flex; flex-direction:column; gap:6px;">
+          <li>不再死记“borrow是借入，lend是借出”。</li>
+          <li>通过“我的视角看双手是递出还是接收”，1 秒内凭生理直觉完成判断。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentScenario = 'borrow_lend';
+  let currentPOV = 'giver'; // 'giver' or 'receiver'
+
+  const canvas = document.getElementById('fluxCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let animTime = 0;
+
+  function renderLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    renderPerspectiveScene();
+
+    animTime += 0.04;
+    requestAnimationFrame(renderLoop);
+  }
+
+  function renderPerspectiveScene() {
+    const w = canvas.width;
+    const h = canvas.height;
+    const cy = h / 2;
+
+    const aliceX = w * 0.24;
+    const bobX = w * 0.76;
+
+    // Floor shadow
+    ctx.fillStyle = '#121420';
+    ctx.beginPath();
+    ctx.ellipse(w/2, cy + 80, w * 0.45, 30, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 1. Draw Alice (Giver on Left)
+    const isAliceActive = currentPOV === 'giver';
+    drawCharacter(aliceX, cy + 20, isAliceActive, '#f472b6', 'Alice (提供方)');
+
+    // 2. Draw Bob (Receiver on Right)
+    const isBobActive = currentPOV === 'receiver';
+    drawCharacter(bobX, cy + 20, isBobActive, '#60a5fa', 'Bob (接收方)');
+
+    // 3. Animated Transfer Item moving from Alice to Bob
+    const itemT = (Math.sin(animTime * 1.5) + 1) / 2; // 0 to 1 back and forth
+    const itemX = aliceX + 50 + (bobX - aliceX - 100) * itemT;
+    const itemY = cy + Math.sin(itemT * Math.PI) * -35;
+
+    // Item Graphic based on scenario
+    ctx.save();
+    ctx.translate(itemX, itemY);
+    if (currentScenario === 'borrow_lend') {
+      // Book
+      ctx.fillStyle = '#f59e0b';
+      ctx.beginPath();
+      ctx.roundRect(-16, -22, 32, 44, 4);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(-12, -18, 24, 6);
+      ctx.font = 'bold 9px JetBrains Mono';
+      ctx.fillStyle = '#000';
+      ctx.fillText('BOOK', -12, 10);
+    } else if (currentScenario === 'buy_sell') {
+      // Gold Coin / Cash
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath();
+      ctx.arc(0, 0, 18, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#d97706';
+      ctx.font = 'bold 16px Plus Jakarta Sans';
+      ctx.textAlign = 'center';
+      ctx.fillText('$', 0, 6);
+    } else if (currentScenario === 'push_pull') {
+      // Heavy Box with Force Arrow
+      ctx.fillStyle = '#64748b';
+      ctx.beginPath();
+      ctx.roundRect(-24, -20, 48, 40, 6);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 10px JetBrains Mono';
+      ctx.textAlign = 'center';
+      ctx.fillText('BOX', 0, 4);
+    } else {
+      // Generic Gift
+      ctx.fillStyle = '#ec4899';
+      ctx.beginPath();
+      ctx.roundRect(-18, -18, 36, 36, 6);
+      ctx.fill();
+      ctx.fillStyle = '#fde047';
+      ctx.fillRect(-4, -18, 8, 36);
+      ctx.fillRect(-18, -4, 36, 8);
+    }
+    ctx.restore();
+
+    // 4. Directional Momentum Flux Arc
+    ctx.strokeStyle = isAliceActive ? '#f472b6' : '#60a5fa';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([6, 6]);
+    ctx.beginPath();
+    ctx.moveTo(aliceX + 40, cy - 20);
+    ctx.quadraticCurveTo(w/2, cy - 80, bobX - 40, cy - 20);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Arrow Head
+    ctx.fillStyle = isAliceActive ? '#f472b6' : '#60a5fa';
+    ctx.beginPath();
+    ctx.moveTo(bobX - 40, cy - 20);
+    ctx.lineTo(bobX - 54, cy - 30);
+    ctx.lineTo(bobX - 50, cy - 18);
+    ctx.closePath();
+    ctx.fill();
+
+    // First-Person Camera Highlight Ring around active character
+    const activeX = isAliceActive ? aliceX : bobX;
+    ctx.strokeStyle = isAliceActive ? 'rgba(244, 114, 182, 0.6)' : 'rgba(96, 165, 250, 0.6)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(activeX, cy - 10, 56 + Math.sin(animTime * 3) * 4, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.fillStyle = isAliceActive ? '#f472b6' : '#60a5fa';
+    ctx.font = 'bold 11px Plus Jakarta Sans';
+    ctx.textAlign = 'center';
+    ctx.fillText('📷 YOUR POV', activeX, cy - 75);
+  }
+
+  function drawCharacter(x, y, isActive, color, label) {
+    // Body
+    ctx.fillStyle = isActive ? color : '#334155';
+    ctx.beginPath();
+    ctx.roundRect(x - 22, y - 20, 44, 60, [10, 10, 4, 4]);
+    ctx.fill();
+
+    // Head
+    ctx.beginPath();
+    ctx.arc(x, y - 42, 20, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Eyes
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(x - 6, y - 44, 3, 0, Math.PI * 2);
+    ctx.arc(x + 6, y - 44, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Label
+    ctx.fillStyle = isActive ? '#ffffff' : 'rgba(255,255,255,0.4)';
+    ctx.font = 'bold 12px Noto Sans SC';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, x, y + 60);
+  }
+
+  function switchPOV(pov) {
+    currentPOV = pov;
+    document.getElementById('btn-pov-giver').className = pov === 'giver' ? 'pov-btn active-giver' : 'pov-btn';
+    document.getElementById('btn-pov-receiver').className = pov === 'receiver' ? 'pov-btn active-receiver' : 'pov-btn';
+
+    const colGiver = document.getElementById('col-giver');
+    const colReceiver = document.getElementById('col-receiver');
+    colGiver.className = pov === 'giver' ? 'clash-col giver-col highlight-giver' : 'clash-col giver-col';
+    colReceiver.className = pov === 'receiver' ? 'clash-col receiver-col highlight-receiver' : 'clash-col receiver-col';
+
+    const chip = document.getElementById('flux-state-chip');
+    const dot = document.getElementById('flux-dot');
+    const txt = document.getElementById('flux-status-txt');
+
+    const overlayPov = document.getElementById('overlay-pov');
+    const overlayVector = document.getElementById('overlay-vector');
+
+    const badge = document.getElementById('crystal-badge');
+    const toastWord = document.getElementById('toast-word');
+    const toastIpa = document.getElementById('toast-ipa');
+    const toastDesc = document.getElementById('toast-desc');
+
+    const cfg = getFluxConfig();
+
+    if (pov === 'giver') {
+      chip.style.borderColor = 'rgba(236, 72, 153, 0.4)';
+      dot.style.background = '#f472b6';
+      txt.innerText = `站在 Alice 视角 (${cfg.giverAction})`;
+
+      overlayPov.innerText = '👤 Alice (提供方视角)';
+      overlayPov.style.color = '#f472b6';
+      overlayVector.innerText = `${cfg.giverVector} (Outflow)`;
+
+      document.getElementById('feat-pov-role').innerText = 'Alice (Giver / 提供方)';
+      document.getElementById('feat-momentum').innerText = `- 向外递出/流出 (Outflow)`;
+
+      toastWord.innerText = cfg.giverWord;
+      toastWord.style.color = '#f472b6';
+      toastIpa.innerText = cfg.giverIpa;
+      toastDesc.innerText = cfg.giverDesc;
+      badge.classList.add('show');
+    } else {
+      chip.style.borderColor = 'rgba(99, 102, 241, 0.4)';
+      dot.style.background = '#6366f1';
+      txt.innerText = `站在 Bob 视角 (${cfg.receiverAction})`;
+
+      overlayPov.innerText = '👤 Bob (接收方视角)';
+      overlayPov.style.color = '#818cf8';
+      overlayVector.innerText = `${cfg.receiverVector} (Inflow)`;
+
+      document.getElementById('feat-pov-role').innerText = 'Bob (Receiver / 接收方)';
+      document.getElementById('feat-momentum').innerText = `+ 向内流入我手 (Inflow)`;
+
+      toastWord.innerText = cfg.receiverWord;
+      toastWord.style.color = '#818cf8';
+      toastIpa.innerText = cfg.receiverIpa;
+      toastDesc.innerText = cfg.receiverDesc;
+      badge.classList.add('show');
+    }
+  }
+
+  function getFluxConfig() {
+    switch(currentScenario) {
+      case 'borrow_lend':
+        return {
+          giverWord: 'lend', giverIpa: '/lɛnd/', giverVector: '向外借出', giverAction: '流出',
+          giverDesc: '站在提供者视角，把我的物品暂时借给别人（Outflow）。',
+          receiverWord: 'borrow', receiverIpa: '/ˈbɑːroʊ/', receiverVector: '流入我手', receiverAction: '流入',
+          receiverDesc: '站在接收者视角，从别人那里借入物品（Inflow）。'
+        };
+      case 'buy_sell':
+        return {
+          giverWord: 'sell', giverIpa: '/sɛl/', giverVector: '向外卖出商品', giverAction: '流出',
+          giverDesc: '站在店主视角，把商品移交给买家（Outflow）。',
+          receiverWord: 'buy', receiverIpa: '/baɪ/', receiverVector: '买入商品到手', receiverAction: '流入',
+          receiverDesc: '站在买家视角，把商品购买接入自己手中（Inflow）。'
+        };
+      case 'push_pull':
+        return {
+          giverWord: 'push', giverIpa: '/pʊʃ/', giverVector: '推向远离自己', giverAction: '推斥',
+          giverDesc: '施加向外的推力，使物体远离我（Outward Force）。',
+          receiverWord: 'pull', receiverIpa: '/pʊl/', receiverVector: '拉向靠近自己', receiverAction: '拉近',
+          receiverDesc: '施加向内的拉力，使物体靠近我（Inward Force）。'
+        };
+      case 'give_take':
+        return {
+          giverWord: 'give', giverIpa: '/ɡɪv/', giverVector: '向外递出给予', giverAction: '给予',
+          giverDesc: '主动将物品向外递送给对方。',
+          receiverWord: 'take', receiverIpa: '/teɪk/', receiverVector: '伸手接取拿走', receiverAction: '拿取',
+          receiverDesc: '主动从对方处接收/拿取物品。'
+        };
+    }
+  }
+
+  function selectFluxScenario(sc, card) {
+    currentScenario = sc;
+    document.querySelectorAll('.flux-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+
+    const titles = {
+      borrow_lend: '借还物品: borrow / lend',
+      buy_sell: '商业买卖: buy / sell',
+      push_pull: '物理推拉: push / pull',
+      give_take: '物品交接: give / take'
+    };
+    document.getElementById('flux-tag').innerText = titles[sc];
+
+    const events = {
+      borrow_lend: '书本从 Alice 转移给 Bob',
+      buy_sell: '金币与商品在两人之间交易',
+      push_pull: '重物箱子在两人之间受力移动',
+      give_take: '礼物盒从 Alice 传递给 Bob'
+    };
+    document.getElementById('feat-obj-event').innerText = events[sc];
+
+    const cfg = getFluxConfig();
+    document.getElementById('pov-giver-word').innerText = cfg.giverWord;
+    document.getElementById('pov-receiver-word').innerText = cfg.receiverWord;
+    document.getElementById('card-giver-word').innerText = cfg.giverWord;
+    document.getElementById('card-giver-desc').innerText = `从我的视角${cfg.giverVector}`;
+    document.getElementById('card-receiver-word').innerText = cfg.receiverWord;
+    document.getElementById('card-receiver-desc').innerText = `从我的视角${cfg.receiverVector}`;
+
+    switchPOV(currentPOV);
+  }
+
+  function switchView(viewName) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    document.getElementById('view-interactive').style.display = viewName === 'interactive' ? 'grid' : 'none';
+    document.getElementById('view-walkthrough').style.display = viewName === 'walkthrough' ? 'grid' : 'none';
+    document.getElementById('view-theory').style.display = viewName === 'theory' ? 'block' : 'none';
+
+    if (viewName === 'walkthrough') {
+      renderFlowStep(1);
+    }
+  }
+
+  // 4-Step Walkthrough
+  let walkStep = 1;
+  function renderFlowStep(s) {
+    walkStep = s;
+    for (let i = 1; i <= 4; i++) {
+      const p = document.getElementById(`pill-step-${i}`);
+      p.className = 'step-pill';
+      if (i < s) p.classList.add('done');
+      if (i === s) p.classList.add('active');
+    }
+
+    const box = document.getElementById('flow-content-box');
+    const mental = document.getElementById('walk-mental-status');
+
+    if (s === 1) {
+      mental.innerHTML = '🔘 <strong>阶段 1【客观物理事件】</strong>：书本从 A 手中移动到了 B 手中。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>步骤 1：观察客观事件（一本书从 Alice 手中移到了 Bob 手中）。</strong>
+        </div>
+        <div style="background:#090a0f; padding:18px; border-radius:12px; text-align:center;">
+          <span style="font-size:22px; font-family:var(--font-mono); color:#f472b6;">[Alice 👤] ─── (Book 📖) ───➔ [Bob 👤]</span>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:6px;">客观事实完全相同，此时还没有决定任何英语动词！</div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(2)">进入第一人称视角镜头推移 ➔</button>
+        </div>
+      `;
+    } else if (s === 2) {
+      mental.innerHTML = '🔘 <strong>阶段 2【视角推移切换】</strong>：将摄像机分别装在 Alice 和 Bob 身上。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>步骤 2：体验两个截然相反的身体主观动量：</strong>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div style="background:#19121f; border:1.5px solid #f472b6; border-radius:10px; padding:14px; text-align:center;">
+            <div style="font-size:13px; color:#f472b6; font-weight:700;">我是 Alice (提供方)</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">双手将书向前递给别人（Outflow 流出）</div>
+          </div>
+          <div style="background:#12162a; border:1.5px solid #6366f1; border-radius:10px; padding:14px; text-align:center;">
+            <div style="font-size:13px; color:#818cf8; font-weight:700;">我是 Bob (接收方)</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">双手从别人手里接住书（Inflow 流入）</div>
+          </div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(3)">动量已锁定，立即召唤对应动词 ➔</button>
+        </div>
+      `;
+    } else if (s === 3) {
+      mental.innerHTML = '✨ <strong>阶段 3【视角符号双结晶】</strong>：流向与动词直接完成神经直连。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700; text-align:center;">
+          根据两个视角的动量，分别结晶出：
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div style="background:rgba(236,72,153,0.12); border:1.5px solid #f472b6; border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:26px; font-weight:800; color:#f472b6;">lend</div>
+            <div style="font-size:12px; font-family:var(--font-mono); color:var(--text-muted);">/lɛnd/</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">“I <strong>lend</strong> the book to Bob.”</div>
+          </div>
+          <div style="background:rgba(99,102,241,0.12); border:1.5px solid #6366f1; border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:26px; font-weight:800; color:#818cf8;">borrow</div>
+            <div style="font-size:12px; font-family:var(--font-mono); color:var(--text-muted);">/ˈbɑːroʊ/</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">“I <strong>borrow</strong> the book from Alice.”</div>
+          </div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(4)">进入第一人称实战盲测 ➔</button>
+        </div>
+      `;
+    } else if (s === 4) {
+      mental.innerHTML = '🚀 <strong>阶段 4【零翻译视角任务迁移】</strong>：根据第一人称双手递出画面的动量选词。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>盲测实战：你的镜头正看着自己的双手把一辆自行车钥匙递给朋友。</strong>
+        </div>
+        <div style="background:#090a0f; padding:14px; border-radius:10px; text-align:center; border:1px solid var(--border);">
+          <div style="font-size:14px; color:#f472b6; font-weight:700;">🤲 物品从你的手中向外移交（Outflow）！</div>
+          <div style="font-size:13px; color:var(--text-sub); margin-top:4px;">I will ______ my bike to you for the weekend.</div>
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-opt-btn" onclick="checkQuiz(this, true)">
+            <div style="font-size:18px; font-weight:800; color:#f472b6;">lend</div>
+            <div style="font-size:11px; color:var(--text-muted);">流出我手（递给他人）</div>
+          </button>
+          <button class="quiz-opt-btn" onclick="checkQuiz(this, false)">
+            <div style="font-size:18px; font-weight:800; color:#818cf8;">borrow</div>
+            <div style="font-size:11px; color:var(--text-muted);">流入我手（从他人拿入）</div>
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  function checkQuiz(btn, isCorrect) {
+    if (isCorrect) {
+      btn.classList.add('correct');
+      btn.innerHTML += '<div style="font-size:12px; font-weight:700; margin-top:4px;">🎉 完美直觉！零翻译直接命中！</div>';
+      setTimeout(() => {
+        alert('🎉 恭喜！你已彻底掌握关系动词的第一人称视角流向直觉！');
+      }, 300);
+    } else {
+      btn.classList.add('wrong');
+    }
+  }
+
+  // Init
+  selectFluxScenario('borrow_lend', document.querySelector('.flux-card.active'));
+  renderLoop();
+</script>
+
+</body>
+</html>

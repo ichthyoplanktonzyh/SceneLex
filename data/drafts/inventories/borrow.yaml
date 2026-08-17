@@ -1,0 +1,107 @@
+schema_version: '1.0'
+word: borrow
+language: en
+status: reviewed
+inventory_version: 1
+source:
+  provider: wiktionary
+  entry_count: 8
+  evidence_digest: sha256:4ea6d43aa9fe1e8d36f5bd147c8ae34092b843dbe15ddb8145313018fc20b0f0
+senses:
+- id: borrow-01
+  lemma: borrow
+  pos: verb
+  label_zh: 借；借入
+  definition: To take or receive something from someone temporarily, expecting to
+    return it; also used for receiving money from a bank or lender under a repayment
+    agreement.
+  semantic_signature:
+    semantic_type: temporary_possession_transfer
+    dimension: temporal
+    change_of_state: true
+    causative: false
+    valency: transitive
+  source_entries:
+  - borrow-dict-001
+  - borrow-dict-002
+  decision:
+    type: merge
+    reason: borrow-dict-001 是一般的‘暂时取得某物并归还’；borrow-dict-002 是同一意义在金融场景下的具体应用（借入资金），并非独立语义单位，因此合并为一个核心
+      sense。
+  teaching_priority: core
+  usage:
+    currency: current
+    productivity: productive
+    register: 中性，适用于口语和书面语
+- id: borrow-02
+  lemma: borrow
+  pos: verb
+  label_zh: 借用（想法、词语等）；采纳
+  definition: To adopt or take up an idea, word, style, or other abstract thing from
+    another person or language and use it as one's own.
+  semantic_signature:
+    semantic_type: abstract_adoption
+    dimension: abstract
+    change_of_state: true
+    causative: false
+    valency: transitive
+  source_entries:
+  - borrow-dict-003
+  - borrow-dict-004
+  decision:
+    type: merge
+    reason: borrow-dict-003（采纳想法）和 borrow-dict-004（从另一语言采纳词语）都表示‘从外部来源取用抽象事物为己所用’，是同一抽象借用意义的不同应用域，教学上不值得拆分。
+  teaching_priority: extended
+  usage:
+    currency: current
+    productivity: productive
+    register: 中性至书面
+- id: borrow-03
+  lemma: borrow
+  pos: verb
+  label_zh: 借位（减法）
+  definition: In subtraction, to take one from a digit of the minuend and add it as
+    ten to the next digit so that subtracting a larger digit is possible.
+  semantic_signature:
+    semantic_type: arithmetic_operation
+    dimension: subtraction
+    change_of_state: false
+    causative: false
+    valency: transitive
+  source_entries:
+  - borrow-dict-005
+  decision:
+    type: keep
+    reason: 减法借位是数学教学中的稳定专门义项，具有确定的操作规程，与日常‘借入’语义不同，需作为 recognition 级别的独立 sense 保留。
+  teaching_priority: recognition
+  usage:
+    currency: current
+    productivity: limited
+    register: 数学教学/技术性语境
+deferred_entries:
+- source_entry: borrow-dict-006
+  decision: defer
+  reason: 该义项将 borrow 用作 lend（借出），是马来西亚、新加坡及西米德兰兹地区的非标准/被规范拒绝的用法，方向与标准义相反，教学价值不稳定。
+  required_evidence:
+  - 需要更多来自新加坡英语等地区变体的真实语料，以证明其使用频率、语域和接受度；若纳入地区变体教学可再评估。
+- source_entry: borrow-dict-007
+  decision: defer
+  reason: 该双及物用法 borrow someone something 表示‘为某人暂时弄到某物’，属于古旧/罕见结构，现代英语中通常改用 borrow
+    something for someone，不足以作为独立可教学 sense。
+  required_evidence:
+  - 需要当代语料中的实际用例，或将该用法明确标注为历史/古旧用法后再处理。
+- source_entry: borrow-dict-008
+  decision: defer
+  reason: ‘feign or counterfeit’义项主要出现在 borrowed hair、borrowed majesty 等搭配中，作为主动态动词的能产性很低，更像分词形容词的固定表达，证据不足以支撑独立动词
+    sense。
+  required_evidence:
+  - 需要更多当代主动语态动词用例，以及频率和语域信息；否则应另作为 borrowed 的形容词/构式处理。
+relations:
+- source: borrow-01
+  target: borrow-02
+  relation: metaphorical_extension
+  distinction: borrow-01 是具体物品的暂时借用并预期归还；borrow-02 是抽象事物（想法、词语等）的采纳，强调为己所用而非归还。
+- source: borrow-01
+  target: borrow-03
+  relation: domain_specialization
+  distinction: borrow-03 将借入的概念专门化到算术减法中：从高位借 1 作 10，是数学语境下的术语化用法。

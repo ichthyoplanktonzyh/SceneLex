@@ -1,0 +1,20 @@
+schema_version: '1.0'
+version: 1
+word: borrow
+pos: [verb]
+
+pronunciation:
+  ipa:
+    - "/ˈbɑːroʊ/"
+
+frequency:
+  rank: 700
+  band: high
+
+senses:
+  - id: borrow-01
+    pos: verb
+    sense_label: "借；借入"
+    definition: "To receive something, such as an object or money, from another person or institution for a limited time, with an expectation or agreement to return it or repay it."
+    status: reviewed
+    scene_count: 0
