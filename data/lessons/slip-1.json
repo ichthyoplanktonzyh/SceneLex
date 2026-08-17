@@ -1,0 +1,57 @@
+{
+  "schema_version": "a2ui-lesson-1.0",
+  "sense_id": "slip-1",
+  "word": "slip",
+  "pos": "verb",
+  "definition_en": "to lose one's footing and slide uncontrollably for a short distance; to unintentionally slide from a position",
+  "definition_zh": "滑倒；滑脱；失去抓地力而失控滑移",
+  "director_decision": {
+    "modality": "physics_friction",
+    "pedagogical_rationale": "slip 的核心物理特征是'突然丧失静摩擦力引起的失控意外'。静态图片无法呈现从稳固到失控的临界突变点。高交互的摩擦力微世界让手指直接感受阻力从 100% 突然断崖下跌到 0% 的失衡惊险感。",
+    "visceral_anchor": "脚底或手心突然打滑、重心瞬间悬空、下意识心跳骤停的那一记惊颤"
+  },
+  "experience_component": {
+    "component_type": "PhysicsFrictionCanvas",
+    "headline": "摩擦力突变实验室",
+    "prompt": "拖拽滑块给地面增加水渍/油脂，或向上倾斜坡道。观察物体何时发生 slip（打滑失控）。",
+    "config": {
+      "initial_state": {
+        "slope_angle": 15,
+        "surface_friction": 0.85,
+        "object_status": "stable"
+      },
+      "surfaces": [
+        { "id": "dry_concrete", "name": "干燥水泥 (Friction 0.9)", "friction": 0.9, "color": "#718096" },
+        { "id": "wet_tile", "name": "湿滑瓷砖 (Friction 0.35)", "friction": 0.35, "color": "#4fd1c5" },
+        { "id": "spilled_oil", "name": "机油油渍 (Friction 0.08)", "friction": 0.08, "color": "#d69e2e" }
+      ],
+      "triggers": {
+        "slip_threshold_formula": "sin(angle) > friction * cos(angle)",
+        "slip_event_message": "⚡ WHOOSH! 静摩擦力彻底失效，物体瞬间失控冲出！"
+      }
+    }
+  },
+  "contrastive_boundary": {
+    "confusable_concept": "slip vs. slide vs. skid",
+    "boundary_explanation": "【Slide】是有意识或平稳的顺畅滑动（如在滑梯上 slide）；【Skid】通常指带轮车辆因制动产生的横向侧滑；【Slip】特指原本有抓地力、却意外突然打滑失控。",
+    "micro_check": {
+      "question": "小男孩在水上乐园顺着弯曲管道开心滑入泳池，这个动作最贴切的是：",
+      "options": [
+        "He slipped down the water flume.",
+        "He slid down the water flume.",
+        "He skidded down the water flume."
+      ],
+      "correct_option": 1,
+      "feedback": "正确！这是有预期的顺畅滑行（slid / slide），而不是意外踩翻打滑（slip）。"
+    }
+  },
+  "aha_summary": {
+    "core_formula": "slip = 稳态被打破 + 突然失去摩擦力 + 短暂失控",
+    "real_world_collocations": [
+      { "phrase": "slip on the ice", "zh": "在冰上滑了一跤" },
+      { "phrase": "slip from one's grasp", "zh": "从手中滑落（脱手）" },
+      { "phrase": "slip out of the room", "zh": "悄悄溜出房间（引申：无阻力滑出）" }
+    ],
+    "mnemonic_image_prompt": "A banana peel under a dress shoe, with comic speed lines radiating as the heel loses contact with the pavement."
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "schema_version": "a2ui-lesson-1.0",
+  "sense_id": "compromise-1",
+  "word": "compromise",
+  "pos": "verb",
+  "definition_en": "to settle a dispute or reach an agreement by mutual concession",
+  "definition_zh": "妥协；折中；双方各退一步达成共识",
+  "director_decision": {
+    "modality": "dilemma_tension_scale",
+    "pedagogical_rationale": "compromise 是抽象的社会协作与利益博弈词。单独展示一方让步是 surrender，双方僵持是 stalemate。只有通过一个双向张力天平（Tension Scale），让双方各让一步找到重叠区，才能刻画出'双方都没有得到100%，但都愿意接受'的微妙平衡。",
+    "visceral_anchor": "双方原本紧绷拔河的绳子突然松弛下来、各自把底线往中间挪动一格的释然与微憾"
+  },
+  "experience_component": {
+    "component_type": "TensionBalanceScale",
+    "headline": "双向妥协天平",
+    "prompt": "拖拽双方的底线滑块（租客期望 $1500 vs 房东期望 $2500）。寻找双方各退一步的共识点。",
+    "config": {
+      "party_a": { "name": "租客 (Tenant)", "initial_offer": 1500, "ideal": 1500, "color": "#63b3ed" },
+      "party_b": { "name": "房东 (Landlord)", "initial_offer": 2500, "ideal": 2500, "color": "#f6ad55" },
+      "sweet_spot_range": [1900, 2100],
+      "states": {
+        "deadlock": { "title": "Stalemate (谈判僵局)", "tension": "High (100%)", "color": "#e53e3e" },
+        "compromise": { "title": "Compromise Reached (达成妥协)", "tension": "Balanced (0%)", "color": "#38a169", "price": 2000 }
+      }
+    }
+  },
+  "contrastive_boundary": {
+    "confusable_concept": "compromise vs. surrender vs. collaborate",
+    "boundary_explanation": "【Surrender】是单方面彻底投降认输；【Collaborate】是一起创造双赢增量；【Compromise】是存量利益博弈下‘双方都放弃了一部分诉求（Mutual Concession）’以换取协议。",
+    "micro_check": {
+      "question": "在边境争端中，甲国全盘接受了乙国的全部无理要求并撤军，这属于：",
+      "options": [
+        "A peaceful compromise",
+        "A one-sided surrender / concession",
+        "A win-win collaboration"
+      ],
+      "correct_option": 1,
+      "feedback": "正确！只有一方单方面让步投降，这不是双方各让一步的 compromise。"
+    }
+  },
+  "aha_summary": {
+    "core_formula": "compromise = 双方各退一步 + 谁也没赢全 + 换来事情往前推进",
+    "real_world_collocations": [
+      { "phrase": "reach a compromise", "zh": "达成妥协/折中方案" },
+      { "phrase": "refuse to compromise", "zh": "拒绝妥协/绝不退让" },
+      { "phrase": "compromise one's principles", "zh": "（引申）违背/牺牲自己的原则" }
+    ],
+    "mnemonic_image_prompt": "Two hands pulling against each other slowly easing grip to meet exactly at the middle mark of a ruler."
+  }
+}

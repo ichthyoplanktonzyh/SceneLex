@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SceneLex — 词义微世界交互原型 #08: 双轨时序拓扑轴 (Temporal Track)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080a10;
+      --bg-surface: #111522;
+      --bg-card: #181d2f;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f1f3f9;
+      --text-muted: #8b92a7;
+      --text-sub: #b2b9ce;
+      --accent: #8b5cf6;
+      --accent-glow: rgba(139, 92, 246, 0.25);
+      --cyan: #06b6d4;
+      --amber: #f59e0b;
+      --emerald: #10b981;
+      --rose: #f43f5e;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 8px;
+      --font-sans: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 60px;
+      background-image: 
+        radial-gradient(ellipse 60% 40% at 50% -10%, rgba(139, 92, 246, 0.15), transparent),
+        radial-gradient(ellipse 50% 30% at 85% 85%, rgba(6, 182, 212, 0.08), transparent);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1080px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(139, 92, 246, 0.12);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #c084fc;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffffff 40%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+      max-width: 720px;
+      line-height: 1.5;
+    }
+
+    /* Nav Tabs */
+    .tabs {
+      display: flex;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    /* Layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 860px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-title span.tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      font-family: var(--font-mono);
+    }
+
+    /* Timeline Canvas Viewport */
+    .sim-viewport {
+      background: #080910;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      position: relative;
+      height: 350px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    canvas#timelineCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Overlays */
+    .state-overlay {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .state-chip {
+      background: rgba(15, 17, 26, 0.85);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(8px);
+    }
+
+    .state-chip .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Crystal Word Toast */
+    .crystal-badge {
+      position: absolute;
+      bottom: 16px;
+      background: rgba(22, 26, 42, 0.95);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transform: translateY(20px) scale(0.95);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+      backdrop-filter: blur(12px);
+    }
+
+    .crystal-badge.show {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .crystal-word {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .crystal-ipa {
+      font-size: 13px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+
+    .crystal-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+      border-left: 1px solid var(--border);
+      padding-left: 14px;
+      max-width: 260px;
+      line-height: 1.4;
+    }
+
+    /* Playhead / Time Slider */
+    .control-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+
+    .control-val {
+      font-family: var(--font-mono);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 6px;
+      background: #252a3d;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #ffffff;
+      cursor: grab;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 0 0 3px var(--accent);
+    }
+
+    /* Scenarios Selector Grid */
+    .time-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .time-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 4px;
+    }
+
+    .time-card:hover {
+      border-color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .time-card.active {
+      border-color: var(--accent);
+      background: rgba(139, 92, 246, 0.12);
+    }
+
+    .time-card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .time-card-words {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: #c084fc;
+    }
+
+    /* Right: Temporal Radar */
+    .time-analysis-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .time-feature-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      font-size: 12.5px;
+    }
+
+    .time-feature-label {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .time-feature-val {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #c084fc;
+    }
+
+    /* Minimal Pair Clash: until vs while */
+    .clash-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      background: var(--bg-surface);
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .clash-col {
+      padding: 12px;
+      border-radius: 10px;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .clash-col.until-col { border-color: rgba(139, 92, 246, 0.3); }
+    .clash-col.while-col { border-color: rgba(6, 182, 212, 0.3); }
+
+    .clash-col.highlight-until {
+      border-color: #8b5cf6;
+      background: rgba(139, 92, 246, 0.15);
+      transform: scale(1.02);
+    }
+    .clash-col.highlight-while {
+      border-color: #06b6d4;
+      background: rgba(6, 182, 212, 0.15);
+      transform: scale(1.02);
+    }
+
+    .clash-badge {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .until-col .clash-badge { color: #c084fc; }
+    .while-col .clash-badge { color: #67e8f9; }
+
+    .clash-desc {
+      font-size: 11.5px;
+      color: var(--text-sub);
+      line-height: 1.4;
+    }
+
+    .clash-tag {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-top: 4px;
+    }
+    .tag-cutoff { background: rgba(139,92,246,0.15); color: #c084fc; }
+    .tag-parallel { background: rgba(6,182,212,0.15); color: #67e8f9; }
+
+    /* Flow Stepper */
+    .flow-steps {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .step-pill {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 4px;
+      border-radius: 8px;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .step-pill.active {
+      background: rgba(139, 92, 246, 0.15);
+      border-color: var(--accent);
+      color: #c084fc;
+    }
+
+    .step-pill.done {
+      border-color: var(--emerald);
+      color: var(--emerald);
+    }
+
+    .flow-action-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .flow-btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+    .btn.primary:hover { background: #7c3aed; }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .quiz-opt-btn {
+      padding: 16px;
+      border-radius: 12px;
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .quiz-opt-btn:hover { border-color: var(--accent); }
+    .quiz-opt-btn.correct { border-color: var(--emerald)!important; background: rgba(16,185,129,0.15)!important; color:#34d399; }
+    .quiz-opt-btn.wrong { border-color: #f43f5e!important; background: rgba(244,63,94,0.15)!important; color:#fb7185; }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <header>
+    <div>
+      <div class="badge-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        SceneLex 词义微世界体系 · 类别 #08
+      </div>
+      <h1>双轨时序拓扑轴微世界 (Temporal Track)</h1>
+      <div class="subtitle">
+        将抽象时间轴具象化为空间轨道：探索<strong>终点撞墙截断 (until)</strong>、<strong>双轨并行重叠 (while)</strong>、<strong>区间嵌套 (during)</strong> 与 <strong>过去锚点延伸 (since)</strong> 的母语级时序直觉。
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchView('interactive')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8m-4-4h8"/></svg>
+        时序双轨实验台
+      </button>
+      <button class="tab-btn" onclick="switchView('walkthrough')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        4 步时序顿悟心流
+      </button>
+      <button class="tab-btn" onclick="switchView('theory')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        时序拓扑与 Schema
+      </button>
+    </div>
+  </header>
+
+  <!-- VIEW 1: INTERACTIVE LAB -->
+  <div id="view-interactive" class="grid-2">
+    <!-- Left: Canvas Sim -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          双轨时序拓扑视窗 (Dual-Track Timeline Viewport)
+          <span class="tag" id="time-tag">终点截断: until / by</span>
+        </div>
+        <div class="state-chip" id="time-state-chip">
+          <div class="dot" id="time-dot"></div>
+          <span id="time-status-txt">动作持续进行中...</span>
+        </div>
+      </div>
+
+      <!-- Canvas Viewport -->
+      <div class="sim-viewport">
+        <div class="state-overlay">
+          <div class="state-chip">
+            <span>时间游标 (Playhead): </span>
+            <span id="overlay-playhead" style="font-family: var(--font-mono); color: #c084fc; font-weight:800;">14:00 (下午)</span>
+          </div>
+          <div class="state-chip">
+            <span>拓扑关系: </span>
+            <span id="overlay-topo" style="font-family: var(--font-mono); color:#67e8f9; font-weight:800;">持续延伸 (Ongoing)</span>
+          </div>
+        </div>
+
+        <canvas id="timelineCanvas" width="560" height="350"></canvas>
+
+        <!-- Crystal Word Toast -->
+        <div class="crystal-badge" id="crystal-badge">
+          <div>
+            <div class="crystal-word" id="toast-word" style="color: #c084fc;">until</div>
+            <div class="crystal-ipa" id="toast-ipa">/ənˈtɪl/</div>
+          </div>
+          <div class="crystal-desc" id="toast-desc">
+            动作沿时间轴持续延伸，直到撞上 18:00 截断屏障瞬间终止。
+          </div>
+        </div>
+      </div>
+
+      <!-- Playhead Slider Control -->
+      <div class="control-row">
+        <div class="control-header">
+          <span>拖动时间轴游标（观察动作随时间推移与截断屏障的碰撞）</span>
+          <span class="control-val" id="val-time">14:00</span>
+        </div>
+        <input type="range" id="timeSlider" min="8" max="22" value="14" step="0.2" oninput="onTimeSliderChange(this.value)">
+        <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">
+          <span>08:00 (起点)</span>
+          <span style="color:#f43f5e; font-weight:700;">🛑 18:00 (截断点 Cutoff)</span>
+          <span>22:00 (终点)</span>
+        </div>
+      </div>
+
+      <!-- Scenarios Selector Grid -->
+      <div>
+        <div style="font-size:13px; font-weight:700; color:var(--text-sub); margin-bottom:8px;">选择时序拓扑图式：</div>
+        <div class="time-grid">
+          <div class="time-card active" onclick="selectTimeScenario('until_by', this)">
+            <div class="time-card-title">🛑 终点截断</div>
+            <div class="time-card-words">until / by</div>
+          </div>
+          <div class="time-card" onclick="selectTimeScenario('while', this)">
+            <div class="time-card-title">🌊 双轨并行</div>
+            <div class="time-card-words">while</div>
+          </div>
+          <div class="time-card" onclick="selectTimeScenario('during', this)">
+            <div class="time-card-title">📦 区间嵌套</div>
+            <div class="time-card-words">during</div>
+          </div>
+          <div class="time-card" onclick="selectTimeScenario('since', this)">
+            <div class="time-card-title">🚀 历史锚点延伸</div>
+            <div class="time-card-words">since</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Temporal Topology Radar Panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          时序拓扑几何雷达 (Temporal Schema Radar)
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <!-- Attributes -->
+        <div class="time-analysis-box">
+          <div class="time-feature-row">
+            <span class="time-feature-label">轨道 1 (主动作):</span>
+            <span class="time-feature-val" id="feat-track1">持续等待 (Waiting)</span>
+          </div>
+          <div class="time-feature-row">
+            <span class="time-feature-label">时序拓扑模式:</span>
+            <span class="time-feature-val" id="feat-pattern">终点碰撞截断 (Cutoff Boundary)</span>
+          </div>
+          <div class="time-feature-row">
+            <span class="time-feature-label">边界性质 (Boundary):</span>
+            <span class="time-feature-val" id="feat-boundary">硬截断点 (18:00 停止)</span>
+          </div>
+        </div>
+
+        <!-- Minimal Pair Clash: until vs while -->
+        <div style="font-size:13px; font-weight:700; color:var(--text);">核心时序对立碰撞（Minimal Pair Clash）：</div>
+        <div class="clash-card">
+          <div class="clash-col until-col highlight-until" id="col-until">
+            <div class="clash-badge">until</div>
+            <div class="clash-desc">动作持续延伸到该时间点终止</div>
+            <div class="clash-tag tag-cutoff">Cutoff Point · 终点截断</div>
+          </div>
+          <div class="clash-col while-col" id="col-while">
+            <div class="clash-badge">while</div>
+            <div class="clash-desc">两段持续动作在时间轴上并行</div>
+            <div class="clash-tag tag-parallel">Parallel Interval · 双轨并行</div>
+          </div>
+        </div>
+
+        <!-- Invariant Rule -->
+        <div style="background:var(--bg-surface); padding:12px 14px; border-radius:10px; border:1px solid var(--border); font-size:12px; color:var(--text-sub); line-height:1.5;">
+          💡 <strong>时序拓扑不变式</strong>：<br>
+          • <strong>until</strong> = 动作持续延伸 ➔ 撞墙立即停止。<br>
+          • <strong>by</strong> = 在截止线之前的任意时刻完成即可。<br>
+          • <strong>while</strong> = 两个区间并排流动。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: 4-STEP WALKTHROUGH -->
+  <div id="view-walkthrough" class="grid-2" style="display:none;">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          App 真实端到端教学心流 (Learner Journey)
+        </div>
+      </div>
+
+      <div class="flow-steps">
+        <div class="step-pill active" id="pill-step-1">1. 时间轴轨迹感知</div>
+        <div class="step-pill" id="pill-step-2">2. 截断屏障对撞</div>
+        <div class="step-pill" id="pill-step-3">3. 时序介词结晶</div>
+        <div class="step-pill" id="pill-step-4">4. 零翻译时序盲测</div>
+      </div>
+
+      <div id="flow-content-box" class="flow-action-box">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+    <!-- Right: Cognitive State Monitor -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          心智模型建构状态 (Cognitive State)
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="background:var(--bg-surface); padding:14px; border-radius:12px; border:1px solid var(--border);">
+          <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:6px;">大脑空间时间隐喻通道：</div>
+          <div id="walk-mental-status" style="font-size:14px; font-weight:700; color:#c084fc; line-height:1.5;">
+            🔘 阶段 1: 拖动时间游标，观察动作条在 18:00 截断撞墙
+          </div>
+        </div>
+
+        <div style="background:var(--bg-surface); padding:14px; border-radius:12px; border:1px solid var(--border);">
+          <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:6px;">为什么 until 和 by 极易混淆？</div>
+          <div style="font-size:13px; color:var(--text-sub); line-height:1.6;">
+            • 中文里“到5点”既能指“持续到5点（until）”，也能指“5点前交（by）”。<br>
+            • <strong>双轨时序微世界</strong>把两者变成**“填满整根进度条直到撞墙 (until)”** vs **“在死线前打勾 (by)”** 的空间动作差异。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 3: THEORY & SCHEMA -->
+  <div id="view-theory" class="panel" style="display:none;">
+    <div class="panel-header">
+      <div class="panel-title">
+        TemporalTrack 原语组件的技术架构与 Schema
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; font-size:13.5px; line-height:1.6;">
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#c084fc; margin-bottom:8px;">1. 什么是时序拓扑原语？</h3>
+        <p style="color:var(--text-sub);">
+          所有描述<strong>时间关系、时段重叠、死线截止、起始锚点</strong>的虚词（until, while, during, since, by），在 App 端统一由 1 个 <strong>双轨时空拓扑渲染器</strong> 驱动。
+        </p>
+      </div>
+
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#67e8f9; margin-bottom:8px;">2. LLM 编译器入参 Schema</h3>
+        <pre style="background:#090a0f; padding:10px; border-radius:8px; font-family:var(--font-mono); font-size:11px; color:#a5b4fc; overflow-x:auto; margin-top:6px;">
+{
+  "primitive": "temporal_track",
+  "pattern": "endpoint_cutoff",
+  "track_a": {
+    "action": "wait_in_library",
+    "start_time": "08:00",
+    "cutoff_time": "18:00"
+  },
+  "bound_symbol": "until"
+}</pre>
+      </div>
+
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#34d399; margin-bottom:8px;">3. 认知效率飞跃</h3>
+        <p style="color:var(--text-sub);">
+          用“一维几何轨迹碰撞”彻底取代死记硬背语法公式，建立真正母语级的时间空间化心智。
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentScenario = 'until_by';
+  let currentTime = 14.0; // 8.0 to 22.0
+
+  const canvas = document.getElementById('timelineCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let animPulse = 0;
+
+  function renderLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (currentScenario === 'until_by') {
+      renderUntilScene();
+    } else if (currentScenario === 'while') {
+      renderWhileScene();
+    } else if (currentScenario === 'during') {
+      renderDuringScene();
+    } else if (currentScenario === 'since') {
+      renderSinceScene();
+    }
+
+    animPulse += 0.05;
+    requestAnimationFrame(renderLoop);
+  }
+
+  // 1. Until / By Scene (Action bar extends and crashes into cutoff wall at 18:00)
+  function renderUntilScene() {
+    const w = canvas.width;
+    const h = canvas.height;
+    const padX = 50;
+    const trackW = w - padX * 2;
+    const startHour = 8;
+    const endHour = 22;
+    const cutoffHour = 18;
+
+    const timeToX = (t) => padX + ((t - startHour) / (endHour - startHour)) * trackW;
+
+    // Timeline Axis Base
+    const axisY = h * 0.75;
+    ctx.strokeStyle = '#252a3d';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(padX, axisY);
+    ctx.lineTo(w - padX, axisY);
+    ctx.stroke();
+
+    // Hour ticks
+    for (let hr = 8; hr <= 22; hr += 2) {
+      const tx = timeToX(hr);
+      ctx.strokeStyle = hr === cutoffHour ? '#f43f5e' : '#475569';
+      ctx.lineWidth = hr === cutoffHour ? 2.5 : 1;
+      ctx.beginPath();
+      ctx.moveTo(tx, axisY - 6);
+      ctx.lineTo(tx, axisY + 6);
+      ctx.stroke();
+
+      ctx.fillStyle = hr === cutoffHour ? '#f43f5e' : '#94a3b8';
+      ctx.font = 'bold 10px JetBrains Mono';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${hr}:00`, tx, axisY + 20);
+    }
+
+    // Cutoff Barrier at 18:00
+    const cutoffX = timeToX(cutoffHour);
+    ctx.strokeStyle = '#f43f5e';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(cutoffX, 40);
+    ctx.lineTo(cutoffX, axisY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = '#f43f5e';
+    ctx.font = 'bold 11px Plus Jakarta Sans';
+    ctx.textAlign = 'center';
+    ctx.fillText('🛑 CUTOFF (18:00)', cutoffX, 32);
+
+    // Track 1: Ongoing Action Bar (Waiting)
+    // Caps at min(currentTime, cutoffHour)
+    const effectiveTime = Math.min(currentTime, cutoffHour);
+    const startX = timeToX(startHour);
+    const curX = timeToX(effectiveTime);
+    const track1Y = h * 0.42;
+
+    // Active Action Band
+    const actionGrad = ctx.createLinearGradient(startX, 0, curX, 0);
+    actionGrad.addColorStop(0, '#7c3aed');
+    actionGrad.addColorStop(1, '#c084fc');
+    ctx.fillStyle = actionGrad;
+    ctx.beginPath();
+    ctx.roundRect(startX, track1Y - 18, Math.max(8, curX - startX), 36, 8);
+    ctx.fill();
+
+    // Label inside track
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 12px Plus Jakarta Sans';
+    ctx.textAlign = 'left';
+    ctx.fillText('⏳ I wait in the library...', startX + 14, track1Y + 5);
+
+    // If reached cutoff: Show Collision Halt
+    if (currentTime >= cutoffHour) {
+      ctx.fillStyle = '#f43f5e';
+      ctx.shadowColor = '#f43f5e';
+      ctx.shadowBlur = 20;
+      ctx.beginPath();
+      ctx.arc(cutoffX, track1Y, 12, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 12px Plus Jakarta Sans';
+      ctx.textAlign = 'center';
+      ctx.fillText('💥 HALT!', cutoffX, track1Y - 24);
+    }
+
+    // Playhead line
+    const playheadX = timeToX(currentTime);
+    ctx.strokeStyle = '#c084fc';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(playheadX, 50);
+    ctx.lineTo(playheadX, axisY + 10);
+    ctx.stroke();
+
+    ctx.fillStyle = '#c084fc';
+    ctx.beginPath();
+    ctx.arc(playheadX, axisY, 6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // 2. While Scene (Two Parallel Wave Tracks)
+  function renderWhileScene() {
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.fillStyle = '#080c14';
+    ctx.fillRect(0, 0, w, h);
+
+    const padX = 50;
+    const trackW = w - padX * 2;
+
+    // Track A (Top)
+    ctx.fillStyle = 'rgba(6, 182, 212, 0.2)';
+    ctx.strokeStyle = '#06b6d4';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(padX, 80, trackW, 45, 10);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#67e8f9';
+    ctx.font = 'bold 13px Plus Jakarta Sans';
+    ctx.fillText('🎧 Track A: Listening to music (08:00 ~ 20:00)', padX + 20, 108);
+
+    // Track B (Bottom)
+    ctx.fillStyle = 'rgba(139, 92, 246, 0.2)';
+    ctx.strokeStyle = '#8b5cf6';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(padX, 150, trackW, 45, 10);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#c084fc';
+    ctx.fillText('💻 Track B: Writing code (08:00 ~ 20:00)', padX + 20, 178);
+
+    // Parallel sync waves
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 14px Noto Sans SC';
+    ctx.textAlign = 'center';
+    ctx.fillText('✨ 两段持续动作在时间轴上完全并行重叠 (while)', w/2, 250);
+  }
+
+  // 3. During Scene
+  function renderDuringScene() {
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.fillStyle = '#0a0a14';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.fillStyle = '#f59e0b';
+    ctx.font = 'bold 14px Noto Sans SC';
+    ctx.textAlign = 'center';
+    ctx.fillText('📦 容器时段内发生的离散事件 (during the meeting)', w/2, h/2);
+  }
+
+  // 4. Since Scene
+  function renderSinceScene() {
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.fillStyle = '#081210';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.fillStyle = '#10b981';
+    ctx.font = 'bold 14px Noto Sans SC';
+    ctx.textAlign = 'center';
+    ctx.fillText('🚀 从过去的固定锚点一直延伸至【此刻现在】 (since 2020)', w/2, h/2);
+  }
+
+  function onTimeSliderChange(val) {
+    currentTime = parseFloat(val);
+    const intHour = Math.floor(currentTime);
+    const mins = Math.round((currentTime - intHour) * 60);
+    const timeStr = `${intHour.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+
+    document.getElementById('val-time').innerText = timeStr;
+    document.getElementById('overlay-playhead').innerText = timeStr;
+
+    const chip = document.getElementById('time-state-chip');
+    const dot = document.getElementById('time-dot');
+    const txt = document.getElementById('time-status-txt');
+
+    const badge = document.getElementById('crystal-badge');
+    const toastWord = document.getElementById('toast-word');
+    const toastIpa = document.getElementById('toast-ipa');
+    const toastDesc = document.getElementById('toast-desc');
+
+    const colUntil = document.getElementById('col-until');
+    const colWhile = document.getElementById('col-while');
+    colUntil.classList.remove('highlight-until');
+    colWhile.classList.remove('highlight-while');
+
+    if (currentTime >= 18) {
+      // CUTOFF COLLISION
+      chip.style.borderColor = 'rgba(244, 63, 94, 0.4)';
+      dot.style.background = '#f43f5e';
+      txt.innerText = '撞上 18:00 截断点，动作终止！';
+
+      colUntil.classList.add('highlight-until');
+
+      toastWord.innerText = 'until';
+      toastWord.style.color = '#c084fc';
+      toastIpa.innerText = '/ənˈtɪl/';
+      toastDesc.innerText = '动作沿时间轴持续延伸，直到撞上 18:00 截断屏障瞬间终止。';
+      badge.classList.add('show');
+    } else {
+      chip.style.borderColor = 'rgba(139, 92, 246, 0.4)';
+      dot.style.background = '#8b5cf6';
+      txt.innerText = '动作持续进行中...';
+      badge.classList.remove('show');
+    }
+  }
+
+  function selectTimeScenario(sc, card) {
+    currentScenario = sc;
+    document.querySelectorAll('.time-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+
+    const titles = {
+      until_by: '终点截断: until / by',
+      while: '双轨并行: while',
+      during: '区间嵌套: during',
+      since: '历史锚点延伸: since'
+    };
+    document.getElementById('time-tag').innerText = titles[sc];
+
+    if (sc === 'until_by') {
+      onTimeSliderChange(currentTime);
+    }
+  }
+
+  function switchView(viewName) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    document.getElementById('view-interactive').style.display = viewName === 'interactive' ? 'grid' : 'none';
+    document.getElementById('view-walkthrough').style.display = viewName === 'walkthrough' ? 'grid' : 'none';
+    document.getElementById('view-theory').style.display = viewName === 'theory' ? 'block' : 'none';
+
+    if (viewName === 'walkthrough') {
+      renderFlowStep(1);
+    }
+  }
+
+  // 4-Step Walkthrough
+  let walkStep = 1;
+  function renderFlowStep(s) {
+    walkStep = s;
+    for (let i = 1; i <= 4; i++) {
+      const p = document.getElementById(`pill-step-${i}`);
+      p.className = 'step-pill';
+      if (i < s) p.classList.add('done');
+      if (i === s) p.classList.add('active');
+    }
+
+    const box = document.getElementById('flow-content-box');
+    const mental = document.getElementById('walk-mental-status');
+
+    if (s === 1) {
+      mental.innerHTML = '🔘 <strong>阶段 1【时间轴轨迹感知】</strong>：拖动游标，观察动作条延伸直到撞墙。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>步骤 1：观察动作（在图书馆等待）从 08:00 一直延伸到 18:00。</strong>
+        </div>
+        <div style="background:#090a0f; padding:18px; border-radius:12px; text-align:center;">
+          <span style="font-size:22px; font-family:var(--font-mono); color:#c084fc;">[08:00] ═════════ (Waiting ⏳) ═════════🛑 [18:00]</span>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:6px;">动作填满整个时间段，直到被截断点终止</div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(2)">体会截断与并行的时序对撞 ➔</button>
+        </div>
+      `;
+    } else if (s === 2) {
+      mental.innerHTML = '🔘 <strong>阶段 2【时序机制对撞】</strong>：确立“撞墙终止 vs 双轨并行”的张力。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>步骤 2：时序拓扑核心对撞：</strong>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div style="background:#191224; border:1.5px solid #8b5cf6; border-radius:10px; padding:14px; text-align:center;">
+            <div style="font-size:13px; color:#c084fc; font-weight:700;">🛑 终点截断 (until)</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">动作一直持续，撞到时间点瞬间停止</div>
+          </div>
+          <div style="background:#091624; border:1.5px solid #06b6d4; border-radius:10px; padding:14px; text-align:center;">
+            <div style="font-size:13px; color:#67e8f9; font-weight:700;">🌊 双轨并行 (while)</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">两个动作同时发生、并排流动</div>
+          </div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(3)">立即唤醒时序介词双结晶 ➔</button>
+        </div>
+      `;
+    } else if (s === 3) {
+      mental.innerHTML = '✨ <strong>阶段 3【时序介词双结晶】</strong>：直接完成英语时序词汇直连。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700; text-align:center;">
+          把两个时序拓扑图式，分别命名为：
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div style="background:rgba(139,92,246,0.12); border:1.5px solid #8b5cf6; border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:26px; font-weight:800; color:#c084fc;">until</div>
+            <div style="font-size:12px; font-family:var(--font-mono); color:var(--text-muted);">/ənˈtɪl/</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">“I waited <strong>until</strong> 6 PM.”</div>
+          </div>
+          <div style="background:rgba(6,182,212,0.12); border:1.5px solid #06b6d4; border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:26px; font-weight:800; color:#67e8f9;">while</div>
+            <div style="font-size:12px; font-family:var(--font-mono); color:var(--text-muted);">/waɪl/</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">“She studied <strong>while</strong> I cooked.”</div>
+          </div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(4)">进入零翻译实战盲测 ➔</button>
+        </div>
+      `;
+    } else if (s === 4) {
+      mental.innerHTML = '🚀 <strong>阶段 4【零翻译时序任务迁移】</strong>：根据截断图式选词。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>盲测实战：外面一直下雨，直到午夜时分雨才彻底停止。</strong>
+        </div>
+        <div style="background:#090a0f; padding:14px; border-radius:10px; text-align:center; border:1px solid var(--border);">
+          <div style="font-size:14px; color:#c084fc; font-weight:700;">🌧️ 降雨动作持续延伸，在午夜撞线停止！</div>
+          <div style="font-size:13px; color:var(--text-sub); margin-top:4px;">It kept raining ______ midnight, and then stopped.</div>
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-opt-btn" onclick="checkQuiz(this, true)">
+            <div style="font-size:18px; font-weight:800; color:#c084fc;">until</div>
+            <div style="font-size:11px; color:var(--text-muted);">动作持续到该点终止</div>
+          </button>
+          <button class="quiz-opt-btn" onclick="checkQuiz(this, false)">
+            <div style="font-size:18px; font-weight:800; color:#67e8f9;">while</div>
+            <div style="font-size:11px; color:var(--text-muted);">双轨动作同时并行</div>
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  function checkQuiz(btn, isCorrect) {
+    if (isCorrect) {
+      btn.classList.add('correct');
+      btn.innerHTML += '<div style="font-size:12px; font-weight:700; margin-top:4px;">🎉 完美直觉！零翻译直接命中！</div>';
+      setTimeout(() => {
+        alert('🎉 恭喜！你已彻底掌握双轨时序拓扑轴的具身直觉！');
+      }, 300);
+    } else {
+      btn.classList.add('wrong');
+    }
+  }
+
+  // Init
+  onTimeSliderChange(14.0);
+  renderLoop();
+</script>
+
+</body>
+</html>

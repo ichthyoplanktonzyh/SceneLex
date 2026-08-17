@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SceneLex — 词义微世界交互原型 #01: 标量阈值与刻度 (Scalar & Threshold)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0c0d12;
+      --bg-surface: #151720;
+      --bg-card: #1c1f2c;
+      --bg-card-glass: rgba(28, 31, 44, 0.75);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(99, 102, 241, 0.4);
+      --text: #f1f3f9;
+      --text-muted: #8e95aa;
+      --text-sub: #b0b7cc;
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.25);
+      --ember: #f59e0b;
+      --ember-glow: rgba(245, 158, 11, 0.2);
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.2);
+      --danger: #ef4444;
+      --danger-glow: rgba(239, 68, 68, 0.2);
+      --cyan: #06b6d4;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 8px;
+      --font-sans: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 60px;
+      background-image: 
+        radial-gradient(ellipse 60% 40% at 50% -10%, rgba(99, 102, 241, 0.15), transparent),
+        radial-gradient(ellipse 50% 30% at 80% 90%, rgba(245, 158, 11, 0.08), transparent);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1080px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffffff 40%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+      max-width: 680px;
+      line-height: 1.5;
+    }
+
+    /* Nav Tabs */
+    .tabs {
+      display: flex;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    /* Main Content Layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 860px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    /* Card Panels */
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+      backdrop-filter: blur(16px);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-title span.tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--surface-1);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      font-family: var(--font-mono);
+    }
+
+    /* Micro-World Simulator Stage */
+    .sim-viewport {
+      background: #090a0f;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      position: relative;
+      height: 340px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    canvas#simCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Target / State Readout Overlay */
+    .state-overlay {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .state-chip {
+      background: rgba(15, 17, 26, 0.85);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(8px);
+    }
+
+    .state-chip .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Crystal Word Notification Pop */
+    .crystal-badge {
+      position: absolute;
+      bottom: 20px;
+      background: rgba(21, 23, 32, 0.95);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transform: translateY(20px) scale(0.95);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+      backdrop-filter: blur(12px);
+    }
+
+    .crystal-badge.show {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .crystal-word {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      font-family: var(--font-sans);
+    }
+
+    .crystal-ipa {
+      font-size: 13px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+
+    .crystal-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+      border-left: 1px solid var(--border);
+      padding-left: 14px;
+    }
+
+    /* Controls */
+    .control-row {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+
+    .control-val {
+      font-family: var(--font-mono);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .slider-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 6px;
+      background: #252837;
+      outline: none;
+      cursor: pointer;
+      position: relative;
+      z-index: 2;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #ffffff;
+      cursor: grab;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 0 0 3px var(--accent);
+      transition: transform 0.1s ease;
+    }
+
+    input[type=range]::-webkit-slider-thumb:active {
+      transform: scale(1.15);
+      cursor: grabbing;
+    }
+
+    .threshold-marker-line {
+      position: absolute;
+      top: -12px;
+      bottom: -12px;
+      width: 2px;
+      background: var(--danger);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .threshold-marker-tag {
+      position: absolute;
+      top: -24px;
+      transform: translateX(-50%);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--danger);
+      background: rgba(239, 68, 68, 0.15);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      white-space: nowrap;
+    }
+
+    /* Scenario Selector */
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .scenario-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .scenario-card:hover {
+      border-color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .scenario-card.active {
+      border-color: var(--accent);
+      background: rgba(99, 102, 241, 0.1);
+    }
+
+    .scenario-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .scenario-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Semantic Radar Panel (Right side) */
+    .field-map {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .scale-spectrum {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .zone-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .zone-item.highlight {
+      border-color: var(--zone-color, var(--accent));
+      background: var(--zone-bg, rgba(99, 102, 241, 0.12));
+      transform: translateX(4px);
+    }
+
+    .zone-indicator {
+      width: 4px;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      background: var(--zone-color, #444);
+    }
+
+    .zone-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+      margin-left: 6px;
+    }
+
+    .zone-words {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .word-chip {
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .zone-item.highlight .word-chip {
+      color: var(--zone-color, #ffffff);
+    }
+
+    .zone-math {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .zone-expl {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    /* 4-Step Cognitive Walkthrough Mode */
+    .flow-steps {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .step-pill {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 4px;
+      border-radius: 8px;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .step-pill.active {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: var(--accent);
+      color: #a5b4fc;
+    }
+
+    .step-pill.done {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .flow-action-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .flow-prompt {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    .flow-btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:hover {
+      background: #282c3f;
+      border-color: var(--text-muted);
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    .btn.primary:hover {
+      background: #4f46e5;
+    }
+
+    /* Intuition Quiz / Crystallization Test */
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .quiz-opt-btn {
+      padding: 16px;
+      border-radius: 12px;
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .quiz-opt-btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .quiz-opt-btn.correct {
+      border-color: var(--success) !important;
+      background: rgba(16, 185, 129, 0.15) !important;
+      color: #34d399;
+    }
+
+    .quiz-opt-btn.wrong {
+      border-color: var(--danger) !important;
+      background: rgba(239, 68, 68, 0.15) !important;
+      color: #f87171;
+    }
+
+    .quiz-opt-word {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .quiz-opt-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Comparison Box */
+    .clash-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      background: var(--bg-surface);
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .clash-col {
+      padding: 12px;
+      border-radius: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+      text-align: center;
+    }
+
+    .clash-col.almost-col {
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+
+    .clash-col.barely-col {
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .clash-badge {
+      font-size: 16px;
+      font-weight: 800;
+      padding: 2px 10px;
+      border-radius: 6px;
+    }
+
+    .almost-col .clash-badge { color: var(--ember); background: rgba(245, 158, 11, 0.12); }
+    .barely-col .clash-badge { color: var(--success); background: rgba(16, 185, 129, 0.12); }
+
+    .clash-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+      line-height: 1.4;
+    }
+
+    .clash-state {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-top: 4px;
+    }
+    .state-failed { color: var(--danger); background: rgba(239, 68, 68, 0.12); }
+    .state-passed { color: var(--success); background: rgba(16, 185, 129, 0.12); }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <header>
+    <div>
+      <div class="badge-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        SceneLex 词义微世界体系 · 类别 #01
+      </div>
+      <h1>标量阈值与刻度微世界 (Scalar & Threshold Scale)</h1>
+      <div class="subtitle">
+        探索人类如何把连续物理量（距离/容量/速度/分数）与“离散临界界限”进行拓扑映射，从而在零中文翻译下自然形成 <strong>almost, barely, nearly, hardly, exceed</strong> 等词义结晶。
+      </div>
+    </div>
+    
+    <!-- Tab navigation -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchView('interactive')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12h6m-3-3v6"/></svg>
+        具身互动实验台
+      </button>
+      <button class="tab-btn" onclick="switchView('walkthrough')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        4 步词义顿悟链路
+      </button>
+      <button class="tab-btn" onclick="switchView('theory')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        微世界语义场谱系
+      </button>
+    </div>
+  </header>
+
+  <!-- VIEW 1: INTERACTIVE EXPERIMENT LAB -->
+  <div id="view-interactive" class="grid-2">
+    <!-- Left: Simulator -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          微物理仿真视窗 (Embodied Micro-Physics)
+          <span class="tag" id="scenario-tag">水杯注水刻度</span>
+        </div>
+        <div class="state-chip" id="threshold-status-chip">
+          <div class="dot" id="status-dot"></div>
+          <span id="status-text">未达到刻度线</span>
+        </div>
+      </div>
+
+      <!-- Simulation Viewport -->
+      <div class="sim-viewport">
+        <div class="state-overlay">
+          <div class="state-chip">
+            <span>当前刻度: </span>
+            <span id="overlay-val" style="font-family: var(--font-mono); color: #fff; font-weight:800;">94%</span>
+          </div>
+          <div class="state-chip" style="border-color: rgba(239,68,68,0.4); color:#fca5a5;">
+            <span>临界基准: </span>
+            <span style="font-family: var(--font-mono); font-weight:800;">100% 阈值线</span>
+          </div>
+        </div>
+
+        <canvas id="simCanvas" width="560" height="340"></canvas>
+
+        <!-- Crystallized Word Toast Pop -->
+        <div class="crystal-badge" id="crystal-toast">
+          <div>
+            <div class="crystal-word" id="toast-word" style="color: var(--ember);">almost</div>
+            <div class="crystal-ipa" id="toast-ipa">/ˈɔːlmoʊst/</div>
+          </div>
+          <div class="crystal-desc" id="toast-desc">
+            极度逼近临界界限，但最终<strong>未跨过</strong>该线。
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Controls -->
+      <div class="control-row">
+        <div class="control-header">
+          <span>拖动滑动条调节物理量（亲手感知未过线与过线的临界张力）</span>
+          <span class="control-val" id="slider-label">94%</span>
+        </div>
+        
+        <div class="slider-container">
+          <div class="threshold-marker-line" style="left: 66.66%;">
+            <div class="threshold-marker-tag">100% 临界阈值</div>
+          </div>
+          <input type="range" id="scaleSlider" min="0" max="150" value="94" oninput="onSliderChange(this.value)">
+        </div>
+
+        <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); font-family:var(--font-mono); margin-top:2px;">
+          <span>0% 起点</span>
+          <span>50% 途中</span>
+          <span style="color:var(--danger); font-weight:700;">100% 临界点</span>
+          <span>150% 溢出</span>
+        </div>
+      </div>
+
+      <!-- Scenarios Selector -->
+      <div>
+        <div style="font-size:13px; font-weight:700; color:var(--text-sub); margin-bottom:8px;">切换感知情境（不同物理隐喻）：</div>
+        <div class="scenario-grid">
+          <div class="scenario-card active" onclick="selectScenario('water', this)">
+            <div class="scenario-name">🧪 试管注水刻度</div>
+            <div class="scenario-desc">液面上升逼近红色警戒线，卡线 vs 漫出</div>
+          </div>
+          <div class="scenario-card" onclick="selectScenario('cliff', this)">
+            <div class="scenario-name">🚗 悬崖紧急刹车</div>
+            <div class="scenario-desc">车轮滑向悬崖边缘，差1cm停住 vs 悬空</div>
+          </div>
+          <div class="scenario-card" onclick="selectScenario('score', this)">
+            <div class="scenario-name">🎯 靶心/及格线</div>
+            <div class="scenario-desc">59分（死守门外）vs 60分（刚刚擦过）</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Semantic Field Radar -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          语义场雷达 (Semantic Field Topology)
+          <span class="tag">实时激活</span>
+        </div>
+      </div>
+
+      <div class="field-map">
+        <div style="font-size:13px; color:var(--text-muted); line-height:1.5;">
+          当你在左侧推拉物理量时，观察人类大脑是如何依据<strong>「落点与阈值的拓扑区间」</strong>瞬间点亮对应词义的：
+        </div>
+
+        <div class="scale-spectrum">
+          <!-- Zone 1: Far Below -->
+          <div class="zone-item" id="zone-far-below" style="--zone-color: #64748b; --zone-bg: rgba(100, 116, 139, 0.1);">
+            <div class="zone-indicator"></div>
+            <div class="zone-content">
+              <div class="zone-words">
+                <span class="word-chip">far from / nowhere near</span>
+                <span class="zone-math">&lt; 70%</span>
+              </div>
+              <div class="zone-expl">远离临界线，完全没有达成的可能性。</div>
+            </div>
+          </div>
+
+          <!-- Zone 2: ALMOST / NEARLY -->
+          <div class="zone-item highlight" id="zone-almost" style="--zone-color: var(--ember); --zone-bg: rgba(245, 158, 11, 0.14);">
+            <div class="zone-indicator"></div>
+            <div class="zone-content">
+              <div class="zone-words">
+                <span class="word-chip">almost / nearly / fall short</span>
+                <span class="zone-math">90% ~ 99.9%</span>
+              </div>
+              <div class="zone-expl"><strong>未越过界限</strong>：极度接近、只差毫厘，但结果<strong>没有达成</strong>。</div>
+            </div>
+          </div>
+
+          <!-- Zone 3: BARELY / HARDLY / JUST -->
+          <div class="zone-item" id="zone-barely" style="--zone-color: var(--success); --zone-bg: rgba(16, 185, 129, 0.14);">
+            <div class="zone-indicator"></div>
+            <div class="zone-content">
+              <div class="zone-words">
+                <span class="word-chip">barely / hardly / just made</span>
+                <span class="zone-math">100.0% ~ 105%</span>
+              </div>
+              <div class="zone-expl"><strong>已越过界限</strong>：刚刚压线过关，差一点点就失败了（险胜）。</div>
+            </div>
+          </div>
+
+          <!-- Zone 4: EASILY / WELL OVER -->
+          <div class="zone-item" id="zone-over" style="--zone-color: var(--cyan); --zone-bg: rgba(6, 182, 212, 0.14);">
+            <div class="zone-indicator"></div>
+            <div class="zone-content">
+              <div class="zone-words">
+                <span class="word-chip">easily / comfortably / exceed</span>
+                <span class="zone-math">&gt; 110%</span>
+              </div>
+              <div class="zone-expl">大比分跨过界限，毫无悬念，远超及格标准。</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Direct Minimal Pair Contrast Clash -->
+        <div style="font-size:13px; font-weight:700; color:var(--text); margin-top:6px;">核心对立临界点（Minimal Pair Clash）：</div>
+        <div class="clash-card">
+          <div class="clash-col almost-col">
+            <div class="clash-badge">almost</div>
+            <div class="clash-desc">99% 停在线前</div>
+            <div class="clash-state state-failed">❌ 结果未发生</div>
+          </div>
+          <div class="clash-col barely-col">
+            <div class="clash-badge">barely</div>
+            <div class="clash-desc">100.1% 勉强越线</div>
+            <div class="clash-state state-passed">✔️ 结果已成立</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: 4-STEP COGNITIVE WALKTHROUGH -->
+  <div id="view-walkthrough" class="grid-2" style="display:none;">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          App 真实端到端教学心流 (Learner Journey Simulation)
+        </div>
+      </div>
+
+      <!-- Flow Stepper -->
+      <div class="flow-steps">
+        <div class="step-pill active" id="pill-step-1">1. 变量操控</div>
+        <div class="step-pill" id="pill-step-2">2. 临界张力</div>
+        <div class="step-pill" id="pill-step-3">3. 符号结晶</div>
+        <div class="step-pill" id="pill-step-4">4. 零翻译迁移</div>
+      </div>
+
+      <!-- Step Content Area -->
+      <div id="step-content-box" class="flow-action-box">
+        <!-- Dynamic injected via JS -->
+      </div>
+    </div>
+
+    <!-- Right: Learner Mental State Monitor -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          学习者心智模型监视器 (Cognitive State)
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="background:var(--bg-surface); padding:14px; border-radius:12px; border:1px solid var(--border);">
+          <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:6px;">当前大脑连接通道：</div>
+          <div id="mental-link-status" style="font-size:14px; font-weight:700; color:#a5b4fc; line-height:1.5;">
+            🔘 阶段 1: 纯物理空间与肌肉阻尼感知（零语言介入）
+          </div>
+        </div>
+
+        <div style="background:var(--bg-surface); padding:14px; border-radius:12px; border:1px solid var(--border);">
+          <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:6px;">为什么彻底干掉了长篇中文题？</div>
+          <div style="font-size:13px; color:var(--text-sub); line-height:1.6;">
+            • <strong>旧方式</strong>：读300字中文小故事 → 做文字选择题“这算不算几乎” → 答案在长句里找茬。<br>
+            • <strong>新方式</strong>：手指推拉变量 → 物理临界颤抖 → 英文单词直接结晶在临界点上。<br>
+            • <strong>耗时</strong>：从旧版的 4 分钟阅读做题，缩减为 <strong>25 秒顿悟体验</strong>。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 3: THEORY & ONTOLOGY -->
+  <div id="view-theory" class="panel" style="display:none;">
+    <div class="panel-header">
+      <div class="panel-title">
+        标量阈值微世界 (Scalar & Threshold Ontology) 的架构设计
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; font-size:13.5px; line-height:1.6;">
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#a5b4fc; margin-bottom:8px;">1. 什么是这个微世界？</h3>
+        <p style="color:var(--text-sub);">
+          所有表示<strong>“程度、界限、接近度、充盈度、及格率”</strong>的语言符号，本质上都在人类认知中共享一个<strong>一维标尺几何图式（One-dimensional Scale Schema）</strong>。
+        </p>
+        <p style="color:var(--text-muted); margin-top:8px;">
+          它由【原点 0】、【逼近向量 →】、【临界界限 | 】和【终态落点 •】四个空间要素定义。
+        </p>
+      </div>
+
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#34d399; margin-bottom:8px;">2. 覆盖的庞大词群谱系</h3>
+        <ul style="color:var(--text-sub); padding-left:18px; margin-top:6px; display:flex; flex-direction:column; gap:4px;">
+          <li><strong>未过线类</strong>: almost, nearly, fall short of, verge on, close to</li>
+          <li><strong>勉强过线类</strong>: barely, hardly, scarcely, just, scrape through</li>
+          <li><strong>精准重合类</strong>: exactly, precisely, spot on, right on the mark</li>
+          <li><strong>大幅超线类</strong>: exceed, well over, comfortably, surpass</li>
+        </ul>
+      </div>
+
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#fca5a5; margin-bottom:8px;">3. App 渲染的通用原则</h3>
+        <p style="color:var(--text-sub);">
+          App 不应为每个词写死特定页面，而应提供一个<strong>通用的 `GaugeThresholdRenderer`</strong>：
+        </p>
+        <p style="color:var(--text-muted); margin-top:8px;">
+          LLM 只需输出：<code>{ dimension: "volume", threshold: 100, target_val: 98, outcome: "miss" }</code>，App 即可自动以极具动感的微物理组件呈现！
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Simulation State
+  let currentScenario = 'water';
+  let currentValue = 94;
+  const THRESHOLD = 100;
+
+  const canvas = document.getElementById('simCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let waveOffset = 0;
+
+  function renderSimulation() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (currentScenario === 'water') {
+      renderWaterScenario();
+    } else if (currentScenario === 'cliff') {
+      renderCliffScenario();
+    } else if (currentScenario === 'score') {
+      renderScoreScenario();
+    }
+
+    waveOffset += 0.05;
+    requestAnimationFrame(renderSimulation);
+  }
+
+  // Scenario 1: Water Tank
+  function renderWaterScenario() {
+    const w = canvas.width;
+    const h = canvas.height;
+    
+    // Flask outline
+    const flaskX = w / 2 - 80;
+    const flaskY = 50;
+    const flaskW = 160;
+    const flaskH = 240;
+
+    // Threshold line Y
+    const threshY = flaskY + flaskH * (1 - THRESHOLD / 150);
+    const currentWaterY = flaskY + flaskH * (1 - currentValue / 150);
+
+    // Glass flask body
+    ctx.fillStyle = '#12141e';
+    ctx.strokeStyle = '#383d54';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.roundRect(flaskX, flaskY, flaskW, flaskH, [0, 0, 16, 16]);
+    ctx.fill();
+    ctx.stroke();
+
+    // Measurement ticks
+    for (let i = 0; i <= 150; i += 25) {
+      const tickY = flaskY + flaskH * (1 - i / 150);
+      ctx.strokeStyle = i === 100 ? '#ef4444' : '#475069';
+      ctx.lineWidth = i === 100 ? 2 : 1;
+      ctx.beginPath();
+      ctx.moveTo(flaskX + 8, tickY);
+      ctx.lineTo(flaskX + (i === 100 ? 24 : 14), tickY);
+      ctx.stroke();
+
+      if (i === 100) {
+        ctx.fillStyle = '#ef4444';
+        ctx.font = 'bold 11px JetBrains Mono';
+        ctx.fillText('FULL (100%)', flaskX + 28, tickY + 4);
+      }
+    }
+
+    // Water Liquid Clip
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(flaskX + 3, flaskY, flaskW - 6, flaskH - 3, [0, 0, 14, 14]);
+    ctx.clip();
+
+    // Water gradient
+    const waterGrad = ctx.createLinearGradient(0, currentWaterY, 0, flaskY + flaskH);
+    if (currentValue < 100) {
+      waterGrad.addColorStop(0, '#f59e0b');
+      waterGrad.addColorStop(1, '#92400e');
+    } else {
+      waterGrad.addColorStop(0, '#10b981');
+      waterGrad.addColorStop(1, '#065f46');
+    }
+
+    ctx.fillStyle = waterGrad;
+    ctx.beginPath();
+    ctx.moveTo(flaskX, currentWaterY);
+    for (let x = flaskX; x <= flaskX + flaskW; x += 5) {
+      const waveY = currentWaterY + Math.sin((x - flaskX) * 0.08 + waveOffset) * 2.5;
+      ctx.lineTo(x, waveY);
+    }
+    ctx.lineTo(flaskX + flaskW, flaskY + flaskH);
+    ctx.lineTo(flaskX, flaskY + flaskH);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+
+    // Red Threshold Marker line across
+    ctx.strokeStyle = 'rgba(239, 68, 68, 0.8)';
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(flaskX - 20, threshY);
+    ctx.lineTo(flaskX + flaskW + 20, threshY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Scenario 2: Cliff Braking
+  function renderCliffScenario() {
+    const w = canvas.width;
+    const h = canvas.height;
+    
+    // Cliff edge at 66.6% width
+    const cliffX = w * 0.65;
+    const roadY = h * 0.65;
+
+    // Road
+    ctx.fillStyle = '#1e2230';
+    ctx.fillRect(40, roadY, cliffX - 40, 60);
+
+    // Cliff Abyss
+    ctx.fillStyle = '#0a0a0f';
+    ctx.fillRect(cliffX, roadY, w - cliffX - 20, 80);
+
+    // Danger Edge line
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(cliffX, roadY - 15);
+    ctx.lineTo(cliffX, roadY + 60);
+    ctx.stroke();
+
+    ctx.fillStyle = '#ef4444';
+    ctx.font = 'bold 11px JetBrains Mono';
+    ctx.fillText('CLIFF EDGE (100%)', cliffX - 60, roadY - 22);
+
+    // Car position based on currentValue
+    // 0 = x: 60, 100 = cliffX - 10 (on edge), 150 = over cliff
+    const startX = 60;
+    const targetEdgeX = cliffX - 20;
+    const carX = startX + (targetEdgeX - startX) * (currentValue / 100);
+
+    // Draw car
+    ctx.fillStyle = currentValue <= 100 ? '#6366f1' : '#f43f5e';
+    ctx.beginPath();
+    ctx.roundRect(carX - 25, roadY - 22, 50, 20, [4, 8, 0, 0]);
+    ctx.fill();
+
+    // Wheels
+    ctx.fillStyle = '#000';
+    ctx.beginPath();
+    ctx.arc(carX - 14, roadY - 2, 6, 0, Math.PI * 2);
+    ctx.arc(carX + 14, roadY - 2, 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Status banner in scene
+    if (currentValue > 100) {
+      ctx.fillStyle = '#ef4444';
+      ctx.font = 'bold 14px Noto Sans SC';
+      ctx.fillText('⚠️ 车轮悬空跨过边界！', cliffX + 10, roadY + 20);
+    }
+  }
+
+  // Scenario 3: Score Target
+  function renderScoreScenario() {
+    const w = canvas.width;
+    const h = canvas.height;
+    
+    const cx = w / 2;
+    const cy = h / 2 + 10;
+    const radius = 90;
+
+    // Gauge Arc background
+    ctx.strokeStyle = '#222738';
+    ctx.lineWidth = 18;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, Math.PI * 0.8, Math.PI * 2.2);
+    ctx.stroke();
+
+    // Threshold Marker (60% of gauge)
+    const threshAngle = Math.PI * 0.8 + (Math.PI * 1.4) * (100 / 150);
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, threshAngle - 0.02, threshAngle + 0.02);
+    ctx.stroke();
+
+    // Progress Arc
+    const progressAngle = Math.PI * 0.8 + (Math.PI * 1.4) * Math.min(1, currentValue / 150);
+    const arcGrad = ctx.createLinearGradient(cx - radius, cy, cx + radius, cy);
+    if (currentValue < 100) {
+      arcGrad.addColorStop(0, '#f59e0b');
+      arcGrad.addColorStop(1, '#d97706');
+    } else {
+      arcGrad.addColorStop(0, '#10b981');
+      arcGrad.addColorStop(1, '#059669');
+    }
+
+    ctx.strokeStyle = arcGrad;
+    ctx.lineWidth = 18;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, Math.PI * 0.8, progressAngle);
+    ctx.stroke();
+
+    // Center display
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '800 32px Plus Jakarta Sans';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${currentValue}`, cx, cy + 5);
+
+    ctx.fillStyle = currentValue >= 100 ? '#34d399' : '#f59e0b';
+    ctx.font = '600 13px Noto Sans SC';
+    ctx.fillText(currentValue >= 100 ? '及格已达成 PASSED' : '差一点未达成 NOT YET', cx, cy + 28);
+    ctx.textAlign = 'start';
+  }
+
+  // Update UI & Semantic Zone
+  function onSliderChange(val) {
+    currentValue = parseFloat(val);
+    document.getElementById('slider-label').innerText = `${currentValue}%`;
+    document.getElementById('overlay-val').innerText = `${currentValue}%`;
+
+    const chip = document.getElementById('threshold-status-chip');
+    const dot = document.getElementById('status-dot');
+    const txt = document.getElementById('status-text');
+
+    const toast = document.getElementById('crystal-toast');
+    const toastWord = document.getElementById('toast-word');
+    const toastIpa = document.getElementById('toast-ipa');
+    const toastDesc = document.getElementById('toast-desc');
+
+    // Highlight zones
+    document.querySelectorAll('.zone-item').forEach(el => el.classList.remove('highlight'));
+
+    if (currentValue < 75) {
+      chip.style.borderColor = 'rgba(100, 116, 139, 0.4)';
+      dot.style.background = '#64748b';
+      txt.innerText = '远离及格线';
+      document.getElementById('zone-far-below').classList.add('highlight');
+      toast.classList.remove('show');
+    } else if (currentValue >= 75 && currentValue < 100) {
+      // ALMOST ZONE
+      chip.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+      dot.style.background = '#f59e0b';
+      txt.innerText = '未过线 · 差一点点';
+      document.getElementById('zone-almost').classList.add('highlight');
+
+      toastWord.innerText = 'almost';
+      toastWord.style.color = 'var(--ember)';
+      toastIpa.innerText = '/ˈɔːlmoʊst/';
+      toastDesc.innerHTML = '停在 100% 临界线之前一丝，<strong>结果没有达成</strong>。';
+      toast.classList.add('show');
+    } else if (currentValue >= 100 && currentValue <= 106) {
+      // BARELY ZONE
+      chip.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+      dot.style.background = '#10b981';
+      txt.innerText = '勉强刚过线 · 险胜';
+      document.getElementById('zone-barely').classList.add('highlight');
+
+      toastWord.innerText = 'barely';
+      toastWord.style.color = 'var(--success)';
+      toastIpa.innerText = '/ˈber.li/';
+      toastDesc.innerHTML = '刚刚越过 100% 临界线，<strong>结果刚刚成立</strong>。';
+      toast.classList.add('show');
+    } else {
+      // EXCEED ZONE
+      chip.style.borderColor = 'rgba(6, 182, 212, 0.4)';
+      dot.style.background = '#06b6d4';
+      txt.innerText = '稳稳超越临界线';
+      document.getElementById('zone-over').classList.add('highlight');
+      toast.classList.remove('show');
+    }
+  }
+
+  function selectScenario(type, card) {
+    currentScenario = type;
+    document.querySelectorAll('.scenario-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+
+    const names = { water: '试管注水刻度', cliff: '悬崖紧急刹车', score: '靶心/及格线' };
+    document.getElementById('scenario-tag').innerText = names[type];
+  }
+
+  function switchView(viewName) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    document.getElementById('view-interactive').style.display = viewName === 'interactive' ? 'grid' : 'none';
+    document.getElementById('view-walkthrough').style.display = viewName === 'walkthrough' ? 'grid' : 'none';
+    document.getElementById('view-theory').style.display = viewName === 'theory' ? 'block' : 'none';
+
+    if (viewName === 'walkthrough') {
+      renderFlowStep(1);
+    }
+  }
+
+  // 4-Step Walkthrough State
+  let currentFlowStep = 1;
+
+  function renderFlowStep(step) {
+    currentFlowStep = step;
+    for (let i = 1; i <= 4; i++) {
+      const p = document.getElementById(`pill-step-${i}`);
+      p.className = 'step-pill';
+      if (i < step) p.classList.add('done');
+      if (i === step) p.classList.add('active');
+    }
+
+    const box = document.getElementById('step-content-box');
+    const mental = document.getElementById('mental-link-status');
+
+    if (step === 1) {
+      mental.innerHTML = '🔘 <strong>阶段 1【具身感知】</strong>：纯物理量与手指阻尼感知，零语言介入。';
+      box.innerHTML = `
+        <div class="flow-prompt">
+          👉 <strong>步骤 1：亲手把水注入试管，尝试精准停在 100ml 刻度线前。</strong>
+        </div>
+        <div style="background:#000; padding:16px; border-radius:10px; text-align:center;">
+          <span style="font-size:28px; font-weight:800; font-family:var(--font-mono); color:var(--ember);">98 ml</span>
+          <span style="font-size:12px; color:var(--text-muted);">（目标红线：100 ml）</span>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(2)">我感觉到了“只差一点但没满”的张力 ➔</button>
+        </div>
+      `;
+    } else if (step === 2) {
+      mental.innerHTML = '🔘 <strong>阶段 2【临界张力对撞】</strong>：建立“未跨线 vs 刚跨线”的两极心智张力。';
+      box.innerHTML = `
+        <div class="flow-prompt">
+          👉 <strong>步骤 2：对比两个极微小的物理状态，哪一个是“事件没有成立”？</strong>
+        </div>
+        <div class="clash-card">
+          <div class="clash-col almost-col" style="cursor:pointer;" onclick="this.style.background='rgba(245,158,11,0.2)'">
+            <div style="font-size:13px; font-weight:700;">状态 A</div>
+            <div style="font-size:12px; color:var(--text-sub);">99ml：水没到线，水杯没满</div>
+            <div class="clash-state state-failed">❌ 结果未发生</div>
+          </div>
+          <div class="clash-col barely-col" style="cursor:pointer;" onclick="this.style.background='rgba(16,185,129,0.2)'">
+            <div style="font-size:13px; font-weight:700;">状态 B</div>
+            <div style="font-size:12px; color:var(--text-sub);">100.1ml：刚好浸湿红线，满了</div>
+            <div class="clash-state state-passed">✔️ 结果成立</div>
+          </div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(3)">认知张力已就绪，立即召唤符号 ➔</button>
+        </div>
+      `;
+    } else if (step === 3) {
+      mental.innerHTML = '✨ <strong>阶段 3【符号结晶】</strong>：英语符号作为“该状态的命名”降临，完成神经直连。';
+      box.innerHTML = `
+        <div class="flow-prompt" style="text-align:center;">
+          把刚才“差一点没到线（99ml）”的状态，命名为：
+        </div>
+        <div style="background:rgba(245,158,11,0.12); border:1.5px solid var(--ember); border-radius:14px; padding:20px; text-align:center;">
+          <div style="font-size:32px; font-weight:800; color:var(--ember); font-family:var(--font-sans);">almost</div>
+          <div style="font-size:14px; font-family:var(--font-mono); color:var(--text-muted); margin-top:2px;">/ˈɔːlmoʊst/</div>
+          <div style="font-size:13px; color:var(--text-sub); margin-top:8px;">
+            “The cup is <strong>almost</strong> full.”（杯子差一点就满了，但还没满）
+          </div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(4)">进入盲测迁移验证 ➔</button>
+        </div>
+      `;
+    } else if (step === 4) {
+      mental.innerHTML = '🚀 <strong>阶段 4【零翻译直接迁移】</strong>：脱离任何中文字幕，直接凭视觉直觉选词。';
+      box.innerHTML = `
+        <div class="flow-prompt">
+          👉 <strong>实测验证：考试满分 100 分，及格线 60 分。小明最终考了 59 分。</strong>
+        </div>
+        <div style="background:#090a0f; padding:14px; border-radius:10px; border:1px solid var(--border); text-align:center;">
+          <div style="font-size:24px; font-weight:800; color:#f87171;">59 / 60 分 ❌</div>
+          <div style="font-size:12px; color:var(--text-muted);">He ______ passed the exam.</div>
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-opt-btn" onclick="checkQuiz(this, true)">
+            <div class="quiz-opt-word" style="color:var(--ember);">almost</div>
+            <div class="quiz-opt-hint">差一分，但没及格</div>
+          </button>
+          <button class="quiz-opt-btn" onclick="checkQuiz(this, false)">
+            <div class="quiz-opt-word" style="color:var(--success);">barely</div>
+            <div class="quiz-opt-hint">刚刚擦线及格（60分）</div>
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  function checkQuiz(btn, isCorrect) {
+    if (isCorrect) {
+      btn.classList.add('correct');
+      btn.innerHTML += '<div style="font-size:12px; font-weight:700; margin-top:4px;">🎉 完美直觉！零翻译直接命中！</div>';
+      setTimeout(() => {
+        alert('🎉 恭喜！你刚刚在零中文辅助下，凭直觉完成了 almost 词义的神经固化与迁移！');
+      }, 300);
+    } else {
+      btn.classList.add('wrong');
+    }
+  }
+
+  // Init
+  onSliderChange(94);
+  renderSimulation();
+</script>
+
+</body>
+</html>

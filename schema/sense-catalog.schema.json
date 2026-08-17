@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scenelex.dev/schema/sense-catalog.schema.json",
+  "title": "SenseCatalog",
+  "description": "SceneLex MVP 300+ 核心义项清单契约：按 12 大词义分类与 14 个微世界组织的高频具身词义总表。",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "catalog_id",
+    "target_count",
+    "total_senses",
+    "semantic_types",
+    "microworlds",
+    "senses"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "catalog_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "total_senses": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "semantic_types": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "microworlds": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "senses": {
+      "type": "array",
+      "minItems": 300,
+      "items": { "$ref": "#/$defs/catalog_sense" }
+    }
+  },
+  "$defs": {
+    "catalog_sense": {
+      "type": "object",
+      "required": [
+        "sense_id",
+        "lemma",
+        "pos",
+        "semantic_type",
+        "primary_microworld",
+        "frequency_tier",
+        "sense_summary",
+        "experience_invariant",
+        "nearest_contrast",
+        "prototype_status",
+        "course_status",
+        "semantic_review_status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "sense_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*-0[1-9]$",
+          "description": "稳定义项 ID，如 almost-01, crawl-01"
+        },
+        "lemma": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pos": {
+          "type": "string",
+          "enum": [
+            "noun",
+            "verb",
+            "adjective",
+            "adverb",
+            "preposition",
+            "conjunction",
+            "determiner",
+            "pronoun",
+            "interjection",
+            "particle"
+          ]
+        },
+        "semantic_type": {
+          "type": "string",
+          "enum": [
+            "entity",
+            "action",
+            "attribute",
+            "state_change",
+            "spatial_relation",
+            "temporal_relation",
+            "scalar_degree",
+            "mental_state",
+            "intentional_behavior",
+            "causal_logic",
+            "cognitive_change",
+            "discourse_function"
+          ]
+        },
+        "primary_microworld": {
+          "type": "string",
+          "enum": [
+            "ScalarThreshold",
+            "DimensionNorm",
+            "SpatialTopology",
+            "TemporalRelation",
+            "EntityPrototype",
+            "StateTransition",
+            "MotionManner",
+            "EventRolePerspective",
+            "ForceDynamics",
+            "InformationUpdate",
+            "GoalConflict",
+            "QuantitySet",
+            "AppraisalShift",
+            "SocialContract"
+          ]
+        },
+        "secondary_microworld": {
+          "type": ["string", "null"]
+        },
+        "frequency_tier": {
+          "type": "string",
+          "enum": [
+            "top_500",
+            "top_1000",
+            "top_2000",
+            "top_3000",
+            "top_5000"
+          ]
+        },
+        "sense_summary": {
+          "type": "string",
+          "minLength": 1,
+          "description": "简明中文释义与概念总结"
+        },
+        "experience_invariant": {
+          "type": "string",
+          "minLength": 1,
+          "description": "微世界必须呈现的核心具身/物理/认知不变量"
+        },
+        "nearest_contrast": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "最近邻对比义项（Minimal Pair），用于边界辨析"
+        },
+        "prototype_status": {
+          "type": "string",
+          "enum": ["backlog", "prototyped", "validated"]
+        },
+        "course_status": {
+          "type": "string",
+          "enum": ["selected", "mapped", "authored", "release_ready", "candidate", "deferred"]
+        },
+        "semantic_review_status": {
+          "type": "string",
+          "enum": ["unreviewed", "in_review", "approved", "deferred"]
+        }
+      }
+    }
+  }
+}

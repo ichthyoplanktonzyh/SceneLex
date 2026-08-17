@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SceneLex — 词义微世界交互原型 #05: 实体范畴与原型变异 (Object Morph Radar)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0c10;
+      --bg-surface: #131722;
+      --bg-card: #1c2132;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f1f3f9;
+      --text-muted: #8b92a7;
+      --text-sub: #b2b9ce;
+      --accent: #f59e0b;
+      --accent-glow: rgba(245, 158, 11, 0.25);
+      --emerald: #10b981;
+      --indigo: #6366f1;
+      --cyan: #06b6d4;
+      --pink: #ec4899;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 8px;
+      --font-sans: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 60px;
+      background-image: 
+        radial-gradient(ellipse 60% 40% at 50% -10%, rgba(245, 158, 11, 0.15), transparent),
+        radial-gradient(ellipse 50% 30% at 85% 85%, rgba(99, 102, 241, 0.08), transparent);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1080px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffffff 40%, #fbbf24 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+      max-width: 720px;
+      line-height: 1.5;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #000000;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    /* Layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 860px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-title span.tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      font-family: var(--font-mono);
+    }
+
+    /* Vessel Canvas Viewport */
+    .sim-viewport {
+      background: #0a0b10;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      position: relative;
+      height: 350px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    canvas#vesselCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Overlays */
+    .state-overlay {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .state-chip {
+      background: rgba(15, 17, 26, 0.85);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(8px);
+    }
+
+    .state-chip .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Crystal Word Toast */
+    .crystal-badge {
+      position: absolute;
+      bottom: 16px;
+      background: rgba(24, 28, 42, 0.95);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transform: translateY(20px) scale(0.95);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+      backdrop-filter: blur(12px);
+    }
+
+    .crystal-badge.show {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .crystal-word {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .crystal-ipa {
+      font-size: 13px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+
+    .crystal-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+      border-left: 1px solid var(--border);
+      padding-left: 14px;
+      max-width: 260px;
+      line-height: 1.4;
+    }
+
+    /* Morph Sliders Grid */
+    .sliders-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .slider-row-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+
+    .slider-row-val {
+      font-family: var(--font-mono);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 6px;
+      background: #252a3d;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ffffff;
+      cursor: grab;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), 0 0 0 3px var(--accent);
+    }
+
+    /* Scenarios Selector Grid */
+    .entity-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .entity-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 4px;
+    }
+
+    .entity-card:hover {
+      border-color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .entity-card.active {
+      border-color: var(--accent);
+      background: rgba(245, 158, 11, 0.12);
+    }
+
+    .entity-card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .entity-card-words {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: #fbbf24;
+    }
+
+    /* Category Probability Spectrum (Right side) */
+    .category-spectrum-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .cat-bar-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .cat-bar-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .cat-progress-track {
+      height: 10px;
+      border-radius: 5px;
+      background: #252a3d;
+      overflow: hidden;
+    }
+
+    .cat-progress-fill {
+      height: 100%;
+      border-radius: 5px;
+      transition: width 0.15s ease;
+    }
+
+    /* Boundary Overlap Note Card */
+    .overlap-alert-card {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1.5px solid rgba(245, 158, 11, 0.35);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .overlap-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #fbbf24;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .overlap-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+      line-height: 1.45;
+    }
+
+    /* Flow Stepper */
+    .flow-steps {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .step-pill {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 4px;
+      border-radius: 8px;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .step-pill.active {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: var(--accent);
+      color: #fbbf24;
+    }
+
+    .step-pill.done {
+      border-color: var(--emerald);
+      color: var(--emerald);
+    }
+
+    .flow-action-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .flow-btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000000;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+    .btn.primary:hover { background: #d97706; color:#fff; }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .quiz-opt-btn {
+      padding: 16px;
+      border-radius: 12px;
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .quiz-opt-btn:hover { border-color: var(--accent); }
+    .quiz-opt-btn.correct { border-color: var(--emerald)!important; background: rgba(16,185,129,0.15)!important; color:#34d399; }
+    .quiz-opt-btn.wrong { border-color: #ef4444!important; background: rgba(239,68,68,0.15)!important; color:#f87171; }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <header>
+    <div>
+      <div class="badge-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        SceneLex 词义微世界体系 · 类别 #05
+      </div>
+      <h1>实体范畴与原型变异微世界 (Object Morph Radar)</h1>
+      <div class="subtitle">
+        探索人类实体范畴的原型理论（Prototype Theory）：为什么 <strong>cup vs mug</strong> 在现实中存在<strong>重叠模糊边界（Fuzzy Boundaries）</strong>，以及如何通过形态参数滑动与雷达匹配，零翻译习得实体名词。
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchView('interactive')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8m-4-4h8"/></svg>
+        实体形态变异实验台
+      </button>
+      <button class="tab-btn" onclick="switchView('walkthrough')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        4 步原型顿悟心流
+      </button>
+      <button class="tab-btn" onclick="switchView('theory')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        原型理论与 Schema
+      </button>
+    </div>
+  </header>
+
+  <!-- VIEW 1: INTERACTIVE LAB -->
+  <div id="view-interactive" class="grid-2">
+    <!-- Left: Canvas Sim -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          参数化实体形态渲染器 (Parametric Object Renderer)
+          <span class="tag" id="vessel-tag">饮用器皿: cup / mug / bowl</span>
+        </div>
+        <div class="state-chip" id="vessel-state-chip">
+          <div class="dot" id="vessel-dot"></div>
+          <span id="vessel-status-txt">典型 cup 原型 (85%)</span>
+        </div>
+      </div>
+
+      <!-- Canvas Viewport -->
+      <div class="sim-viewport">
+        <div class="state-overlay">
+          <div class="state-chip">
+            <span>当前容积: </span>
+            <span id="overlay-vol" style="font-family: var(--font-mono); color: #fff; font-weight:800;">220 ml</span>
+          </div>
+          <div class="state-chip">
+            <span>壁厚: </span>
+            <span id="overlay-wall" style="font-family: var(--font-mono); color:#fbbf24; font-weight:800;">薄壁瓷 (Thin)</span>
+          </div>
+        </div>
+
+        <canvas id="vesselCanvas" width="560" height="350"></canvas>
+
+        <!-- Crystal Word Toast -->
+        <div class="crystal-badge" id="crystal-badge">
+          <div>
+            <div class="crystal-word" id="toast-word" style="color: #fbbf24;">cup</div>
+            <div class="crystal-ipa" id="toast-ipa">/kʌp/</div>
+          </div>
+          <div class="crystal-desc" id="toast-desc">
+            小巧轻便饮具，薄壁单柄，单手就口饮用。
+          </div>
+        </div>
+      </div>
+
+      <!-- Morph Parameter Sliders -->
+      <div class="sliders-box">
+        <!-- 1. Volume -->
+        <div class="slider-row">
+          <div class="slider-row-header">
+            <span>容量与尺寸 (Capacity / Volume)</span>
+            <span class="slider-row-val" id="val-volume">220 ml (小巧)</span>
+          </div>
+          <input type="range" id="slide-volume" min="100" max="600" value="220" oninput="onParamChange()">
+        </div>
+
+        <!-- 2. Wall Thickness -->
+        <div class="slider-row">
+          <div class="slider-row-header">
+            <span>器壁厚度 (Wall Thickness)</span>
+            <span class="slider-row-val" id="val-thickness">4 mm (薄瓷)</span>
+          </div>
+          <input type="range" id="slide-thickness" min="2" max="18" value="4" oninput="onParamChange()">
+        </div>
+
+        <!-- 3. Handle Size -->
+        <div class="slider-row">
+          <div class="slider-row-header">
+            <span>手柄大小与结构 (Handle Sturdiness)</span>
+            <span class="slider-row-val" id="val-handle">精致小环手柄</span>
+          </div>
+          <input type="range" id="slide-handle" min="0" max="100" value="40" oninput="onParamChange()">
+        </div>
+
+        <!-- 4. Aspect Ratio (Width vs Height) -->
+        <div class="slider-row">
+          <div class="slider-row-header">
+            <span>开口高宽比 (Aspect: 直筒 vs 扁宽敞口)</span>
+            <span class="slider-row-val" id="val-aspect">标准杯型 (1.1)</span>
+          </div>
+          <input type="range" id="slide-aspect" min="50" max="180" value="110" oninput="onParamChange()">
+        </div>
+      </div>
+
+      <!-- Scenarios Selector Grid -->
+      <div>
+        <div style="font-size:13px; font-weight:700; color:var(--text-sub); margin-bottom:8px;">选择实体范畴家族：</div>
+        <div class="entity-grid">
+          <div class="entity-card active" onclick="selectFamily('vessel', this)">
+            <div class="entity-card-title">☕ 饮用容器</div>
+            <div class="entity-card-words">cup / mug / bowl</div>
+          </div>
+          <div class="entity-card" onclick="selectFamily('plate_dish', this)">
+            <div class="entity-card-title">🍽️ 盛餐餐具</div>
+            <div class="entity-card-words">plate / dish / bowl</div>
+          </div>
+          <div class="entity-card" onclick="selectFamily('seat', this)">
+            <div class="entity-card-title">🪑 坐具分类</div>
+            <div class="entity-card-words">chair / stool / bench</div>
+          </div>
+          <div class="entity-card" onclick="selectFamily('coat', this)">
+            <div class="entity-card-title">🧥 外套长度</div>
+            <div class="entity-card-words">jacket / coat</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Prototype Probability Radar Panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          范畴概率谱系 (Category Probability Spectrum)
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <!-- Probability Bars -->
+        <div class="category-spectrum-box">
+          <!-- 1. CUP -->
+          <div class="cat-bar-item">
+            <div class="cat-bar-header">
+              <span style="color:#fbbf24;">cup (小巧饮具)</span>
+              <span style="font-family:var(--font-mono); color:#fbbf24;" id="prob-cup">85%</span>
+            </div>
+            <div class="cat-progress-track">
+              <div class="cat-progress-fill" id="bar-cup" style="width: 85%; background:#fbbf24;"></div>
+            </div>
+          </div>
+
+          <!-- 2. MUG -->
+          <div class="cat-bar-item">
+            <div class="cat-bar-header">
+              <span style="color:#60a5fa;">mug (厚壁马克杯)</span>
+              <span style="font-family:var(--font-mono); color:#60a5fa;" id="prob-mug">15%</span>
+            </div>
+            <div class="cat-progress-track">
+              <div class="cat-progress-fill" id="bar-mug" style="width: 15%; background:#60a5fa;"></div>
+            </div>
+          </div>
+
+          <!-- 3. BOWL -->
+          <div class="cat-bar-item">
+            <div class="cat-bar-header">
+              <span style="color:#34d399;">bowl (敞口碗)</span>
+              <span style="font-family:var(--font-mono); color:#34d399;" id="prob-bowl">0%</span>
+            </div>
+            <div class="cat-progress-track">
+              <div class="cat-progress-fill" id="bar-bowl" style="width: 0%; background:#34d399;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overlapping Boundary Alert Card -->
+        <div class="overlap-alert-card" id="overlap-card" style="display:none;">
+          <div class="overlap-title">
+            <span>✨ 进入范畴重叠区 (Fuzzy Boundary)</span>
+          </div>
+          <div class="overlap-desc">
+            当前器物容量约 300ml，带有中等把手与器壁。在真实英语母语者中，<strong>称其为 cup 或 mug 均完全正确</strong>！App 绝不强制二选一判错。
+          </div>
+        </div>
+
+        <!-- Invariant Rule -->
+        <div style="background:var(--bg-surface); padding:12px 14px; border-radius:10px; border:1px solid var(--border); font-size:12px; color:var(--text-sub); line-height:1.5;">
+          💡 <strong>Labov 原型定律</strong>：<br>
+          • <strong>cup</strong> 的核心原型：轻薄、小巧（适合配碟子/红茶）。<br>
+          • <strong>mug</strong> 的核心原型：厚实、大容量、粗壮把手（适合办公桌咖啡）。<br>
+          • 边界是连续渐变的，不需要死记中文翻译。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: 4-STEP WALKTHROUGH -->
+  <div id="view-walkthrough" class="grid-2" style="display:none;">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          App 真实端到端教学心流 (Learner Journey)
+        </div>
+      </div>
+
+      <div class="flow-steps">
+        <div class="step-pill active" id="pill-step-1">1. 形态参数调节</div>
+        <div class="step-pill" id="pill-step-2">2. 原型边界重叠</div>
+        <div class="step-pill" id="pill-step-3">3. 范畴符号结晶</div>
+        <div class="step-pill" id="pill-step-4">4. 零翻译实物分类</div>
+      </div>
+
+      <div id="flow-content-box" class="flow-action-box">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+    <!-- Right: Cognitive State Monitor -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          心智模型建构状态 (Cognitive State)
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="background:var(--bg-surface); padding:14px; border-radius:12px; border:1px solid var(--border);">
+          <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:6px;">大脑实体范畴映射通道：</div>
+          <div id="walk-mental-status" style="font-size:14px; font-weight:700; color:#fbbf24; line-height:1.5;">
+            🔘 阶段 1: 纯几何参数与质感感知（无语言标签）
+          </div>
+        </div>
+
+        <div style="background:var(--bg-surface); padding:14px; border-radius:12px; border:1px solid var(--border);">
+          <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:6px;">为什么旧版的灰色方块 + 特征清单是灾难？</div>
+          <div style="font-size:13px; color:var(--text-sub); line-height:1.6;">
+            • 旧版让用户看文字清单背诵“器壁厚实、容量较大”，大脑没有形成任何视觉心象。<br>
+            • <strong>参数化形态微世界</strong>让用户亲眼看到杯子变大、变厚、把手变粗的过程，直接在大脑视觉皮层建立原型模板。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 3: THEORY & SCHEMA -->
+  <div id="view-theory" class="panel" style="display:none;">
+    <div class="panel-header">
+      <div class="panel-title">
+        ObjectMorphRadar 原语组件的技术架构与 Schema
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; font-size:13.5px; line-height:1.6;">
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#fbbf24; margin-bottom:8px;">1. 什么是实体范畴原语？</h3>
+        <p style="color:var(--text-sub);">
+          所有描述<strong>器物、服装、工具、家具</strong>等实体名词分类的词义，统一由 1 个 <strong>参数化形态雷达渲染器</strong> 驱动。
+        </p>
+      </div>
+
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#60a5fa; margin-bottom:8px;">2. LLM 编译器入参 Schema</h3>
+        <pre style="background:#090a0f; padding:10px; border-radius:8px; font-family:var(--font-mono); font-size:11px; color:#a5b4fc; overflow-x:auto; margin-top:6px;">
+{
+  "primitive": "object_morph_radar",
+  "category_domain": "drinking_vessels",
+  "prototype_target": "mug",
+  "parameters": {
+    "volume_ml": 450,
+    "wall_thickness_mm": 12,
+    "handle_style": "sturdy_loop",
+    "aspect_ratio": 1.4
+  },
+  "overlapping_allowed": true,
+  "bound_symbol": "mug"
+}</pre>
+      </div>
+
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#34d399; margin-bottom:8px;">3. 破除机械二选一</h3>
+        <p style="color:var(--text-sub);">
+          支持 <code>overlapping_allowed: true</code>。当器物处于两个范畴的重叠带时，判定系统自动认可多选，尊重真实世界的多样性。
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentFamily = 'vessel';
+
+  // Parametric State
+  let paramVol = 220;    // 100 to 600 ml
+  let paramThick = 4;    // 2 to 18 mm
+  let paramHandle = 40;  // 0 to 100
+  let paramAspect = 110; // 50 to 180 (height / width * 100)
+
+  const canvas = document.getElementById('vesselCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let steamOffset = 0;
+
+  function renderLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    renderVesselScene();
+
+    steamOffset += 0.03;
+    requestAnimationFrame(renderLoop);
+  }
+
+  function renderVesselScene() {
+    const w = canvas.width;
+    const h = canvas.height;
+    const cx = w / 2;
+    const tableY = h - 65;
+
+    // Table surface
+    ctx.fillStyle = '#171b28';
+    ctx.fillRect(0, tableY, w, 65);
+    ctx.strokeStyle = '#2d3748';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, tableY);
+    ctx.lineTo(w, tableY);
+    ctx.stroke();
+
+    // Calculate dimensions from params
+    // Volume maps to base radius & height
+    const baseW = 60 + (paramVol / 600) * 80;
+    const bodyH = baseW * (paramAspect / 100);
+    const wallT = paramThick * 1.2;
+
+    const topY = tableY - bodyH;
+    const botY = tableY;
+
+    // Shadow under vessel
+    ctx.fillStyle = '#080a10';
+    ctx.beginPath();
+    ctx.ellipse(cx, tableY, baseW * 0.7, 14, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 1. Draw Handle (Behind body if needed)
+    if (paramHandle > 10) {
+      const handleW = (paramHandle / 100) * 38 + 10;
+      const handleH = bodyH * 0.55;
+      const handleY = topY + bodyH * 0.25;
+
+      ctx.lineWidth = wallT + 2;
+      ctx.strokeStyle = paramThick > 8 ? '#64748b' : '#fbbf24';
+      ctx.beginPath();
+      ctx.arc(cx + baseW/2 + handleW/2 - 4, handleY + handleH/2, handleH/2, -Math.PI*0.4, Math.PI*0.6);
+      ctx.stroke();
+    }
+
+    // 2. Draw Vessel Body
+    const vesselGrad = ctx.createLinearGradient(cx - baseW/2, 0, cx + baseW/2, 0);
+    if (paramThick > 9) {
+      // Ceramic Mug
+      vesselGrad.addColorStop(0, '#334155');
+      vesselGrad.addColorStop(0.3, '#64748b');
+      vesselGrad.addColorStop(0.8, '#475569');
+      vesselGrad.addColorStop(1, '#1e293b');
+    } else {
+      // Porcelain Cup
+      vesselGrad.addColorStop(0, '#d97706');
+      vesselGrad.addColorStop(0.3, '#fbbf24');
+      vesselGrad.addColorStop(0.8, '#f59e0b');
+      vesselGrad.addColorStop(1, '#b45309');
+    }
+
+    ctx.fillStyle = vesselGrad;
+    ctx.beginPath();
+    ctx.moveTo(cx - baseW/2, topY);
+    ctx.lineTo(cx - baseW*0.42, botY);
+    ctx.quadraticCurveTo(cx, botY + 8, cx + baseW*0.42, botY);
+    ctx.lineTo(cx + baseW/2, topY);
+    ctx.quadraticCurveTo(cx, topY + 12, cx - baseW/2, topY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Top Rim (Opening)
+    ctx.fillStyle = '#1e1b18';
+    ctx.beginPath();
+    ctx.ellipse(cx, topY, baseW/2, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Inner Liquid (Dark Coffee)
+    ctx.fillStyle = '#2d1810';
+    ctx.beginPath();
+    ctx.ellipse(cx, topY + 4, (baseW/2) - wallT, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Wall Rim Stroke
+    ctx.strokeStyle = paramThick > 9 ? '#94a3b8' : '#fde68a';
+    ctx.lineWidth = wallT;
+    ctx.beginPath();
+    ctx.ellipse(cx, topY, (baseW/2) - wallT/2, 9, 0, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // 3. Steam Rising (Animation)
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.lineWidth = 2;
+    for (let i = -1; i <= 1; i++) {
+      ctx.beginPath();
+      const steamX = cx + i * 20;
+      ctx.moveTo(steamX, topY - 10);
+      ctx.quadraticCurveTo(
+        steamX + Math.sin(steamOffset + i) * 12, topY - 40,
+        steamX + Math.cos(steamOffset + i) * 8, topY - 70
+      );
+      ctx.stroke();
+    }
+  }
+
+  function onParamChange() {
+    paramVol = parseFloat(document.getElementById('slide-volume').value);
+    paramThick = parseFloat(document.getElementById('slide-thickness').value);
+    paramHandle = parseFloat(document.getElementById('slide-handle').value);
+    paramAspect = parseFloat(document.getElementById('slide-aspect').value);
+
+    document.getElementById('val-volume').innerText = `${paramVol} ml (${paramVol < 260 ? '小巧' : (paramVol > 400 ? '大容量' : '中等')})`;
+    document.getElementById('val-thickness').innerText = `${paramThick} mm (${paramThick < 6 ? '薄瓷' : '厚陶'})`;
+    document.getElementById('val-handle').innerText = paramHandle < 15 ? '无把手' : (paramHandle > 70 ? '粗壮大圆把手' : '精致单柄');
+    document.getElementById('val-aspect').innerText = paramAspect < 80 ? '扁平敞口 (Bowl)' : (paramAspect > 140 ? '高筒形' : '标准杯型');
+
+    document.getElementById('overlay-vol').innerText = `${paramVol} ml`;
+    document.getElementById('overlay-wall').innerText = paramThick < 6 ? '薄壁瓷 (Thin)' : '厚壁粗陶 (Thick)';
+
+    // Compute Probabilities
+    let pCup = 0;
+    let pMug = 0;
+    let pBowl = 0;
+
+    // Cup score
+    if (paramAspect >= 75) {
+      if (paramVol <= 280 && paramThick <= 7) pCup += 60;
+      else if (paramVol <= 350) pCup += 35;
+      if (paramHandle >= 20 && paramHandle <= 65) pCup += 30;
+      if (paramThick <= 5) pCup += 20;
+    }
+
+    // Mug score
+    if (paramAspect >= 90) {
+      if (paramVol >= 320) pMug += 45;
+      if (paramThick >= 8) pMug += 35;
+      if (paramHandle >= 50) pMug += 30;
+    }
+
+    // Bowl score
+    if (paramAspect < 80) {
+      pBowl += 70;
+      if (paramHandle < 20) pBowl += 30;
+    }
+
+    // Normalize
+    const total = Math.max(1, pCup + pMug + pBowl);
+    const cupPercent = Math.round((pCup / total) * 100);
+    const mugPercent = Math.round((pMug / total) * 100);
+    const bowlPercent = Math.round((pBowl / total) * 100);
+
+    document.getElementById('prob-cup').innerText = `${cupPercent}%`;
+    document.getElementById('bar-cup').style.width = `${cupPercent}%`;
+    document.getElementById('prob-mug').innerText = `${mugPercent}%`;
+    document.getElementById('bar-mug').style.width = `${mugPercent}%`;
+    document.getElementById('prob-bowl').innerText = `${bowlPercent}%`;
+    document.getElementById('bar-bowl').style.width = `${bowlPercent}%`;
+
+    const chip = document.getElementById('vessel-state-chip');
+    const dot = document.getElementById('vessel-dot');
+    const txt = document.getElementById('vessel-status-txt');
+
+    const badge = document.getElementById('crystal-badge');
+    const toastWord = document.getElementById('toast-word');
+    const toastIpa = document.getElementById('toast-ipa');
+    const toastDesc = document.getElementById('toast-desc');
+
+    const overlapCard = document.getElementById('overlap-card');
+
+    if (cupPercent >= 35 && mugPercent >= 35) {
+      // Overlap Zone!
+      overlapCard.style.display = 'flex';
+      chip.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+      dot.style.background = '#f59e0b';
+      txt.innerText = '范畴重叠带: cup / mug 均成立';
+
+      toastWord.innerText = 'cup / mug';
+      toastWord.style.color = '#fbbf24';
+      toastIpa.innerText = '重叠边界 (Fuzzy)';
+      toastDesc.innerText = '300ml 中等壁厚带柄容器，两种命名在英语中均被广泛接受。';
+      badge.classList.add('show');
+    } else if (bowlPercent > 50) {
+      overlapCard.style.display = 'none';
+      chip.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+      dot.style.background = '#10b981';
+      txt.innerText = '典型 bowl 原型';
+
+      toastWord.innerText = 'bowl';
+      toastWord.style.color = '#34d399';
+      toastIpa.innerText = '/boʊl/';
+      toastDesc.innerText = '开口宽大深凹，常无把手，用于盛装流质或饭汤。';
+      badge.classList.add('show');
+    } else if (mugPercent > cupPercent) {
+      overlapCard.style.display = 'none';
+      chip.style.borderColor = 'rgba(96, 165, 250, 0.4)';
+      dot.style.background = '#60a5fa';
+      txt.innerText = `典型 mug 原型 (${mugPercent}%)`;
+
+      toastWord.innerText = 'mug';
+      toastWord.style.color = '#60a5fa';
+      toastIpa.innerText = '/mʌɡ/';
+      toastDesc.innerText = '大容量（350ml+）、厚壁粗陶、粗壮大把手，专为大份热饮设计。';
+      badge.classList.add('show');
+    } else {
+      overlapCard.style.display = 'none';
+      chip.style.borderColor = 'rgba(251, 191, 36, 0.4)';
+      dot.style.background = '#fbbf24';
+      txt.innerText = `典型 cup 原型 (${cupPercent}%)`;
+
+      toastWord.innerText = 'cup';
+      toastWord.style.color = '#fbbf24';
+      toastIpa.innerText = '/kʌp/';
+      toastDesc.innerText = '小巧轻便饮具，薄壁单柄，单手就口饮用。';
+      badge.classList.add('show');
+    }
+  }
+
+  function selectFamily(fam, card) {
+    currentFamily = fam;
+    document.querySelectorAll('.entity-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+
+    if (fam === 'vessel') {
+      onParamChange();
+    } else {
+      alert(`已载入 ${card.querySelector('.entity-card-title').innerText} 参数预设与形态生成！`);
+    }
+  }
+
+  function switchView(viewName) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    document.getElementById('view-interactive').style.display = viewName === 'interactive' ? 'grid' : 'none';
+    document.getElementById('view-walkthrough').style.display = viewName === 'walkthrough' ? 'grid' : 'none';
+    document.getElementById('view-theory').style.display = viewName === 'theory' ? 'block' : 'none';
+
+    if (viewName === 'walkthrough') {
+      renderFlowStep(1);
+    }
+  }
+
+  // 4-Step Walkthrough
+  let walkStep = 1;
+  function renderFlowStep(s) {
+    walkStep = s;
+    for (let i = 1; i <= 4; i++) {
+      const p = document.getElementById(`pill-step-${i}`);
+      p.className = 'step-pill';
+      if (i < s) p.classList.add('done');
+      if (i === s) p.classList.add('active');
+    }
+
+    const box = document.getElementById('flow-content-box');
+    const mental = document.getElementById('walk-mental-status');
+
+    if (s === 1) {
+      mental.innerHTML = '🔘 <strong>阶段 1【形态参数感知】</strong>：观察容量扩大、把手变粗的连续渐变。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>步骤 1：把一个 150ml 精致小茶杯，逐步拉大为 450ml 厚壁直筒容器。</strong>
+        </div>
+        <div style="background:#090a0f; padding:18px; border-radius:12px; text-align:center;">
+          <span style="font-size:24px; font-family:var(--font-mono); color:#fbbf24;">🍵 (150ml 薄瓷) ➔ ☕ (300ml 中等) ➔ 🍺 (450ml 厚陶)</span>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:6px;">注意手感与视觉重心的渐进式变化</div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(2)">体会范畴的渐变与重叠 ➔</button>
+        </div>
+      `;
+    } else if (s === 2) {
+      mental.innerHTML = '🔘 <strong>阶段 2【范畴重叠边界】</strong>：理解日常语言分类并非死板互斥。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>步骤 2：当一个器物处于 300ml 中等状态时：</strong>
+        </div>
+        <div style="background:#171d2b; border:1.5px solid #f59e0b; border-radius:10px; padding:14px; text-align:center;">
+          <div style="font-size:14px; color:#fbbf24; font-weight:800;">“既是 cup 也是 mug”</div>
+          <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">真实母语者两者都会使用，App 不会判定二选一错误！</div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(3)">立即唤醒核心原型符号 ➔</button>
+        </div>
+      `;
+    } else if (s === 3) {
+      mental.innerHTML = '✨ <strong>阶段 3【原型符号结晶】</strong>：将形态典型极点与英语词汇绑定。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700; text-align:center;">
+          根据两个典型原型极点，分别结晶出：
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div style="background:rgba(245,158,11,0.12); border:1.5px solid #fbbf24; border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:26px; font-weight:800; color:#fbbf24;">cup</div>
+            <div style="font-size:12px; font-family:var(--font-mono); color:var(--text-muted);">/kʌp/</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">小巧精致、薄壁、茶/咖啡</div>
+          </div>
+          <div style="background:rgba(96,165,250,0.12); border:1.5px solid #60a5fa; border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:26px; font-weight:800; color:#60a5fa;">mug</div>
+            <div style="font-size:12px; font-family:var(--font-mono); color:var(--text-muted);">/mʌɡ/</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">厚壁粗陶、大容量直筒、大把手</div>
+          </div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(4)">进入零翻译实物盲测 ➔</button>
+        </div>
+      `;
+    } else if (s === 4) {
+      mental.innerHTML = '🚀 <strong>阶段 4【零翻译实物任务迁移】</strong>：根据实物照片特征直接指认。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>盲测实战：办公桌上放着一只 450ml 的厚壁直筒深色陶瓷大杯，装满热可可。</strong>
+        </div>
+        <div style="background:#090a0f; padding:14px; border-radius:10px; text-align:center; border:1px solid var(--border);">
+          <div style="font-size:14px; color:#60a5fa; font-weight:700;">☕ 厚实粗壮大把手，容量 450ml！</div>
+          <div style="font-size:13px; color:var(--text-sub); margin-top:4px;">He is drinking hot cocoa from a large ceramic ______.</div>
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-opt-btn" onclick="checkQuiz(this, true)">
+            <div style="font-size:18px; font-weight:800; color:#60a5fa;">mug</div>
+            <div style="font-size:11px; color:var(--text-muted);">大容量厚壁典型原型</div>
+          </button>
+          <button class="quiz-opt-btn" onclick="checkQuiz(this, false)">
+            <div style="font-size:18px; font-weight:800; color:#fbbf24;">plate</div>
+            <div style="font-size:11px; color:var(--text-muted);">扁平餐盘</div>
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  function checkQuiz(btn, isCorrect) {
+    if (isCorrect) {
+      btn.classList.add('correct');
+      btn.innerHTML += '<div style="font-size:12px; font-weight:700; margin-top:4px;">🎉 完美直觉！零翻译直接命中！</div>';
+      setTimeout(() => {
+        alert('🎉 恭喜！你已彻底掌握实体范畴的原型理论与边界模糊性！');
+      }, 300);
+    } else {
+      btn.classList.add('wrong');
+    }
+  }
+
+  // Init
+  onParamChange();
+  renderLoop();
+</script>
+
+</body>
+</html>

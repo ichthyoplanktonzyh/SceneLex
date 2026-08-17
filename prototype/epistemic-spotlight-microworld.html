@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SceneLex — 词义微世界交互原型 #06: 认知更新与信息状态 (Epistemic Spotlight)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #090a0f;
+      --bg-surface: #121522;
+      --bg-card: #1a1e30;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f1f3f9;
+      --text-muted: #8b92a7;
+      --text-sub: #b2b9ce;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --amber: #f59e0b;
+      --amber-glow: rgba(245, 158, 11, 0.25);
+      --emerald: #10b981;
+      --purple: #a855f7;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 8px;
+      --font-sans: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 60px;
+      background-image: 
+        radial-gradient(ellipse 60% 40% at 50% -10%, rgba(56, 189, 248, 0.15), transparent),
+        radial-gradient(ellipse 50% 30% at 85% 85%, rgba(245, 158, 11, 0.08), transparent);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1080px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #7dd3fc;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffffff 40%, #7dd3fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+      max-width: 720px;
+      line-height: 1.5;
+    }
+
+    /* Nav Tabs */
+    .tabs {
+      display: flex;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #000000;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    /* Layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 860px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-title span.tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      font-family: var(--font-mono);
+    }
+
+    /* Epistemic Stage Viewport */
+    .sim-viewport {
+      background: #08090e;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      position: relative;
+      height: 350px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    canvas#epistemicCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Overlays */
+    .state-overlay {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .state-chip {
+      background: rgba(15, 17, 26, 0.85);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(8px);
+    }
+
+    .state-chip .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Crystal Word Toast */
+    .crystal-badge {
+      position: absolute;
+      bottom: 16px;
+      background: rgba(22, 26, 38, 0.95);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transform: translateY(20px) scale(0.95);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+      backdrop-filter: blur(12px);
+    }
+
+    .crystal-badge.show {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .crystal-word {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .crystal-ipa {
+      font-size: 13px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+
+    .crystal-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+      border-left: 1px solid var(--border);
+      padding-left: 14px;
+      max-width: 260px;
+      line-height: 1.4;
+    }
+
+    /* Trigger Interactive Bar */
+    .action-bar {
+      display: flex;
+      gap: 10px;
+    }
+
+    .action-btn {
+      flex: 1;
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: inherit;
+    }
+
+    .action-btn:hover {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    /* Scenarios Selector Grid */
+    .epi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .epi-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 4px;
+    }
+
+    .epi-card:hover {
+      border-color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .epi-card.active {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.12);
+    }
+
+    .epi-card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .epi-card-words {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: #7dd3fc;
+    }
+
+    /* Right: Cognitive Dynamics Radar */
+    .epi-analysis-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .epi-feature-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      font-size: 12.5px;
+    }
+
+    .epi-feature-label {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .epi-feature-val {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #7dd3fc;
+    }
+
+    /* Minimal Pair Clash */
+    .clash-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      background: var(--bg-surface);
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .clash-col {
+      padding: 12px;
+      border-radius: 10px;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .clash-col.notice-col { border-color: rgba(56, 189, 248, 0.3); }
+    .clash-col.realize-col { border-color: rgba(245, 158, 11, 0.3); }
+
+    .clash-col.highlight-notice {
+      border-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+      transform: scale(1.02);
+    }
+    .clash-col.highlight-realize {
+      border-color: #f59e0b;
+      background: rgba(245, 158, 11, 0.12);
+      transform: scale(1.02);
+    }
+
+    .clash-badge {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .notice-col .clash-badge { color: #38bdf8; }
+    .realize-col .clash-badge { color: #fbbf24; }
+
+    .clash-desc {
+      font-size: 11.5px;
+      color: var(--text-sub);
+      line-height: 1.4;
+    }
+
+    .clash-tag {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-top: 4px;
+    }
+    .tag-sensory { background: rgba(56,189,248,0.15); color: #7dd3fc; }
+    .tag-inference { background: rgba(245,158,11,0.15); color: #fbbf24; }
+
+    /* Flow Stepper */
+    .flow-steps {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .step-pill {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 4px;
+      border-radius: 8px;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .step-pill.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--accent);
+      color: #7dd3fc;
+    }
+
+    .step-pill.done {
+      border-color: var(--emerald);
+      color: var(--emerald);
+    }
+
+    .flow-action-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .flow-btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000000;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+    .btn.primary:hover { background: #0284c7; color:#fff; }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .quiz-opt-btn {
+      padding: 16px;
+      border-radius: 12px;
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .quiz-opt-btn:hover { border-color: var(--accent); }
+    .quiz-opt-btn.correct { border-color: var(--emerald)!important; background: rgba(16,185,129,0.15)!important; color:#34d399; }
+    .quiz-opt-btn.wrong { border-color: #ef4444!important; background: rgba(239,68,68,0.15)!important; color:#f87171; }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <header>
+    <div>
+      <div class="badge-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        SceneLex 词义微世界体系 · 类别 #06
+      </div>
+      <h1>认知更新与信息状态微世界 (Epistemic Spotlight)</h1>
+      <div class="subtitle">
+        探索人类大脑认知状态如何由<strong>“外部感官突变捕获 (Spotlight Capture ➔ notice)”</strong>与<strong>“内部多线索推理顿悟 (Insight Synthesis ➔ realize)”</strong>所驱动，零中文破除感知与思维动词混淆。
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchView('interactive')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8m-4-4h8"/></svg>
+        认知更新实验台
+      </button>
+      <button class="tab-btn" onclick="switchView('walkthrough')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        4 步认知顿悟心流
+      </button>
+      <button class="tab-btn" onclick="switchView('theory')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        信息论与 Schema
+      </button>
+    </div>
+  </header>
+
+  <!-- VIEW 1: INTERACTIVE LAB -->
+  <div id="view-interactive" class="grid-2">
+    <!-- Left: Canvas Sim -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          信息状态突变视窗 (Cognitive State Transition Stage)
+          <span class="tag" id="epi-tag">感官捕获: notice</span>
+        </div>
+        <div class="state-chip" id="epi-state-chip">
+          <div class="dot" id="epi-dot"></div>
+          <span id="epi-status-txt">环境静默 · 未进入意识</span>
+        </div>
+      </div>
+
+      <!-- Canvas Viewport -->
+      <div class="sim-viewport">
+        <div class="state-overlay">
+          <div class="state-chip">
+            <span>信息通道: </span>
+            <span id="overlay-channel" style="font-family: var(--font-mono); color: #38bdf8; font-weight:800;">外部视觉感官 (Sensory)</span>
+          </div>
+          <div class="state-chip">
+            <span>意识状态: </span>
+            <span id="overlay-state" style="font-family: var(--font-mono); color:#f59e0b; font-weight:800;">潜意识 (Unaware)</span>
+          </div>
+        </div>
+
+        <canvas id="epistemicCanvas" width="560" height="350"></canvas>
+
+        <!-- Crystal Word Toast -->
+        <div class="crystal-badge" id="crystal-badge">
+          <div>
+            <div class="crystal-word" id="toast-word" style="color: #38bdf8;">notice</div>
+            <div class="crystal-ipa" id="toast-ipa">/ˈnoʊ.tɪs/</div>
+          </div>
+          <div class="crystal-desc" id="toast-desc">
+            外部刺激瞬间突破感知阈值，视线与注意力瞬间被锁定。
+          </div>
+        </div>
+      </div>
+
+      <!-- Trigger Action Buttons -->
+      <div class="action-bar">
+        <button class="action-btn" id="btn-trigger" onclick="triggerEpistemicEvent()">
+          <span id="trigger-icon">💡</span>
+          <span id="trigger-text">触发刺激：让暗处的手机屏幕闪烁 (Capture Attention)</span>
+        </button>
+        <button class="action-btn" style="flex:0.4;" onclick="resetEpistemicState()">
+          <span>🔄 重置</span>
+        </button>
+      </div>
+
+      <!-- Scenarios Selector Grid -->
+      <div>
+        <div style="font-size:13px; font-weight:700; color:var(--text-sub); margin-bottom:8px;">选择认知更新机制：</div>
+        <div class="epi-grid">
+          <div class="epi-card active" onclick="selectEpiScenario('notice', this)">
+            <div class="epi-card-title">👀 感官突发捕获</div>
+            <div class="epi-card-words">notice</div>
+          </div>
+          <div class="epi-card" onclick="selectEpiScenario('realize', this)">
+            <div class="epi-card-title">💡 多线索推理顿悟</div>
+            <div class="epi-card-words">realize</div>
+          </div>
+          <div class="epi-card" onclick="selectEpiScenario('discover', this)">
+            <div class="epi-card-title">🔍 探索偶然发现</div>
+            <div class="epi-card-words">discover</div>
+          </div>
+          <div class="epi-card" onclick="selectEpiScenario('overlook', this)">
+            <div class="epi-card-title">🙈 漏看与忽略</div>
+            <div class="epi-card-words">overlook</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Cognitive Dynamics Radar -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          认知通道拓扑雷达 (Epistemic Channel Topology)
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <!-- Attributes -->
+        <div class="epi-analysis-box">
+          <div class="epi-feature-row">
+            <span class="epi-feature-label">输入源 (Input Source):</span>
+            <span class="epi-feature-val" id="feat-input-src">外部物理感官 (Eyes / Ears)</span>
+          </div>
+          <div class="epi-feature-row">
+            <span class="epi-feature-label">注意力机制 (Attention):</span>
+            <span class="epi-feature-val" id="feat-att-mech">自底向上突发捕获 (Bottom-Up)</span>
+          </div>
+          <div class="epi-feature-row">
+            <span class="epi-feature-label">认知加工深度:</span>
+            <span class="epi-feature-val" id="feat-proc-depth">感知级 0 ➔ 1 突变 (Perceptual)</span>
+          </div>
+        </div>
+
+        <!-- Minimal Pair Clash: notice vs realize -->
+        <div style="font-size:13px; font-weight:700; color:var(--text);">核心认知对撞（Minimal Pair Clash）：</div>
+        <div class="clash-card">
+          <div class="clash-col notice-col highlight-notice" id="col-notice">
+            <div class="clash-badge">notice</div>
+            <div class="clash-desc">眼睛/耳朵偶发捕捉到外部刺激</div>
+            <div class="clash-tag tag-sensory">Sensory Capture · 感官捕获</div>
+          </div>
+          <div class="clash-col realize-col" id="col-realize">
+            <div class="clash-badge">realize</div>
+            <div class="clash-desc">大脑内部多线索串联恍然大悟</div>
+            <div class="clash-tag tag-inference">Internal Synthesis · 推理顿悟</div>
+          </div>
+        </div>
+
+        <!-- Invariant Rule -->
+        <div style="background:var(--bg-surface); padding:12px 14px; border-radius:10px; border:1px solid var(--border); font-size:12px; color:var(--text-sub); line-height:1.5;">
+          💡 <strong>认知通道不变式</strong>：<br>
+          • <strong>notice</strong> 永远依赖**外部感官刺激（光、声、动作）**直接吸睛。<br>
+          • <strong>realize</strong> 永远依赖**脑内推理与事实合成**（"A + B + C ➔ 我突然明白了！"）。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: 4-STEP WALKTHROUGH -->
+  <div id="view-walkthrough" class="grid-2" style="display:none;">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          App 真实端到端教学心流 (Learner Journey)
+        </div>
+      </div>
+
+      <div class="flow-steps">
+        <div class="step-pill active" id="pill-step-1">1. 信息通道感知</div>
+        <div class="step-pill" id="pill-step-2">2. 认知机制对撞</div>
+        <div class="step-pill" id="pill-step-3">3. 认知符号双结晶</div>
+        <div class="step-pill" id="pill-step-4">4. 零翻译情境盲测</div>
+      </div>
+
+      <div id="flow-content-box" class="flow-action-box">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+    <!-- Right: Cognitive State Monitor -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          心智模型建构状态 (Cognitive State)
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="background:var(--bg-surface); padding:14px; border-radius:12px; border:1px solid var(--border);">
+          <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:6px;">大脑信息通道映射：</div>
+          <div id="walk-mental-status" style="font-size:14px; font-weight:700; color:#38bdf8; line-height:1.5;">
+            🔘 阶段 1: 感知聚光灯瞬间吸睛（外部物理刺激）
+          </div>
+        </div>
+
+        <div style="background:var(--bg-surface); padding:14px; border-radius:12px; border:1px solid var(--border);">
+          <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:6px;">为什么传统中文故事在此类词中容易退化？</div>
+          <div style="font-size:13px; color:var(--text-sub); line-height:1.6;">
+            • 中文里“注意到”既能指“看到”，又能指“意识到事情严重性”。<br>
+            • <strong>信息状态微世界</strong>通过“聚光灯锁定”与“脑内线索连线点亮”的视觉对比，让学习者瞬间分清感官输入与逻辑推理。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 3: THEORY & SCHEMA -->
+  <div id="view-theory" class="panel" style="display:none;">
+    <div class="panel-header">
+      <div class="panel-title">
+        EpistemicSpotlight 原语组件的技术架构与 Schema
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; font-size:13.5px; line-height:1.6;">
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#38bdf8; margin-bottom:8px;">1. 什么是认知更新原语？</h3>
+        <p style="color:var(--text-sub);">
+          所有描述<strong>感知发现、意识转变、推理顿悟、遗漏忽略</strong>的心理动词（notice, realize, discover, overlook, recognize），在 App 端统一由 1 个 <strong>认知聚光灯与线索合成引擎</strong> 渲染。
+        </p>
+      </div>
+
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#f59e0b; margin-bottom:8px;">2. LLM 编译器入参 Schema</h3>
+        <pre style="background:#090a0f; padding:10px; border-radius:8px; font-family:var(--font-mono); font-size:11px; color:#a5b4fc; overflow-x:auto; margin-top:6px;">
+{
+  "primitive": "epistemic_spotlight",
+  "channel": "internal_inference",
+  "clues": [
+    "open_window",
+    "wet_footprints",
+    "missing_bag"
+  ],
+  "epiphany_target": "someone_broke_in",
+  "bound_symbol": "realize"
+}</pre>
+      </div>
+
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#34d399; margin-bottom:8px;">3. 学习者体验提升</h3>
+        <p style="color:var(--text-sub);">
+          通过点击连接脑中线索、触发顿悟闪光，让“恍然大悟 (realize)”的过程真正变成一次交互动作，彻底告别枯燥阅读。
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentScenario = 'notice';
+  let isTriggered = false;
+
+  const canvas = document.getElementById('epistemicCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let animTick = 0;
+  let flashAlpha = 0;
+
+  function renderLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (currentScenario === 'notice') {
+      renderNoticeScene();
+    } else if (currentScenario === 'realize') {
+      renderRealizeScene();
+    } else if (currentScenario === 'discover') {
+      renderDiscoverScene();
+    } else if (currentScenario === 'overlook') {
+      renderOverlookScene();
+    }
+
+    animTick += 0.04;
+    requestAnimationFrame(renderLoop);
+  }
+
+  // 1. Notice Scene (Dark room -> Sudden Spotlight Gaze Lock)
+  function renderNoticeScene() {
+    const w = canvas.width;
+    const h = canvas.height;
+    const cx = w / 2;
+    const cy = h / 2;
+
+    // Dark room ambient
+    ctx.fillStyle = '#0a0b12';
+    ctx.fillRect(0, 0, w, h);
+
+    // Target object location (Table corner)
+    const phoneX = w * 0.72;
+    const phoneY = h * 0.62;
+
+    // Coffee table
+    ctx.fillStyle = '#161927';
+    ctx.fillRect(w * 0.35, h * 0.5, w * 0.55, h * 0.4);
+
+    // Phone on table
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.roundRect(phoneX - 16, phoneY - 26, 32, 52, 6);
+    ctx.fill();
+
+    // Observer Character on Left
+    const obsX = w * 0.2;
+    const obsY = cy + 20;
+    ctx.fillStyle = '#334155';
+    ctx.beginPath();
+    ctx.roundRect(obsX - 20, obsY - 10, 40, 60, 8);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(obsX, obsY - 30, 18, 0, Math.PI * 2);
+    ctx.fill();
+
+    if (isTriggered) {
+      // Phone Flashing Screen
+      ctx.fillStyle = '#38bdf8';
+      ctx.shadowColor = '#38bdf8';
+      ctx.shadowBlur = 24;
+      ctx.beginPath();
+      ctx.roundRect(phoneX - 13, phoneY - 23, 26, 46, 4);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Spotlight Cone from Observer Gaze directly snapping to Phone
+      ctx.save();
+      const grad = ctx.createRadialGradient(phoneX, phoneY, 10, phoneX, phoneY, 200);
+      grad.addColorStop(0, 'rgba(56, 189, 248, 0.45)');
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(phoneX, phoneY, 90, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // Laser Gaze Line
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.8)';
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(obsX + 16, obsY - 30);
+      ctx.lineTo(phoneX, phoneY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Eye pupil wide open
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.arc(obsX + 12, obsY - 30, 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 12px Plus Jakarta Sans';
+      ctx.fillText('⚡ GAZE CAPTURED!', phoneX - 50, phoneY - 40);
+    } else {
+      // Unaware ambient gaze looking elsewhere
+      ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(obsX + 16, obsY - 30);
+      ctx.lineTo(obsX + 100, obsY - 70);
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.font = '11px Noto Sans SC';
+      ctx.fillText('目光在房间他处闲看...', obsX + 110, obsY - 70);
+    }
+  }
+
+  // 2. Realize Scene (Connecting 3 Clues in Mind -> Epiphany Flash)
+  function renderRealizeScene() {
+    const w = canvas.width;
+    const h = canvas.height;
+    const cx = w / 2;
+    const cy = h / 2;
+
+    ctx.fillStyle = '#0b0c16';
+    ctx.fillRect(0, 0, w, h);
+
+    // Detective Head silhouette in center
+    ctx.strokeStyle = 'rgba(245, 158, 11, 0.3)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy + 20, 70, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // 3 Clue Nodes in brain space
+    const nodes = [
+      { x: cx - 140, y: cy - 60, label: '🔍 窗户被打开' },
+      { x: cx + 140, y: cy - 60, label: '🔍 地上有湿脚印' },
+      { x: cx, y: cy + 120, label: '🔍 雨伞不见了' }
+    ];
+
+    for (const node of nodes) {
+      ctx.fillStyle = '#1e2337';
+      ctx.strokeStyle = isTriggered ? '#f59e0b' : '#475569';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(node.x - 65, node.y - 18, 130, 36, 18);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = isTriggered ? '#fbbf24' : '#94a3b8';
+      ctx.font = 'bold 11.5px Noto Sans SC';
+      ctx.textAlign = 'center';
+      ctx.fillText(node.label, node.x, node.y + 4);
+    }
+
+    if (isTriggered) {
+      // Synaptic Connection Rays to Center Hub
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 3;
+      for (const node of nodes) {
+        ctx.beginPath();
+        ctx.moveTo(node.x, node.y);
+        ctx.lineTo(cx, cy + 10);
+        ctx.stroke();
+      }
+
+      // Central Lightbulb Flash 💡
+      ctx.fillStyle = '#fbbf24';
+      ctx.shadowColor = '#fbbf24';
+      ctx.shadowBlur = 32;
+      ctx.beginPath();
+      ctx.arc(cx, cy + 10, 24, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      ctx.fillStyle = '#000000';
+      ctx.font = 'bold 20px Plus Jakarta Sans';
+      ctx.fillText('💡', cx, cy + 18);
+
+      ctx.fillStyle = '#fbbf24';
+      ctx.font = '800 13px Noto Sans SC';
+      ctx.fillText('⚡ 恍然大悟：有人从窗户进来了！', cx, cy - 35);
+    } else {
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      ctx.font = '12px Noto Sans SC';
+      ctx.textAlign = 'center';
+      ctx.fillText('3 条零散线索尚未串联...', cx, cy + 15);
+    }
+  }
+
+  // 3. Discover Scene
+  function renderDiscoverScene() {
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.fillStyle = '#090d14';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.fillStyle = '#10b981';
+    ctx.font = 'bold 14px Noto Sans SC';
+    ctx.textAlign = 'center';
+    ctx.fillText('🗺️ 探索未开辟领域 ➔ 发现隐藏的新事物 (discover)', w/2, h/2);
+  }
+
+  // 4. Overlook Scene
+  function renderOverlookScene() {
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.fillStyle = '#100a0d';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.fillStyle = '#f87171';
+    ctx.font = 'bold 14px Noto Sans SC';
+    ctx.textAlign = 'center';
+    ctx.fillText('🙈 刺激明明在视野内，但注意力直接滑过未被捕获 (overlook)', w/2, h/2);
+  }
+
+  function triggerEpistemicEvent() {
+    isTriggered = true;
+
+    const chip = document.getElementById('epi-state-chip');
+    const dot = document.getElementById('epi-dot');
+    const txt = document.getElementById('epi-status-txt');
+
+    const overlayChannel = document.getElementById('overlay-channel');
+    const overlayState = document.getElementById('overlay-state');
+
+    const badge = document.getElementById('crystal-badge');
+    const toastWord = document.getElementById('toast-word');
+    const toastIpa = document.getElementById('toast-ipa');
+    const toastDesc = document.getElementById('toast-desc');
+
+    const colNotice = document.getElementById('col-notice');
+    const colRealize = document.getElementById('col-realize');
+    colNotice.classList.remove('highlight-notice');
+    colRealize.classList.remove('highlight-realize');
+
+    if (currentScenario === 'notice') {
+      chip.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+      dot.style.background = '#38bdf8';
+      txt.innerText = '瞬间捕获！进入显意识焦点';
+
+      overlayChannel.innerText = '外部视觉刺激突发 (Flash)';
+      overlayState.innerText = '已捕获 (Noticed!)';
+      overlayState.style.color = '#38bdf8';
+
+      toastWord.innerText = 'notice';
+      toastWord.style.color = '#38bdf8';
+      toastIpa.innerText = '/ˈnoʊ.tɪs/';
+      toastDesc.innerText = '外部刺激瞬间突破感知阈值，视线与注意力瞬间被锁定。';
+      badge.classList.add('show');
+
+      colNotice.classList.add('highlight-notice');
+    } else if (currentScenario === 'realize') {
+      chip.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+      dot.style.background = '#f59e0b';
+      txt.innerText = '线索合流！触发恍然大悟';
+
+      overlayChannel.innerText = '内部多线索推理合成 (Inference)';
+      overlayState.innerText = '顿悟领会 (Realized!)';
+      overlayState.style.color = '#fbbf24';
+
+      toastWord.innerText = 'realize';
+      toastWord.style.color = '#fbbf24';
+      toastIpa.innerText = '/ˈriː.ə.laɪz/';
+      toastDesc.innerText = '多条信息在脑内综合，顿悟到此前未意识到的事实真相。';
+      badge.classList.add('show');
+
+      colRealize.classList.add('highlight-realize');
+    }
+  }
+
+  function resetEpistemicState() {
+    isTriggered = false;
+    document.getElementById('crystal-badge').classList.remove('show');
+    document.getElementById('col-notice').classList.remove('highlight-notice');
+    document.getElementById('col-realize').classList.remove('highlight-realize');
+
+    const chip = document.getElementById('epi-state-chip');
+    const dot = document.getElementById('epi-dot');
+    const txt = document.getElementById('epi-status-txt');
+    chip.style.borderColor = 'rgba(255,255,255,0.2)';
+    dot.style.background = '#8b92a7';
+    txt.innerText = '环境静默 · 未进入意识';
+
+    document.getElementById('overlay-state').innerText = '潜意识 (Unaware)';
+    document.getElementById('overlay-state').style.color = '#f59e0b';
+  }
+
+  function selectEpiScenario(sc, card) {
+    currentScenario = sc;
+    document.querySelectorAll('.epi-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+
+    const titles = {
+      notice: '感官突发捕获: notice',
+      realize: '多线索推理顿悟: realize',
+      discover: '探索偶然发现: discover',
+      overlook: '漏看与忽略: overlook'
+    };
+    document.getElementById('epi-tag').innerText = titles[sc];
+
+    const triggers = {
+      notice: '💡 触发刺激：让暗处的手机屏幕闪烁 (Capture Attention)',
+      realize: '⚡ 串联线索：在脑中连接 3 条证据 (Synthesize Clues)',
+      discover: '🔍 展开地图：偶发翻出新宝藏 (Discover)',
+      overlook: '🙈 掠过线索：注意力滑开 (Overlook)'
+    };
+    document.getElementById('trigger-text').innerText = triggers[sc];
+
+    const dims = {
+      notice: ['外部物理感官 (Eyes / Ears)', '自底向上突发捕获 (Bottom-Up)', '感知级 0 ➔ 1 突变 (Perceptual)'],
+      realize: ['内部逻辑与记忆 (Working Memory)', '自顶向下推理合成 (Top-Down)', '信念修正与顿悟 (Epistemic Synthesis)'],
+      discover: ['空间探索与偶然遭遇 (Exploration)', '主动搜寻过程中的偶遇', '新事实的首次获取 (New Fact)'],
+      overlook: ['视野内未能进入焦点 (Field of View)', '未分配注意力 (Unattended)', '感知阈下丢失 (Failed to Notice)']
+    };
+    document.getElementById('feat-input-src').innerText = dims[sc][0];
+    document.getElementById('feat-att-mech').innerText = dims[sc][1];
+    document.getElementById('feat-proc-depth').innerText = dims[sc][2];
+
+    resetEpistemicState();
+  }
+
+  function switchView(viewName) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    document.getElementById('view-interactive').style.display = viewName === 'interactive' ? 'grid' : 'none';
+    document.getElementById('view-walkthrough').style.display = viewName === 'walkthrough' ? 'grid' : 'none';
+    document.getElementById('view-theory').style.display = viewName === 'theory' ? 'block' : 'none';
+
+    if (viewName === 'walkthrough') {
+      renderFlowStep(1);
+    }
+  }
+
+  // 4-Step Walkthrough
+  let walkStep = 1;
+  function renderFlowStep(s) {
+    walkStep = s;
+    for (let i = 1; i <= 4; i++) {
+      const p = document.getElementById(`pill-step-${i}`);
+      p.className = 'step-pill';
+      if (i < s) p.classList.add('done');
+      if (i === s) p.classList.add('active');
+    }
+
+    const box = document.getElementById('flow-content-box');
+    const mental = document.getElementById('walk-mental-status');
+
+    if (s === 1) {
+      mental.innerHTML = '🔘 <strong>阶段 1【信息通道感知】</strong>：感官吸睛 vs 逻辑顿悟的通道差异。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>步骤 1：观察两种截然不同的意识转变过程：</strong>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div style="background:#0c1524; border:1px solid #38bdf8; border-radius:10px; padding:14px; text-align:center;">
+            <div style="font-size:13px; color:#38bdf8; font-weight:700;">👀 外部感官通道</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">暗处突然闪光，目光瞬间被吸过去</div>
+          </div>
+          <div style="background:#1d180c; border:1px solid #f59e0b; border-radius:10px; padding:14px; text-align:center;">
+            <div style="font-size:13px; color:#fbbf24; font-weight:700;">🧠 脑内推理通道</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">看着钥匙和开着的门，脑中突然顿悟</div>
+          </div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(2)">体会认知机制的本质区别 ➔</button>
+        </div>
+      `;
+    } else if (s === 2) {
+      mental.innerHTML = '🔘 <strong>阶段 2【认知机制对撞】</strong>：确立“感官突变 vs 逻辑合成”的张力。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>步骤 2：核心机制两极对撞：</strong>
+        </div>
+        <div style="background:#12162a; border:1.5px solid var(--border); border-radius:12px; padding:14px; line-height:1.6; font-size:13px;">
+          • 如果是你<strong>“亲眼扫到/耳边听到”</strong> ➔ 属于感官捕捉。<br>
+          • 如果是你<strong>“思考后恍然大悟”</strong> ➔ 属于脑内逻辑合成。
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(3)">立即唤醒认知动词双结晶 ➔</button>
+        </div>
+      `;
+    } else if (s === 3) {
+      mental.innerHTML = '✨ <strong>阶段 3【认知动词双结晶】</strong>：直接完成英语词汇直连。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700; text-align:center;">
+          把两种认知更新过程，分别命名为：
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div style="background:rgba(56,189,248,0.12); border:1.5px solid #38bdf8; border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:26px; font-weight:800; color:#38bdf8;">notice</div>
+            <div style="font-size:12px; font-family:var(--font-mono); color:var(--text-muted);">/ˈnoʊ.tɪs/</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">“I <strong>noticed</strong> the keys on the table.”</div>
+          </div>
+          <div style="background:rgba(245,158,11,0.12); border:1.5px solid #f59e0b; border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:26px; font-weight:800; color:#fbbf24;">realize</div>
+            <div style="font-size:12px; font-family:var(--font-mono); color:var(--text-muted);">/ˈriː.ə.laɪz/</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">“I <strong>realized</strong> that I forgot my wallet.”</div>
+          </div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(4)">进入零翻译实战盲测 ➔</button>
+        </div>
+      `;
+    } else if (s === 4) {
+      mental.innerHTML = '🚀 <strong>阶段 4【零翻译情境任务迁移】</strong>：根据信息通道直接选词。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>实测任务：小李走在街上，突然耳朵听到背后有自行车按铃铛的声音。</strong>
+        </div>
+        <div style="background:#090a0f; padding:14px; border-radius:10px; text-align:center; border:1px solid var(--border);">
+          <div style="font-size:14px; color:#38bdf8; font-weight:700;">🔔 外部声音刺激瞬间进入耳朵与意识！</div>
+          <div style="font-size:13px; color:var(--text-sub); margin-top:4px;">He ______ the sound of a bicycle bell behind him.</div>
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-opt-btn" onclick="checkQuiz(this, true)">
+            <div style="font-size:18px; font-weight:800; color:#38bdf8;">noticed</div>
+            <div style="font-size:11px; color:var(--text-muted);">外部感官直接捕捉</div>
+          </button>
+          <button class="quiz-opt-btn" onclick="checkQuiz(this, false)">
+            <div style="font-size:18px; font-weight:800; color:#fbbf24;">realized</div>
+            <div style="font-size:11px; color:var(--text-muted);">脑内逻辑推理合成</div>
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  function checkQuiz(btn, isCorrect) {
+    if (isCorrect) {
+      btn.classList.add('correct');
+      btn.innerHTML += '<div style="font-size:12px; font-weight:700; margin-top:4px;">🎉 完美直觉！零翻译直接命中！</div>';
+      setTimeout(() => {
+        alert('🎉 恭喜！你已彻底掌握认知状态更新动词的通道直觉！');
+      }, 300);
+    } else {
+      btn.classList.add('wrong');
+    }
+  }
+
+  // Init
+  selectEpiScenario('notice', document.querySelector('.epi-card.active'));
+  renderLoop();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SceneLexA2UILesson",
+  "description": "Schema for a single Sense Lesson compiled by LLM Director into A2UI declarative format.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "sense_id",
+    "word",
+    "pos",
+    "definition_en",
+    "definition_zh",
+    "director_decision",
+    "experience_component",
+    "contrastive_boundary",
+    "aha_summary"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "enum": ["a2ui-lesson-1.0"]
+    },
+    "sense_id": {
+      "type": "string",
+      "pattern": "^[a-z_]+-\\d+$"
+    },
+    "word": {
+      "type": "string"
+    },
+    "pos": {
+      "type": "string",
+      "enum": ["verb", "noun", "adj", "adv", "prep", "idiom"]
+    },
+    "definition_en": {
+      "type": "string"
+    },
+    "definition_zh": {
+      "type": "string"
+    },
+    "director_decision": {
+      "type": "object",
+      "required": ["modality", "pedagogical_rationale", "visceral_anchor"],
+      "properties": {
+        "modality": {
+          "type": "string",
+          "enum": [
+            "dialogue_vignette",
+            "physics_friction",
+            "visual_metamorphosis",
+            "dilemma_tension_scale",
+            "spatial_traversal",
+            "audio_resonance"
+          ]
+        },
+        "pedagogical_rationale": {
+          "type": "string",
+          "description": "Why the LLM Director chose this modality over others."
+        },
+        "visceral_anchor": {
+          "type": "string",
+          "description": "The exact somatic or psychological sensation to activate."
+        }
+      }
+    },
+    "experience_component": {
+      "type": "object",
+      "required": ["component_type", "headline", "prompt", "config"],
+      "properties": {
+        "component_type": {
+          "type": "string"
+        },
+        "headline": {
+          "type": "string"
+        },
+        "prompt": {
+          "type": "string"
+        },
+        "config": {
+          "type": "object"
+        }
+      }
+    },
+    "contrastive_boundary": {
+      "type": "object",
+      "required": ["confusable_concept", "boundary_explanation", "micro_check"],
+      "properties": {
+        "confusable_concept": {
+          "type": "string"
+        },
+        "boundary_explanation": {
+          "type": "string"
+        },
+        "micro_check": {
+          "type": "object",
+          "required": ["question", "options", "correct_option", "feedback"],
+          "properties": {
+            "question": { "type": "string" },
+            "options": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 2
+            },
+            "correct_option": { "type": "integer" },
+            "feedback": { "type": "string" }
+          }
+        }
+      }
+    },
+    "aha_summary": {
+      "type": "object",
+      "required": ["core_formula", "real_world_collocations", "mnemonic_image_prompt"],
+      "properties": {
+        "core_formula": { "type": "string" },
+        "real_world_collocations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["phrase", "zh"],
+            "properties": {
+              "phrase": { "type": "string" },
+              "zh": { "type": "string" }
+            }
+          }
+        },
+        "mnemonic_image_prompt": { "type": "string" }
+      }
+    }
+  }
+}

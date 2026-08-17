@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SceneLex — 词义微世界交互原型 #07: 相变与物理状态演化 (Phase Transition)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #090b10;
+      --bg-surface: #121624;
+      --bg-card: #192033;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f1f3f9;
+      --text-muted: #8b92a7;
+      --text-sub: #b2b9ce;
+      --accent: #06b6d4;
+      --accent-glow: rgba(6, 182, 212, 0.25);
+      --amber: #f59e0b;
+      --amber-glow: rgba(245, 158, 11, 0.25);
+      --emerald: #10b981;
+      --rose: #f43f5e;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 8px;
+      --font-sans: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 60px;
+      background-image: 
+        radial-gradient(ellipse 60% 40% at 50% -10%, rgba(6, 182, 212, 0.15), transparent),
+        radial-gradient(ellipse 50% 30% at 85% 85%, rgba(245, 158, 11, 0.08), transparent);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1080px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      color: #67e8f9;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffffff 40%, #67e8f9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+      max-width: 720px;
+      line-height: 1.5;
+    }
+
+    /* Nav Tabs */
+    .tabs {
+      display: flex;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #000000;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    /* Layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 860px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-title span.tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      font-family: var(--font-mono);
+    }
+
+    /* Canvas Stage Viewport */
+    .sim-viewport {
+      background: #080a10;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      position: relative;
+      height: 350px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    canvas#phaseCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Overlays */
+    .state-overlay {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .state-chip {
+      background: rgba(15, 17, 26, 0.85);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(8px);
+    }
+
+    .state-chip .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Crystal Word Toast */
+    .crystal-badge {
+      position: absolute;
+      bottom: 16px;
+      background: rgba(20, 26, 40, 0.95);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transform: translateY(20px) scale(0.95);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+      backdrop-filter: blur(12px);
+    }
+
+    .crystal-badge.show {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .crystal-word {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .crystal-ipa {
+      font-size: 13px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+
+    .crystal-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+      border-left: 1px solid var(--border);
+      padding-left: 14px;
+      max-width: 260px;
+      line-height: 1.4;
+    }
+
+    /* Controls */
+    .control-row {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+
+    .control-val {
+      font-family: var(--font-mono);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 6px;
+      background: #252d42;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #ffffff;
+      cursor: grab;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 0 0 3px var(--accent);
+    }
+
+    /* Scenarios Selector Grid */
+    .phase-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .phase-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 4px;
+    }
+
+    .phase-card:hover {
+      border-color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .phase-card.active {
+      border-color: var(--accent);
+      background: rgba(6, 182, 212, 0.12);
+    }
+
+    .phase-card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .phase-card-words {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: #67e8f9;
+    }
+
+    /* Right: Phase Transition Radar */
+    .phase-analysis-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .phase-feature-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      font-size: 12.5px;
+    }
+
+    .phase-feature-label {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .phase-feature-val {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #67e8f9;
+    }
+
+    /* Minimal Pair Clash: melt vs freeze */
+    .clash-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      background: var(--bg-surface);
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .clash-col {
+      padding: 12px;
+      border-radius: 10px;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .clash-col.melt-col { border-color: rgba(245, 158, 11, 0.3); }
+    .clash-col.freeze-col { border-color: rgba(6, 182, 212, 0.3); }
+
+    .clash-col.highlight-melt {
+      border-color: #f59e0b;
+      background: rgba(245, 158, 11, 0.15);
+      transform: scale(1.02);
+    }
+    .clash-col.highlight-freeze {
+      border-color: #06b6d4;
+      background: rgba(6, 182, 212, 0.15);
+      transform: scale(1.02);
+    }
+
+    .clash-badge {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .melt-col .clash-badge { color: #fbbf24; }
+    .freeze-col .clash-badge { color: #67e8f9; }
+
+    .clash-desc {
+      font-size: 11.5px;
+      color: var(--text-sub);
+      line-height: 1.4;
+    }
+
+    .clash-tag {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-top: 4px;
+    }
+    .tag-hot { background: rgba(245,158,11,0.15); color: #fbbf24; }
+    .tag-cold { background: rgba(6,182,212,0.15); color: #67e8f9; }
+
+    /* Flow Stepper */
+    .flow-steps {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .step-pill {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 4px;
+      border-radius: 8px;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .step-pill.active {
+      background: rgba(6, 182, 212, 0.15);
+      border-color: var(--accent);
+      color: #67e8f9;
+    }
+
+    .step-pill.done {
+      border-color: var(--emerald);
+      color: var(--emerald);
+    }
+
+    .flow-action-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .flow-btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000000;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+    .btn.primary:hover { background: #0891b2; color:#fff; }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .quiz-opt-btn {
+      padding: 16px;
+      border-radius: 12px;
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .quiz-opt-btn:hover { border-color: var(--accent); }
+    .quiz-opt-btn.correct { border-color: var(--emerald)!important; background: rgba(16,185,129,0.15)!important; color:#34d399; }
+    .quiz-opt-btn.wrong { border-color: #f43f5e!important; background: rgba(244,63,94,0.15)!important; color:#fb7185; }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <header>
+    <div>
+      <div class="badge-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        SceneLex 词义微世界体系 · 类别 #07
+      </div>
+      <h1>相变与物理状态演化微世界 (Phase Transition)</h1>
+      <div class="subtitle">
+        探索物理状态从 A 到 B 的临界质变：<strong>固液可逆相变 (melt / freeze)</strong>、<strong>不可逆结构破裂 (shatter / crack)</strong> 与 <strong>分子溶解/蒸发 (dissolve / evaporate)</strong> 的动效具身习得。
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchView('interactive')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8m-4-4h8"/></svg>
+        物理相变实验台
+      </button>
+      <button class="tab-btn" onclick="switchView('walkthrough')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        4 步相变顿悟心流
+      </button>
+      <button class="tab-btn" onclick="switchView('theory')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        物理相变与 Schema
+      </button>
+    </div>
+  </header>
+
+  <!-- VIEW 1: INTERACTIVE LAB -->
+  <div id="view-interactive" class="grid-2">
+    <!-- Left: Canvas Sim -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          物理相变仿真视窗 (State Transition Simulation)
+          <span class="tag" id="phase-tag">冰水相变: melt / freeze</span>
+        </div>
+        <div class="state-chip" id="phase-state-chip">
+          <div class="dot" id="phase-dot"></div>
+          <span id="phase-status-txt">常温液态水</span>
+        </div>
+      </div>
+
+      <!-- Canvas Viewport -->
+      <div class="sim-viewport">
+        <div class="state-overlay">
+          <div class="state-chip">
+            <span>环境参数: </span>
+            <span id="overlay-param" style="font-family: var(--font-mono); color: #fff; font-weight:800;">+25°C (常温)</span>
+          </div>
+          <div class="state-chip">
+            <span>临界相变点: </span>
+            <span style="font-family: var(--font-mono); color:#67e8f9; font-weight:800;">0°C (冰点)</span>
+          </div>
+        </div>
+
+        <canvas id="phaseCanvas" width="560" height="350"></canvas>
+
+        <!-- Crystal Word Toast -->
+        <div class="crystal-badge" id="crystal-badge">
+          <div>
+            <div class="crystal-word" id="toast-word" style="color: #fbbf24;">melt</div>
+            <div class="crystal-ipa" id="toast-ipa">/mɛlt/</div>
+          </div>
+          <div class="crystal-desc" id="toast-desc">
+            固体冰块受热超过 0°C，晶体结构塌陷融化成流动液体。
+          </div>
+        </div>
+      </div>
+
+      <!-- Control Slider -->
+      <div class="control-row">
+        <div class="control-header">
+          <span id="slider-title">调节环境温度（感受冰块融化与水凝固的临界过程）</span>
+          <span class="control-val" id="param-val">+25°C</span>
+        </div>
+        
+        <input type="range" id="phaseSlider" min="-30" max="60" value="25" oninput="onPhaseSliderChange(this.value)">
+
+        <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">
+          <span style="color:#67e8f9; font-weight:700;">-30°C 严寒 (freeze)</span>
+          <span style="color:#ffffff; font-weight:700;">● 0°C 临界相变点</span>
+          <span style="color:#fbbf24; font-weight:700;">+60°C 高温 (melt)</span>
+        </div>
+      </div>
+
+      <!-- Scenarios Selector Grid -->
+      <div>
+        <div style="font-size:13px; font-weight:700; color:var(--text-sub); margin-bottom:8px;">选择物理相变与演化类型：</div>
+        <div class="phase-grid">
+          <div class="phase-card active" onclick="selectPhaseScenario('ice_water', this)">
+            <div class="phase-card-title">🧊 冰水相变</div>
+            <div class="phase-card-words">melt / freeze</div>
+          </div>
+          <div class="phase-card" onclick="selectPhaseScenario('glass_shatter', this)">
+            <div class="phase-card-title">💥 玻璃粉碎</div>
+            <div class="phase-card-words">shatter / crack</div>
+          </div>
+          <div class="phase-card" onclick="selectPhaseScenario('sugar_dissolve', this)">
+            <div class="phase-card-title">☕ 物质溶解</div>
+            <div class="phase-card-words">dissolve</div>
+          </div>
+          <div class="phase-card" onclick="selectPhaseScenario('water_evaporate', this)">
+            <div class="phase-card-title">💨 液体蒸发</div>
+            <div class="phase-card-words">evaporate</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Transition Dynamics Radar Panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          状态演化拓扑雷达 (State Change Topology)
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <!-- Attributes -->
+        <div class="phase-analysis-box">
+          <div class="phase-feature-row">
+            <span class="phase-feature-label">初始状态 (State A):</span>
+            <span class="phase-feature-val" id="feat-state-a">固态冰晶 (Solid Crystal)</span>
+          </div>
+          <div class="phase-feature-row">
+            <span class="phase-feature-label">驱动物理参量:</span>
+            <span class="phase-feature-val" id="feat-driver">温度变化 (Temperature $\Delta T$)</span>
+          </div>
+          <div class="phase-feature-row">
+            <span class="phase-feature-label">可逆性 (Reversibility):</span>
+            <span class="phase-feature-val" id="feat-reversibility">可逆物理相变 ($\rightleftharpoons$)</span>
+          </div>
+          <div class="phase-feature-row">
+            <span class="phase-feature-label">终态产物 (State B):</span>
+            <span class="phase-feature-val" id="feat-state-b">流动液态水 (Fluid Liquid)</span>
+          </div>
+        </div>
+
+        <!-- Minimal Pair Clash -->
+        <div style="font-size:13px; font-weight:700; color:var(--text);">双向相变对偶（Phase Minimal Pair）：</div>
+        <div class="clash-card">
+          <div class="clash-col melt-col highlight-melt" id="col-melt">
+            <div class="clash-badge">melt</div>
+            <div class="clash-desc">升温 &gt; 0°C：固态 ➔ 液态</div>
+            <div class="clash-tag tag-hot">Heating · 融化</div>
+          </div>
+          <div class="clash-col freeze-col" id="col-freeze">
+            <div class="clash-badge">freeze</div>
+            <div class="clash-desc">降温 &lt; 0°C：液态 ➔ 固态</div>
+            <div class="clash-tag tag-cold">Cooling · 凝固</div>
+          </div>
+        </div>
+
+        <!-- Invariant Rule -->
+        <div style="background:var(--bg-surface); padding:12px 14px; border-radius:10px; border:1px solid var(--border); font-size:12px; color:var(--text-sub); line-height:1.5;">
+          💡 <strong>相变不变式</strong>：<br>
+          • <strong>melt / freeze</strong> 是温度跨越临界点引起的**可逆晶格形态突变**。<br>
+          • <strong>shatter</strong> 是应力超出极限引起的**不可逆结构粉碎**。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: 4-STEP WALKTHROUGH -->
+  <div id="view-walkthrough" class="grid-2" style="display:none;">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          App 真实端到端教学心流 (Learner Journey)
+        </div>
+      </div>
+
+      <div class="flow-steps">
+        <div class="step-pill active" id="pill-step-1">1. 物理参量调节</div>
+        <div class="step-pill" id="pill-step-2">2. 相变临界突变</div>
+        <div class="step-pill" id="pill-step-3">3. 状态动词结晶</div>
+        <div class="step-pill" id="pill-step-4">4. 零翻译现象盲测</div>
+      </div>
+
+      <div id="flow-content-box" class="flow-action-box">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+    <!-- Right: Cognitive State Monitor -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          心智模型建构状态 (Cognitive State)
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="background:var(--bg-surface); padding:14px; border-radius:12px; border:1px solid var(--border);">
+          <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:6px;">大脑物理状态映射通道：</div>
+          <div id="walk-mental-status" style="font-size:14px; font-weight:700; color:#67e8f9; line-height:1.5;">
+            🔘 阶段 1: 观察冰晶边缘软化与水珠凝聚（零语言介入）
+          </div>
+        </div>
+
+        <div style="background:var(--bg-surface); padding:14px; border-radius:12px; border:1px solid var(--border);">
+          <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:6px;">为什么状态动词极其适合具身模拟？</div>
+          <div style="font-size:13px; color:var(--text-sub); line-height:1.6;">
+            • <em>melt, freeze, shatter, dissolve</em> 在物理世界中都有极其鲜明的**可见视觉/形态质变**。<br>
+            • 通过在 Canvas 上实时模拟粒子与晶格，让学习者亲眼目睹相变过程，记忆深度远超纯文字描述。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 3: THEORY & SCHEMA -->
+  <div id="view-theory" class="panel" style="display:none;">
+    <div class="panel-header">
+      <div class="panel-title">
+        PhaseTransition 原语组件的技术架构与 Schema
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; font-size:13.5px; line-height:1.6;">
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#67e8f9; margin-bottom:8px;">1. 什么是状态相变原语？</h3>
+        <p style="color:var(--text-sub);">
+          所有描述<strong>融化、凝固、粉碎、溶解、蒸发、腐蚀</strong>的状态转变动词，统一由 1 个 <strong>物理相变粒子引擎</strong> 驱动。
+        </p>
+      </div>
+
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#fbbf24; margin-bottom:8px;">2. LLM 编译器入参 Schema</h3>
+        <pre style="background:#090a0f; padding:10px; border-radius:8px; font-family:var(--font-mono); font-size:11px; color:#a5b4fc; overflow-x:auto; margin-top:6px;">
+{
+  "primitive": "phase_transition",
+  "phenomenon": "thermal_state_change",
+  "substance": "ice_water",
+  "driver_param": "temperature",
+  "critical_point": 0,
+  "bound_symbols": {
+    "above_critical": "melt",
+    "below_critical": "freeze"
+  }
+}</pre>
+      </div>
+
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#34d399; margin-bottom:8px;">3. 学习者直觉建构</h3>
+        <p style="color:var(--text-sub);">
+          前后搓动温度滑块，亲手目睹冰块化为水、水再次冻结成冰的过程，完成两极动词的成对神经固化。
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentScenario = 'ice_water';
+  let paramVal = 25; // default temperature 25C
+
+  const canvas = document.getElementById('phaseCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let animTick = 0;
+
+  function renderLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (currentScenario === 'ice_water') {
+      renderIceWaterScene();
+    } else if (currentScenario === 'glass_shatter') {
+      renderGlassShatterScene();
+    } else if (currentScenario === 'sugar_dissolve') {
+      renderSugarDissolveScene();
+    } else if (currentScenario === 'water_evaporate') {
+      renderWaterEvaporateScene();
+    }
+
+    animTick += 0.04;
+    requestAnimationFrame(renderLoop);
+  }
+
+  // 1. Ice / Water Thermal Phase Scene
+  function renderIceWaterScene() {
+    const w = canvas.width;
+    const h = canvas.height;
+    const cx = w / 2;
+    const cy = h / 2 + 20;
+
+    // Glass dish on table
+    ctx.fillStyle = '#171c2b';
+    ctx.fillRect(0, cy + 60, w, h - cy - 60);
+
+    const dishW = 200;
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.roundRect(cx - dishW/2, cy + 40, dishW, 20, [0, 0, 10, 10]);
+    ctx.stroke();
+
+    // Melting progress: -30C = 0% melted (pure solid), +60C = 100% melted (pure liquid)
+    // 0C is at index (30 / 90) = 33%
+    let meltRatio = (paramVal + 30) / 90; // 0 to 1
+    meltRatio = Math.max(0, Math.min(1, meltRatio));
+
+    // Water pool in dish
+    if (paramVal > -5) {
+      const waterH = 12 * Math.min(1, (paramVal + 5) / 25);
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.roundRect(cx - dishW/2 + 4, cy + 50 - waterH, dishW - 8, waterH + 8, 4);
+      ctx.fill();
+    }
+
+    // Ice Cube (Shrinks as meltRatio increases)
+    const iceSize = Math.max(0, 80 * (1 - Math.max(0, (paramVal - 0) / 50)));
+
+    if (iceSize > 4) {
+      const iceX = cx - iceSize/2;
+      const iceY = cy + 40 - iceSize;
+
+      // Draw Ice Cube with frosty glow
+      ctx.fillStyle = paramVal <= 0 ? '#e0f2fe' : '#bae6fd';
+      ctx.shadowColor = '#38bdf8';
+      ctx.shadowBlur = paramVal <= 0 ? 16 : 6;
+      ctx.beginPath();
+      ctx.roundRect(iceX, iceY, iceSize, iceSize, paramVal > 0 ? 12 : 4);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Crystal facet lines
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(iceX + 10, iceY + 10);
+      ctx.lineTo(iceX + iceSize - 10, iceY + 10);
+      ctx.lineTo(iceX + iceSize - 10, iceY + iceSize - 10);
+      ctx.stroke();
+
+      // Dripping water droplets if melting (T > 0)
+      if (paramVal > 0) {
+        ctx.fillStyle = '#38bdf8';
+        for (let i = 0; i < 3; i++) {
+          const dropY = iceY + iceSize + ((animTick * 40 + i * 20) % 30);
+          ctx.beginPath();
+          ctx.arc(cx - 15 + i * 15, dropY, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+  }
+
+  // 2. Glass Shatter Scene
+  function renderGlassShatterScene() {
+    const w = canvas.width;
+    const h = canvas.height;
+    const cx = w / 2;
+    const cy = h / 2;
+
+    ctx.fillStyle = '#080a12';
+    ctx.fillRect(0, 0, w, h);
+
+    if (paramVal > 20) {
+      // SHATTERED: 30+ fragments flying outwards
+      ctx.fillStyle = '#f43f5e';
+      ctx.font = '800 16px Plus Jakarta Sans';
+      ctx.textAlign = 'center';
+      ctx.fillText('💥 SHATTERED (粉碎成无数碎片)', cx, 60);
+
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.fillStyle = 'rgba(226, 232, 240, 0.7)';
+      for (let i = 0; i < 24; i++) {
+        const angle = (i / 24) * Math.PI * 2;
+        const dist = 40 + (paramVal * 1.5);
+        const fx = cx + Math.cos(angle) * dist;
+        const fy = cy + Math.sin(angle) * dist;
+
+        ctx.beginPath();
+        ctx.moveTo(fx, fy);
+        ctx.lineTo(fx + Math.cos(angle + 0.5) * 16, fy + Math.sin(angle + 0.5) * 16);
+        ctx.lineTo(fx + Math.sin(angle) * 10, fy + Math.cos(angle) * 10);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+    } else {
+      // Intact Wine Glass
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(cx - 40, cy - 60);
+      ctx.lineTo(cx - 40, cy);
+      ctx.quadraticCurveTo(cx, cy + 40, cx + 40, cy);
+      ctx.lineTo(cx + 40, cy - 60);
+      ctx.stroke();
+
+      // Stem & Base
+      ctx.beginPath();
+      ctx.moveTo(cx, cy + 30);
+      ctx.lineTo(cx, cy + 90);
+      ctx.moveTo(cx - 30, cy + 90);
+      ctx.lineTo(cx + 30, cy + 90);
+      ctx.stroke();
+
+      if (paramVal > 0) {
+        // Crack lines
+        ctx.strokeStyle = '#f43f5e';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(cx - 10, cy - 40);
+        ctx.lineTo(cx + 5, cy - 20);
+        ctx.lineTo(cx - 8, cy);
+        ctx.stroke();
+      }
+    }
+  }
+
+  // 3. Sugar Dissolve Scene
+  function renderSugarDissolveScene() {
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.fillStyle = '#100c14';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.fillStyle = '#f59e0b';
+    ctx.font = 'bold 14px Noto Sans SC';
+    ctx.textAlign = 'center';
+    ctx.fillText('☕ 固体方糖放入茶中 ➔ 晶体瓦解均匀溶入流体 (dissolve)', w/2, h/2);
+  }
+
+  // 4. Water Evaporate Scene
+  function renderWaterEvaporateScene() {
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.fillStyle = '#091014';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.fillStyle = '#06b6d4';
+    ctx.font = 'bold 14px Noto Sans SC';
+    ctx.textAlign = 'center';
+    ctx.fillText('💨 沸水剧烈升温 ➔ 水分子升腾化为气态蒸汽 (evaporate)', w/2, h/2);
+  }
+
+  function onPhaseSliderChange(val) {
+    paramVal = parseFloat(val);
+    document.getElementById('param-val').innerText = `${paramVal > 0 ? '+' : ''}${paramVal}°C`;
+    document.getElementById('overlay-param').innerText = `${paramVal > 0 ? '+' : ''}${paramVal}°C`;
+
+    const chip = document.getElementById('phase-state-chip');
+    const dot = document.getElementById('phase-dot');
+    const txt = document.getElementById('phase-status-txt');
+
+    const badge = document.getElementById('crystal-badge');
+    const toastWord = document.getElementById('toast-word');
+    const toastIpa = document.getElementById('toast-ipa');
+    const toastDesc = document.getElementById('toast-desc');
+
+    const colMelt = document.getElementById('col-melt');
+    const colFreeze = document.getElementById('col-freeze');
+    colMelt.classList.remove('highlight-melt');
+    colFreeze.classList.remove('highlight-freeze');
+
+    if (paramVal > 0) {
+      // MELTING ZONE
+      chip.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+      dot.style.background = '#f59e0b';
+      txt.innerText = '冰块正在融化成液态水 (melt)';
+
+      colMelt.classList.add('highlight-melt');
+
+      toastWord.innerText = 'melt';
+      toastWord.style.color = '#fbbf24';
+      toastIpa.innerText = '/mɛlt/';
+      toastDesc.innerText = '固体受热超过临界点（0°C），晶体瓦解融化成流动液体。';
+      badge.classList.add('show');
+    } else {
+      // FREEZING ZONE
+      chip.style.borderColor = 'rgba(6, 182, 212, 0.4)';
+      dot.style.background = '#06b6d4';
+      txt.innerText = '液态水已冻结成坚硬固体 (freeze)';
+
+      colFreeze.classList.add('highlight-freeze');
+
+      toastWord.innerText = 'freeze';
+      toastWord.style.color = '#67e8f9';
+      toastIpa.innerText = '/friːz/';
+      toastDesc.innerText = '液体降温低于临界点（0°C），结晶凝固成坚硬固体。';
+      badge.classList.add('show');
+    }
+  }
+
+  function selectPhaseScenario(sc, card) {
+    currentScenario = sc;
+    document.querySelectorAll('.phase-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+
+    const titles = {
+      ice_water: '冰水相变: melt / freeze',
+      glass_shatter: '玻璃粉碎: shatter / crack',
+      sugar_dissolve: '物质溶解: dissolve',
+      water_evaporate: '液体蒸发: evaporate'
+    };
+    document.getElementById('phase-tag').innerText = titles[sc];
+
+    if (sc === 'ice_water') {
+      document.getElementById('slider-title').innerText = '调节环境温度（感受冰块融化与水凝固的临界过程）';
+      document.getElementById('phaseSlider').min = -30;
+      document.getElementById('phaseSlider').max = 60;
+      document.getElementById('phaseSlider').value = 25;
+      onPhaseSliderChange(25);
+    } else if (sc === 'glass_shatter') {
+      document.getElementById('slider-title').innerText = '调节冲击动能（观察微细裂纹 vs 彻底粉碎）';
+      document.getElementById('phaseSlider').min = 0;
+      document.getElementById('phaseSlider').max = 50;
+      document.getElementById('phaseSlider').value = 30;
+      onPhaseSliderChange(30);
+    }
+  }
+
+  function switchView(viewName) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    document.getElementById('view-interactive').style.display = viewName === 'interactive' ? 'grid' : 'none';
+    document.getElementById('view-walkthrough').style.display = viewName === 'walkthrough' ? 'grid' : 'none';
+    document.getElementById('view-theory').style.display = viewName === 'theory' ? 'block' : 'none';
+
+    if (viewName === 'walkthrough') {
+      renderFlowStep(1);
+    }
+  }
+
+  // 4-Step Walkthrough
+  let walkStep = 1;
+  function renderFlowStep(s) {
+    walkStep = s;
+    for (let i = 1; i <= 4; i++) {
+      const p = document.getElementById(`pill-step-${i}`);
+      p.className = 'step-pill';
+      if (i < s) p.classList.add('done');
+      if (i === s) p.classList.add('active');
+    }
+
+    const box = document.getElementById('flow-content-box');
+    const mental = document.getElementById('walk-mental-status');
+
+    if (s === 1) {
+      mental.innerHTML = '🔘 <strong>阶段 1【物理参量调节】</strong>：调节温度滑块，感知冰晶的物理塌陷。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>步骤 1：把一块冷冻在 -20°C 的冰块，放入 +30°C 的温水中。</strong>
+        </div>
+        <div style="background:#090a0f; padding:18px; border-radius:12px; text-align:center;">
+          <span style="font-size:24px; font-family:var(--font-mono); color:#67e8f9;">🧊 坚硬冰晶 (-20°C) ➔ 💧 软化水滴 ➔ 🌊 流动水体 (+30°C)</span>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:6px;">晶格结构塌陷，由固态向液态转变</div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(2)">体会可逆相变的临界过程 ➔</button>
+        </div>
+      `;
+    } else if (s === 2) {
+      mental.innerHTML = '🔘 <strong>阶段 2【相变两极对撞】</strong>：确立“升温融化 vs 降温凝固”的对偶张力。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>步骤 2：相变过程两极对撞：</strong>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div style="background:#1d180c; border:1.5px solid #f59e0b; border-radius:10px; padding:14px; text-align:center;">
+            <div style="font-size:13px; color:#fbbf24; font-weight:700;">升温 &gt; 0°C (固态 ➔ 液态)</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">冰雪消融，化为流动水滴</div>
+          </div>
+          <div style="background:#091624; border:1.5px solid #06b6d4; border-radius:10px; padding:14px; text-align:center;">
+            <div style="font-size:13px; color:#67e8f9; font-weight:700;">降温 &lt; 0°C (液态 ➔ 固态)</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">水面凝结，锁死为坚硬冰层</div>
+          </div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(3)">相变锚点已确立，唤醒对应动词 ➔</button>
+        </div>
+      `;
+    } else if (s === 3) {
+      mental.innerHTML = '✨ <strong>阶段 3【状态动词双结晶】</strong>：直接完成物理现象神经直连。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700; text-align:center;">
+          根据两个相反的相变过程，分别结晶出：
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div style="background:rgba(245,158,11,0.12); border:1.5px solid #f59e0b; border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:26px; font-weight:800; color:#fbbf24;">melt</div>
+            <div style="font-size:12px; font-family:var(--font-mono); color:var(--text-muted);">/mɛlt/</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">“The snowman is <strong>melting</strong> in the sun.”</div>
+          </div>
+          <div style="background:rgba(6,182,212,0.12); border:1.5px solid #06b6d4; border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:26px; font-weight:800; color:#67e8f9;">freeze</div>
+            <div style="font-size:12px; font-family:var(--font-mono); color:var(--text-muted);">/friːz/</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">“The lake <strong>freezes</strong> in winter.”</div>
+          </div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(4)">进入零翻译实战盲测 ➔</button>
+        </div>
+      `;
+    } else if (s === 4) {
+      mental.innerHTML = '🚀 <strong>阶段 4【零翻译物理现象迁移】</strong>：根据冰激凌在阳光下滴落的物理现象选词。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>盲测实战：炎热夏日下，手中的冰激凌开始变软并沿着蛋筒向下滴落液体。</strong>
+        </div>
+        <div style="background:#090a0f; padding:14px; border-radius:10px; text-align:center; border:1px solid var(--border);">
+          <div style="font-size:14px; color:#fbbf24; font-weight:700;">🍦 固态冰体受热塌陷化为甜水！</div>
+          <div style="font-size:13px; color:var(--text-sub); margin-top:4px;">Quick, eat your ice cream before it ______!</div>
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-opt-btn" onclick="checkQuiz(this, true)">
+            <div style="font-size:18px; font-weight:800; color:#fbbf24;">melts</div>
+            <div style="font-size:11px; color:var(--text-muted);">固态受热融化</div>
+          </button>
+          <button class="quiz-opt-btn" onclick="checkQuiz(this, false)">
+            <div style="font-size:18px; font-weight:800; color:#67e8f9;">freezes</div>
+            <div style="font-size:11px; color:var(--text-muted);">液体受冷凝固</div>
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  function checkQuiz(btn, isCorrect) {
+    if (isCorrect) {
+      btn.classList.add('correct');
+      btn.innerHTML += '<div style="font-size:12px; font-weight:700; margin-top:4px;">🎉 完美直觉！零翻译直接命中！</div>';
+      setTimeout(() => {
+        alert('🎉 恭喜！你已彻底掌握物理相变动词的具身直觉！');
+      }, 300);
+    } else {
+      btn.classList.add('wrong');
+    }
+  }
+
+  // Init
+  onPhaseSliderChange(25);
+  renderLoop();
+</script>
+
+</body>
+</html>

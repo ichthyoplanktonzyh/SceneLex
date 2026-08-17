@@ -1,0 +1,73 @@
+{
+  "schema_version": "a2ui-lesson-1.0",
+  "sense_id": "shrivel-1",
+  "word": "shrivel",
+  "pos": "verb",
+  "definition_en": "to wrinkle and contract or cause to wrinkle and contract, especially due to loss of moisture or vitality",
+  "definition_zh": "枯萎；干瘪；（因失去水分/生命力而）起皱缩成一团",
+  "director_decision": {
+    "modality": "visual_metamorphosis",
+    "pedagogical_rationale": "shrivel 是极具视觉和形态蜕变特征的状态词。文字很难描摹'饱满水分慢慢抽干、表皮崩裂皱缩、体积萎缩干枯'的不可逆过程。前后蜕变滑动条（Visual Metamorphosis Slider）与动态形变能让用户肉眼直视细胞级的水分剥夺过程。",
+    "visceral_anchor": "原本饱满紧绷的水果表皮变得干瘪褶皱、叶片失去生机蜷缩变脆的触觉干枯感"
+  },
+  "experience_component": {
+    "component_type": "MetamorphosisMorphSlider",
+    "headline": "水分抽离与形态皱缩",
+    "prompt": "拖动底部的时间/水分滑块，观察饱满的葡萄/嫩叶在烈日烘烤下逐渐 shrivel 的全过程。",
+    "config": {
+      "subject": "grape_to_raisin",
+      "states": [
+        {
+          "progress": 0,
+          "title": "Plump & Juicy (饱满多汁)",
+          "moisture": "100%",
+          "shape_scale": 1.0,
+          "wrinkle_level": 0.0,
+          "color": "#68d391",
+          "description": "细胞充盈水分，表皮光滑紧致，富有弹性。"
+        },
+        {
+          "progress": 50,
+          "title": "Losing Moisture (开始失水)",
+          "moisture": "45%",
+          "shape_scale": 0.8,
+          "wrinkle_level": 0.45,
+          "color": "#b7791f",
+          "description": "边缘轻微蜷曲，表皮失去光泽，开始出现纵向细纹。"
+        },
+        {
+          "progress": 100,
+          "title": "Shriveled (完全干瘪皱缩)",
+          "moisture": "5%",
+          "shape_scale": 0.55,
+          "wrinkle_level": 1.0,
+          "color": "#744210",
+          "description": "彻底失去水分，皱缩成干枯一团，一碰即碎。"
+        }
+      ]
+    }
+  },
+  "contrastive_boundary": {
+    "confusable_concept": "shrivel vs. shrink vs. wither",
+    "boundary_explanation": "【Shrink】泛指一切尺寸变小（如毛衣缩水，但衣服并不会起皱枯死）；【Wither】强调枯萎衰亡（重点在生命力消逝）；【Shrivel】强调‘抽干水分 + 表面起皱缩成干皮’的具体形态。",
+    "micro_check": {
+      "question": "纯羊毛衫被扔进高温烘干机后，拿出来小了两个尺码，但布料依然平整柔软。此时应该用：",
+      "options": [
+        "The sweater shriveled in the dryer.",
+        "The sweater shrank in the dryer.",
+        "The sweater withered in the dryer."
+      ],
+      "correct_option": 1,
+      "feedback": "正确！尺寸单纯等比例缩水用 shrink / shrank；只有伴随表皮干瘪褶皱枯萎才叫 shrivel。"
+    }
+  },
+  "aha_summary": {
+    "core_formula": "shrivel = 水分/活力被抽干 + 表面皱缩成团",
+    "real_world_collocations": [
+      { "phrase": "shriveled leaves", "zh": "枯萎干瘪的树叶" },
+      { "phrase": "shrivel in the heat", "zh": "在酷热中干枯皱缩" },
+      { "phrase": "profits shriveled", "zh": "（比喻）利润急剧缩水枯竭" }
+    ],
+    "mnemonic_image_prompt": "A plump purple grape side by side with a dark wrinkled raisin under a harsh golden magnifying glass sunbeam."
+  }
+}

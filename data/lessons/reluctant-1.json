@@ -1,0 +1,82 @@
+{
+  "schema_version": "a2ui-lesson-1.0",
+  "sense_id": "reluctant-1",
+  "word": "reluctant",
+  "pos": "adj",
+  "definition_en": "feeling or showing doubt, hesitation, or unwillingness to do something",
+  "definition_zh": "不情愿的；勉强的；迟疑的",
+  "director_decision": {
+    "modality": "dialogue_vignette",
+    "pedagogical_rationale": "reluctant 是典型的情绪与心理阻力词。物理滑块无法表达人际压力下的'想退缩但不得不挪步'的心理拖拽感。两行极具戏剧张力、充满迟疑停顿的微情境对话能瞬间击中学习者的真实同理心。",
+    "visceral_anchor": "双脚像灌了铅、喉咙发紧、被催促时身体本能向后微倾但仍被动往前挪动的沉重阻滞感"
+  },
+  "experience_component": {
+    "component_type": "DialogueVignette",
+    "headline": "深夜的社交修罗场",
+    "prompt": "点击选项感受不同回应中的心理阻力。观察角色微动作与停顿。",
+    "config": {
+      "scene_setting": "周五晚上 11:30，你刚洗完澡换上睡衣，手机突然亮起，同事发来群消息狂欢邀请。",
+      "characters": [
+        { "id": "sarah", "name": "Sarah (同事)", "avatar": "👩‍💼" },
+        { "id": "you", "name": "You", "avatar": "🧍‍♂️" }
+      ],
+      "dialogue_steps": [
+        {
+          "speaker": "sarah",
+          "text": "Everyone is at the karaoke bar! You HAVE to come over right now, the boss is asking for you!",
+          "audio_tone": "excited_pushy"
+        },
+        {
+          "speaker": "you",
+          "internal_monologue": "(心里一万个不想去...看了一眼温暖的被窝，又叹了一口气...)",
+          "response_options": [
+            {
+              "type": "reluctant",
+              "text": "I... guess I can swing by for twenty minutes...",
+              "reaction": "He gave a reluctant nod and started putting his shoes back on with a heavy sigh.",
+              "sensation_score": 100,
+              "explanation": "这就是 reluctant：你最后虽然答应去了，但每一步动作都写满了内心的抗拒和犹豫。"
+            },
+            {
+              "type": "refusing",
+              "text": "No way, I'm already in bed. See you on Monday.",
+              "reaction": "Direct refusal. No movement, zero compliance.",
+              "sensation_score": 0,
+              "explanation": "这是直接拒绝 (refusing/declining)，没有 reluctant 那种'最终被迫妥协行动'的心理拖拽。"
+            },
+            {
+              "type": "enthusiastic",
+              "text": "Awesome! Give me 10 mins, ordering an Uber now!",
+              "reaction": "Eager and excited.",
+              "sensation_score": 0,
+              "explanation": "这是热切积极 (eager/enthusiastic)，与 reluctant 完全相反。"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "contrastive_boundary": {
+    "confusable_concept": "reluctant vs. refuse",
+    "boundary_explanation": "【Refuse】是动作上的彻底断绝（我不去）；【Reluctant】是心理上的千般不愿，但行为上往往还是‘勉强去做了’（如 reluctant agreement, reluctant witness）。",
+    "micro_check": {
+      "question": "法庭上传唤的某位证人'极为害怕报复，但最终还是出庭作证了'。此时应描述他为：",
+      "options": [
+        "A refusing witness",
+        "A reluctant witness",
+        "An indifferent witness"
+      ],
+      "correct_option": 1,
+      "feedback": "正确！他最终出庭了（做出了动作），但内心极度害怕与抗拒，这就是典型的 reluctant witness。"
+    }
+  },
+  "aha_summary": {
+    "core_formula": "reluctant = 身体在动 + 灵魂在往后拔河",
+    "real_world_collocations": [
+      { "phrase": "a reluctant smile", "zh": "勉强的微笑（挤出来的笑）" },
+      { "phrase": "reluctant to admit", "zh": "不情愿承认（嘴硬但心里清楚）" },
+      { "phrase": "reluctant agreement", "zh": "勉强答应（满脸写着不想同意）" }
+    ],
+    "mnemonic_image_prompt": "A person being gently pulled forward on a leash by a puppy, leaning their upper body backwards with heels digging into the sand."
+  }
+}

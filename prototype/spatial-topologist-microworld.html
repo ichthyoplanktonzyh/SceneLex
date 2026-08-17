@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SceneLex — 词义微世界交互原型 #03: 空间拓扑与轨迹 (Spatial Topologist)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #090b10;
+      --bg-surface: #121520;
+      --bg-card: #1a1e2d;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f1f3f9;
+      --text-muted: #8b92a7;
+      --text-sub: #b2b9ce;
+      --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.25);
+      --emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.25);
+      --amber: #f59e0b;
+      --purple: #8b5cf6;
+      --pink: #ec4899;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 8px;
+      --font-sans: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 60px;
+      background-image: 
+        radial-gradient(ellipse 60% 40% at 50% -10%, rgba(59, 130, 246, 0.15), transparent),
+        radial-gradient(ellipse 50% 30% at 85% 85%, rgba(16, 185, 129, 0.08), transparent);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1080px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #93c5fd;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffffff 40%, #93c5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+      max-width: 720px;
+      line-height: 1.5;
+    }
+
+    /* Nav Tabs */
+    .tabs {
+      display: flex;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    /* Layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 860px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-title span.tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      font-family: var(--font-mono);
+    }
+
+    /* Topo Canvas Stage */
+    .sim-viewport {
+      background: #08090e;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      position: relative;
+      height: 350px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: crosshair;
+    }
+
+    canvas#topoCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Overlay Chips */
+    .state-overlay {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .state-chip {
+      background: rgba(15, 17, 26, 0.85);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(8px);
+    }
+
+    .state-chip .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Crystal Word Toast */
+    .crystal-badge {
+      position: absolute;
+      bottom: 16px;
+      background: rgba(18, 22, 34, 0.95);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transform: translateY(20px) scale(0.95);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+      backdrop-filter: blur(12px);
+    }
+
+    .crystal-badge.show {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .crystal-word {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .crystal-ipa {
+      font-size: 13px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+
+    .crystal-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+      border-left: 1px solid var(--border);
+      padding-left: 14px;
+      max-width: 260px;
+      line-height: 1.4;
+    }
+
+    /* Scenario Selector Grid */
+    .topo-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .topo-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 4px;
+    }
+
+    .topo-card:hover {
+      border-color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .topo-card.active {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.12);
+    }
+
+    .topo-card-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .topo-card-word {
+      font-size: 12px;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: #93c5fd;
+    }
+
+    /* Spatial Topo Schema Panel (Right) */
+    .topo-analysis-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .topo-feature-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      font-size: 12.5px;
+    }
+
+    .topo-feature-label {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .topo-feature-val {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #93c5fd;
+    }
+
+    /* Minimal Pair Slices: across vs through */
+    .clash-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      background: var(--bg-surface);
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .clash-col {
+      padding: 12px;
+      border-radius: 10px;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .clash-col.across-col { border-color: rgba(59, 130, 246, 0.3); }
+    .clash-col.through-col { border-color: rgba(16, 185, 129, 0.3); }
+
+    .clash-col.highlight-across {
+      border-color: #3b82f6;
+      background: rgba(59, 130, 246, 0.12);
+      transform: scale(1.02);
+    }
+    .clash-col.highlight-through {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.12);
+      transform: scale(1.02);
+    }
+
+    .clash-badge {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .across-col .clash-badge { color: #60a5fa; }
+    .through-col .clash-badge { color: #34d399; }
+
+    .clash-desc {
+      font-size: 11.5px;
+      color: var(--text-sub);
+      line-height: 1.4;
+    }
+
+    .clash-tag {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-top: 4px;
+    }
+    .tag-surface { background: rgba(59,130,246,0.15); color: #93c5fd; }
+    .tag-enclosed { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+
+    /* Flow Stepper */
+    .flow-steps {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .step-pill {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 4px;
+      border-radius: 8px;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .step-pill.active {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: var(--accent);
+      color: #93c5fd;
+    }
+
+    .step-pill.done {
+      border-color: var(--emerald);
+      color: var(--emerald);
+    }
+
+    .flow-action-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .flow-btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+    .btn.primary:hover { background: #2563eb; }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .quiz-opt-btn {
+      padding: 16px;
+      border-radius: 12px;
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .quiz-opt-btn:hover { border-color: var(--accent); }
+    .quiz-opt-btn.correct { border-color: var(--emerald)!important; background: rgba(16,185,129,0.15)!important; color:#34d399; }
+    .quiz-opt-btn.wrong { border-color: #ef4444!important; background: rgba(239,68,68,0.15)!important; color:#f87171; }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <header>
+    <div>
+      <div class="badge-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12h18m-6-6l6 6-6 6"/></svg>
+        SceneLex 词义微世界体系 · 类别 #03
+      </div>
+      <h1>空间拓扑穿透与轨迹微世界 (Spatial Topologist)</h1>
+      <div class="subtitle">
+        探索主体（Figure）与参考物（Landmark）的几何拓扑关系：如何通过<strong>“2D 表面横跨 (Surface)”</strong>、<strong>“3D 介质贯穿 (Enclosed Medium)”</strong>与<strong>“1D 边界伴行 (Boundary Line)”</strong>，直觉结晶出 <strong>across, through, along, past</strong> 等空间核心介词。
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchView('interactive')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+        拓扑轨迹实验台
+      </button>
+      <button class="tab-btn" onclick="switchView('walkthrough')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        4 步拓扑顿悟心流
+      </button>
+      <button class="tab-btn" onclick="switchView('theory')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        空间图式与 Schema
+      </button>
+    </div>
+  </header>
+
+  <!-- VIEW 1: INTERACTIVE LAB -->
+  <div id="view-interactive" class="grid-2">
+    <!-- Left: Canvas Sim -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          空间拓扑微世界 (Spatial Topology Stage)
+          <span class="tag" id="topo-tag">跨越水面: across</span>
+        </div>
+        <div class="state-chip" id="topo-state-chip">
+          <div class="dot" id="topo-dot"></div>
+          <span id="topo-status-txt">在左岸准备出发</span>
+        </div>
+      </div>
+
+      <!-- Topo Canvas Viewport -->
+      <div class="sim-viewport" id="viewport">
+        <div class="state-overlay">
+          <div class="state-chip">
+            <span>参考物 (Landmark): </span>
+            <span id="overlay-lm" style="font-family: var(--font-mono); color: #fff; font-weight:800;">2D 河流表面 (Surface)</span>
+          </div>
+          <div class="state-chip">
+            <span>拖拽主体 (Figure): </span>
+            <span style="font-family: var(--font-mono); color:#93c5fd; font-weight:800;">● 探索光球</span>
+          </div>
+        </div>
+
+        <canvas id="topoCanvas" width="560" height="350"></canvas>
+
+        <!-- Crystal Word Toast -->
+        <div class="crystal-badge" id="crystal-badge">
+          <div>
+            <div class="crystal-word" id="toast-word" style="color: #60a5fa;">across</div>
+            <div class="crystal-ipa" id="toast-ipa">/əˈkrɔːs/</div>
+          </div>
+          <div class="crystal-desc" id="toast-desc">
+            从表面一侧连续跨越至对侧，上方完全裸露开敞。
+          </div>
+        </div>
+      </div>
+
+      <!-- Controller Slider & Play Button -->
+      <div style="background:var(--bg-surface); padding:14px 18px; border-radius:var(--radius-md); border:1px solid var(--border); display:flex; flex-direction:column; gap:8px;">
+        <div style="display:flex; justify-content:space-between; font-size:12.5px; font-weight:600; color:var(--text-sub);">
+          <span>拖动进度条（或直接在上方画布中拖动光球）：</span>
+          <span style="font-family:var(--font-mono); color:var(--accent); font-weight:700;" id="progress-val">0%</span>
+        </div>
+        <input type="range" id="topoSlider" min="0" max="100" value="0" oninput="onProgressChange(this.value)">
+      </div>
+
+      <!-- Scenarios Selector -->
+      <div>
+        <div style="font-size:13px; font-weight:700; color:var(--text-sub); margin-bottom:8px;">选择空间拓扑图式 (Image Schema)：</div>
+        <div class="topo-grid">
+          <div class="topo-card active" onclick="selectTopoScenario('across', this)">
+            <div class="topo-card-title">2D 表面跨越</div>
+            <div class="topo-card-word">across</div>
+          </div>
+          <div class="topo-card" onclick="selectTopoScenario('through', this)">
+            <div class="topo-card-title">3D 介质贯穿</div>
+            <div class="topo-card-word">through</div>
+          </div>
+          <div class="topo-card" onclick="selectTopoScenario('along', this)">
+            <div class="topo-card-title">1D 边界伴行</div>
+            <div class="topo-card-word">along</div>
+          </div>
+          <div class="topo-card" onclick="selectTopoScenario('past', this)">
+            <div class="topo-card-title">孤立点路过</div>
+            <div class="topo-card-word">past</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Schema Topology Radar -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          空间图式拓扑参数 (Spatial Schema Attributes)
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <!-- Topo Feature Attributes -->
+        <div class="topo-analysis-box">
+          <div class="topo-feature-row">
+            <span class="topo-feature-label">参考物维度 (Landmark Dim):</span>
+            <span class="topo-feature-val" id="feat-lm-dim">2D 平面表面 (Surface)</span>
+          </div>
+          <div class="topo-feature-row">
+            <span class="topo-feature-label">包围封闭度 (Enclosure Level):</span>
+            <span class="topo-feature-val" id="feat-enclosure">0% 开放无包围 (Open)</span>
+          </div>
+          <div class="topo-feature-row">
+            <span class="topo-feature-label">端点连结 (Boundary Endpoints):</span>
+            <span class="topo-feature-val" id="feat-endpoints">跨过两端边界 (Opposite Sides)</span>
+          </div>
+        </div>
+
+        <!-- Minimal Pair Clash: across vs through -->
+        <div style="font-size:13px; font-weight:700; color:var(--text);">核心空间对撞（Minimal Pair Clash）：</div>
+        <div class="clash-card">
+          <div class="clash-col across-col" id="col-across">
+            <div class="clash-badge">across</div>
+            <div class="clash-desc">横跨 2D 表面，上方完全敞开</div>
+            <div class="clash-tag tag-surface">2D Surface · Open</div>
+          </div>
+          <div class="clash-col through-col" id="col-through">
+            <div class="clash-badge">through</div>
+            <div class="clash-desc">进入 3D 介质内部，被四周完全包裹</div>
+            <div class="clash-tag tag-enclosed">3D Medium · Enclosed</div>
+          </div>
+        </div>
+
+        <!-- Invariant Rule -->
+        <div style="background:var(--bg-surface); padding:12px 14px; border-radius:10px; border:1px solid var(--border); font-size:12px; color:var(--text-sub); line-height:1.5;">
+          💡 <strong>拓扑不变式</strong>：<br>
+          • <strong>across</strong> 强调从面的一侧到另一侧（如跨河、过街、翻墙）。<br>
+          • <strong>through</strong> 强调主体沉浸于<strong>封闭介质/空间内部</strong>（如穿过隧道、穿透钢板、穿行森林）。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: 4-STEP WALKTHROUGH -->
+  <div id="view-walkthrough" class="grid-2" style="display:none;">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          App 真实端到端教学心流 (Learner Journey)
+        </div>
+      </div>
+
+      <div class="flow-steps">
+        <div class="step-pill active" id="pill-step-1">1. 轨迹绘制</div>
+        <div class="step-pill" id="pill-step-2">2. 拓扑对撞</div>
+        <div class="step-pill" id="pill-step-3">3. 符号结晶</div>
+        <div class="step-pill" id="pill-step-4">4. 零翻译迁移</div>
+      </div>
+
+      <div id="flow-content-box" class="flow-action-box">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+    <!-- Right: Cognitive State Monitor -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          心智模型建构状态 (Cognitive State)
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="background:var(--bg-surface); padding:14px; border-radius:12px; border:1px solid var(--border);">
+          <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:6px;">大脑空间图式映射通道：</div>
+          <div id="walk-mental-status" style="font-size:14px; font-weight:700; color:#93c5fd; line-height:1.5;">
+            🔘 阶段 1: 纯几何动线追踪（无任何语言词汇干扰）
+          </div>
+        </div>
+
+        <div style="background:var(--bg-surface); padding:14px; border-radius:12px; border:1px solid var(--border);">
+          <div style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:6px;">为什么传统背介词极其痛苦？</div>
+          <div style="font-size:13px; color:var(--text-sub); line-height:1.6;">
+            • 中文里“穿过马路”、“穿过隧道”、“穿过森林”全部用同一个“穿过”，导致严重的 L1 母语负迁移。<br>
+            • <strong>空间拓扑微世界</strong>通过“表面敞开”与“内部包裹”的视觉动效，让大脑直连几何图式，彻底破除中文翻译混淆。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 3: THEORY & SCHEMA -->
+  <div id="view-theory" class="panel" style="display:none;">
+    <div class="panel-header">
+      <div class="panel-title">
+        SpatialTopologist 原语组件的技术架构与 Schema
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; font-size:13.5px; line-height:1.6;">
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#93c5fd; margin-bottom:8px;">1. 什么是空间拓扑原语？</h3>
+        <p style="color:var(--text-sub);">
+          所有描述<strong>路径、穿越、方位、流向、介质关系</strong>的介词（across, through, along, past, over, under, into, out of），在 App 端统一由 1 个 <strong>2.5D 拓扑路径引擎</strong> 渲染。
+        </p>
+      </div>
+
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#34d399; margin-bottom:8px;">2. LLM 编译器入参 Schema</h3>
+        <pre style="background:#090a0f; padding:10px; border-radius:8px; font-family:var(--font-mono); font-size:11px; color:#a5b4fc; overflow-x:auto; margin-top:6px;">
+{
+  "primitive": "spatial_topologist",
+  "landmark_type": "3d_medium",
+  "landmark_label": "tunnel",
+  "trajectory_type": "interior_pass",
+  "bound_symbol": "through",
+  "contrast_symbol": "across",
+  "context_sentence": "walk through the tunnel"
+}</pre>
+      </div>
+
+      <div style="background:var(--bg-surface); padding:18px; border-radius:14px; border:1px solid var(--border);">
+        <h3 style="font-size:16px; color:#f472b6; margin-bottom:8px;">3. 为什么告别了 LLM 写坐标？</h3>
+        <p style="color:var(--text-sub);">
+          以前的方案逼迫 LLM 输出 <code>points: [[50,150]...]</code>，导致折线僵硬。现在的通用原语内置了河流、隧道、道路、障碍物的标准 2.5D 几何着色器，LLM 只需声明拓扑关系即可！
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentScenario = 'across';
+  let progress = 0; // 0 to 100
+
+  const canvas = document.getElementById('topoCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let animTick = 0;
+
+  function renderLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (currentScenario === 'across') {
+      renderAcrossScene();
+    } else if (currentScenario === 'through') {
+      renderThroughScene();
+    } else if (currentScenario === 'along') {
+      renderAlongScene();
+    } else if (currentScenario === 'past') {
+      renderPastScene();
+    }
+
+    animTick += 0.03;
+    requestAnimationFrame(renderLoop);
+  }
+
+  // 1. Across: River Crossing (2D Surface)
+  function renderAcrossScene() {
+    const w = canvas.width;
+    const h = canvas.height;
+    const riverLeft = w * 0.32;
+    const riverRight = w * 0.68;
+
+    // Left Bank (Green grass)
+    ctx.fillStyle = '#1e2d24';
+    ctx.fillRect(0, 0, riverLeft, h);
+
+    // Right Bank
+    ctx.fillRect(riverRight, 0, w - riverRight, h);
+
+    // River Water (Blue surface)
+    const riverGrad = ctx.createLinearGradient(riverLeft, 0, riverRight, 0);
+    riverGrad.addColorStop(0, '#1e3a8a');
+    riverGrad.addColorStop(0.5, '#2563eb');
+    riverGrad.addColorStop(1, '#1e3a8a');
+    ctx.fillStyle = riverGrad;
+    ctx.fillRect(riverLeft, 0, riverRight - riverLeft, h);
+
+    // Water ripple lines
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 1;
+    for (let y = 30; y < h; y += 40) {
+      ctx.beginPath();
+      const waveX = riverLeft + 20 + Math.sin(animTick + y) * 10;
+      ctx.moveTo(waveX, y);
+      ctx.lineTo(waveX + 60, y);
+      ctx.stroke();
+    }
+
+    // Riverbank boundaries
+    ctx.strokeStyle = '#059669';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(riverLeft, 0);
+    ctx.lineTo(riverLeft, h);
+    ctx.moveTo(riverRight, 0);
+    ctx.lineTo(riverRight, h);
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = '10px JetBrains Mono';
+    ctx.fillText('LEFT BANK', riverLeft - 65, 30);
+    ctx.fillText('RIGHT BANK', riverRight + 10, 30);
+    ctx.fillText('RIVER SURFACE (2D)', w/2 - 50, 30);
+
+    // Trajectory Path from left to right
+    const startX = 60;
+    const endX = w - 60;
+    const pathY = h / 2;
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(startX, pathY);
+    ctx.lineTo(endX, pathY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Current Figure (Moving Ball)
+    const currentX = startX + (endX - startX) * (progress / 100);
+
+    // Ball on surface (Always brightly visible on top)
+    ctx.shadowColor = '#60a5fa';
+    ctx.shadowBlur = 18;
+    ctx.fillStyle = '#60a5fa';
+    ctx.beginPath();
+    ctx.arc(currentX, pathY, 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Trail
+    ctx.strokeStyle = '#3b82f6';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(startX, pathY);
+    ctx.lineTo(currentX, pathY);
+    ctx.stroke();
+  }
+
+  // 2. Through: Mountain Tunnel (3D Enclosed Medium)
+  function renderThroughScene() {
+    const w = canvas.width;
+    const h = canvas.height;
+    const mtnLeft = w * 0.28;
+    const mtnRight = w * 0.72;
+    const cy = h / 2;
+
+    // Mountain Rock Block (Brown/Dark Grey)
+    ctx.fillStyle = '#1c1917';
+    ctx.fillRect(mtnLeft, 40, mtnRight - mtnLeft, h - 80);
+
+    ctx.strokeStyle = '#44403c';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(mtnLeft, 40, mtnRight - mtnLeft, h - 80);
+
+    // Tunnel Tube (Dark enclosed cave)
+    const tunnelH = 70;
+    ctx.fillStyle = '#0c0a09';
+    ctx.fillRect(mtnLeft, cy - tunnelH/2, mtnRight - mtnLeft, tunnelH);
+
+    // Road outside
+    ctx.fillStyle = '#292524';
+    ctx.fillRect(0, cy - 20, mtnLeft, 40);
+    ctx.fillRect(mtnRight, cy - 20, w - mtnRight, 40);
+
+    // Labels
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = '10px JetBrains Mono';
+    ctx.fillText('MOUNTAIN (SOLID MEDIUM)', w/2 - 65, 30);
+    ctx.fillText('TUNNEL INTERIOR (3D ENCLOSED)', w/2 - 80, cy - tunnelH/2 - 6);
+
+    const startX = 50;
+    const endX = w - 50;
+    const currentX = startX + (endX - startX) * (progress / 100);
+
+    const isInside = currentX >= mtnLeft && currentX <= mtnRight;
+
+    // Trajectory Line
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(startX, cy);
+    ctx.lineTo(endX, cy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Figure
+    ctx.save();
+    if (isInside) {
+      // Inside tunnel: dim / headlamp beam
+      ctx.fillStyle = 'rgba(254, 240, 138, 0.2)';
+      ctx.beginPath();
+      ctx.moveTo(currentX, cy);
+      ctx.lineTo(currentX + 70, cy - 22);
+      ctx.lineTo(currentX + 70, cy + 22);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = '#34d399';
+      ctx.shadowColor = '#34d399';
+      ctx.shadowBlur = 12;
+      ctx.beginPath();
+      ctx.arc(currentX, cy, 11, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillStyle = '#10b981';
+      ctx.shadowColor = '#10b981';
+      ctx.shadowBlur = 18;
+      ctx.beginPath();
+      ctx.arc(currentX, cy, 12, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // 3. Along: Riverbank Path (1D Linear Boundary)
+  function renderAlongScene() {
+    const w = canvas.width;
+    const h = canvas.height;
+
+    // Top half is river
+    ctx.fillStyle = '#1e3a8a';
+    ctx.fillRect(0, 0, w, h * 0.45);
+
+    // Bottom half is grass
+    ctx.fillStyle = '#14281d';
+    ctx.fillRect(0, h * 0.45, w, h * 0.55);
+
+    // Riverbank walking trail (parallel line)
+    const trailY = h * 0.55;
+    ctx.strokeStyle = '#d97706';
+    ctx.lineWidth = 14;
+    ctx.beginPath();
+    ctx.moveTo(0, trailY);
+    ctx.lineTo(w, trailY);
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = '10px JetBrains Mono';
+    ctx.fillText('RIVER (WATER)', 40, 40);
+    ctx.fillText('PARALLEL TRAIL (ALONG THE RIVER)', 40, trailY + 26);
+
+    const startX = 60;
+    const endX = w - 60;
+    const currentX = startX + (endX - startX) * (progress / 100);
+
+    // Figure walking parallel along the trail
+    ctx.fillStyle = '#f59e0b';
+    ctx.shadowColor = '#f59e0b';
+    ctx.shadowBlur = 18;
+    ctx.beginPath();
+    ctx.arc(currentX, trailY, 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+
+  // 4. Past: Passing Lighthouse
+  function renderPastScene() {
+    const w = canvas.width;
+    const h = canvas.height;
+    const cx = w / 2;
+    const cy = h / 2;
+
+    // Sea water
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, w, h);
+
+    // Landmark: Lighthouse island in center
+    ctx.fillStyle = '#334155';
+    ctx.beginPath();
+    ctx.arc(cx, cy - 30, 28, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Lighthouse tower
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(cx - 8, cy - 70, 16, 40);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(cx - 8, cy - 55, 16, 10);
+
+    // Rotating light beam
+    ctx.save();
+    ctx.fillStyle = 'rgba(253, 224, 71, 0.15)';
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - 70);
+    const beamAngle = animTick * 1.5;
+    ctx.lineTo(cx + Math.cos(beamAngle) * 160, cy - 70 + Math.sin(beamAngle) * 80);
+    ctx.lineTo(cx + Math.cos(beamAngle + 0.3) * 160, cy - 70 + Math.sin(beamAngle + 0.3) * 80);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = '10px JetBrains Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText('LIGHTHOUSE LANDMARK', cx, cy + 15);
+
+    // Ship Path (Straight horizontal trajectory bypassing the lighthouse)
+    const startX = 60;
+    const endX = w - 60;
+    const shipY = cy + 60;
+    const currentX = startX + (endX - startX) * (progress / 100);
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(startX, shipY);
+    ctx.lineTo(endX, shipY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Ship Figure
+    ctx.fillStyle = '#38bdf8';
+    ctx.shadowColor = '#38bdf8';
+    ctx.shadowBlur = 18;
+    ctx.beginPath();
+    ctx.arc(currentX, shipY, 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+
+  // Progress change
+  function onProgressChange(val) {
+    progress = parseFloat(val);
+    document.getElementById('progress-val').innerText = `${progress.toFixed(0)}%`;
+
+    const chip = document.getElementById('topo-state-chip');
+    const dot = document.getElementById('topo-dot');
+    const txt = document.getElementById('topo-status-txt');
+
+    const badge = document.getElementById('crystal-badge');
+    const toastWord = document.getElementById('toast-word');
+    const toastIpa = document.getElementById('toast-ipa');
+    const toastDesc = document.getElementById('toast-desc');
+
+    const colAcross = document.getElementById('col-across');
+    const colThrough = document.getElementById('col-through');
+    colAcross.classList.remove('highlight-across');
+    colThrough.classList.remove('highlight-through');
+
+    const cfg = getTopoConfig();
+
+    if (progress < 20) {
+      chip.style.borderColor = 'rgba(255,255,255,0.2)';
+      dot.style.background = '#8b92a7';
+      txt.innerText = '起点端准备出发';
+      badge.classList.remove('show');
+    } else if (progress >= 20 && progress <= 80) {
+      chip.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+      dot.style.background = '#3b82f6';
+      txt.innerText = cfg.statusMid;
+      badge.classList.remove('show');
+    } else {
+      // Reached other side
+      chip.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+      dot.style.background = '#10b981';
+      txt.innerText = cfg.statusEnd;
+
+      toastWord.innerText = cfg.word;
+      toastWord.style.color = cfg.color;
+      toastIpa.innerText = cfg.ipa;
+      toastDesc.innerText = cfg.desc;
+      badge.classList.add('show');
+
+      if (currentScenario === 'across') colAcross.classList.add('highlight-across');
+      if (currentScenario === 'through') colThrough.classList.add('highlight-through');
+    }
+  }
+
+  function getTopoConfig() {
+    switch(currentScenario) {
+      case 'across':
+        return {
+          word: 'across', ipa: '/əˈkrɔːs/', color: '#60a5fa',
+          statusMid: '正在横跨水面（表面裸露）',
+          statusEnd: '已到达对岸 · across 结晶成立！',
+          desc: '从 2D 表面一侧连续跨越至对侧，上方完全敞开。'
+        };
+      case 'through':
+        return {
+          word: 'through', ipa: '/θruː/', color: '#34d399',
+          statusMid: '正在穿透山体隧道（被介质四周包裹）',
+          statusEnd: '已钻出山体 · through 结晶成立！',
+          desc: '进入 3D 封闭介质内部，从另一端穿出。'
+        };
+      case 'along':
+        return {
+          word: 'along', ipa: '/əˈlɔːŋ/', color: '#f59e0b',
+          statusMid: '正沿着河岸边线并行奔跑',
+          statusEnd: '持续沿线伴行 · along 结晶成立！',
+          desc: '沿着 1D 线性边界平行延伸，不跨越边界。'
+        };
+      case 'past':
+        return {
+          word: 'past', ipa: '/pæst/', color: '#38bdf8',
+          statusMid: '正在逼近并掠过灯塔坐标点',
+          statusEnd: '已越过灯塔继续航行 · past 结晶成立！',
+          desc: '从孤立参考点旁边经过，并继续向前超越。'
+        };
+    }
+  }
+
+  function selectTopoScenario(sc, card) {
+    currentScenario = sc;
+    document.querySelectorAll('.topo-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+
+    const titles = {
+      across: '跨越水面: across',
+      through: '穿透隧道: through',
+      along: '沿河伴行: along',
+      past: '路过灯塔: past'
+    };
+    document.getElementById('topo-tag').innerText = titles[sc];
+
+    const lms = {
+      across: '2D 河流表面 (Surface)',
+      through: '3D 山体内部介质 (Enclosed Medium)',
+      along: '1D 线性边界线 (Linear Edge)',
+      past: '0D 孤立空间坐标点 (Point Landmark)'
+    };
+    document.getElementById('overlay-lm').innerText = lms[sc];
+
+    const dims = {
+      across: ['2D 平面表面 (Surface)', '0% 开放无包围 (Open)', '跨过两端边界 (Opposite Sides)'],
+      through: ['3D 内部介质 (Volume/Medium)', '100% 四周封闭包裹 (Enclosed)', '入孔进入 ➔ 出口穿出 (Enter & Exit)'],
+      along: ['1D 线性路径 (Linear Line)', '平行伴行 (Parallel)', '不跨越两岸 (Continuous Alignment)'],
+      past: ['0D/局部孤立参考物 (Point/Object)', '侧方掠过 (Bypass Proximity)', '超越参考物继续前行 (Beyond Landmark)']
+    };
+    document.getElementById('feat-lm-dim').innerText = dims[sc][0];
+    document.getElementById('feat-enclosure').innerText = dims[sc][1];
+    document.getElementById('feat-endpoints').innerText = dims[sc][2];
+
+    document.getElementById('topoSlider').value = 0;
+    onProgressChange(0);
+  }
+
+  function switchView(viewName) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    document.getElementById('view-interactive').style.display = viewName === 'interactive' ? 'grid' : 'none';
+    document.getElementById('view-walkthrough').style.display = viewName === 'walkthrough' ? 'grid' : 'none';
+    document.getElementById('view-theory').style.display = viewName === 'theory' ? 'block' : 'none';
+
+    if (viewName === 'walkthrough') {
+      renderFlowStep(1);
+    }
+  }
+
+  // 4-Step Walkthrough
+  let walkStep = 1;
+  function renderFlowStep(s) {
+    walkStep = s;
+    for (let i = 1; i <= 4; i++) {
+      const p = document.getElementById(`pill-step-${i}`);
+      p.className = 'step-pill';
+      if (i < s) p.classList.add('done');
+      if (i === s) p.classList.add('active');
+    }
+
+    const box = document.getElementById('flow-content-box');
+    const mental = document.getElementById('walk-mental-status');
+
+    if (s === 1) {
+      mental.innerHTML = '🔘 <strong>阶段 1【空间动线追踪】</strong>：感知主体与介质的几何相对运动。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>步骤 1：观察一束光线穿透厚玻璃块的过程。</strong>
+        </div>
+        <div style="background:#090a0f; padding:20px; border-radius:12px; text-align:center;">
+          <span style="font-size:24px; font-family:var(--font-mono); color:#34d399;">Entry [正面] ➔ ░░ 内部介质 ░░ ➔ Exit [背面]</span>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:6px;">光线完全沉浸于玻璃介质内部连续贯通</div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(2)">体会“内部穿透 vs 表面跨越”的拓扑差异 ➔</button>
+        </div>
+      `;
+    } else if (s === 2) {
+      mental.innerHTML = '🔘 <strong>阶段 2【拓扑图式对撞】</strong>：确立 2D 表面敞开 vs 3D 介质包裹的张力。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>步骤 2：空间图式两极对撞：</strong>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div style="background:#101524; border:1.5px solid #3b82f6; border-radius:10px; padding:14px; text-align:center;">
+            <div style="font-size:13px; color:#60a5fa; font-weight:700;">跨过河面 (2D Surface)</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">上方开敞，始终在介质表面上</div>
+          </div>
+          <div style="background:#0d1e18; border:1.5px solid #10b981; border-radius:10px; padding:14px; text-align:center;">
+            <div style="font-size:13px; color:#34d399; font-weight:700;">穿透隧道 (3D Enclosed)</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">进入岩石内部，被介质四周包围</div>
+          </div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(3)">拓扑锚点已就绪，立即唤醒符号 ➔</button>
+        </div>
+      `;
+    } else if (s === 3) {
+      mental.innerHTML = '✨ <strong>阶段 3【空间符号双结晶】</strong>：直接完成英语介词图式直连。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700; text-align:center;">
+          把两个不同的空间图式，分别命名为：
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div style="background:rgba(59,130,246,0.12); border:1.5px solid #3b82f6; border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:26px; font-weight:800; color:#60a5fa;">across</div>
+            <div style="font-size:12px; font-family:var(--font-mono); color:var(--text-muted);">/əˈkrɔːs/</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">walk <strong>across</strong> the bridge</div>
+          </div>
+          <div style="background:rgba(16,185,129,0.12); border:1.5px solid #10b981; border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:26px; font-weight:800; color:#34d399;">through</div>
+            <div style="font-size:12px; font-family:var(--font-mono); color:var(--text-muted);">/θruː/</div>
+            <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">walk <strong>through</strong> the forest</div>
+          </div>
+        </div>
+        <div class="flow-btn-group">
+          <button class="btn primary" onclick="renderFlowStep(4)">进入零翻译实战盲测 ➔</button>
+        </div>
+      `;
+    } else if (s === 4) {
+      mental.innerHTML = '🚀 <strong>阶段 4【零翻译空间任务迁移】</strong>：脱离任何中文，直接看图选介词。';
+      box.innerHTML = `
+        <div style="font-size:15px; font-weight:700;">
+          👉 <strong>实测验证：列车钻入山体隧道，在漆黑的岩石内部穿行。</strong>
+        </div>
+        <div style="background:#090a0f; padding:14px; border-radius:10px; text-align:center; border:1px solid var(--border);">
+          <div style="font-size:14px; color:#34d399; font-weight:700;">🚇 处于四周封闭包裹的 3D 岩石空间内部！</div>
+          <div style="font-size:13px; color:var(--text-sub); margin-top:4px;">The train travels ______ the mountain tunnel.</div>
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-opt-btn" onclick="checkQuiz(this, true)">
+            <div style="font-size:18px; font-weight:800; color:#34d399;">through</div>
+            <div style="font-size:11px; color:var(--text-muted);">3D 内部介质贯穿</div>
+          </button>
+          <button class="quiz-opt-btn" onclick="checkQuiz(this, false)">
+            <div style="font-size:18px; font-weight:800; color:#60a5fa;">across</div>
+            <div style="font-size:11px; color:var(--text-muted);">2D 表面横跨</div>
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  function checkQuiz(btn, isCorrect) {
+    if (isCorrect) {
+      btn.classList.add('correct');
+      btn.innerHTML += '<div style="font-size:12px; font-weight:700; margin-top:4px;">🎉 完美直觉！零翻译直接命中！</div>';
+      setTimeout(() => {
+        alert('🎉 恭喜！你已彻底掌握空间拓扑介词的母语级直觉映射！');
+      }, 300);
+    } else {
+      btn.classList.add('wrong');
+    }
+  }
+
+  // Init
+  selectTopoScenario('across', document.querySelector('.topo-card.active'));
+  renderLoop();
+</script>
+
+</body>
+</html>
